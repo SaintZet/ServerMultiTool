@@ -29,4 +29,14 @@
       </None>
     </ItemGroup>
 
+    <ItemGroup>
+      <None Remove="Views\Assets\Icons\Plarium_Logo.png" />
+      <None Remove="Views\Assets\Icons\Logo.png" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Views\Assets\Icons\plarium-logo.png" />
+      <Resource Include="Views\Assets\Icons\plarium-logo.png" />
+    </ItemGroup>
+
 </Project>

@@ -61,7 +61,7 @@ public static class Startup
     private static IServiceCollection AddViewModels(this IServiceCollection serviceCollection)
     {
         serviceCollection
-            .AddTransient<MainViewModel>();
+            .AddTransient<DeployViewModel>();
 
         return serviceCollection;
     }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows;
-using Microsoft.Extensions.DependencyInjection;
 using ServerMultiTool.ViewModels;
 using ServerMultiTool.Views;
 
@@ -17,10 +16,9 @@ public partial class App
     {
         base.OnStartup(e);
 
-        var mainWindow = new MainView
-        {
-            DataContext = _serviceProvider.GetService<MainViewModel>()
-        };
+        DeployViewModel.SetServiceProvider(_serviceProvider);
+        
+        var mainWindow = new MainWindow();
         mainWindow.Show();
     }
         
