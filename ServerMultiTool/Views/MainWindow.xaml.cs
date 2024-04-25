@@ -15,7 +15,7 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
         
-        _deployPage = new DeployView();
+        _deployPage = new CICDPipelineView();
         _jsonParserPage = new JsonParserView();
         
         FrameContent.Navigate(_deployPage);

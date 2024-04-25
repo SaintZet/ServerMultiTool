@@ -1,25 +1,21 @@
 ﻿using System;
 using System.Windows;
-using ServerMultiTool.ViewModels;
+using ServerMultiTool.Model.CICDPipeline.PipelineProfiles;
+using ServerMultiTool.Model.Settings;
 using ServerMultiTool.Views;
 
 namespace ServerMultiTool;
 
 public partial class App
 {
-    private readonly IServiceProvider _serviceProvider;
-    
-    public App() => 
-        _serviceProvider = ServerMultiTool.Startup.ConfigureServices();
-
     protected override void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
 
-        DeployViewModel.SetServiceProvider(_serviceProvider);
+        AppSettingsService.LoadOrInitialize(Environment.CurrentDirectory);
+        PipelineProfilesService.LoadOrInitialize(Environment.CurrentDirectory);
         
         var mainWindow = new MainWindow();
         mainWindow.Show();
     }
-        
 }
