@@ -49,7 +49,7 @@ namespace ServerMultiTool.Model.Settings
 
         private static AppSettings InitializeDefaultSettings(string path)
         {
-            var defaultSettings = DefaultValues.AppSettings;
+            var defaultSettings = DefaultValues.GetDefaultAppSettings();
             
             SaveSettingsTo(defaultSettings, path);
 

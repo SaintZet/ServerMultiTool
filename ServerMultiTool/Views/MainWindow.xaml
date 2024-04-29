@@ -62,11 +62,11 @@
                     
                     <!-- Start:  Menu -->
                     <StackPanel Grid.Row="1" Margin="0 30 0 30" >
-                        <RadioButton x:Name="rdDeploy" 
-                                     Content="Deploy" 
+                        <RadioButton x:Name="rdPipeline" 
+                                     Content="CI/CD Pipeline" 
                                      Style="{DynamicResource MenuRadioButtonStyle}" 
                                      Tag="{DynamicResource Airplane}" 
-                                     Click="rbDeploy_Click"/>
+                                     Click="rbPipeline_Click"/>
                         <RadioButton x:Name="rdJsonParser" 
                                      Content="Json Parser" 
                                      Style="{DynamicResource MenuRadioButtonStyle}" 

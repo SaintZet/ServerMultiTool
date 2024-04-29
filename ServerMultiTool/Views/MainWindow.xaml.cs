@@ -8,18 +8,18 @@ namespace ServerMultiTool.Views;
 
 public partial class MainWindow : Window
 {
-    private readonly Page _deployPage;
+    private readonly Page _pipelinePage;
     private readonly Page _jsonParserPage;
 
     public MainWindow()
     {
         InitializeComponent();
         
-        _deployPage = new CICDPipelineView();
+        _pipelinePage = new PipelineView();
         _jsonParserPage = new JsonParserView();
         
-        FrameContent.Navigate(_deployPage);
-        rdDeploy.IsChecked = true;
+        FrameContent.Navigate(_pipelinePage);
+        rdPipeline.IsChecked = true;
     }
     
     private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -49,9 +49,9 @@ public partial class MainWindow : Window
         WindowState = WindowState.Minimized;
     }
     
-    private void rbDeploy_Click(object sender, RoutedEventArgs e)
+    private void rbPipeline_Click(object sender, RoutedEventArgs e)
     {
-        FrameContent.Navigate(_deployPage);
+        FrameContent.Navigate(_pipelinePage);
     }
 
     private void rdJsonParser_Click(object sender, RoutedEventArgs e)

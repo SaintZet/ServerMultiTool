@@ -37,12 +37,14 @@ public static class PipelineProfilesService
     private static PipelineProfile[] InitializeDefaultProfiles(string pathToFolder)
     {
         var appSettings = AppSettingsService.AppSettings;
-
-        var standardProfile = DefaultValues.GetStandardProfile();
-        SaveSettingsTo(standardProfile, Path.Combine(pathToFolder, $"{nameof(standardProfile)}.json"));
+        var solutionDir = appSettings.SolutionDirectories[0];
+        var httpDir = appSettings.HttpDirectories[0];
         
-        var extendedProfile = DefaultValues.GetExtendedProfile(appSettings.SolutionDirectory, appSettings.HttpDirectory);
-        SaveSettingsTo(extendedProfile, Path.Combine(pathToFolder, $"{nameof(extendedProfile)}.json"));
+        var standardProfile = DefaultValues.GetStandardProfile();
+        SaveSettingsTo(standardProfile, Path.Combine(pathToFolder, $"{standardProfile.Name}.json"));
+        
+        var extendedProfile = DefaultValues.GetExtendedProfile(solutionDir, httpDir);
+        SaveSettingsTo(extendedProfile, Path.Combine(pathToFolder, $"{extendedProfile.Name}.json"));
         
         return new[] { standardProfile, extendedProfile };
     }

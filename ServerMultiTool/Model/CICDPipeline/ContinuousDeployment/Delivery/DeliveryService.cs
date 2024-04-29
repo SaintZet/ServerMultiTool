@@ -6,15 +6,23 @@ using System.Threading.Tasks;
 using log4net;
 using Microsoft.IdentityModel.Tokens;
 using ServerMultiTool.Model.CICDPipeline.PipelineProfiles;
-using ServerMultiTool.Model.Settings;
 
 namespace ServerMultiTool.Model.CICDPipeline.ContinuousDeployment.Delivery;
 
-public static class DeliveryService
+public class DeliveryService
 {
     private static readonly ILog Log = LogManager.GetLogger(nameof(DeliveryService));
 
-    public static async Task ExecuteAsync(PipelineProfile pipeline)
+    private readonly string _solutionDirectory;
+    private readonly string _httpDirectory;
+
+    public DeliveryService(string solutionDirectory, string httpDirectory)
+    {
+        _solutionDirectory = solutionDirectory;
+        _httpDirectory = httpDirectory;
+    }
+
+    public async Task ExecuteAsync(PipelineProfile pipeline)
     {
         var deliveryBinTasks = pipeline.SettingsPerProject
             .Where(projectSettings => projectSettings.DeliverySettings.DeliveryBin)
@@ -56,19 +64,16 @@ public static class DeliveryService
             }));
     }
     
-    private static async Task DeliveryProjectBinAsync(ProjectSettings projectSettings)
+    private async Task DeliveryProjectBinAsync(ProjectSettings projectSettings)
     {
-        var rootHttpDirectory = AppSettingsService.AppSettings.HttpDirectory;
-        var solutionDirectory = AppSettingsService.AppSettings.SolutionDirectory;
-        
         var projectDirectory = Path.GetDirectoryName(projectSettings.ProjectPath)!;
-        var fullProjectDirectory = Path.Combine(solutionDirectory, projectDirectory);
+        var fullProjectDirectory = Path.Combine(_solutionDirectory, projectDirectory);
         var sourceDirectory = Path.Combine(fullProjectDirectory, "bin");
 
         var copyTasks = GetHttpProjectDirectories(projectSettings.ProjectName)
             .Select(async directory =>
             {
-                var httpDirectory = Path.Combine(rootHttpDirectory, directory);
+                var httpDirectory = Path.Combine(_httpDirectory, directory);
                 var targetDirectory = Path.Combine(httpDirectory, "bin");
                 
                 await CopyDirectoryAsync(sourceDirectory, targetDirectory);
@@ -79,11 +84,11 @@ public static class DeliveryService
         await Task.WhenAll(copyTasks);
     }
     
-    private static IEnumerable<string> GetHttpProjectDirectories(string folderName)
+    private IEnumerable<string> GetHttpProjectDirectories(string folderName)
     {
         var regex = new Regex(@$"{Regex.Escape(folderName)}\d*$");
         
-        var allProjectsHttpDirectories = Directory.GetDirectories(AppSettingsService.AppSettings.HttpDirectory);
+        var allProjectsHttpDirectories = Directory.GetDirectories(_httpDirectory);
         var projectHttpDirectories = allProjectsHttpDirectories.Where(path => regex.IsMatch(Path.GetFileName(path)));
         
         return projectHttpDirectories;

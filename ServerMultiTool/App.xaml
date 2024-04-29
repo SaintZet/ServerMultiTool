@@ -8,6 +8,8 @@
                 <ResourceDictionary Source="/Views/Assets/Icons/Icons.xaml"/>
                 <ResourceDictionary Source="/Views/Styles/RadioButtonStyle.xaml"/>
                 <ResourceDictionary Source="/Views/Styles/ButtonStyle.xaml"/>
+                <ResourceDictionary Source="/Views/Styles/ComboBoxStyle.xaml"/>
+                <ResourceDictionary Source="/Views/Styles/TextBlockStyle.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

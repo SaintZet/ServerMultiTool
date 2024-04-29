@@ -8,6 +8,7 @@ namespace ServerMultiTool.Model.CICDPipeline.PipelineProfiles;
 public struct PipelineProfile
 {
     public long Id { get; set; }
+    public string Name { get; set; }
     public ProjectSettings[] SettingsPerProject { get; set; }
     public GitSettings GitSettings { get; set; }
     public SqlExecutionSettings SqlExecutionSettings { get; set; }

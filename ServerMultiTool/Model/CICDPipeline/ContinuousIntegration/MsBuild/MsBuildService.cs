@@ -7,15 +7,19 @@ using System.Threading.Tasks;
 using log4net;
 using Microsoft.IdentityModel.Tokens;
 using ServerMultiTool.Model.CICDPipeline.PipelineProfiles;
-using ServerMultiTool.Model.Settings;
 
 namespace ServerMultiTool.Model.CICDPipeline.ContinuousIntegration.MsBuild;
 
-public static class MsBuildService
+public class MsBuildService
 {
     private static readonly ILog Log = LogManager.GetLogger(nameof(MsBuildService));
 
-    public static async Task ExecuteAsync(PipelineProfile pipeline)
+    private readonly string _solutionDirectory;
+
+    public MsBuildService(string solutionDirectory) => 
+        _solutionDirectory = solutionDirectory;
+
+    public async Task ExecuteAsync(PipelineProfile pipeline)
     {
         var buildTasks = pipeline.SettingsPerProject
             .Where(projectSettings => projectSettings.MsBuildSettings.Enable)
@@ -24,9 +28,9 @@ public static class MsBuildService
         await Task.WhenAll(buildTasks);
     }
 
-    private static async Task ExecuteMsBuildAsync(ProjectSettings projectSettings)
+    private async Task ExecuteMsBuildAsync(ProjectSettings projectSettings)
     {
-        var projectPath = Path.Combine(AppSettingsService.AppSettings.SolutionDirectory, projectSettings.ProjectPath);
+        var projectPath = Path.Combine(_solutionDirectory, projectSettings.ProjectPath);
         var projectName = projectSettings.ProjectName;
         var buildParameters = projectSettings.MsBuildSettings.Parameters;
         var msBuildArguments = GetMsBuildArguments(projectPath, buildParameters);
@@ -131,11 +135,11 @@ public static class MsBuildService
         return (process.ExitCode, output);
     }
 
-    private static string GetMsBuildArguments(string projectPath, IEnumerable<string> parameters)
+    private string GetMsBuildArguments(string projectPath, IEnumerable<string> parameters)
     {
         var sb = new StringBuilder()
             .Append(' ').Append($"\"{projectPath}\"")
-            .Append(' ').Append($@"/p:SolutionDir={AppSettingsService.AppSettings.SolutionDirectory}\");
+            .Append(' ').Append($@"/p:SolutionDir={_solutionDirectory}\");
 
         foreach (var parameter in parameters) 
             sb.Append(' ').Append($"{parameter}");

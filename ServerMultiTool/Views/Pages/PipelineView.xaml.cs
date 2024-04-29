@@ -3,12 +3,12 @@ using ServerMultiTool.ViewModels;
 
 namespace ServerMultiTool.Views.Pages
 {
-    public partial class CICDPipelineView : Page
+    public partial class PipelineView : Page
     {
-        public CICDPipelineView()
+        public PipelineView()
         {
             InitializeComponent();
-            DataContext = new CICDPipelineViewModel();
+            DataContext = new PipelineViewModel();
         }
     }
 }
