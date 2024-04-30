@@ -45,6 +45,11 @@
     <SolidColorBrush x:Key="PrimaryWhiteColor" Color="#C0C9EA"/>
     <SolidColorBrush x:Key="SecondaryWhiteColor" Color="#EDF4FF"/>
     <SolidColorBrush x:Key="TertiaryWhiteColor" Color="#FFFFFF"/>
+    
+    <!-- Gray -->
+    <SolidColorBrush x:Key="PrimaryGrayColor" Color="#808080"/>
+    <SolidColorBrush x:Key="SecondaryGrayColor" Color="#A9A9A9"/>
+    <SolidColorBrush x:Key="TertiaryGrayColor" Color="#C0C0C0"/>
 
     <!-- Black -->
     <SolidColorBrush x:Key="PrimaryBlackColor" Color="#0E1A32"/>

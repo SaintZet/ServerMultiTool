@@ -9,13 +9,13 @@ public static class InternetInformationServices
 {
     private static readonly ILog Log = LogManager.GetLogger(nameof(InternetInformationServices));
     
-    public static async Task StopAsync() => 
+    public static async Task<bool> StopAsync() => 
         await ExecuteCommandAsync("/stop");
 
-    public static async Task StartAsync() => 
+    public static async Task<bool> StartAsync() => 
         await ExecuteCommandAsync("/start");
     
-    private static async Task ExecuteCommandAsync(string arguments)
+    private static async Task<bool> ExecuteCommandAsync(string arguments)
     {
         var processStartInfo = new ProcessStartInfo
         {
@@ -37,10 +37,15 @@ public static class InternetInformationServices
         
         var outputLines = output.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
 
-        if (process.ExitCode is 0)
-            foreach (var line in outputLines)
-                Log.Info(line);
-        else
+        if (process.ExitCode is not 0)
+        {
             Log.Error(error);
+            return false;
+        }
+        
+        foreach (var line in outputLines)
+            Log.Info(line);
+            
+        return true;
     }
 }

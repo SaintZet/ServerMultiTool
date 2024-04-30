@@ -10,18 +10,18 @@ public class GitService
 {
     private static readonly ILog Log = LogManager.GetLogger(nameof(GitService));
 
-    private readonly string _solutionDirectory;
+    public string SolutionDirectory;
 
     public GitService(string solutionDirectory) => 
-        _solutionDirectory = solutionDirectory;
-    
-    public async Task ExecuteAsync(PipelineProfile pipeline)
+        SolutionDirectory = solutionDirectory;
+
+    public async Task<bool> ExecuteAsync(PipelineProfile pipeline)
     {
         var settings = pipeline.GitSettings;
         if (settings.Enable is false)
         {
             Log.Info($"Git Integration is disabled by {nameof(PipelineProfile)}.");
-            return;
+            return true;
         }
 
         try
@@ -31,10 +31,14 @@ public class GitService
             
             if (settings.ShouldPull)
                 await GitPull();
+            
+            return true;
         }
         catch (Exception ex)
         {
             Log.Error($"Failed to make git operations: \n{ex.Message}");
+            
+            return false;
         }
     }
 
@@ -42,7 +46,7 @@ public class GitService
     {
         var startInfo = new ProcessStartInfo("git")
         {
-            WorkingDirectory = _solutionDirectory,
+            WorkingDirectory = SolutionDirectory,
             UseShellExecute = false,
             RedirectStandardOutput = true,
             RedirectStandardError = true,
@@ -69,7 +73,7 @@ public class GitService
     {
         var startInfo = new ProcessStartInfo("git", "pull")
         {
-            WorkingDirectory = _solutionDirectory,
+            WorkingDirectory = SolutionDirectory,
             UseShellExecute = false,
             RedirectStandardOutput = true,
             RedirectStandardError = false,

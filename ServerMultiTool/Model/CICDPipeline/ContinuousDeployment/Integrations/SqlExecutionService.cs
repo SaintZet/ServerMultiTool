@@ -11,13 +11,13 @@ public static class SqlExecutionService
 {
     private static readonly ILog Log = LogManager.GetLogger(nameof(SqlExecutionService));
     
-    public static async Task ExecuteAsync(PipelineProfile pipeline)
+    public static async Task<bool> ExecuteAsync(PipelineProfile pipeline)
     {
         var settings = pipeline.SqlExecutionSettings;
         if (settings.Enable is false)
         {
             Log.Info($"Sql Execution is disabled by {nameof(PipelineProfile)}.");
-            return;
+            return true;
         }
         
         try
@@ -26,10 +26,14 @@ public static class SqlExecutionService
             var connectionString = settings.ConnectionString;
             var count = await ExecuteSqlScript(sqlScript, connectionString);
             Log.Info($"Affected row count {count}");
+            
+            return true;
         }
         catch (Exception ex)
         {
             Log.Error($"An error occurred while executing the SQL script: \n{ex.Message}");
+            
+            return false;
         }
     }
     

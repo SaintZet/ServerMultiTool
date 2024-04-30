@@ -9,5 +9,6 @@ public struct AppSettings
     public DirectoryModel[] SolutionDirectories { get; set; }
     public long CurrentHttpDirectoryId { get; set; }
     public DirectoryModel[] HttpDirectories { get; set; }
+    public long LastPipelineProfileId { get; set; }
     public string Log4NetConfigPath { get; set; } 
 }

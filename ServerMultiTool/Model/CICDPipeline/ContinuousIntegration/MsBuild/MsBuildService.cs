@@ -14,23 +14,26 @@ public class MsBuildService
 {
     private static readonly ILog Log = LogManager.GetLogger(nameof(MsBuildService));
 
-    private readonly string _solutionDirectory;
+    public string SolutionDirectory;
 
     public MsBuildService(string solutionDirectory) => 
-        _solutionDirectory = solutionDirectory;
+        SolutionDirectory = solutionDirectory;
 
-    public async Task ExecuteAsync(PipelineProfile pipeline)
+
+    public async Task<bool> ExecuteAsync(PipelineProfile pipeline)
     {
         var buildTasks = pipeline.SettingsPerProject
             .Where(projectSettings => projectSettings.MsBuildSettings.Enable)
             .Select(ExecuteMsBuildAsync);
 
         await Task.WhenAll(buildTasks);
+
+        return true;
     }
 
     private async Task ExecuteMsBuildAsync(ProjectSettings projectSettings)
     {
-        var projectPath = Path.Combine(_solutionDirectory, projectSettings.ProjectPath);
+        var projectPath = Path.Combine(SolutionDirectory, projectSettings.ProjectPath);
         var projectName = projectSettings.ProjectName;
         var buildParameters = projectSettings.MsBuildSettings.Parameters;
         var msBuildArguments = GetMsBuildArguments(projectPath, buildParameters);
@@ -139,7 +142,7 @@ public class MsBuildService
     {
         var sb = new StringBuilder()
             .Append(' ').Append($"\"{projectPath}\"")
-            .Append(' ').Append($@"/p:SolutionDir={_solutionDirectory}\");
+            .Append(' ').Append($@"/p:SolutionDir={SolutionDirectory}\");
 
         foreach (var parameter in parameters) 
             sb.Append(' ').Append($"{parameter}");

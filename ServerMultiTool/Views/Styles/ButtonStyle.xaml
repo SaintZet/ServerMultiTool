@@ -76,14 +76,6 @@
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
                                 <Condition Property="IsMouseOver" Value="True"/>
-                                <Condition Property="Tag" Value="IsStartButton"/>
-                            </MultiTrigger.Conditions>
-                            <Setter Property="Background" Value="Green"/>
-                            <Setter TargetName="ico" Property="Fill" Value="#FFFFFF"/>
-                        </MultiTrigger>
-                        <MultiTrigger>
-                            <MultiTrigger.Conditions>
-                                <Condition Property="IsMouseOver" Value="True"/>
                                 <Condition Property="Tag" Value="{x:Null}"/>
                             </MultiTrigger.Conditions>
                             <Setter Property="Background" Value="{DynamicResource TertiaryBackgroundColor}"/>

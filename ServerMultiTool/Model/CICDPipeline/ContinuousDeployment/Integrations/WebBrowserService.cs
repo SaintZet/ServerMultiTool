@@ -10,23 +10,28 @@ public static class WebBrowserService
 {
     private static readonly ILog Log = LogManager.GetLogger(nameof(WebBrowserService));
     
-    public static async Task ExecuteAsync(PipelineProfile pipeline)
+    public static async Task<bool> ExecuteAsync(PipelineProfile pipeline)
     {
         var settings = pipeline.WebBrowserSettings;
         if (settings.Enable is false)
         {
             Log.Info($"Opening URLs is disabled by {nameof(PipelineProfile)}.");
-            return;
+            
+            return true;
         }
     
         try
         {
             await OpenPageAsync(settings.Url);
             Log.Info("The web page has been successfully opened.");
+            
+            return true;
         }
         catch (Exception ex)
         {
             Log.Error($"Failed to open the URL: \n{ex.Message}");
+            
+            return false;
         }
     }
 

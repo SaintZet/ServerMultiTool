@@ -4,6 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:viewModels="clr-namespace:ServerMultiTool.ViewModels"
+      xmlns:converters="clr-namespace:ServerMultiTool.ViewModels.Converters"
       mc:Ignorable="d" 
       d:DesignHeight="600" d:DesignWidth="700"
       Title="Deploy" 
@@ -13,123 +14,177 @@
     <Page.DataContext>
         <viewModels:PipelineViewModel />
     </Page.DataContext>
+    
+    <Page.Resources>
+        <converters:MilestoneFillConverter x:Key="MilestoneFillConverter"/>
+    </Page.Resources>
 
     <Border CornerRadius="8" Background="{DynamicResource SecondaryBackgroundColor}">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             
             <Grid Grid.Row="0" Margin="10">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="*" />
                     <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                
+                <Grid Grid.Row="0" Grid.Column="0" Margin="0,5,0,5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0"
+                               Style="{DynamicResource CustomTextBlockStyle}"
+                               HorizontalAlignment="Right"
+                               Text="Solution:" />
+                    <ComboBox Grid.Column="1"
+                              Style="{DynamicResource ComboBoxStyle}"
+                              Width="200"
+                              Height="30"
+                              Margin="10,0,0,0"
+                              IsEnabled="{Binding CanChangeStates}"
+                              ItemsSource="{Binding SolutionDirectories, Mode=TwoWay}"
+                              SelectedItem="{Binding SelectedSolutionDirectory, Mode=TwoWay}"
+                              DisplayMemberPath="Name"/>
+                </Grid>
+                
+                <Grid Grid.Row="0" Grid.Column="1" Margin="50,5,0,5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Viewbox  Grid.Column="0" 
+                              VerticalAlignment="Center" 
+                              HorizontalAlignment="Center"> 
+                        <Path Data="{DynamicResource Branch}" 
+                              Fill="{DynamicResource PrimaryTextColor}"/>
+                    </Viewbox>
+                    <Label Grid.Column="1" 
+                        Margin="10,5,0,5"
+                        Content="{Binding CurrentGitBranch, Mode=OneWay}"
+                        Background="{DynamicResource TertiaryBackgroundColor}"
+                        Height="30"
+                        FontSize="14"
+                        Foreground="{DynamicResource SecondaryTextColor}"
+                        HorizontalContentAlignment="Left"
+                        VerticalContentAlignment="Center"
+                    />
+                </Grid>
+                
+                <Grid Grid.Row="1" Grid.Column="0" Margin="0,5,0,5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0"  
+                               HorizontalAlignment="Right"
+                               Text="Http Directory:"
+                               Style= "{DynamicResource CustomTextBlockStyle}"/>
+                    <ComboBox Grid.Column="1"  
+                              Style="{DynamicResource ComboBoxStyle}"
+                              Width="200"
+                              Height="30"
+                              Margin="10,0,0,0"
+                              IsEnabled="{Binding CanChangeStates}"
+                              ItemsSource="{Binding HttpDirectories, Mode=TwoWay}"
+                              SelectedItem="{Binding SelectedHttpDirectory, Mode=TwoWay}"
+                              DisplayMemberPath="Name"
+                    />
+                </Grid>
+                
+            </Grid>
+            
+            <Grid Grid.Row="1" Margin="10">
+                <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 
                 <TextBlock Grid.Row="0" Grid.Column="0" 
-                        Style= "{DynamicResource CustomTextBlockStyle}"
-                        HorizontalAlignment="Right"
-                        Text="Solution:" />
-                <ComboBox Grid.Row="0" Grid.Column="1" 
-                          HorizontalAlignment="Left"
-                          Style="{DynamicResource ComboBoxStyle}"
-                          Width="200"
-                          Height="30"
-                          Margin="10,5,0,5"
-                          ItemsSource="{Binding SolutionDirectories, Mode=TwoWay}"
-                          SelectedItem="{Binding SelectedSolutionDirectory, Mode=TwoWay}"
-                          DisplayMemberPath="Name"
-                />
-                
-                <StackPanel Grid.Row="0" Grid.Column="2" Orientation="Horizontal" Margin="40,0,0,0">
-                    <Viewbox VerticalAlignment="Center" HorizontalAlignment="Center">
-                        <Path Data="{DynamicResource Branch}" 
-                              Fill="{DynamicResource PrimaryTextColor}"/>
-                    </Viewbox>
-                    <Label 
-                        Content="{Binding CurrentGitBranch, Mode=OneWay}"
-                        Background="{DynamicResource TertiaryBackgroundColor}"
-                        Width="400"
-                        Height="30"
-                        FontSize="14"
-                        Foreground="{DynamicResource SecondaryTextColor}"
-                        Margin="10,5,0,5"
-                        HorizontalContentAlignment="Left"
-                        VerticalContentAlignment="Center"
-                        />
-                    <!-- <ComboBox HorizontalAlignment="Left" -->
-                    <!--           Style="{DynamicResource ComboBoxFlatStyle}" -->
-                    <!--           Width="380" -->
-                    <!--           Height="30" -->
-                    <!--           Margin="10,5,0,5" -->
-                    <!--           ItemsSource="{Binding GitBranches, Mode=TwoWay}" -->
-                    <!--           SelectedItem="{Binding SelectedGitBranch, Mode=TwoWay}" -->
-                    <!--           DisplayMemberPath="Name" -->
-                    <!-- /> -->
-                </StackPanel>
-                
-                <TextBlock Grid.Row="1" Grid.Column="0" 
-                                       Text="Http Directory:"
-                                       HorizontalAlignment="Right"
-                                       Style= "{DynamicResource CustomTextBlockStyle}"/>
-                <ComboBox Grid.Row="1" Grid.Column="1" 
-                          HorizontalAlignment="Left"
-                          Style="{DynamicResource ComboBoxStyle}"
-                          Width="200"
-                          Height="30"
-                          Margin="10,5,0,5"
-                          ItemsSource="{Binding HttpDirectories, Mode=TwoWay}"
-                          SelectedItem="{Binding SelectedHttpDirectory, Mode=TwoWay}"
-                          DisplayMemberPath="Name"
-                />
-                
-                
-                <TextBlock Grid.Row="2" Grid.Column="0" 
                            Text="Pipeline Profile:"
                            HorizontalAlignment="Right"
                            Style= "{DynamicResource CustomTextBlockStyle}"/>
                 
-                <ComboBox Grid.Row="2" Grid.Column="1" 
-                          HorizontalAlignment="Left"
-                          Style="{DynamicResource ComboBoxStyle}"
-                          Width="200"
-                          Height="30"
-                          Margin="10,5,0,5"
-                          ItemsSource="{Binding PipelineProfiles, Mode=TwoWay}"
-                          SelectedItem="{Binding SelectedPipelineProfile, Mode=TwoWay}"
-                          DisplayMemberPath="Name"
-                />
-                
-                <StackPanel Grid.Row="2" Grid.Column="2" Orientation="Horizontal" Margin="10,0,0,0">
-                    
+                <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" 
+                            HorizontalAlignment="Left"
+                            Margin="0,0,0,0">
+                    <ComboBox Style="{DynamicResource ComboBoxStyle}"
+                              Width="200"
+                              Height="30"
+                              Margin="5,5,0,5"
+                              IsEnabled="{Binding CanChangeStates}"
+                              ItemsSource="{Binding PipelineProfiles, Mode=TwoWay}"
+                              SelectedItem="{Binding SelectedPipelineProfile, Mode=TwoWay}"
+                              DisplayMemberPath="Name"
+                    />
                     <Button Style="{DynamicResource IconButtonsStyle}" 
                             Content="{DynamicResource Settings}"
-                            Margin="0,0,0,0"
+                            IsEnabled="{Binding CanChangeStates}"
+                            Margin="5,0,0,0"
                     />
                     <Button Style="{StaticResource IconButtonsStyle}" 
                             Content="{DynamicResource Start}" 
-                            Tag="IsStartButton"
-                            Command="{Binding DeployCommand}" 
+                            Margin="5,0,0,0"
+                            Command="{Binding ExecutePipelineCommand}" 
                     />
                 </StackPanel>
-                
+                    
+                <ItemsControl Grid.Column="1" ItemsSource="{Binding Milestones}" HorizontalAlignment="Right">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid Columns="{Binding Path=Items.Count, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"
+                                         Rows="1" Margin="0"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Text="{Binding Description}" 
+                                           Style= "{DynamicResource CustomTextBlockStyle}"
+                                           FontSize="11"
+                                           Margin="5,0,5,0"/>
+                                <Ellipse Width="20" Height="20"
+                                         Fill="{Binding IsCompleted, Mode=OneWay, Converter={StaticResource MilestoneFillConverter}}"
+                                         Stroke="#5B8DEF" StrokeThickness="2"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
             </Grid>
             
-            <Border Grid.Row="2"  
+            <!-- <Border Grid.Row="2"   -->
+            <!--         Background="{DynamicResource TertiaryBackgroundColor}"  -->
+            <!--         BorderThickness="1"  -->
+            <!--         BorderBrush="#5B8DEF" -->
+            <!--         Margin="10" -->
+            <!--         CornerRadius="10" -->
+            <!--         HorizontalAlignment="Stretch" -->
+            <!--         VerticalAlignment="Stretch"> -->
+                <TabControl
+                    Grid.Row="2"  
                     Background="{DynamicResource TertiaryBackgroundColor}" 
                     BorderThickness="1" 
                     BorderBrush="#5B8DEF"
                     Margin="10"
-                    CornerRadius="10">
-            </Border>
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch">
+                    <TabItem Header="App Log">
+                        <!-- Содержимое первой вкладки -->
+                    </TabItem>
+                    <TabItem Header="GS Log">
+                        <!-- Содержимое второй вкладки -->
+                    </TabItem>
+                </TabControl>
+            <!-- </Border> -->
         </Grid>
     </Border>
 </Page>

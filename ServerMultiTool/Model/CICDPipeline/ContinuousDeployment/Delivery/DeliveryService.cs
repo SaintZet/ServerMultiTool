@@ -13,16 +13,16 @@ public class DeliveryService
 {
     private static readonly ILog Log = LogManager.GetLogger(nameof(DeliveryService));
 
-    private readonly string _solutionDirectory;
-    private readonly string _httpDirectory;
+    public string SolutionDirectory;
+    public string HttpDirectory;
 
     public DeliveryService(string solutionDirectory, string httpDirectory)
     {
-        _solutionDirectory = solutionDirectory;
-        _httpDirectory = httpDirectory;
+        SolutionDirectory = solutionDirectory;
+        HttpDirectory = httpDirectory;
     }
 
-    public async Task ExecuteAsync(PipelineProfile pipeline)
+    public async Task<bool> ExecuteAsync(PipelineProfile pipeline)
     {
         var deliveryBinTasks = pipeline.SettingsPerProject
             .Where(projectSettings => projectSettings.DeliverySettings.DeliveryBin)
@@ -37,6 +37,8 @@ public class DeliveryService
         var allDeliveryTasks = deliveryBinTasks.Concat(deliverySpecificFilesTasks);
         
         await Task.WhenAll(allDeliveryTasks);
+
+        return true;
     }
 
     private static async Task DeliveryProjectSpecificFilesAsync(ProjectSettings projectSettings)
@@ -67,13 +69,13 @@ public class DeliveryService
     private async Task DeliveryProjectBinAsync(ProjectSettings projectSettings)
     {
         var projectDirectory = Path.GetDirectoryName(projectSettings.ProjectPath)!;
-        var fullProjectDirectory = Path.Combine(_solutionDirectory, projectDirectory);
+        var fullProjectDirectory = Path.Combine(SolutionDirectory, projectDirectory);
         var sourceDirectory = Path.Combine(fullProjectDirectory, "bin");
 
         var copyTasks = GetHttpProjectDirectories(projectSettings.ProjectName)
             .Select(async directory =>
             {
-                var httpDirectory = Path.Combine(_httpDirectory, directory);
+                var httpDirectory = Path.Combine(HttpDirectory, directory);
                 var targetDirectory = Path.Combine(httpDirectory, "bin");
                 
                 await CopyDirectoryAsync(sourceDirectory, targetDirectory);
@@ -88,7 +90,7 @@ public class DeliveryService
     {
         var regex = new Regex(@$"{Regex.Escape(folderName)}\d*$");
         
-        var allProjectsHttpDirectories = Directory.GetDirectories(_httpDirectory);
+        var allProjectsHttpDirectories = Directory.GetDirectories(HttpDirectory);
         var projectHttpDirectories = allProjectsHttpDirectories.Where(path => regex.IsMatch(Path.GetFileName(path)));
         
         return projectHttpDirectories;

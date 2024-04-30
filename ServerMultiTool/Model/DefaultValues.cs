@@ -21,6 +21,7 @@ internal static class DefaultValues
             CurrentSolutionDirectoryId = solutionDirectories[0].Id,
             HttpDirectories = httpDirectories,
             CurrentHttpDirectoryId = httpDirectories[0].Id,
+            LastPipelineProfileId = 0,
             Log4NetConfigPath = "log4net.config",
         };
     }

@@ -7,7 +7,7 @@
         MinHeight="800" 
         MinWidth="1100"
         Height="800"
-        Width="1100"
+        Width="1200"
         WindowStartupLocation="CenterScreen" 
         WindowStyle="None"
         Background="Transparent" 
