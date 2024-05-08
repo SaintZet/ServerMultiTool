@@ -1,22 +1,19 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using log4net;
 using Microsoft.Data.SqlClient;
 using ServerMultiTool.Model.CICDPipeline.PipelineProfiles;
 
 namespace ServerMultiTool.Model.CICDPipeline.ContinuousDeployment.Integrations;
 
-public static class SqlExecutionService
+public class SqlExecutionService : ExecutionService
 {
-    private static readonly ILog Log = LogManager.GetLogger(nameof(SqlExecutionService));
-    
-    public static async Task<bool> ExecuteAsync(PipelineProfile pipeline)
+    public async Task<bool> ExecuteAsync(PipelineProfile pipeline)
     {
         var settings = pipeline.SqlExecutionSettings;
         if (settings.Enable is false)
         {
-            Log.Info($"Sql Execution is disabled by {nameof(PipelineProfile)}.");
+            Logger.LogInfo($"Sql Execution is disabled by {nameof(PipelineProfile)}.");
             return true;
         }
         
@@ -25,13 +22,13 @@ public static class SqlExecutionService
             var sqlScript = await File.ReadAllTextAsync(settings.PathToSqlScript);
             var connectionString = settings.ConnectionString;
             var count = await ExecuteSqlScript(sqlScript, connectionString);
-            Log.Info($"Affected row count {count}");
+            Logger.LogInfo($"Affected row count {count}");
             
             return true;
         }
         catch (Exception ex)
         {
-            Log.Error($"An error occurred while executing the SQL script: \n{ex.Message}");
+            Logger.LogError($"An error occurred while executing the SQL script: \n{ex.Message}");
             
             return false;
         }

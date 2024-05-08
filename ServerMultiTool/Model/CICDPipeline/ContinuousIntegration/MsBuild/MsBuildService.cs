@@ -4,16 +4,13 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using log4net;
 using Microsoft.IdentityModel.Tokens;
 using ServerMultiTool.Model.CICDPipeline.PipelineProfiles;
 
 namespace ServerMultiTool.Model.CICDPipeline.ContinuousIntegration.MsBuild;
 
-public class MsBuildService
+public class MsBuildService : ExecutionService
 {
-    private static readonly ILog Log = LogManager.GetLogger(nameof(MsBuildService));
-
     public string SolutionDirectory;
 
     public MsBuildService(string solutionDirectory) => 
@@ -33,109 +30,50 @@ public class MsBuildService
 
     private async Task ExecuteMsBuildAsync(ProjectSettings projectSettings)
     {
+        const string fileName = "msbuild";
+        
         var projectPath = Path.Combine(SolutionDirectory, projectSettings.ProjectPath);
-        var projectName = projectSettings.ProjectName;
         var buildParameters = projectSettings.MsBuildSettings.Parameters;
-        var msBuildArguments = GetMsBuildArguments(projectPath, buildParameters);
+        
+        var arguments = GetMsBuildArguments(projectPath, buildParameters);
+        var workingDirectory = Path.GetDirectoryName(projectPath);
 
         await ExecutePreBuildEventsAsync(projectSettings);
         
-        var startInfo = new ProcessStartInfo
-        {
-            WorkingDirectory = Path.GetDirectoryName(projectPath),
-            FileName = "msbuild",
-            Arguments = msBuildArguments,
-            UseShellExecute = false,
-            RedirectStandardOutput = true,
-            RedirectStandardError = false,
-            CreateNoWindow = true
-        };
-
-        Log.Info($"{projectName}: Process {startInfo.FileName} {startInfo.Arguments} has started.");
+        var startInfo = new ProcessStartInfo(fileName, arguments) { WorkingDirectory =  workingDirectory};
+        var response = await ProcessExecutor.StartProcessWithRetriesAsync(startInfo, 10);
         
-        if (await RunBuildWithRetriesAsync(startInfo, projectName, 2))
+        if (response.Success)
             await ExecutePostBuildEventsAsync(projectSettings);
     }
 
-    private static async Task ExecutePreBuildEventsAsync(ProjectSettings projectSettings)
+    private async Task ExecutePreBuildEventsAsync(ProjectSettings projectSettings)
     {
         if (projectSettings.MsBuildSettings.PreBuildEvents.IsNullOrEmpty()) 
             return;
         
+        Logger.LogInfo("Start execute pre processes for {projectSettings.ProjectName}.");
+        
         foreach (var processEvent in projectSettings.MsBuildSettings.PreBuildEvents)
-            await ExecuteProcessEventAsync(processEvent, projectSettings.ProjectName, "Pre");
+            await ExecuteProcessEventAsync(processEvent);
     }
 
-    private static async Task ExecutePostBuildEventsAsync(ProjectSettings projectSettings)
+    private async Task ExecutePostBuildEventsAsync(ProjectSettings projectSettings)
     {
         if (projectSettings.MsBuildSettings.PostBuildEvents.IsNullOrEmpty()) 
             return;
+        
+        Logger.LogInfo("Start execute post processes for {projectSettings.ProjectName}.");
 
         foreach (var processEvent in projectSettings.MsBuildSettings.PostBuildEvents)
-            await ExecuteProcessEventAsync(processEvent, projectSettings.ProjectName, "Post");
+            await ExecuteProcessEventAsync(processEvent);
     }
 
-    private static async Task ExecuteProcessEventAsync(ProcessEvent processEvent, string projectName, string eventType)
+    private async Task ExecuteProcessEventAsync(ProcessEvent processEvent)
     {
-        var processEventInfo = new ProcessStartInfo
-        {
-            WorkingDirectory = Path.GetDirectoryName(processEvent.Path),
-            FileName = processEvent.Path,
-            Arguments = processEvent.Arguments,
-            UseShellExecute = false,
-            RedirectStandardOutput = true,
-            RedirectStandardError = true,
-            CreateNoWindow = true
-        };
+        var startInfo = new ProcessStartInfo(processEvent.Path, processEvent.Arguments);
 
-        var (exitCode, output) = await RunProcessAndGetOutputAsync(processEventInfo);
-
-        if (exitCode is 0)
-        {
-            Log.Info($"{projectName}: {eventType} process {processEventInfo.FileName} {processEventInfo.Arguments} has completed successfully.");
-            return;
-        }
-
-        var errorMessage = $"{projectName}: {eventType} process {processEventInfo.FileName} {processEventInfo.Arguments} has failed.";
-            
-        if (output.IsNullOrEmpty() is false)
-            errorMessage += $"\n{output}";
-            
-        Log.Error(errorMessage);
-    }
-
-    private static async Task<bool> RunBuildWithRetriesAsync(ProcessStartInfo startInfo, string projectName, int maxRetries)
-    {
-        var errorMessage = $"The build of project {projectName} has failed.";
-        
-        for (var retryCount = 1; retryCount <= maxRetries; retryCount++)
-        {
-            var response = await RunProcessAndGetOutputAsync(startInfo);
-            
-            if (response.ExitCode is 0)
-            {
-                Log.Info($"The build of project {projectName} has completed successfully.");
-                return true;
-            }
-
-            if (response.Output.IsNullOrEmpty() is false)
-                errorMessage += $"\n{response.Output}";
-            
-            Log.Error($"{projectName} is being used by another process. Retry {retryCount} of {maxRetries}.");
-        }
-        
-        Log.Error(errorMessage);
-        return false;
-    }
-
-    private static async Task<(int ExitCode, string Output)> RunProcessAndGetOutputAsync(ProcessStartInfo startInfo)
-    {
-        using var process = new Process { StartInfo = startInfo };
-        process.Start();
-        var output = await process.StandardOutput.ReadToEndAsync();
-        await process.WaitForExitAsync();
-        
-        return (process.ExitCode, output);
+        await ProcessExecutor.StartProcessOnceAsync(startInfo);
     }
 
     private string GetMsBuildArguments(string projectPath, IEnumerable<string> parameters)

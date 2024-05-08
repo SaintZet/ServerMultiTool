@@ -5,10 +5,10 @@ namespace ServerMultiTool.Model.Settings;
 [Serializable]
 public struct AppSettings
 {
-    public long CurrentSolutionDirectoryId { get; set; }
+    public string CurrentSolutionDirectoryName { get; set; }
     public DirectoryModel[] SolutionDirectories { get; set; }
-    public long CurrentHttpDirectoryId { get; set; }
+    public string CurrentHttpDirectoryName { get; set; }
     public DirectoryModel[] HttpDirectories { get; set; }
-    public long LastPipelineProfileId { get; set; }
+    public string CurrentPipelineProfileName { get; set; }
     public string Log4NetConfigPath { get; set; } 
 }

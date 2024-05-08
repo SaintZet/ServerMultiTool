@@ -20,7 +20,7 @@ namespace ServerMultiTool.Views.Themes
             
             _currentTheme = type;
             
-            System.Windows.Application.Current.Resources.MergedDictionaries[0] = new ResourceDictionary
+            Application.Current.Resources.MergedDictionaries[0] = new ResourceDictionary
             {
                 Source = GetPathToResourceDictionary(type)
             };

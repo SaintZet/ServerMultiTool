@@ -12,23 +12,77 @@ internal static class DefaultValues
 {
     public static AppSettings GetDefaultAppSettings()
     {
-        var solutionDirectories = new[] { new DirectoryModel { Id = 1, Name = "Raid", Path =  @"C:\Raid" } };
-        var httpDirectories = new[] { new DirectoryModel { Id = 2, Name = "HTTP Raid", Path =  @"C:\HTTP\Raid" } };
+        var solutionDirectories = new[] { new DirectoryModel { Name = "Raid", Path =  @"C:\Raid" } };
+        var httpDirectories = new[] { new DirectoryModel { Name = "HTTP Raid", Path =  @"C:\HTTP\Raid" } };
             
         return new AppSettings
         {
             SolutionDirectories = solutionDirectories,
-            CurrentSolutionDirectoryId = solutionDirectories[0].Id,
+            CurrentSolutionDirectoryName = solutionDirectories[0].Name,
             HttpDirectories = httpDirectories,
-            CurrentHttpDirectoryId = httpDirectories[0].Id,
-            LastPipelineProfileId = 0,
+            CurrentHttpDirectoryName = httpDirectories[0].Name,
+            CurrentPipelineProfileName = "Dev Profile",
             Log4NetConfigPath = "log4net.config",
         };
     }
+    
+    public static PipelineProfile GetDevProfile() => new()
+    {
+        Name = "Dev Profile",
+        SettingsPerProject = new ProjectSettings[]
+        {
+            new()
+            {
+                ProjectName = "Master",
+                ProjectPath = @"Server\Service.Master\Service.Master.csproj",
+                MsBuildSettings = new MsBuildSettings
+                {
+                    Enable = false,
+                    Parameters = new[]{"/p:Configuration=Debug", "/p:PreBuildEvent=", "/t:build"}
+                },
+                DeliverySettings = new DeliverySettings
+                {
+                    DeliveryBin = false,
+                }
+            },
+            new()
+            {
+                ProjectName = "Segment",
+                ProjectPath = @"Server\Service.Segment\Service.Segment.csproj",
+                MsBuildSettings = new MsBuildSettings
+                {
+                    Enable = false,
+                    Parameters = new[]{"/p:Configuration=Debug", "/p:PreBuildEvent=", "/t:build"}
+                },
+                DeliverySettings = new DeliverySettings
+                {
+                    DeliveryBin = false,
+                }
+            },
+        },
+        GitSettings = new GitSettings
+        {
+            Enable = false,
+            ShouldPull = false,
+        },
+        SqlExecutionSettings = new SqlExecutionSettings
+        {
+            Enable = false,
+        },
+        WebBrowserSettings = new WebBrowserSettings
+        {
+            Enable = false,
+            Url = "http://localhost/Raid/Segment00/Segment.ashx",
+        },
+        MonitorLogFilesSettings = new MonitorLogFilesSettings()
+        {
+            Enable = true,
+            LogFilesDirectories = new[] { new DirectoryModel { Name = "Master", Path = @"C:\HTTP\Raid\Master\log" } },
+        }
+    };
 
     public static PipelineProfile GetStandardProfile() => new()
     {
-        Id = 0,
         Name = "Standard Profile",
         SettingsPerProject = new ProjectSettings[]
         {
@@ -77,11 +131,15 @@ internal static class DefaultValues
             Enable = true,
             Url = "http://localhost/Raid/Segment00/Segment.ashx",
         },
+        MonitorLogFilesSettings = new MonitorLogFilesSettings()
+        {
+            Enable = true,
+            LogFilesDirectories = new[] { new DirectoryModel { Name = "Master", Path = @"C:\HTTP\Raid\Master\log" } },
+        }
     };
     
     public static PipelineProfile GetExtendedProfile(DirectoryModel solutionDirectory, DirectoryModel httpDirectory) => new()
     {
-            Id = 1,
             Name = "Extended Profile",
             SettingsPerProject = new ProjectSettings[]
             {

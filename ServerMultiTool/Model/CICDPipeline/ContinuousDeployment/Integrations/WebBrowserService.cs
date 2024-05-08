@@ -1,21 +1,18 @@
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using log4net;
 using ServerMultiTool.Model.CICDPipeline.PipelineProfiles;
 
 namespace ServerMultiTool.Model.CICDPipeline.ContinuousDeployment.Integrations;
 
-public static class WebBrowserService
+public class WebBrowserService : ExecutionService
 {
-    private static readonly ILog Log = LogManager.GetLogger(nameof(WebBrowserService));
-    
-    public static async Task<bool> ExecuteAsync(PipelineProfile pipeline)
+    public async Task<bool> ExecuteAsync(PipelineProfile pipeline)
     {
         var settings = pipeline.WebBrowserSettings;
         if (settings.Enable is false)
         {
-            Log.Info($"Opening URLs is disabled by {nameof(PipelineProfile)}.");
+            Logger.LogInfo($"Opening URLs is disabled by {nameof(PipelineProfile)}.");
             
             return true;
         }
@@ -23,13 +20,13 @@ public static class WebBrowserService
         try
         {
             await OpenPageAsync(settings.Url);
-            Log.Info("The web page has been successfully opened.");
+            Logger.LogInfo("The web page has been successfully opened.");
             
             return true;
         }
         catch (Exception ex)
         {
-            Log.Error($"Failed to open the URL: \n{ex.Message}");
+            Logger.LogError($"Failed to open the URL: \n{ex.Message}");
             
             return false;
         }

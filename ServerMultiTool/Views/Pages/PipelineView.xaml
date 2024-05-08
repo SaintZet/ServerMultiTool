@@ -17,6 +17,8 @@
     
     <Page.Resources>
         <converters:MilestoneFillConverter x:Key="MilestoneFillConverter"/>
+        <converters:LogMessageTypeToColorConverter x:Key="LogMessageTypeToColorConverter"/>
+        <converters:StringToVisibilityConverter x:Key="StringToVisibilityConverter"/>
     </Page.Resources>
 
     <Border CornerRadius="8" Background="{DynamicResource SecondaryBackgroundColor}">
@@ -160,31 +162,63 @@
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </Grid>
-            
-            <!-- <Border Grid.Row="2"   -->
-            <!--         Background="{DynamicResource TertiaryBackgroundColor}"  -->
-            <!--         BorderThickness="1"  -->
-            <!--         BorderBrush="#5B8DEF" -->
-            <!--         Margin="10" -->
-            <!--         CornerRadius="10" -->
-            <!--         HorizontalAlignment="Stretch" -->
-            <!--         VerticalAlignment="Stretch"> -->
-                <TabControl
-                    Grid.Row="2"  
-                    Background="{DynamicResource TertiaryBackgroundColor}" 
-                    BorderThickness="1" 
-                    BorderBrush="#5B8DEF"
-                    Margin="10"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Stretch">
-                    <TabItem Header="App Log">
-                        <!-- Содержимое первой вкладки -->
-                    </TabItem>
-                    <TabItem Header="GS Log">
-                        <!-- Содержимое второй вкладки -->
-                    </TabItem>
-                </TabControl>
-            <!-- </Border> -->
+            <TabControl
+                Grid.Row="2"  
+                Background="{DynamicResource TertiaryBackgroundColor}" 
+                BorderThickness="1" 
+                BorderBrush="#5B8DEF"
+                Margin="10"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch">
+                <TabItem Header="App Log">
+                    <ListBox ItemsSource="{Binding AppLogMessages}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel>
+                                    <StackPanel Orientation="Horizontal" Margin="0">
+                                        <TextBlock Text="{Binding Sender}"
+                                                   FontWeight="Bold"
+                                                   Foreground="{Binding .Message.Type, Converter={StaticResource LogMessageTypeToColorConverter}}" />
+                                        <TextBlock Text=": " />
+                                        <TextBlock Text="{Binding Message.BaseMessage}"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </TabItem>
+                <TabItem Header="GS Log">
+                    <ListBox ItemsSource="{Binding MasterLogMessages}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel>
+                                    <StackPanel Orientation="Horizontal" Margin="0">
+                                        <TextBlock Text="{Binding .Timestamp}"
+                                                   FontWeight="Bold"
+                                                   Foreground="Black" 
+                                                   Visibility="Collapsed"/>
+                                        
+                                        <TextBlock Text="{Binding Sender}"
+                                                   FontWeight="Bold"
+                                                   Foreground="{Binding Message.Type, Converter={StaticResource LogMessageTypeToColorConverter}}" />
+                                        <TextBlock Text=": " />
+                                        <TextBlock Text="{Binding Message.BaseMessage}"/>
+                                    </StackPanel>
+                                    <Expander Header="Full message"
+                                              ExpandDirection="Down"
+                                              Margin="0,0,0,0"
+                                              Padding="0,5,0,0"
+                                              Visibility="{Binding Message.ExtendedMessage, Converter={StaticResource StringToVisibilityConverter}}">
+                                        <TextBlock  Text="{Binding Message.ExtendedMessage}" 
+                                                    TextWrapping="Wrap"/>
+                                    </Expander>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </TabItem>
+
+            </TabControl>
         </Grid>
     </Border>
 </Page>

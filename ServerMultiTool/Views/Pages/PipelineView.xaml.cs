@@ -8,7 +8,12 @@ namespace ServerMultiTool.Views.Pages
         public PipelineView()
         {
             InitializeComponent();
-            DataContext = new PipelineViewModel();
+        }
+
+        private void TextBoxBase_OnTextChanged(object sender, TextChangedEventArgs e)
+        {
+            var textBox = (TextBox) sender;
+            textBox.ScrollToEnd();
         }
     }
 }

@@ -1,15 +1,12 @@
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using log4net;
 using ServerMultiTool.Model.CICDPipeline.PipelineProfiles;
 
 namespace ServerMultiTool.Model.CICDPipeline.ContinuousIntegration.Git;
 
-public class GitService
+public class GitService : ExecutionService
 {
-    private static readonly ILog Log = LogManager.GetLogger(nameof(GitService));
-
     public string SolutionDirectory;
 
     public GitService(string solutionDirectory) => 
@@ -20,14 +17,14 @@ public class GitService
         var settings = pipeline.GitSettings;
         if (settings.Enable is false)
         {
-            Log.Info($"Git Integration is disabled by {nameof(PipelineProfile)}.");
+            Logger.LogInfo($"Git Integration is disabled by {nameof(PipelineProfile)}.");
             return true;
         }
 
         try
         {
             var branchName = await GetCurrentBranchName();
-            Log.Info($"Current Branch: {branchName}");
+            Logger.LogInfo($"Current Branch: {branchName}");
             
             if (settings.ShouldPull)
                 await GitPull();
@@ -36,61 +33,31 @@ public class GitService
         }
         catch (Exception ex)
         {
-            Log.Error($"Failed to make git operations: \n{ex.Message}");
-            
+            Logger.LogError($"Failed to make git operations: \n{ex.Message}");
             return false;
         }
     }
 
     public async Task<string> GetCurrentBranchName()
     {
-        var startInfo = new ProcessStartInfo("git")
-        {
-            WorkingDirectory = SolutionDirectory,
-            UseShellExecute = false,
-            RedirectStandardOutput = true,
-            RedirectStandardError = true,
-            Arguments = "rev-parse --abbrev-ref HEAD",
-            CreateNoWindow = true,
-        };
-
-        using var process = new Process { StartInfo = startInfo };
-
-        process.Start();
-
-        var output = await process.StandardOutput.ReadToEndAsync();
-        await process.WaitForExitAsync();
-
-        if (process.ExitCode == 0)
-            return output.TrimEnd('\n');
-
-        var error = await process.StandardError.ReadToEndAsync();
-        Log.Error($"git rev-parse --abbrev-ref HEAD: Finished with an error.\n{error}");
-        throw new Exception(); //TODO
+        const string fileName = "git";
+        const string arguments = "rev-parse --abbrev-ref HEAD";
+        
+        var info = new ProcessStartInfo(fileName, arguments) { WorkingDirectory = SolutionDirectory };
+        
+        var response = await ProcessExecutor.StartProcessOnceAsync(info);
+        
+        return response.Output.TrimEnd('\n'); //TODO formatting inside class
     }
 
-    private async Task GitPull()
+    private async Task<bool> GitPull()
     {
-        var startInfo = new ProcessStartInfo("git", "pull")
-        {
-            WorkingDirectory = SolutionDirectory,
-            UseShellExecute = false,
-            RedirectStandardOutput = true,
-            RedirectStandardError = false,
-            CreateNoWindow = true,
-        };
+        const string fileName = "git";
+        const string arguments = "rev-parse --abbrev-ref HEAD";
         
-        using var process = new Process { StartInfo = startInfo };
+        var info = new ProcessStartInfo(fileName, arguments) { WorkingDirectory = SolutionDirectory };
+        var response = await ProcessExecutor.StartProcessOnceAsync(info);
         
-        process.Start();
-        
-        var output = await process.StandardOutput.ReadToEndAsync();
-        
-        await process.WaitForExitAsync();
-        
-        if (process.ExitCode != 0)
-            Log.Error($"git pull: Finished with an error.\n{output}");
-        else
-            Log.Info($"git pull: {output.Trim('\n')}");
+        return response.Success;
     }
 }
