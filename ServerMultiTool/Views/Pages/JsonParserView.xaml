@@ -7,11 +7,8 @@
       xmlns:pages="clr-namespace:ServerMultiTool.ViewModels.Pages"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="JsonParser" FontFamily="Poppins">
-
-    <Page.DataContext>
-        <pages:JsonParserViewModel />
-    </Page.DataContext>
+      Title="JsonParser" FontFamily="Poppins"
+      d:DataContext="{d:DesignInstance Type=pages:JsonParserViewModel, IsDesignTimeCreatable=True}">
     
     <Border CornerRadius="8" Background="{DynamicResource SecondaryBackgroundColor}">
         <Grid>

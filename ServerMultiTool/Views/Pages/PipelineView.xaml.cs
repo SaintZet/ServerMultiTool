@@ -6,12 +6,14 @@ namespace ServerMultiTool.Views.Pages
 {
     public partial class PipelineView : Page
     {
-        public PipelineView(GeneralInfoViewModel generalInfoViewModel)
+        public PipelineView(GeneralInfoViewModel generalInfo)
         {
-            InitializeComponent();
+            DataContext = new PipelineViewModel
+            {
+                GeneralInfo = generalInfo
+            };
             
-            var vm = (PipelineViewModel)DataContext;
-            vm.GeneralInfo = generalInfoViewModel;
+            InitializeComponent();
         }
 
         private void TextBoxBase_OnTextChanged(object sender, TextChangedEventArgs e)

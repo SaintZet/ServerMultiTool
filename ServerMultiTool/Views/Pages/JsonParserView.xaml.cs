@@ -7,12 +7,14 @@ namespace ServerMultiTool.Views.Pages
 {
     public partial class JsonParserView : Page
     {
-        public JsonParserView(GeneralInfoViewModel generalInfoViewModel)
+        public JsonParserView(GeneralInfoViewModel generalInfo)
         {
-            InitializeComponent();
+            DataContext = new JsonParserViewModel
+            {
+                GeneralInfo = generalInfo
+            };
             
-            var vm = (JsonParserViewModel)DataContext;
-            vm.GeneralInfo = generalInfoViewModel;
+            InitializeComponent();
         }
     }
 }

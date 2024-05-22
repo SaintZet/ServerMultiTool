@@ -5,11 +5,11 @@ namespace ServerMultiTool.ViewModels.Pages;
 
 public class JsonParserViewModel : BaseViewModel
 {
-    private GeneralInfoViewModel _generalInfo;
+    private readonly GeneralInfoViewModel _generalInfo = null!;
 
     public GeneralInfoViewModel GeneralInfo
     {
         get => _generalInfo;
-        set => SetProperty(ref _generalInfo, value);
+        init => SetProperty(ref _generalInfo, value);
     }
 }

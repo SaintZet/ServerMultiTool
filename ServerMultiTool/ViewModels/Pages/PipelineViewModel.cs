@@ -22,12 +22,12 @@ namespace ServerMultiTool.ViewModels.Pages;
 
 public partial class PipelineViewModel : BaseViewModel
 {
-    private GeneralInfoViewModel _generalInfo;
+    private readonly GeneralInfoViewModel _generalInfo = null!;
 
     public GeneralInfoViewModel GeneralInfo
     {
         get => _generalInfo;
-        set => SetProperty(ref _generalInfo, value);
+        init => SetProperty(ref _generalInfo, value);
     }
     
     public PipelineProfile[] PipelineProfiles { get; set; }
