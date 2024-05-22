@@ -2,7 +2,7 @@ using System;
 using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Media;
-using ServerMultiTool.Model.Logs;
+using ServerMultiTool.Model.Common.Logs;
 
 namespace ServerMultiTool.ViewModels.Converters
 {

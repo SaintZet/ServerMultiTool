@@ -3,14 +3,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using CommunityToolkit.Mvvm.Input;
-using log4net;
-using ServerMultiTool.Model;
-using ServerMultiTool.Model.CICDPipeline.ContinuousDeployment.Delivery;
-using ServerMultiTool.Model.CICDPipeline.ContinuousDeployment.Integrations;
-using ServerMultiTool.Model.CICDPipeline.ContinuousIntegration.Git;
-using ServerMultiTool.Model.CICDPipeline.ContinuousIntegration.MsBuild;
-using ServerMultiTool.Model.CICDPipeline.PipelineProfiles;
-using ServerMultiTool.Model.Logs;
+using ServerMultiTool.Model.Common;
+using ServerMultiTool.Model.Common.EventAggregator;
+using ServerMultiTool.Model.Common.Logs;
+using ServerMultiTool.Model.ContinuousDeployment.Delivery;
+using ServerMultiTool.Model.ContinuousDeployment.Integrations;
+using ServerMultiTool.Model.ContinuousIntegration.GameServerLogs;
+using ServerMultiTool.Model.ContinuousIntegration.Git;
+using ServerMultiTool.Model.ContinuousIntegration.MsBuild;
+using ServerMultiTool.Model.Pipeline.Profiles;
 using ServerMultiTool.Model.Settings;
 using ServerMultiTool.ViewModels.Contracts;
 using ServerMultiTool.ViewModels.Data;
@@ -33,16 +34,16 @@ public partial class PipelineViewModel : BaseViewModel
                 return;
             
             _selectedSolutionDirectory = value;
-            _msBuildService.SolutionDirectory = value.Path;
-            _deliveryService.SolutionDirectory = value.Path;
-            _gitService.SolutionDirectory = value.Path;
-            
-            CurrentGitBranch = _gitService.GetCurrentBranchName().Result;
-            
+            OnUpdateSelectedSolutionDirectory(value);
             OnPropertyChanged();
         }
     }
     
+    private async void OnUpdateSelectedSolutionDirectory(DirectoryModel value)
+    {
+        CurrentGitBranch = await _gitService.GetCurrentBranchName(value.Path);
+    }
+
     public DirectoryModel[] HttpDirectories { get; set; }
     
     private DirectoryModel _selectedHttpDirectory;
@@ -55,8 +56,6 @@ public partial class PipelineViewModel : BaseViewModel
                 return;
             
             _selectedHttpDirectory = value;
-            _deliveryService.HttpDirectory = value.Path;
-            
             OnPropertyChanged();
         }
     }
@@ -73,16 +72,19 @@ public partial class PipelineViewModel : BaseViewModel
                 return;
             
             _selectedPipelineProfile = value;
-            
-            UpdateMilestoneContainer(value);
-            UpdateMasterLogService(value);
-            
+            OnUpdateSelectedPipelineProfile(value);
             OnPropertyChanged();
         }
     }
 
-    private string _currentGitBranch = null!;
-    public string CurrentGitBranch
+    private void OnUpdateSelectedPipelineProfile(PipelineProfile value)
+    {
+        UpdatePipelineOperations(value);
+        //UpdateMasterLogService(value);
+    }
+
+    private string? _currentGitBranch;
+    public string? CurrentGitBranch
     {
         get => _currentGitBranch;
         private set => SetProperty(ref _currentGitBranch, value);
@@ -92,27 +94,16 @@ public partial class PipelineViewModel : BaseViewModel
     public bool CanChangeStates
     {
         get => _canChangeStates;
-        set => SetProperty(ref _canChangeStates, value);
+        private set => SetProperty(ref _canChangeStates, value);
     }
 
     #endregion
 
-    #region Services
-
-    private readonly GitService _gitService;
-    private readonly MsBuildService _msBuildService;
-    private readonly DeliveryService _deliveryService;
-    private readonly LogMonitoringService _masterLogService;
-    private readonly SqlExecutionService _sqlService;
-    private readonly WebBrowserService _webBrowserService;
-    private readonly InternetInformationServices _iisService;
-    
-    #endregion
-
     #region Constructor
-    
-    private static readonly ILog Log = LogManager.GetLogger(nameof(PipelineViewModel));
 
+    public ObservableCollection<PipelineOperationWrapper> PipelineOperations { get; } = new();
+
+    private readonly GitService _gitService = new();
     public PipelineViewModel()
     {
         var appSettings = AppSettingsService.AppSettings;
@@ -121,41 +112,23 @@ public partial class PipelineViewModel : BaseViewModel
         HttpDirectories = appSettings.HttpDirectories;
         PipelineProfiles = PipelineProfilesService.PipelineProfiles;
         
-        _selectedSolutionDirectory = SolutionDirectories.FirstOrDefault(x => x.Name == appSettings.CurrentSolutionDirectoryName);
-        _selectedHttpDirectory = HttpDirectories.FirstOrDefault(x => x.Name == appSettings.CurrentHttpDirectoryName);
+        SelectedSolutionDirectory = SolutionDirectories.FirstOrDefault(x => x.Name == appSettings.CurrentSolutionDirectoryName);
+        SelectedHttpDirectory = HttpDirectories.FirstOrDefault(x => x.Name == appSettings.CurrentHttpDirectoryName);
         SelectedPipelineProfile = PipelineProfiles.FirstOrDefault(x => x.Name == appSettings.CurrentPipelineProfileName);
         
-        _gitService = new GitService(_selectedSolutionDirectory.Path);
-        _msBuildService = new MsBuildService(_selectedSolutionDirectory.Path);
-        _deliveryService = new DeliveryService(_selectedSolutionDirectory.Path, _selectedHttpDirectory.Path);
-        _sqlService = new SqlExecutionService();
-        _webBrowserService = new WebBrowserService();
-        _iisService = new InternetInformationServices();
-
-        _masterLogService = new LogMonitoringService();
-        _masterLogService.Subscribe<LogEvent>(AddNewLogEvent);
-        
-        EventAggregator.Subscribe<LogEvent>(AppLogMessages.Add);
-        
-        // Application.Current.Exit += OnApplicationExit;
-        
         ExecutePipelineCommand = new AsyncRelayCommand(StartPipeline);
-
-        InitializeAsync();
-    }
-
-    private async void InitializeAsync()
-    {
-        CurrentGitBranch = await _gitService.GetCurrentBranchName();
         
-        await UpdateMasterLogService(_selectedPipelineProfile);
-        UpdateMilestoneContainer(_selectedPipelineProfile);
+        //_masterLogService.Subscribe<LogEvent>(AddNewLogEvent);
+        GlobalEventAggregator.Subscribe<LogEvent>(AppLogMessages.Add);
+        
+        Application.Current.Exit += OnApplicationExit;
     }
-
-    // private async void OnApplicationExit(object sender, ExitEventArgs e)
-    // {
-    //      await StopMonitoringAsync();
-    // }
+    
+    
+    private async void OnApplicationExit(object sender, ExitEventArgs e)
+    {
+         // await StopMonitoringAsync();
+    }
 
     #endregion
 
@@ -167,77 +140,66 @@ public partial class PipelineViewModel : BaseViewModel
     private async Task StartPipeline()
     {
         CanChangeStates = false;
-    
-        Milestones.ResetAllIndicators();
-        await Milestones.StartExecute();
+        
+        foreach (var operation in PipelineOperations)
+        {
+            operation.UpdateSolutionDirectory(SelectedSolutionDirectory);
+            operation.UpdateHttpDirectory(SelectedHttpDirectory);
+            
+            await operation.ExecuteAsync();
+        }
 
         MessageBox.Show("Сборка завершена!");
 
         CanChangeStates = true;
     }
 
-    #endregion
-    
-    #region Milestones
-
-    private MilestoneContainer _milestones = null!;
-
-    public MilestoneContainer Milestones
+    private void UpdatePipelineOperations(PipelineProfile pipeline)
     {
-        get => _milestones;
-        private set => SetProperty(ref _milestones, value);
+        PipelineOperations.Clear();
+
+        if (pipeline.GitSettings.Enable)
+            PipelineOperations.Add(new( new GitService(pipeline.GitSettings), "Git"));
+        
+        if (pipeline.SettingsPerProject.Any(x => x.MsBuildSettings.Enable))
+            PipelineOperations.Add(new(new MsBuildService(pipeline.SettingsPerProject), "MsBuild"));
+        
+        if (pipeline.SettingsPerProject.Any(x => x.DeliverySettings.Enable))
+            PipelineOperations.Add(new( new DeliveryService(pipeline.SettingsPerProject), "Delivery"));
+
+        if (pipeline.InternetInformationSettings.Enable)
+            PipelineOperations.Add(new(new InternetInformationServices("/stop"), "IIS Stop"));
+
+        if (pipeline.SqlExecutionSettings.Enable)
+            PipelineOperations.Add(new( new SqlExecutionService(pipeline.SqlExecutionSettings), "SQL"));
+        
+        if (pipeline.InternetInformationSettings.Enable)
+            PipelineOperations.Add(new( new InternetInformationServices("/start"), "IIS Start"));
+        
+        if (pipeline.WebBrowserSettings.Enable)
+            PipelineOperations.Add(new( new WebBrowserService(pipeline.WebBrowserSettings), "Web"));
     }
-
-    private void UpdateMilestoneContainer(PipelineProfile profile)
-    {
-        var container = new MilestoneContainer();
-
-        if (profile.GitSettings.Enable)
-            container.Add(new("Git", ExecuteGitOperations));
-
-        if (profile.SettingsPerProject.Any(x => x.MsBuildSettings.Enable))
-            container.Add(new("MsBuild", ExecuteMsBuildOperations));
-        
-        if (profile.SettingsPerProject.Any(x => x.DeliverySettings.DeliveryBin || x.DeliverySettings.DeliveryDirectory?.Length > 0))
-            container.Add(new("Delivery", ExecuteDeliveryOperations));
-        
-        container.Add(new("IIS Stop", async () => await _iisService.StopAsync()));
-        
-        if (profile.SqlExecutionSettings.Enable)
-            container.Add(new("Sql", ExecuteSqlOperations));
-
-        container.Add(new("IIS Start", async () => await _iisService.StartAsync()));
-        
-        if (profile.WebBrowserSettings.Enable)
-            container.Add(new("Web Browser", ExecuteWebBrowserOperations));
-
-        Milestones = container;
-    }
-    
-    private async Task<bool> ExecuteGitOperations() => await _gitService.ExecuteAsync(SelectedPipelineProfile);
-    private async Task<bool> ExecuteMsBuildOperations() => await _msBuildService.ExecuteAsync(SelectedPipelineProfile);
-    private async Task<bool> ExecuteDeliveryOperations() => await _deliveryService.ExecuteAsync(SelectedPipelineProfile);
-    private async Task<bool> ExecuteSqlOperations() => await _sqlService.ExecuteAsync(SelectedPipelineProfile);
-    private async Task<bool> ExecuteWebBrowserOperations() => await _webBrowserService.ExecuteAsync(SelectedPipelineProfile);
 
     #endregion
 
     #region Logs
+
+    // private readonly LogMonitoringService _masterLogService = new();
     
     public ObservableCollection<LogEvent> AppLogMessages { get; } = new();
-    public ObservableCollection<LogEvent> MasterLogMessages { get; } = new();
+    // public ObservableCollection<LogEvent> MasterLogMessages { get; } = new();
 
-    private async Task UpdateMasterLogService(PipelineProfile profile)
-    {
-        MasterLogMessages.Clear();
-        await _masterLogService.UpdateMonitoringSettings(profile.MonitorLogFilesSettings);
-    }
-
-    private void AddNewLogEvent(LogEvent logEvent)
-    {
-        if (MasterLogMessages.Contains(logEvent) is false)
-            MasterLogMessages.Add(logEvent);
-    }
+    // private void UpdateMasterLogService(PipelineProfile profile)
+    // {
+    //     MasterLogMessages.Clear();
+    //     _masterLogService.UpdateMonitoringSettings(profile.MonitorLogFilesSettings);
+    // }
+    //
+    // private void AddNewLogEvent(LogEvent logEvent)
+    // {
+    //     if (MasterLogMessages.Contains(logEvent) is false)
+    //         MasterLogMessages.Add(logEvent);
+    // }
     
     #endregion
 }

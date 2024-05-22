@@ -3,6 +3,7 @@ using System.IO;
 using System.Text.Json;
 using log4net;
 using log4net.Config;
+using ServerMultiTool.Model.Common.DefaultValues;
 
 namespace ServerMultiTool.Model.Settings
 {
@@ -49,7 +50,7 @@ namespace ServerMultiTool.Model.Settings
 
         private static AppSettings InitializeDefaultSettings(string path)
         {
-            var defaultSettings = DefaultValues.GetDefaultAppSettings();
+            var defaultSettings = DefaultAppSettings.GetDefaultAppSettings();
             
             SaveSettingsTo(defaultSettings, path);
 

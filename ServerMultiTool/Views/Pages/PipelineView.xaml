@@ -16,7 +16,7 @@
     </Page.DataContext>
     
     <Page.Resources>
-        <converters:MilestoneFillConverter x:Key="MilestoneFillConverter"/>
+        <converters:PipelineStatusFillConverter x:Key="PipelineStatusFillConverter"/>
         <converters:LogMessageTypeToColorConverter x:Key="LogMessageTypeToColorConverter"/>
         <converters:StringToVisibilityConverter x:Key="StringToVisibilityConverter"/>
     </Page.Resources>
@@ -140,7 +140,7 @@
                     />
                 </StackPanel>
                     
-                <ItemsControl Grid.Column="1" ItemsSource="{Binding Milestones}" HorizontalAlignment="Right">
+                <ItemsControl Grid.Column="1" ItemsSource="{Binding PipelineOperations}" HorizontalAlignment="Right">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <UniformGrid Columns="{Binding Path=Items.Count, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"
@@ -150,12 +150,12 @@
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <StackPanel VerticalAlignment="Center">
-                                <TextBlock Text="{Binding Description}" 
+                                <TextBlock Text="{Binding .DisplayName}" 
                                            Style= "{DynamicResource CustomTextBlockStyle}"
                                            FontSize="11"
                                            Margin="5,0,5,0"/>
                                 <Ellipse Width="20" Height="20"
-                                         Fill="{Binding IsCompleted, Mode=OneWay, Converter={StaticResource MilestoneFillConverter}}"
+                                         Fill="{Binding .PipelineOperationStatus, Mode=OneWay, Converter={StaticResource PipelineStatusFillConverter}}"
                                          Stroke="#5B8DEF" StrokeThickness="2"/>
                             </StackPanel>
                         </DataTemplate>

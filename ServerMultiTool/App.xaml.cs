@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Windows;
-using ServerMultiTool.Model.CICDPipeline.PipelineProfiles;
+using ServerMultiTool.Model.Pipeline.Profiles;
 using ServerMultiTool.Model.Settings;
 using ServerMultiTool.Views;
 
