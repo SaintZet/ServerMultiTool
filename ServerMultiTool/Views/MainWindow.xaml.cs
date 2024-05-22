@@ -1,6 +1,8 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using ServerMultiTool.ViewModels;
+using ServerMultiTool.ViewModels.Controls;
 using ServerMultiTool.Views.Pages;
 using ServerMultiTool.Views.Themes;
 
@@ -14,9 +16,11 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+
+        var generalInfoViewModel = new GeneralInfoViewModel();
         
-        _pipelinePage = new PipelineView();
-        _jsonParserPage = new JsonParserView();
+        _pipelinePage = new PipelineView(generalInfoViewModel);
+        _jsonParserPage = new JsonParserView(generalInfoViewModel);
         
         FrameContent.Navigate(_pipelinePage);
         rdPipeline.IsChecked = true;

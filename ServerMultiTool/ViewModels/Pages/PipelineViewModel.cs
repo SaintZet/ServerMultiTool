@@ -2,64 +2,34 @@
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+
 using CommunityToolkit.Mvvm.Input;
-using ServerMultiTool.Model.Common;
+
 using ServerMultiTool.Model.Common.EventAggregator;
 using ServerMultiTool.Model.Common.Logs;
 using ServerMultiTool.Model.ContinuousDeployment.Delivery;
 using ServerMultiTool.Model.ContinuousDeployment.Integrations;
-using ServerMultiTool.Model.ContinuousIntegration.GameServerLogs;
 using ServerMultiTool.Model.ContinuousIntegration.Git;
 using ServerMultiTool.Model.ContinuousIntegration.MsBuild;
 using ServerMultiTool.Model.Pipeline.Profiles;
 using ServerMultiTool.Model.Settings;
+
 using ServerMultiTool.ViewModels.Contracts;
+using ServerMultiTool.ViewModels.Controls;
 using ServerMultiTool.ViewModels.Data;
 
-namespace ServerMultiTool.ViewModels;
+namespace ServerMultiTool.ViewModels.Pages;
 
 public partial class PipelineViewModel : BaseViewModel
 {
-    #region Properties
-    
-    public DirectoryModel[] SolutionDirectories { get; set; }
+    private GeneralInfoViewModel _generalInfo;
 
-    private DirectoryModel _selectedSolutionDirectory;
-    public DirectoryModel SelectedSolutionDirectory
+    public GeneralInfoViewModel GeneralInfo
     {
-        get => _selectedSolutionDirectory;
-        set
-        {
-            if (value.Equals(_selectedSolutionDirectory)) 
-                return;
-            
-            _selectedSolutionDirectory = value;
-            OnUpdateSelectedSolutionDirectory(value);
-            OnPropertyChanged();
-        }
+        get => _generalInfo;
+        set => SetProperty(ref _generalInfo, value);
     }
     
-    private async void OnUpdateSelectedSolutionDirectory(DirectoryModel value)
-    {
-        CurrentGitBranch = await _gitService.GetCurrentBranchName(value.Path);
-    }
-
-    public DirectoryModel[] HttpDirectories { get; set; }
-    
-    private DirectoryModel _selectedHttpDirectory;
-    public DirectoryModel SelectedHttpDirectory
-    {
-        get => _selectedHttpDirectory;
-        set
-        {
-            if (value.Equals(_selectedHttpDirectory)) 
-                return;
-            
-            _selectedHttpDirectory = value;
-            OnPropertyChanged();
-        }
-    }
-
     public PipelineProfile[] PipelineProfiles { get; set; }
     
     private PipelineProfile _selectedPipelineProfile;
@@ -72,7 +42,9 @@ public partial class PipelineViewModel : BaseViewModel
                 return;
             
             _selectedPipelineProfile = value;
+            
             OnUpdateSelectedPipelineProfile(value);
+            
             OnPropertyChanged();
         }
     }
@@ -83,37 +55,13 @@ public partial class PipelineViewModel : BaseViewModel
         //UpdateMasterLogService(value);
     }
 
-    private string? _currentGitBranch;
-    public string? CurrentGitBranch
-    {
-        get => _currentGitBranch;
-        private set => SetProperty(ref _currentGitBranch, value);
-    }
-
-    private bool _canChangeStates = true;
-    public bool CanChangeStates
-    {
-        get => _canChangeStates;
-        private set => SetProperty(ref _canChangeStates, value);
-    }
-
-    #endregion
-
-    #region Constructor
-
     public ObservableCollection<PipelineOperationWrapper> PipelineOperations { get; } = new();
 
-    private readonly GitService _gitService = new();
     public PipelineViewModel()
     {
         var appSettings = AppSettingsService.AppSettings;
         
-        SolutionDirectories = appSettings.SolutionDirectories;
-        HttpDirectories = appSettings.HttpDirectories;
         PipelineProfiles = PipelineProfilesService.PipelineProfiles;
-        
-        SelectedSolutionDirectory = SolutionDirectories.FirstOrDefault(x => x.Name == appSettings.CurrentSolutionDirectoryName);
-        SelectedHttpDirectory = HttpDirectories.FirstOrDefault(x => x.Name == appSettings.CurrentHttpDirectoryName);
         SelectedPipelineProfile = PipelineProfiles.FirstOrDefault(x => x.Name == appSettings.CurrentPipelineProfileName);
         
         ExecutePipelineCommand = new AsyncRelayCommand(StartPipeline);
@@ -124,34 +72,31 @@ public partial class PipelineViewModel : BaseViewModel
         Application.Current.Exit += OnApplicationExit;
     }
     
-    
     private async void OnApplicationExit(object sender, ExitEventArgs e)
     {
          // await StopMonitoringAsync();
     }
 
-    #endregion
-
-    #region Commands
-
     public AsyncRelayCommand ExecutePipelineCommand { get; }
-
-    [RelayCommand(CanExecute = nameof(CanChangeStates))]
+    
+    private bool CanExecutePipeline => GeneralInfo.CanChangeStates;
+    
+    [RelayCommand(CanExecute = nameof(CanExecutePipeline))]
     private async Task StartPipeline()
     {
-        CanChangeStates = false;
+        GeneralInfo.CanChangeStates = false;
         
         foreach (var operation in PipelineOperations)
         {
-            operation.UpdateSolutionDirectory(SelectedSolutionDirectory);
-            operation.UpdateHttpDirectory(SelectedHttpDirectory);
+            operation.UpdateSolutionDirectory(GeneralInfo.SelectedSolutionDirectory);
+            operation.UpdateHttpDirectory(GeneralInfo.SelectedHttpDirectory);
             
             await operation.ExecuteAsync();
         }
-
+    
         MessageBox.Show("Сборка завершена!");
 
-        CanChangeStates = true;
+        GeneralInfo.CanChangeStates = true;
     }
 
     private void UpdatePipelineOperations(PipelineProfile pipeline)
@@ -180,13 +125,10 @@ public partial class PipelineViewModel : BaseViewModel
             PipelineOperations.Add(new( new WebBrowserService(pipeline.WebBrowserSettings), "Web"));
     }
 
-    #endregion
-
-    #region Logs
-
     // private readonly LogMonitoringService _masterLogService = new();
     
     public ObservableCollection<LogEvent> AppLogMessages { get; } = new();
+    
     // public ObservableCollection<LogEvent> MasterLogMessages { get; } = new();
 
     // private void UpdateMasterLogService(PipelineProfile profile)
@@ -200,6 +142,4 @@ public partial class PipelineViewModel : BaseViewModel
     //     if (MasterLogMessages.Contains(logEvent) is false)
     //         MasterLogMessages.Add(logEvent);
     // }
-    
-    #endregion
 }

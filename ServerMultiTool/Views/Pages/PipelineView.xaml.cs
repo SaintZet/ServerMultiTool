@@ -1,13 +1,17 @@
 ﻿using System.Windows.Controls;
-using ServerMultiTool.ViewModels;
+using ServerMultiTool.ViewModels.Controls;
+using ServerMultiTool.ViewModels.Pages;
 
 namespace ServerMultiTool.Views.Pages
 {
     public partial class PipelineView : Page
     {
-        public PipelineView()
+        public PipelineView(GeneralInfoViewModel generalInfoViewModel)
         {
             InitializeComponent();
+            
+            var vm = (PipelineViewModel)DataContext;
+            vm.GeneralInfo = generalInfoViewModel;
         }
 
         private void TextBoxBase_OnTextChanged(object sender, TextChangedEventArgs e)
