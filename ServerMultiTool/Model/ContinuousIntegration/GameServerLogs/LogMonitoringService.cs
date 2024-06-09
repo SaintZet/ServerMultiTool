@@ -79,7 +79,7 @@ public class LogMonitoringService : BaseEventAggregator
         if (directory.Path.IsNullOrEmpty())
             return;
         
-        _logger.LogInfo($"Start monitoring {directory.Name}");
+        _logger.LogInfo($"Start monitoring {directory.Path}");
         
         _cancellationToken = new CancellationTokenSource();
         await MonitorLogDirectoryAsync(_cancellationToken.Token, directory);
@@ -95,7 +95,7 @@ public class LogMonitoringService : BaseEventAggregator
         _cancellationToken.Dispose();
         _cancellationToken = null;
         
-        _logger.LogInfo($"Stop monitoring {_settings!.LogDirectory.Name}");
+        _logger.LogInfo($"Stop monitoring {_settings!.LogDirectory.Path}");
     }
     
     private async Task MonitorLogDirectoryAsync(CancellationToken cancellationToken, DirectoryModel directory)
@@ -137,6 +137,7 @@ public class LogMonitoringService : BaseEventAggregator
             Publish(logEvent);
     }
 
+    //todo: optimize this code
     private static string GetActualLogFileName(DirectoryModel directory)
     {
         var fileName = DateTime.Now.ToString(LogFileNameFormat) + LogFileExtension;
