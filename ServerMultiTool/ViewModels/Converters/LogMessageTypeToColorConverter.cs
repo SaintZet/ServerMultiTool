@@ -18,6 +18,7 @@ namespace ServerMultiTool.ViewModels.Converters
                 LogMessageType.Info => Brushes.Black,
                 LogMessageType.Warn => Brushes.Orange,
                 LogMessageType.Error => Brushes.Red,
+                LogMessageType.Exception => Brushes.Red,
                 _ => Brushes.Black
             };
         }

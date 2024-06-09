@@ -1,4 +1,5 @@
 using System;
+using ServerMultiTool.Model.Common;
 using ServerMultiTool.Model.ContinuousDeployment.Integrations;
 using ServerMultiTool.Model.ContinuousIntegration.GameServerLogs;
 using ServerMultiTool.Model.ContinuousIntegration.Git;
@@ -14,5 +15,5 @@ public struct PipelineProfile
     public InternetInformationSettings InternetInformationSettings { get; set; }
     public SqlExecutionSettings SqlExecutionSettings { get; set; }
     public WebBrowserSettings WebBrowserSettings { get; set; }
-    public LogMonitoringSettings? MonitorLogFilesSettings { get; set; }
+    public LogMonitoringSettings MonitorLogFilesSettings { get; set; }
 }

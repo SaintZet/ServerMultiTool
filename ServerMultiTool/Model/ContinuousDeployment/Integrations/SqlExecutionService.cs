@@ -18,7 +18,7 @@ public class SqlExecutionService : PipelineOperation
         var connectionString = _settings.ConnectionString;
         
         var count = await ExecuteSqlScript(sqlScript, connectionString);
-        Logger.LogInfo($"Affected row count {count}");
+        Logger.LogInfoWithPublish($"Affected row count {count}");
 
         return OperationResult.Success;
     }

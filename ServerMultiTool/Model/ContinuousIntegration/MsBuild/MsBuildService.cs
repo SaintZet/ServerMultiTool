@@ -5,8 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.IdentityModel.Tokens;
+using ServerMultiTool.Model.Common;
 using ServerMultiTool.Model.Pipeline.Contracts;
-using ServerMultiTool.Model.Pipeline.Profiles;
 
 namespace ServerMultiTool.Model.ContinuousIntegration.MsBuild;
 
@@ -52,7 +52,7 @@ public class MsBuildService : PipelineOperation
         if (projectSettings.MsBuildSettings.PreBuildEvents.IsNullOrEmpty()) 
             return;
         
-        Logger.LogInfo("Start execute pre processes for {projectSettings.ProjectName}.");
+        Logger.LogInfoWithPublish($"Start execute pre processes for {projectSettings.Project.Name}.");
         
         foreach (var processEvent in projectSettings.MsBuildSettings.PreBuildEvents)
             await ExecuteProcessEventAsync(processEvent);
@@ -63,7 +63,7 @@ public class MsBuildService : PipelineOperation
         if (projectSettings.MsBuildSettings.PostBuildEvents.IsNullOrEmpty()) 
             return;
         
-        Logger.LogInfo("Start execute post processes for {projectSettings.ProjectName}.");
+        Logger.LogInfoWithPublish($"Start execute post processes for {projectSettings.Project.Name}.");
 
         foreach (var processEvent in projectSettings.MsBuildSettings.PostBuildEvents)
             await ExecuteProcessEventAsync(processEvent);

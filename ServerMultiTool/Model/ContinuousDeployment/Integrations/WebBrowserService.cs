@@ -14,7 +14,7 @@ public class WebBrowserService : PipelineOperation
     protected override async Task<OperationResult> ExecuteOperationsAsync()
     {
         await OpenPageAsync(_settings.Url);
-        Logger.LogInfo("The web page has been successfully opened.");
+        Logger.LogInfoWithPublish("The web page has been successfully opened.");
         
         return OperationResult.Success;
     }

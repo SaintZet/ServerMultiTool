@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.IdentityModel.Tokens;
+using ServerMultiTool.Model.Common;
 using ServerMultiTool.Model.Pipeline.Contracts;
-using ServerMultiTool.Model.Pipeline.Profiles;
 
 namespace ServerMultiTool.Model.ContinuousDeployment.Delivery;
 
@@ -23,7 +23,7 @@ public class DeliveryService : PipelineOperation
             .Select(DeliveryProjectBinAsync);
 
         var deliverySpecificFilesTasks = _settings
-            .Where(project => project.DeliverySettings.DeliveryDirectory.IsNullOrEmpty() is false)
+            .Where(project => project.DeliverySettings.DeliveryDirectory.IsNullOrEmpty() is not true)
             .Select(DeliveryProjectSpecificFilesAsync);
         
         var allDeliveryTasks = deliveryBinTasks.Concat(deliverySpecificFilesTasks);
@@ -39,22 +39,22 @@ public class DeliveryService : PipelineOperation
             .Select(async directory =>
             {
                 if (directory.Source.IsNullOrEmpty() || Path.GetDirectoryName(directory.Source) is null)
-                    Logger.LogWarn($"{projectSettings.Project.Name}: Wrong source directory for copy {directory.Source}");
+                    Logger.LogWarnWithPublish($"{projectSettings.Project.Name}: Wrong source directory for copy {directory.Source}");
 
                 if (File.Exists(directory.Source))
                 {
                     directory.Source = Path.GetDirectoryName(directory.Source)!;
-                    Logger.LogWarn($"{projectSettings.Project.Name}: Copying files directly is not supported. Getting directory: {directory.Source}");
+                    Logger.LogWarnWithPublish($"{projectSettings.Project.Name}: Copying files directly is not supported. Getting directory: {directory.Source}");
                 }
 
                 if (Directory.Exists(directory.Source))
                 {
                     await CopyDirectoryAsync(directory.Source, directory.Destination);
-                    Logger.LogInfo($"{projectSettings.Project.Name}: Copy from {directory.Source} to {directory.Destination}");
+                    Logger.LogInfoWithPublish($"{projectSettings.Project.Name}: Copy from {directory.Source} to {directory.Destination}");
                     return;
                 }
                 
-                Logger.LogWarn($"{projectSettings.Project.Name}: Cannot delivery {directory.Source} - directory not exist!");
+                Logger.LogWarnWithPublish($"{projectSettings.Project.Name}: Cannot delivery {directory.Source} - directory not exist!");
             }));
     }
     
@@ -72,7 +72,7 @@ public class DeliveryService : PipelineOperation
                 
                 await CopyDirectoryAsync(sourceDirectory, targetDirectory);
                 
-                Logger.LogInfo($"{projectSettings.Project.Name}: Copy from {sourceDirectory} to {targetDirectory}");
+                Logger.LogInfoWithPublish($"{projectSettings.Project.Name}: Copy from {sourceDirectory} to {targetDirectory}");
             });
 
         await Task.WhenAll(copyTasks);

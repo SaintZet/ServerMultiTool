@@ -38,7 +38,7 @@ public class ProcessExecutor
         
         var messageDetails = string.Empty;
 
-        _logger.LogInfo(startMessage);
+        _logger.LogInfoWithPublish(startMessage);
         
         for (var retryNumber = 1; retryNumber <= retryCount; retryNumber++)
         {
@@ -47,15 +47,15 @@ public class ProcessExecutor
             
             if (response.Success is not true)
             {
-                _logger.LogWarn(errorMessage + $"Retry {retryNumber} of {retryCount}.", messageDetails);
+                _logger.LogWarnWithPublish(errorMessage + $"Retry {retryNumber} of {retryCount}.", messageDetails);
                 continue;
             }
 
-            _logger.LogInfo(successMessage, messageDetails);
+            _logger.LogInfoWithPublish(successMessage, messageDetails);
             return response;
         }
 
-        _logger.LogError(errorMessage, messageDetails);
+        _logger.LogErrorWithPublish(errorMessage, messageDetails);
         return response;
     }
 

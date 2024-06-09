@@ -1,10 +1,8 @@
 using System;
-using ServerMultiTool.Model.Common;
 using ServerMultiTool.Model.ContinuousDeployment.Delivery;
 using ServerMultiTool.Model.ContinuousIntegration.MsBuild;
-using ServerMultiTool.Model.Settings;
 
-namespace ServerMultiTool.Model.Pipeline.Profiles;
+namespace ServerMultiTool.Model.Common;
 
 [Serializable]
 public class ProjectSettings

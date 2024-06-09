@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ServerMultiTool.Model.Common.EventAggregator;
 
-public abstract class BaseEventAggregator
+public class BaseEventAggregator
 {
     private readonly Dictionary<Type, List<Action<object>>> _eventHandlers = new();
 
@@ -18,7 +18,7 @@ public abstract class BaseEventAggregator
 
     protected void Publish<TEvent>(TEvent @event)
     {
-        if (@event == null)
+        if (@event is null)
             return;
 
         var eventType = typeof(TEvent);

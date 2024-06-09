@@ -5,7 +5,6 @@ using ServerMultiTool.Model.ContinuousIntegration.GameServerLogs;
 using ServerMultiTool.Model.ContinuousIntegration.Git;
 using ServerMultiTool.Model.ContinuousIntegration.MsBuild;
 using ServerMultiTool.Model.Pipeline.Profiles;
-using ServerMultiTool.Model.Settings;
 
 namespace ServerMultiTool.Model.Common.DefaultValues;
 
@@ -72,7 +71,7 @@ public static class DefaultProfiles
         MonitorLogFilesSettings = new LogMonitoringSettings()
         {
             Enable = true,
-            LogFilesDirectories = new[] { new DirectoryModel { Name = "Master", Path = @"C:\HTTP\Raid\Master\log" } },
+            LogDirectory = new DirectoryModel { Name = "Dev Profile Master", Path = @"C:\HTTP\Raid\Master\log" },
         },
     };
 
@@ -139,7 +138,7 @@ public static class DefaultProfiles
         MonitorLogFilesSettings = new LogMonitoringSettings()
         {
             Enable = true,
-            LogFilesDirectories = new[] { new DirectoryModel { Name = "Master", Path = @"C:\HTTP\Raid\Master\log" } },
+            LogDirectory = new DirectoryModel { Name = "Standard Profile Master", Path = @"C:\HTTP\Raid\Master\log" },
         },
     };
     
@@ -236,10 +235,10 @@ public static class DefaultProfiles
         {
             Enable = true,
         },
-        MonitorLogFilesSettings = new LogMonitoringSettings()
+        MonitorLogFilesSettings = new LogMonitoringSettings
         {
             Enable = true,
-            LogFilesDirectories = new[] { new DirectoryModel { Name = "Master", Path = @"C:\HTTP\Raid\Master\log" } },
+            LogDirectory = new DirectoryModel { Name = "Extended Profile Master", Path = @"C:\HTTP\Raid\Master\log" },
         },
     };
 }

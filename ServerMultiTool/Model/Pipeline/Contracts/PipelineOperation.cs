@@ -37,7 +37,7 @@ public abstract class PipelineOperation : IPipelineOperation
         }
         catch (Exception ex)
         {
-            Logger.LogError(ex.Message, ex.StackTrace);
+            Logger.LogException(ex);
             return OperationResult.Failure;
         }
     }

@@ -6,7 +6,7 @@ using ServerMultiTool.Model.Common.Logs;
 
 namespace ServerMultiTool.Model.ContinuousIntegration.GameServerLogs;
 
-public static class LogHelper
+public static class LogMonitoringUtils
 {
     private static readonly Regex LogLineRegex = new(@"^(\d{2}:\d{2}:\d{2}\.\d{3})\s+(\w+)\s+\[(\d+)\]\s+(.+?)\s+-\s+(.*)$");
 
@@ -14,7 +14,7 @@ public static class LogHelper
     {
         var result = new List<LogEvent>();
         
-        foreach (var currentLine in logLines)
+        foreach (var currentLine in logLines.ToList())
         {
             var currentLogEvent = ParseLogLine(currentLine);
 
@@ -42,7 +42,7 @@ public static class LogHelper
         var sender = match.Groups[4].Value;
         var message = match.Groups[5].Value;
 
-        var logMessage = new LogMessage(message, messageType);
+        var logMessage = new LogMessage(messageType, message);
 
         return new LogEvent(timestamp, sender, logMessage);
     }
