@@ -23,6 +23,7 @@ public class PipelineOperationWrapper : ObservableObject, IPipelineOperation
     {
         _pipelineOperationStatus = PipelineOperationStatus.Wait;
         _operation = operation;
+        
         DisplayName = displayName;
     }
 
@@ -57,4 +58,7 @@ public class PipelineOperationWrapper : ObservableObject, IPipelineOperation
                 throw new ArgumentOutOfRangeException(nameof(result), result, null);
         }
     }
+
+    public void ClearStatus() => 
+        PipelineOperationStatus = PipelineOperationStatus.Wait;
 }

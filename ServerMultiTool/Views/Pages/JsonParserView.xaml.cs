@@ -1,5 +1,4 @@
 ﻿using System.Windows.Controls;
-using ServerMultiTool.ViewModels;
 using ServerMultiTool.ViewModels.Controls;
 using ServerMultiTool.ViewModels.Pages;
 
@@ -9,11 +8,12 @@ namespace ServerMultiTool.Views.Pages
     {
         public JsonParserView(GeneralInfoViewModel generalInfo)
         {
-            DataContext = new JsonParserViewModel
+            var viewModel = new JsonParserViewModel
             {
                 GeneralInfo = generalInfo
             };
             
+            DataContext = viewModel;
             InitializeComponent();
         }
     }

@@ -3,7 +3,7 @@ using System.Windows;
 using ServerMultiTool.Model.Common.Logs;
 using ServerMultiTool.Model.Pipeline.Profiles;
 using ServerMultiTool.Model.Settings;
-using ServerMultiTool.Views;
+using ServerMultiTool.Views.Windows;
 
 namespace ServerMultiTool;
 
@@ -25,12 +25,13 @@ public partial class App
             AppSettingsService.LoadOrInitialize(Environment.CurrentDirectory);
             PipelineProfilesService.LoadOrInitialize(Environment.CurrentDirectory);
         
-            var mainWindow = new MainWindow();
+            var mainWindow = new MainWindowView();
             mainWindow.Show();
         }
-        catch (Exception exception)
+        catch (Exception ex)
         {
-            _logger.LogException(exception);
+            _logger.LogException(ex);
+            throw;
         }
     }
 }

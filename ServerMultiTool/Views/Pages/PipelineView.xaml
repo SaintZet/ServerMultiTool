@@ -6,6 +6,7 @@
       xmlns:converters="clr-namespace:ServerMultiTool.ViewModels.Converters"
       xmlns:controls="clr-namespace:ServerMultiTool.Views.Controls"
       xmlns:pages="clr-namespace:ServerMultiTool.ViewModels.Pages"
+      xmlns:behaviours="clr-namespace:ServerMultiTool.Views.Behaviours"
       mc:Ignorable="d" 
       d:DesignHeight="600" d:DesignWidth="700"
       Title="Pipeline" 
@@ -87,14 +88,13 @@
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </Grid>
-            <TabControl
-                Grid.Row="2"  
-                Background="{DynamicResource TertiaryBackgroundColor}" 
-                BorderThickness="1" 
-                BorderBrush="#5B8DEF"
-                Margin="10"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch">
+            <TabControl Grid.Row="2"  
+                        Background="{DynamicResource TertiaryBackgroundColor}" 
+                        BorderThickness="1" 
+                        BorderBrush="#5B8DEF"
+                        Margin="10"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch">
                 <TabItem Header="App Log">
                     <ListBox ItemsSource="{Binding AppLogMessages}">
                         <ListBox.ItemTemplate>
@@ -113,7 +113,7 @@
                     </ListBox>
                 </TabItem>
                 <TabItem Header="GS Log">
-                    <ListBox ItemsSource="{Binding MasterLogMessages}">
+                    <controls:ScrollingListBox ItemsSource="{Binding MasterLogMessages}">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel>
@@ -140,7 +140,7 @@
                                 </StackPanel>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
-                    </ListBox>
+                    </controls:ScrollingListBox>
                 </TabItem>
 
             </TabControl>

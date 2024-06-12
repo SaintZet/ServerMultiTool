@@ -8,18 +8,13 @@ namespace ServerMultiTool.Views.Pages
     {
         public PipelineView(GeneralInfoViewModel generalInfo)
         {
-            DataContext = new PipelineViewModel
+            var viewModel = new PipelineViewModel
             {
                 GeneralInfo = generalInfo
             };
             
+            DataContext = viewModel;
             InitializeComponent();
-        }
-
-        private void TextBoxBase_OnTextChanged(object sender, TextChangedEventArgs e)
-        {
-            var textBox = (TextBox) sender;
-            textBox.ScrollToEnd();
         }
     }
 }

@@ -5,20 +5,20 @@ namespace ServerMultiTool.Views.Themes
 {
     public static class ThemesController
     {
-        private static ThemeTypes _currentTheme;
-
         public enum ThemeTypes
         {
             Light, 
             Dark,
         }
 
+        public static ThemeTypes CurrentTheme { get; private set; }
+
         public static void ChangeTheme(ThemeTypes type)
         {
-            if (_currentTheme == type)
+            if (CurrentTheme == type)
                 return;
             
-            _currentTheme = type;
+            CurrentTheme = type;
             
             Application.Current.Resources.MergedDictionaries[0] = new ResourceDictionary
             {

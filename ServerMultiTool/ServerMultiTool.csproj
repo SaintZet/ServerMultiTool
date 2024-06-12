@@ -36,4 +36,12 @@
       <Resource Include="Views\Assets\Icons\plarium-logo.png" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Page Update="Views\Windows\MainWindowView.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
+    </ItemGroup>
+
 </Project>

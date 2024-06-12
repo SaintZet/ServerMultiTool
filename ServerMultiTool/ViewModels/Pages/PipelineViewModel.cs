@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using CommunityToolkit.Mvvm.Input;
+
 using ServerMultiTool.Model.Common.EventAggregator;
 using ServerMultiTool.Model.Common.Logs;
 using ServerMultiTool.Model.ContinuousDeployment.Delivery;
@@ -21,7 +22,6 @@ namespace ServerMultiTool.ViewModels.Pages
     public partial class PipelineViewModel : BaseViewModel
     {
         private readonly GeneralInfoViewModel _generalInfo = null!;
-
         public GeneralInfoViewModel GeneralInfo
         {
             get => _generalInfo;
@@ -48,7 +48,7 @@ namespace ServerMultiTool.ViewModels.Pages
             }
         }
 
-        public ObservableCollection<PipelineOperationWrapper> PipelineOperations { get; } = new();
+        public PipelineOperationCollection PipelineOperations { get; } = new();
 
         public ObservableCollection<LogEvent> AppLogMessages { get; } = new();
         public ObservableCollection<LogEvent> MasterLogMessages { get; } = new();
@@ -66,29 +66,25 @@ namespace ServerMultiTool.ViewModels.Pages
 
             PipelineProfiles = PipelineProfilesService.PipelineProfiles;
             SelectedPipelineProfile = PipelineProfiles.FirstOrDefault(x => x.Name == appSettings.CurrentPipelineProfileName);
-
-            ExecutePipelineCommand = new AsyncRelayCommand(StartPipeline);
         }
-
-        public AsyncRelayCommand ExecutePipelineCommand { get; }
 
         private bool CanExecutePipeline => GeneralInfo.CanChangeStates;
 
         [RelayCommand(CanExecute = nameof(CanExecutePipeline))]
-        private async Task StartPipeline()
+        private async Task ExecutePipeline()
         {
             GeneralInfo.CanChangeStates = false;
-
+            
+            PipelineOperations.ClearStatuses();
+            
             foreach (var operation in PipelineOperations)
             {
                 operation.UpdateSolutionDirectory(GeneralInfo.SelectedSolutionDirectory);
                 operation.UpdateHttpDirectory(GeneralInfo.SelectedHttpDirectory);
-
+            
                 await operation.ExecuteAsync();
             }
-
-            MessageBox.Show("Сборка завершена!");
-
+            
             GeneralInfo.CanChangeStates = true;
         }
 
@@ -121,15 +117,22 @@ namespace ServerMultiTool.ViewModels.Pages
         private void UpdateMasterLogService(PipelineProfile profile)
         {
             _masterLogService.UpdateSettings(profile.MonitorLogFilesSettings);
-            MasterLogMessages.Clear();
+            
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                MasterLogMessages.Clear();
+            });
         }
 
         private void AddNewMasterLogEvent(LogEvent logEvent)
         {
-            if (MasterLogMessages.Contains(logEvent))
-                return;
-
-            MasterLogMessages.Add(logEvent);
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                if (MasterLogMessages.Contains(logEvent))
+                    return;
+                
+                MasterLogMessages.Add(logEvent);
+            });
         }
 
         private void AddNewGlobalLogEvent(LogEvent logEvent)

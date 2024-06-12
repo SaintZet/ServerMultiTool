@@ -1,9 +1,10 @@
-﻿<Window x:Class="ServerMultiTool.Views.MainWindow"
+﻿<Window x:Class="ServerMultiTool.Views.Windows.MainWindowView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" 
+        xmlns:windows="clr-namespace:ServerMultiTool.ViewModels.Windows"
         MinHeight="800" 
         MinWidth="1100"
         Height="800"
@@ -17,9 +18,11 @@
         FontFamily="Poppins"
         Icon="/Views/Assets/Icons/plarium-logo.png"
         MouseLeftButtonDown="Window_MouseLeftButtonDown"
-        >
+        d:DataContext="{d:DesignInstance Type=windows:MainWindowViewModel, IsDesignTimeCreatable=True}">
     
-        <Border Background="{DynamicResource PrimaryBackgroundColor}" CornerRadius="10" BorderThickness="1">
+    <Border Background="{DynamicResource PrimaryBackgroundColor}" 
+            CornerRadius="10" 
+            BorderThickness="1">
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="250"/>
@@ -31,7 +34,7 @@
                     CornerRadius="10 0 0 10"
                     Padding="10"
                     Background="{DynamicResource SecondaryBackgroundColor}">
-                <Grid x:Name="GridMenu">
+                <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="50"/>
                         <RowDefinition Height="*"/>
@@ -62,27 +65,27 @@
                     
                     <!-- Start:  Menu -->
                     <StackPanel Grid.Row="1" Margin="0 30 0 30" >
-                        <RadioButton x:Name="rdPipeline" 
-                                     Content="CI/CD Pipeline" 
+                        <RadioButton Content="CI/CD Pipeline" 
                                      Style="{DynamicResource MenuRadioButtonStyle}" 
                                      Tag="{DynamicResource Airplane}" 
-                                     Click="rbPipeline_Click"/>
-                        <RadioButton x:Name="rdJsonParser" 
-                                     Content="Json Parser" 
+                                     Command="{Binding NavigateCommand}" 
+                                     CommandParameter="Pipeline"/>
+                        <RadioButton Content="Json Parser" 
                                      Style="{DynamicResource MenuRadioButtonStyle}" 
                                      Tag="{DynamicResource Json}" 
-                                     Click="rdJsonParser_Click"/>
+                                     Command="{Binding NavigateCommand}" 
+                                     CommandParameter="JsonParser"/>
                         <Separator Margin="20 20" Background="{DynamicResource TertiaryBackgroundColor}"/>
-                        <RadioButton x:Name="rdNotifications" 
-                                     Content="Notifications" 
+                        <RadioButton Content="Notifications" 
                                      Style="{DynamicResource MenuRadioButtonStyle}" 
                                      Tag="{DynamicResource Notifications}"
-                                     Click="rdNotifications_OnClick"/>
-                        <RadioButton x:Name="rdSettings" 
-                                     Content="Settings" 
+                                     Command="{Binding NavigateCommand}" 
+                                     CommandParameter="Notifications"/>
+                        <RadioButton Content="Settings" 
                                      Style="{DynamicResource MenuRadioButtonStyle}" 
                                      Tag="{DynamicResource Settings}" 
-                                     Click="rdSettings_OnClick"/>
+                                     Command="{Binding NavigateCommand}" 
+                                     CommandParameter="Settings"/>
                     </StackPanel>
                     <!-- End:  Menu -->
                     
@@ -123,7 +126,7 @@
                                   VerticalAlignment="Center"/>
                             <ToggleButton x:Name="Themes"
                                   IsChecked="False"
-                                  Click="Themes_Click"
+                                  Command="{Binding ChangeThemeCommand}"
                                   HorizontalAlignment="Right"
                                   Style="{DynamicResource ToggleButtonStyle}"
                                   Margin="10 0 10 0"/>
@@ -160,27 +163,35 @@
                             Height="30" 
                             Orientation="Horizontal" 
                             FlowDirection="RightToLeft">
-                    <Button x:Name="btnClose" Style="{StaticResource IconButtonsStyle}" Content="{DynamicResource Close}" Click="btnClose_Click" Tag="IsCloseButton"/>
-                    <Button x:Name="btnRestore" Margin="5 0" Click="btnRestore_Click">
+                    <Button Style="{StaticResource IconButtonsStyle}" 
+                            Content="{DynamicResource Close}" 
+                            Command="{Binding CloseCommand}" 
+                            Tag="IsCloseButton"/>
+                    <Button Margin="5 0" 
+                            Command="{Binding RestoreCommand}">
                         <Button.Style>
                             <Style TargetType="{x:Type Button}" BasedOn="{StaticResource IconButtonsStyle}">
                                 <Setter Property="Content" Value="{DynamicResource Maximize}"/>
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding ElementName=home, Path=WindowState}" Value="Maximized">
+                                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=WindowState}" Value="Maximized">
                                         <Setter Property="Content" Value="{DynamicResource Restore}"/>
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </Button.Style>
                     </Button>
-                    <Button x:Name="btnMinimize" Style="{DynamicResource IconButtonsStyle}" Content="{DynamicResource Minimize}" Click="btnMinimize_Click"/>
+                    <Button Style="{DynamicResource IconButtonsStyle}" 
+                            Content="{DynamicResource Minimize}" 
+                            Command="{Binding MinimizeCommand}"/>
                 </StackPanel>
                 </Border>
                 <!-- End: Button Close | Restore | Minimize -->
                 
                 <!-- Start: Frame Container -->
                 <Border Grid.Row="1"  Background="Transparent">
-                    <Frame x:Name="FrameContent" NavigationUIVisibility="Hidden" Margin="10"/>
+                    <Frame NavigationUIVisibility="Hidden" 
+                           Content="{Binding CurrentPage}" 
+                           Margin="10"/>
                 </Border>
                 <!-- End: Frame Container -->
             </Grid>
