@@ -66,13 +66,20 @@ public static class DefaultProfiles
         },
         InternetInformationSettings = new InternetInformationSettings()
         {
-            Enable = true,
+            Enable = false,
         },
-        MonitorLogFilesSettings = new LogMonitoringSettings()
+        MonitorLogFilesSettings = new LogMonitoringSettings
         {
             Enable = true,
             LogDirectory = new DirectoryModel { Name = "Dev Profile Master", Path = @"C:\HTTP\Raid\Master\log" },
         },
+        HttpMonitoringSettings = new HttpMonitoringSettings()
+        {
+            Enable = true,
+            PingMaster = true,
+            PingSegment = true,
+            TimeoutMinutes = 5,
+        }
     };
 
     public static PipelineProfile GetStandardProfile() => new()
@@ -94,6 +101,7 @@ public static class DefaultProfiles
                 },
                 DeliverySettings = new DeliverySettings
                 {
+                    Enable = true,
                     DeliveryBin = true,
                 }
             },
@@ -111,6 +119,7 @@ public static class DefaultProfiles
                 },
                 DeliverySettings = new DeliverySettings
                 {
+                    Enable = true,
                     DeliveryBin = true,
                 }
             },
@@ -131,15 +140,22 @@ public static class DefaultProfiles
             Enable = true,
             Url = "http://localhost/Raid/Segment00/Segment.ashx",
         },
-        InternetInformationSettings = new InternetInformationSettings()
+        InternetInformationSettings = new InternetInformationSettings
         {
             Enable = true,
         },
-        MonitorLogFilesSettings = new LogMonitoringSettings()
+        MonitorLogFilesSettings = new LogMonitoringSettings
         {
             Enable = true,
             LogDirectory = new DirectoryModel { Name = "Standard Profile Master", Path = @"C:\HTTP\Raid\Master\log" },
         },
+        HttpMonitoringSettings = new HttpMonitoringSettings()
+        {
+            Enable = true,
+            PingMaster = true,
+            PingSegment = true,
+            TimeoutMinutes = 5,
+        }
     };
     
     public static PipelineProfile GetExtendedProfile(DirectoryModel solutionDirectory, DirectoryModel httpDirectory) => new()
@@ -161,6 +177,7 @@ public static class DefaultProfiles
                 },
                 DeliverySettings = new DeliverySettings
                 {
+                    Enable = true,
                     DeliveryBin = true,
                 }
             },
@@ -178,6 +195,7 @@ public static class DefaultProfiles
                 },
                 DeliverySettings = new DeliverySettings
                 {
+                    Enable = true,
                     DeliveryBin = true,
                 }
             },
@@ -231,7 +249,7 @@ public static class DefaultProfiles
             Enable = true,
             Url = "http://localhost/Raid/Segment00/Segment.ashx",
         },
-        InternetInformationSettings = new InternetInformationSettings()
+        InternetInformationSettings = new InternetInformationSettings
         {
             Enable = true,
         },
@@ -240,5 +258,12 @@ public static class DefaultProfiles
             Enable = true,
             LogDirectory = new DirectoryModel { Name = "Extended Profile Master", Path = @"C:\HTTP\Raid\Master\log" },
         },
+        HttpMonitoringSettings = new HttpMonitoringSettings
+        {
+            Enable = true,
+            PingMaster = true,
+            PingSegment = true,
+            TimeoutMinutes = 5,
+        }
     };
 }

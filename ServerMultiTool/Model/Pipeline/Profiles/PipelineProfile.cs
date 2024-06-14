@@ -16,4 +16,5 @@ public struct PipelineProfile
     public SqlExecutionSettings SqlExecutionSettings { get; set; }
     public WebBrowserSettings WebBrowserSettings { get; set; }
     public LogMonitoringSettings MonitorLogFilesSettings { get; set; }
+    public HttpMonitoringSettings HttpMonitoringSettings { get; set; }
 }

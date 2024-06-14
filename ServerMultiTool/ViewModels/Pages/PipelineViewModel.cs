@@ -13,6 +13,7 @@ using ServerMultiTool.Model.ContinuousIntegration.Git;
 using ServerMultiTool.Model.ContinuousIntegration.MsBuild;
 using ServerMultiTool.Model.Pipeline.Profiles;
 using ServerMultiTool.Model.Settings;
+
 using ServerMultiTool.ViewModels.Contracts;
 using ServerMultiTool.ViewModels.Controls;
 using ServerMultiTool.ViewModels.Data;
@@ -93,7 +94,7 @@ namespace ServerMultiTool.ViewModels.Pages
             PipelineOperations.Clear();
 
             if (pipeline.GitSettings.Enable)
-                PipelineOperations.Add(new( new GitService(pipeline.GitSettings), "Git"));
+                PipelineOperations.Add(new(new GitService(pipeline.GitSettings), "Git"));
 
             if (pipeline.SettingsPerProject.Any(x => x.MsBuildSettings.Enable))
                 PipelineOperations.Add(new(new MsBuildService(pipeline.SettingsPerProject), "MsBuild"));
@@ -112,6 +113,9 @@ namespace ServerMultiTool.ViewModels.Pages
 
             if (pipeline.WebBrowserSettings.Enable)
                 PipelineOperations.Add(new(new WebBrowserService(pipeline.WebBrowserSettings), "Web"));
+
+            if (pipeline.HttpMonitoringSettings.Enable)
+                PipelineOperations.Add(new(new HttpMonitoringService(pipeline.HttpMonitoringSettings), "Http"));
         }
 
         private void UpdateMasterLogService(PipelineProfile profile)
