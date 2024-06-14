@@ -40,29 +40,30 @@
                 <TextBlock Grid.Row="0" Grid.Column="0" 
                            Text="Pipeline Profile:"
                            HorizontalAlignment="Right"
-                           Style= "{DynamicResource CustomTextBlockStyle}"/>
+                           Style="{DynamicResource CustomTextBlockStyle}"/>
                 
-                <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" 
+                <StackPanel Grid.Row="0" Grid.Column="1" 
+                            Orientation="Horizontal" 
                             HorizontalAlignment="Left"
                             Margin="0,0,0,0">
-                    <ComboBox Style="{DynamicResource ComboBoxStyle}"
+                    <ComboBox ItemsSource="{Binding PipelineProfiles, Mode=TwoWay}"
+                              SelectedItem="{Binding SelectedPipelineProfile, Mode=TwoWay}"
+                              DisplayMemberPath="Name"
+                              IsEnabled="{Binding  .GeneralInfo.CanChangeStates}"
+                              Style="{DynamicResource ComboBoxStyle}"
                               Width="200"
                               Height="30"
                               Margin="5,5,0,5"
-                              IsEnabled="{Binding  .GeneralInfo.CanChangeStates}"
-                              ItemsSource="{Binding PipelineProfiles, Mode=TwoWay}"
-                              SelectedItem="{Binding SelectedPipelineProfile, Mode=TwoWay}"
-                              DisplayMemberPath="Name"
                     />
-                    <Button Style="{DynamicResource IconButtonsStyle}" 
-                            Content="{DynamicResource Settings}"
+                    <Button Content="{DynamicResource Settings}"
                             IsEnabled="{Binding .GeneralInfo.CanChangeStates}"
+                            Style="{DynamicResource IconButtonsStyle}" 
                             Margin="5,0,0,0"
                     />
-                    <Button Style="{StaticResource IconButtonsStyle}" 
-                            Content="{DynamicResource Start}" 
-                            Margin="5,0,0,0"
+                    <Button Content="{DynamicResource Start}" 
                             Command="{Binding ExecutePipelineCommand}" 
+                            Style="{StaticResource IconButtonsStyle}" 
+                            Margin="5,0,0,0"
                     />
                 </StackPanel>
                     
@@ -76,44 +77,118 @@
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <StackPanel VerticalAlignment="Center">
+                                <Ellipse x:Name="Ellipse"
+                                         Height="20"
+                                         Width="20"
+                                         VerticalAlignment="Center"
+                                         HorizontalAlignment="Center"
+                                         Fill="{Binding .PipelineOperationStatus, Mode=OneWay, Converter={StaticResource PipelineStatusFillConverter}}"
+                                         Stroke="{DynamicResource PrimaryWhiteColor}"
+                                         StrokeThickness="3">
+                                    <!-- Optional -->
+                                    <Ellipse.Effect>
+                                        <DropShadowEffect ShadowDepth="0.5" Opacity=".2"/>
+                                    </Ellipse.Effect>
+                                </Ellipse>
+                                <!-- <Ellipse Width="20" Height="20" -->
+                                <!--          Fill="{Binding .PipelineOperationStatus, Mode=OneWay, Converter={StaticResource PipelineStatusFillConverter}}" -->
+                                <!--          Stroke="#5B8DEF" StrokeThickness="2"/> -->
                                 <TextBlock Text="{Binding .DisplayName}" 
                                            Style= "{DynamicResource CustomTextBlockStyle}"
                                            FontSize="11"
-                                           Margin="5,0,5,0"/>
-                                <Ellipse Width="20" Height="20"
-                                         Fill="{Binding .PipelineOperationStatus, Mode=OneWay, Converter={StaticResource PipelineStatusFillConverter}}"
-                                         Stroke="#5B8DEF" StrokeThickness="2"/>
+                                           Margin="5,5,5,0"/>
                             </StackPanel>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </Grid>
             <TabControl Grid.Row="2"  
-                        Background="{DynamicResource TertiaryBackgroundColor}" 
-                        BorderThickness="1" 
-                        BorderBrush="#5B8DEF"
                         Margin="10"
                         HorizontalAlignment="Stretch"
-                        VerticalAlignment="Stretch">
+                        VerticalAlignment="Stretch"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
+                        BorderThickness="0">
+                <TabControl.Resources>
+                    <Style TargetType="TabItem" BasedOn="{StaticResource {x:Type TabItem}}">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="TabItem">
+                                    <Border Name="Border" 
+                                            BorderThickness="1,1,1,0" 
+                                            BorderBrush="Gainsboro" 
+                                            CornerRadius="4,4,0,0" 
+                                            Margin="2,0,2,-1"
+                                            Padding="0,0,0,2">
+                                        <ContentPresenter x:Name="ContentSite"
+                                                          VerticalAlignment="Center"
+                                                          HorizontalAlignment="Center"
+                                                          ContentSource="Header"
+                                                          Margin="10,2"/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="Panel.ZIndex" Value="1"/>
+                                            <Setter Property="Foreground" Value="{DynamicResource SecondaryTextColor}"/>
+                                            <Setter TargetName="Border" Property="Background" Value="{DynamicResource TertiaryBackgroundColor}"/>
+                                        </Trigger>
+                                        <Trigger Property="IsSelected" Value="False">
+                                            <Setter Property="Foreground" Value="{DynamicResource PrimaryTextColor}"/>
+                                            <Setter TargetName="Border" Property="Background" Value="{DynamicResource SecondaryBackgroundColor}"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </TabControl.Resources>
                 <TabItem Header="App Log">
-                    <ListBox ItemsSource="{Binding AppLogMessages}">
+                    <controls:ScrollingListBox ItemsSource="{Binding AppLogMessages}"
+                                               Background="{DynamicResource TertiaryBackgroundColor}"
+                                               Foreground="{DynamicResource PrimaryTextColor}"
+                                               Padding="10">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel>
                                     <StackPanel Orientation="Horizontal" Margin="0">
                                         <TextBlock Text="{Binding Sender}"
-                                                   FontWeight="Bold"
-                                                   Foreground="{Binding .Message.Type, Converter={StaticResource LogMessageTypeToColorConverter}}" />
+                                                   FontWeight="Bold">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Message.Type}" Value="Info">
+                                                            <Setter Property="Foreground" Value="{DynamicResource PrimaryTextColor}" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Message.Type}" Value="Success">
+                                                            <Setter Property="Foreground" Value="{DynamicResource PrimaryGreenColor}" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Message.Type}" Value="Warn">
+                                                            <Setter Property="Foreground" Value="{DynamicResource PrimaryOrangeColor}" />
+                                                        </DataTrigger>
+                                                        <MultiDataTrigger>
+                                                            <MultiDataTrigger.Conditions>
+                                                                <Condition Binding="{Binding Message.Type}" Value="Error" />
+                                                                <Condition Binding="{Binding Message.Type}" Value="Exception" />
+                                                            </MultiDataTrigger.Conditions>
+                                                            <Setter Property="Foreground" Value="{DynamicResource PrimaryRedColor}" />
+                                                        </MultiDataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
                                         <TextBlock Text=": " />
                                         <TextBlock Text="{Binding Message.BaseMessage}"/>
                                     </StackPanel>
                                 </StackPanel>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
-                    </ListBox>
+                    </controls:ScrollingListBox>
                 </TabItem>
                 <TabItem Header="GS Log">
-                    <controls:ScrollingListBox ItemsSource="{Binding MasterLogMessages}">
+                    <controls:ScrollingListBox ItemsSource="{Binding MasterLogMessages}"
+                                               Background="{DynamicResource TertiaryBackgroundColor}"
+                                               Foreground="{DynamicResource PrimaryTextColor}"
+                                               Padding="10">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel>
@@ -122,10 +197,31 @@
                                                    FontWeight="Bold"
                                                    Foreground="Black" 
                                                    Visibility="Collapsed"/>
-                                        
                                         <TextBlock Text="{Binding Sender}"
-                                                   FontWeight="Bold"
-                                                   Foreground="{Binding Message.Type, Converter={StaticResource LogMessageTypeToColorConverter}}" />
+                                                   FontWeight="Bold">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Message.Type}" Value="Info">
+                                                            <Setter Property="Foreground" Value="{DynamicResource PrimaryTextColor}" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Message.Type}" Value="Success">
+                                                            <Setter Property="Foreground" Value="{DynamicResource PrimaryGreenColor}" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Message.Type}" Value="Warn">
+                                                            <Setter Property="Foreground" Value="{DynamicResource PrimaryOrangeColor}" />
+                                                        </DataTrigger>
+                                                        <MultiDataTrigger>
+                                                            <MultiDataTrigger.Conditions>
+                                                                <Condition Binding="{Binding Message.Type}" Value="Error" />
+                                                                <Condition Binding="{Binding Message.Type}" Value="Exception" />
+                                                            </MultiDataTrigger.Conditions>
+                                                            <Setter Property="Foreground" Value="{DynamicResource PrimaryRedColor}" />
+                                                        </MultiDataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
                                         <TextBlock Text=": " />
                                         <TextBlock Text="{Binding Message.BaseMessage}"/>
                                     </StackPanel>

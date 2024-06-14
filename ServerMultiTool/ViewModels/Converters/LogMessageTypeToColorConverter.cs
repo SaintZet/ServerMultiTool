@@ -1,5 +1,6 @@
 using System;
 using System.Globalization;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
 using ServerMultiTool.Model.Common.Logs;
@@ -11,15 +12,15 @@ namespace ServerMultiTool.ViewModels.Converters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is not LogMessageType messageType)
-                return Brushes.Black;
+                return SystemColors.ControlTextBrush;
 
             return messageType switch
             {
-                LogMessageType.Info => Brushes.Black,
+                LogMessageType.Info => SystemColors.ControlTextBrush,
                 LogMessageType.Warn => Brushes.Orange,
                 LogMessageType.Error => Brushes.Red,
                 LogMessageType.Exception => Brushes.Red,
-                _ => Brushes.Black
+                _ => SystemColors.ControlTextBrush
             };
         }
 
