@@ -29,6 +29,7 @@ public static class DefaultProfiles
                 },
                 DeliverySettings = new DeliverySettings
                 {
+                    Enable = true,
                     DeliveryBin = false,
                 }
             },
@@ -46,6 +47,7 @@ public static class DefaultProfiles
                 },
                 DeliverySettings = new DeliverySettings
                 {
+                    Enable = true,
                     DeliveryBin = false,
                 }
             },
@@ -221,6 +223,7 @@ public static class DefaultProfiles
                 },
                 DeliverySettings = new DeliverySettings
                 {
+                    Enable = true,
                     DeliveryBin = false,
                     DeliveryDirectory = new[]
                     {

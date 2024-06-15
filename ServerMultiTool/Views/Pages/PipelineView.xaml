@@ -195,7 +195,7 @@
                                     <StackPanel Orientation="Horizontal" Margin="0">
                                         <TextBlock Text="{Binding .Timestamp}"
                                                    FontWeight="Bold"
-                                                   Foreground="Black" 
+                                                   Foreground="{DynamicResource PrimaryTextColor}"
                                                    Visibility="Collapsed"/>
                                         <TextBlock Text="{Binding Sender}"
                                                    FontWeight="Bold">
@@ -229,8 +229,10 @@
                                               ExpandDirection="Down"
                                               Margin="0,0,0,0"
                                               Padding="0,5,0,0"
+                                              Foreground="{DynamicResource PrimaryTextColor}"
                                               Visibility="{Binding Message.ExtendedMessage, Converter={StaticResource StringToVisibilityConverter}}">
                                         <TextBlock  Text="{Binding Message.ExtendedMessage}" 
+                                                    Foreground="{DynamicResource PrimaryTextColor}"
                                                     TextWrapping="Wrap"/>
                                     </Expander>
                                 </StackPanel>
