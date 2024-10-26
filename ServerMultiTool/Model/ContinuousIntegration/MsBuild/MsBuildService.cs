@@ -80,7 +80,7 @@ public class MsBuildService : PipelineOperation
     {
         var sb = new StringBuilder()
             .Append(' ').Append($"\"{projectPath}\"")
-            .Append(' ').Append($@"/p:SolutionDir={SolutionDirectory}\");
+            .Append(' ').Append($"/p:SolutionDir=\"{SolutionDirectory}\"");
 
         foreach (var parameter in parameters) 
             sb.Append(' ').Append($"{parameter}");
