@@ -72,4 +72,18 @@ public class GeneralInfoViewModel : BaseViewModel
         SelectedSolutionDirectory = SolutionDirectories.FirstOrDefault(x => x.Name == appSettings.CurrentSolutionDirectoryName);
         SelectedHttpDirectory = HttpDirectories.FirstOrDefault(x => x.Name == appSettings.CurrentHttpDirectoryName);
     }
+    
+    public void UpdateData()
+    {
+        var appSettings = AppSettingsService.LoadOrInitialize();
+
+        SolutionDirectories = appSettings.SolutionDirectories;
+        HttpDirectories = appSettings.HttpDirectories;
+        
+        SelectedSolutionDirectory = SolutionDirectories.FirstOrDefault(x => x.Name == appSettings.CurrentSolutionDirectoryName);
+        SelectedHttpDirectory = HttpDirectories.FirstOrDefault(x => x.Name == appSettings.CurrentHttpDirectoryName);
+
+        OnPropertyChanged(nameof(SolutionDirectories));
+        OnPropertyChanged(nameof(HttpDirectories));
+    }
 }

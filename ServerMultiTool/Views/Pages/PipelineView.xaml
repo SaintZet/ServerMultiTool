@@ -6,7 +6,6 @@
       xmlns:converters="clr-namespace:ServerMultiTool.ViewModels.Converters"
       xmlns:controls="clr-namespace:ServerMultiTool.Views.Controls"
       xmlns:pages="clr-namespace:ServerMultiTool.ViewModels.Pages"
-      xmlns:behaviours="clr-namespace:ServerMultiTool.Views.Behaviours"
       mc:Ignorable="d" 
       d:DesignHeight="600" d:DesignWidth="700"
       Title="Pipeline" 
@@ -15,7 +14,7 @@
     
     <Page.Resources>
         <converters:PipelineStatusFillConverter x:Key="PipelineStatusFillConverter"/>
-        <converters:LogMessageTypeToColorConverter x:Key="LogMessageTypeToColorConverter"/>
+        <!-- <converters:LogMessageTypeToColorConverter x:Key="LogMessageTypeToColorConverter"/> -->
         <converters:StringToVisibilityConverter x:Key="StringToVisibilityConverter"/>
     </Page.Resources>
 
@@ -30,7 +29,6 @@
             <controls:GeneralInfoControl Grid.Row="0" 
                                          Margin="10" 
                                          DataContext="{Binding .GeneralInfo}"/>
-            
             <Grid Grid.Row="1" Margin="10">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -240,7 +238,6 @@
                         </ListBox.ItemTemplate>
                     </controls:ScrollingListBox>
                 </TabItem>
-
             </TabControl>
         </Grid>
     </Border>

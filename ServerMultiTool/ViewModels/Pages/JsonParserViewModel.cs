@@ -3,7 +3,7 @@ using ServerMultiTool.ViewModels.Controls;
 
 namespace ServerMultiTool.ViewModels.Pages;
 
-public class JsonParserViewModel : BaseViewModel
+public partial class JsonParserViewModel : BaseViewModel
 {
     private readonly GeneralInfoViewModel _generalInfo = null!;
 

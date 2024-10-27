@@ -15,6 +15,7 @@ namespace ServerMultiTool.Model.Settings
         private const string SettingsFileName = "AppSettings.json";
         
         private static string _pathToSettingFile = null!;
+        private static string _appSettingsDirectory = null!;
 
         public static AppSettings AppSettings { get; private set; }
 
@@ -24,10 +25,24 @@ namespace ServerMultiTool.Model.Settings
 
             SaveSettingsTo(AppSettings, _pathToSettingFile);
         }
-
-        public static void LoadOrInitialize(string appDirectory)
+        
+        public static void SaveAppSettings(AppSettings settings)
         {
-            var pathToFolder = Path.Combine(appDirectory, SettingsFolderName);
+            if (string.IsNullOrEmpty(_pathToSettingFile))
+                throw new InvalidOperationException("Settings file path is not initialized.");
+
+            SaveSettingsTo(settings, _pathToSettingFile);
+            Log.Info($"{nameof(AppSettings)} have been successfully saved.");
+        }
+
+        public static AppSettings LoadOrInitialize() => 
+            LoadOrInitialize(_appSettingsDirectory);
+
+        public static AppSettings LoadOrInitialize(string appSettingsDirectory)
+        {
+            _appSettingsDirectory = appSettingsDirectory;
+            
+            var pathToFolder = Path.Combine(appSettingsDirectory, SettingsFolderName);
             if (Directory.Exists(pathToFolder) is false)
                 Directory.CreateDirectory(pathToFolder);
             
@@ -40,6 +55,8 @@ namespace ServerMultiTool.Model.Settings
             XmlConfigurator.Configure(logConfig);
             
             Log.Info($"{nameof(AppSettings)} have been successfully loaded.");
+            
+            return AppSettings;
         }
 
         private static AppSettings LoadSettingsFrom(string path)

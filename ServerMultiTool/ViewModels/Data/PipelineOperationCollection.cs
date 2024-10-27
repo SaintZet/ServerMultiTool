@@ -6,7 +6,7 @@ public class PipelineOperationCollection : ObservableCollection<PipelineOperatio
 {
     public void ClearStatuses()
     {
-        foreach (var item in this) 
+        foreach (var item in this)
             item.ClearStatus();
     }
 }

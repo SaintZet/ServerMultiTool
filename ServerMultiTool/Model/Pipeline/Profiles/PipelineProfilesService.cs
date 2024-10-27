@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
@@ -38,8 +39,8 @@ public static class PipelineProfilesService
     private static PipelineProfile[] InitializeDefaultProfiles(string pathToFolder)
     {
         var appSettings = AppSettingsService.AppSettings;
-        var solutionDir = appSettings.SolutionDirectories[0];
-        var httpDir = appSettings.HttpDirectories[0];
+        var solutionDir = appSettings.SolutionDirectories.FirstOrDefault();
+        var httpDir = appSettings.HttpDirectories.FirstOrDefault();
 
         var devProfile = DefaultProfiles.GetDevProfile();
         SaveSettingsTo(devProfile, Path.Combine(pathToFolder, $"{devProfile.Name}.json"));
@@ -55,7 +56,7 @@ public static class PipelineProfilesService
 
     private static PipelineProfile[] TryLoadSettingsFrom(string pathToFolder)
     {
-        if (Directory.Exists(pathToFolder) is false)
+        if (!Directory.Exists(pathToFolder))
             return Array.Empty<PipelineProfile>();
         
         return Directory.GetFiles(pathToFolder, SearchPattern)
@@ -69,13 +70,23 @@ public static class PipelineProfilesService
                 };
         
                 return JsonSerializer.Deserialize<PipelineProfile>(json, options);
-            })
-            .ToArray();
+            }).ToArray();
     }
 
-    public static void SaveSettingsAsync()
+    public static void SavePipelineProfiles(IEnumerable<PipelineProfile> profiles)
     {
-        throw new NotImplementedException();
+        var pathToFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, SettingsFolderName);
+        
+        if (!Directory.Exists(pathToFolder))
+            Directory.CreateDirectory(pathToFolder);
+        
+        foreach (var profile in profiles)
+        {
+            var path = Path.Combine(pathToFolder, $"{profile.Name}.json");
+            SaveSettingsTo(profile, path);
+        }
+        
+        Log.Info($"{nameof(PipelineProfiles)} have been successfully saved.");
     }
 
     public static void UpdateSetting(string key, object value)
@@ -83,15 +94,15 @@ public static class PipelineProfilesService
         throw new NotImplementedException();
     }
 
-    private static void SaveSettingsTo(PipelineProfile profiles, string path)
+    private static void SaveSettingsTo(PipelineProfile profile, string path)
     {
         var directoryPath = Path.GetDirectoryName(path);
         if (directoryPath is null)
-            throw new Exception(); //TODO
-        
+            throw new Exception("Directory path is null.");
+
         Directory.CreateDirectory(directoryPath);
         
-        var json = JsonSerializer.Serialize(profiles, new JsonSerializerOptions { WriteIndented = true });
-        File.WriteAllTextAsync(path, json);
+        var json = JsonSerializer.Serialize(profile, new JsonSerializerOptions { WriteIndented = true });
+        File.WriteAllText(path, json);
     }
 }

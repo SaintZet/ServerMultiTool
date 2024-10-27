@@ -12,6 +12,7 @@ namespace ServerMultiTool.ViewModels.Windows
     {
         private readonly Page _pipelinePage;
         private readonly Page _jsonParserPage;
+        private readonly SettingsView _settingsPage;
 
         public MainWindowViewModel()
         {
@@ -19,11 +20,13 @@ namespace ServerMultiTool.ViewModels.Windows
             
             _pipelinePage = new PipelineView(generalInfoViewModel);
             _jsonParserPage = new JsonParserView(generalInfoViewModel);
+            _settingsPage = new SettingsView(generalInfoViewModel);
 
             _currentPage = _pipelinePage;
         }
 
         private Page _currentPage;
+
         public Page CurrentPage
         {
             get => _currentPage;
@@ -37,6 +40,7 @@ namespace ServerMultiTool.ViewModels.Windows
             {
                 "Pipeline" => _pipelinePage,
                 "JsonParser" => _jsonParserPage,
+                "Settings" => _settingsPage,
                 _ => CurrentPage
             };
         }
