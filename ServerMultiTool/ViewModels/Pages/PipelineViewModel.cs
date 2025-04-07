@@ -99,11 +99,11 @@ namespace ServerMultiTool.ViewModels.Pages
             if (pipeline.SettingsPerProject.Any(x => x.MsBuildSettings.Enable))
                 PipelineOperations.Add(new(new MsBuildService(pipeline.SettingsPerProject), "MsBuild"));
 
+            if (pipeline.InternetInformationSettings.Enable)
+              PipelineOperations.Add(new(new InternetInformationServices("/stop"), "IIS Stop"));
+
             if (pipeline.SettingsPerProject.Any(x => x.DeliverySettings.Enable))
                 PipelineOperations.Add(new(new DeliveryService(pipeline.SettingsPerProject), "Delivery"));
-
-            if (pipeline.InternetInformationSettings.Enable)
-                PipelineOperations.Add(new(new InternetInformationServices("/stop"), "IIS Stop"));
 
             if (pipeline.SqlExecutionSettings.Enable)
                 PipelineOperations.Add(new(new SqlExecutionService(pipeline.SqlExecutionSettings), "SQL"));
