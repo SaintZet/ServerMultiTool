@@ -8,8 +8,6 @@ x86/
 bld/
 [Bb]in/
 [Oo]bj/
-[Ll]og/
-[Ll]ogs/
 
 # MSTest test Results
 [Tt]est[Rr]esult*/
