@@ -50,13 +50,13 @@ public partial class SettingsViewModel : BaseViewModel
     }
     
     
-    public ObservableCollection<PipelineProfile> Profiles { get; set; } = new();
-    private PipelineProfile _selectedProfile;
+    public ObservableCollection<PipelineProfile> PipelineProfiles { get; set; } = new();
+    private PipelineProfile _selectedPipelineProfile;
 
-    public PipelineProfile SelectedProfile
+    public PipelineProfile SelectedPipelineProfile
     {
-        get => _selectedProfile;
-        set => SetProperty(ref _selectedProfile, value);
+        get => _selectedPipelineProfile;
+        set => SetProperty(ref _selectedPipelineProfile, value);
     }
 
     public SettingsViewModel()
@@ -87,7 +87,7 @@ public partial class SettingsViewModel : BaseViewModel
     private void LoadProfiles()
     {
         var pipelineProfiles = PipelineProfilesService.PipelineProfiles;
-        Profiles = new ObservableCollection<PipelineProfile>(pipelineProfiles);
+        PipelineProfiles = new ObservableCollection<PipelineProfile>(pipelineProfiles);
     }
 
     [RelayCommand]
@@ -105,7 +105,7 @@ public partial class SettingsViewModel : BaseViewModel
         _initialSolutionDirectories = SolutionDirectories.Clone();
         _initialHttpDirectories = HttpDirectories.Clone();
 
-        PipelineProfilesService.SavePipelineProfiles(Profiles.ToList());
+        PipelineProfilesService.SavePipelineProfiles(PipelineProfiles.ToList());
         
         GeneralInfo.UpdateData();
     }
@@ -123,10 +123,10 @@ public partial class SettingsViewModel : BaseViewModel
     }
 
     [RelayCommand]
-    public void AddProfile()
+    public void AddPipelineProfile()
     {
         HasUnsavedChanges = true;
-        Profiles.Add(new PipelineProfile
+        PipelineProfiles.Add(new PipelineProfile
         {
             Name = "New Profile", 
             SettingsPerProject = new ProjectSettings[] { },
@@ -134,10 +134,10 @@ public partial class SettingsViewModel : BaseViewModel
     }
 
     [RelayCommand]
-    public void RemoveProfile()
+    public void RemovePipelineProfile()
     {
         HasUnsavedChanges = true;
-        Profiles.Remove(SelectedProfile);
+        PipelineProfiles.Remove(SelectedPipelineProfile);
     }
 
     [RelayCommand]
