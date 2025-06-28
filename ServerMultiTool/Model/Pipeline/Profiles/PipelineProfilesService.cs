@@ -74,31 +74,6 @@ public static class PipelineProfilesService
             }).ToArray();
     }
 
-    public static void AddProfile(PipelineProfile profile)
-    {
-        if (_pipelineProfiles.Any(x => x.Name == profile.Name))
-            return;
-
-        _pipelineProfiles.Add(profile);
-        SaveProfiles();
-    }
-
-    public static void RemoveProfile(PipelineProfile profile)
-    {
-        if (_pipelineProfiles.Remove(profile))
-            SaveProfiles();
-    }
-
-    public static void UpdateProfile(PipelineProfile oldProfile, PipelineProfile newProfile)
-    {
-        var index = _pipelineProfiles.IndexOf(oldProfile);
-        if (index == -1)
-            return;
-
-        _pipelineProfiles[index] = newProfile;
-        SaveProfiles();
-    }
-
     public static void SavePipelineProfiles(IEnumerable<PipelineProfile> profiles)
     {
         var pathToFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, SettingsFolderName);
@@ -128,11 +103,6 @@ public static class PipelineProfilesService
         Log.Info($"{nameof(PipelineProfiles)} have been successfully saved.");
     }
 
-    public static void UpdateSetting(string key, object value)
-    {
-        throw new NotImplementedException();
-    }
-
     private static void SaveSettingsTo(PipelineProfile profile, string path)
     {
         var directoryPath = Path.GetDirectoryName(path);
@@ -143,12 +113,5 @@ public static class PipelineProfilesService
 
         var json = JsonSerializer.Serialize(profile, new JsonSerializerOptions { WriteIndented = true });
         File.WriteAllText(path, json);
-    }
-
-    private static void SaveProfiles()
-    {
-        var settings = AppSettingsService.AppSettings;
-        // Добавить логику сохранения профилей
-        AppSettingsService.SaveAppSettings(settings);
     }
 }
