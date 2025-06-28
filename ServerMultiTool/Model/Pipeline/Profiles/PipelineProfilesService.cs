@@ -105,8 +105,21 @@ public static class PipelineProfilesService
         
         if (!Directory.Exists(pathToFolder))
             Directory.CreateDirectory(pathToFolder);
+
+        var profilesList = profiles.ToList();
+        var profileNames = profilesList.Select(p => $"{p.Name}.json").ToHashSet();
         
-        foreach (var profile in profiles)
+        var existingFiles = Directory.GetFiles(pathToFolder, SearchPattern);
+        foreach (var file in existingFiles)
+        {
+            if (profileNames.Contains(Path.GetFileName(file))) 
+                continue;
+            
+            File.Delete(file);
+            Log.Info($"Obsolete profile file {Path.GetFileName(file)} has been deleted.");
+        }
+        
+        foreach (var profile in profilesList)
         {
             var path = Path.Combine(pathToFolder, $"{profile.Name}.json");
             SaveSettingsTo(profile, path);
