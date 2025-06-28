@@ -106,7 +106,7 @@ public partial class SettingsViewModel : BaseViewModel
     }
 
     [RelayCommand]
-    public void SaveSettings()
+    private void SaveSettings()
     {
         HasUnsavedChanges = false;
         
@@ -128,7 +128,7 @@ public partial class SettingsViewModel : BaseViewModel
     }
 
     [RelayCommand]
-    public void CancelSettings()
+    private void CancelSettings()
     {
         HasUnsavedChanges = false;
         
@@ -140,7 +140,7 @@ public partial class SettingsViewModel : BaseViewModel
     }
 
     [RelayCommand]
-    public void AddPipelineProfile()
+    private void AddPipelineProfile()
     {
         HasUnsavedChanges = true;
         var newProfile = new PipelineProfile
@@ -155,7 +155,7 @@ public partial class SettingsViewModel : BaseViewModel
 
 
     [RelayCommand]
-    public void RemovePipelineProfile()
+    private void RemovePipelineProfile()
     {
         HasUnsavedChanges = true;
         PipelineProfiles.Remove(SelectedPipelineProfile);
@@ -165,7 +165,7 @@ public partial class SettingsViewModel : BaseViewModel
 
 
     [RelayCommand]
-    public void AddSolutionDirectory()
+    private void AddSolutionDirectory()
     {
         HasUnsavedChanges = true;
         var newDirectory = new DirectoryModelWrapper("New Solution", "");
@@ -177,7 +177,7 @@ public partial class SettingsViewModel : BaseViewModel
         SelectedSolutionDirectory != null;
 
     [RelayCommand(CanExecute = nameof(CanRemoveSolutionDirectory))]
-    public void RemoveSolutionDirectory(DirectoryModelWrapper directory)
+    private void RemoveSolutionDirectory(DirectoryModelWrapper directory)
     {
         HasUnsavedChanges = true;
         
@@ -186,7 +186,7 @@ public partial class SettingsViewModel : BaseViewModel
     }
 
     [RelayCommand]
-    public void AddHttpDirectory()
+    private void AddHttpDirectory()
     {
         HasUnsavedChanges = true;
         
@@ -199,7 +199,7 @@ public partial class SettingsViewModel : BaseViewModel
         SelectedHttpDirectory != null;
 
     [RelayCommand(CanExecute = nameof(CanRemoveHttpDirectory))]
-    public void RemoveHttpDirectory(DirectoryModelWrapper directory)
+    private void RemoveHttpDirectory(DirectoryModelWrapper directory)
     {
         HasUnsavedChanges = true;
         
@@ -208,7 +208,7 @@ public partial class SettingsViewModel : BaseViewModel
     }
 
     [RelayCommand]
-    public void SelectDirectory(DirectoryModelWrapper directory)
+    private void SelectDirectory(DirectoryModelWrapper directory)
     {
         using var dialog = new FolderBrowserDialog();
         dialog.Description = "Select a folder";
