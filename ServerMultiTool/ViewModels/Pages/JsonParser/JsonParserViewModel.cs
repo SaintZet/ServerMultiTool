@@ -1,7 +1,7 @@
 using ServerMultiTool.ViewModels.Contracts;
 using ServerMultiTool.ViewModels.Controls;
 
-namespace ServerMultiTool.ViewModels.Pages;
+namespace ServerMultiTool.ViewModels.Pages.JsonParser;
 
 public partial class JsonParserViewModel : BaseViewModel
 {

@@ -1,18 +1,17 @@
-using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
 using CommunityToolkit.Mvvm.Input;
-using ServerMultiTool.Model.Common;
 using ServerMultiTool.Model.Pipeline.Profiles;
 using ServerMultiTool.Model.Settings;
 using ServerMultiTool.ViewModels.Contracts;
 using ServerMultiTool.ViewModels.Controls;
-using ServerMultiTool.ViewModels.Data;
+using ServerMultiTool.ViewModels.Pages.Settings.Extensions;
+using ServerMultiTool.ViewModels.Pages.Settings.Wrappers;
 using EditPipelineProfileViewModel = ServerMultiTool.ViewModels.Controls.EditPipelineProfile.EditPipelineProfileViewModel;
 
-namespace ServerMultiTool.ViewModels.Pages;
+namespace ServerMultiTool.ViewModels.Pages.Settings;
 
 public partial class SettingsViewModel : BaseViewModel
 {

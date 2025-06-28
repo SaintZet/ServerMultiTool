@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using CommunityToolkit.Mvvm.Input;
-
 using ServerMultiTool.Model.Common.EventAggregator;
 using ServerMultiTool.Model.Common.Logs;
 using ServerMultiTool.Model.ContinuousDeployment.Delivery;
@@ -13,12 +12,11 @@ using ServerMultiTool.Model.ContinuousIntegration.Git;
 using ServerMultiTool.Model.ContinuousIntegration.MsBuild;
 using ServerMultiTool.Model.Pipeline.Profiles;
 using ServerMultiTool.Model.Settings;
-
 using ServerMultiTool.ViewModels.Contracts;
 using ServerMultiTool.ViewModels.Controls;
-using ServerMultiTool.ViewModels.Data;
+using ServerMultiTool.ViewModels.Pages.Pipeline.Data;
 
-namespace ServerMultiTool.ViewModels.Pages
+namespace ServerMultiTool.ViewModels.Pages.Pipeline
 {
     public partial class PipelineViewModel : BaseViewModel
     {
@@ -31,13 +29,13 @@ namespace ServerMultiTool.ViewModels.Pages
 
         public PipelineProfile[] PipelineProfiles { get; set; }
 
-        private PipelineProfile _selectedPipelineProfile;
-        public PipelineProfile SelectedPipelineProfile
+        private PipelineProfile? _selectedPipelineProfile;
+        public PipelineProfile? SelectedPipelineProfile
         {
             get => _selectedPipelineProfile;
             set
             {
-                if (value.Equals(_selectedPipelineProfile)) 
+                if (value is null || value.Equals(_selectedPipelineProfile)) 
                     return;
 
                 _selectedPipelineProfile = value;
@@ -129,7 +127,7 @@ namespace ServerMultiTool.ViewModels.Pages
 
         private void UpdateMasterLogService(PipelineProfile profile)
         {
-            _masterLogService.UpdateSettings(profile.MonitorLogFilesSettings);
+            _ = _masterLogService.UpdateSettings(profile.MonitorLogFilesSettings);
             
             Application.Current.Dispatcher.Invoke(() =>
             {

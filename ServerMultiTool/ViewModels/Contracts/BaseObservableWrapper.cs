@@ -2,4 +2,4 @@
 
 namespace ServerMultiTool.ViewModels.Contracts;
 
-public class BaseViewModel : ObservableObject;
+public class BaseObservableWrapper : ObservableObject;

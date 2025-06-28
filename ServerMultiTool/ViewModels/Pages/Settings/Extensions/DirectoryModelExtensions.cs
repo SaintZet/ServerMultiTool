@@ -3,8 +3,9 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using ServerMultiTool.Model.Common;
+using ServerMultiTool.ViewModels.Pages.Settings.Wrappers;
 
-namespace ServerMultiTool.ViewModels.Data;
+namespace ServerMultiTool.ViewModels.Pages.Settings.Extensions;
 
 public static class DirectoryModelExtensions
 {

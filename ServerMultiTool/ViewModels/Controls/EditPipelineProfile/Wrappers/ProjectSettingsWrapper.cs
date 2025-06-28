@@ -4,42 +4,28 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ServerMultiTool.Model.Common;
 using ServerMultiTool.Model.ContinuousIntegration.MsBuild;
+using ServerMultiTool.ViewModels.Contracts;
 
 namespace ServerMultiTool.ViewModels.Controls.EditPipelineProfile.Wrappers;
 
-public partial class ProjectSettingsWrapper : ObservableObject
+public partial class ProjectSettingsWrapper : BaseObservableWrapper
 {
     private readonly ProjectSettings _settings;
 
     // Project Properties
-    [ObservableProperty]
-    private string _projectName;
-
-    [ObservableProperty]
-    private string _projectPath;
+    [ObservableProperty] private string _projectName;
+    [ObservableProperty] private string _projectPath;
 
     // MsBuild Settings
-    [ObservableProperty]
-    private bool _msBuildEnabled;
-
-    [ObservableProperty]
-    private ObservableCollection<string>? _buildParameters;
-
-    [ObservableProperty]
-    private ObservableCollection<ProcessEventWrapper>? _preBuildEvents;
-
-    [ObservableProperty]
-    private ObservableCollection<ProcessEventWrapper>? _postBuildEvents;
+    [ObservableProperty] private bool _msBuildEnabled;
+    [ObservableProperty] private ObservableCollection<string>? _buildParameters;
+    [ObservableProperty] private ObservableCollection<ProcessEventWrapper>? _preBuildEvents;
+    [ObservableProperty] private ObservableCollection<ProcessEventWrapper>? _postBuildEvents;
 
     // Delivery Settings
-    [ObservableProperty]
-    private bool _deliveryEnabled;
-
-    [ObservableProperty]
-    private bool _deliveryBin;
-
-    [ObservableProperty]
-    private ObservableCollection<DeliveryDirectoryWrapper>? _deliveryDirectories;
+    [ObservableProperty] private bool _deliveryEnabled;
+    [ObservableProperty] private bool _deliveryBin;
+    [ObservableProperty] private ObservableCollection<DeliveryDirectoryWrapper>? _deliveryDirectories;
 
     public ProjectSettingsWrapper(ProjectSettings settings)
     {

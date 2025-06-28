@@ -5,11 +5,11 @@ using System.Windows.Data;
 using System.Windows.Media;
 using ServerMultiTool.Model.Common.Logs;
 
-namespace ServerMultiTool.ViewModels.Converters
+namespace ServerMultiTool.ViewModels.Pages.Pipeline.Converters
 {
     public class LogMessageTypeToColorConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
             if (value is not LogMessageType messageType)
                 return SystemColors.ControlTextBrush;

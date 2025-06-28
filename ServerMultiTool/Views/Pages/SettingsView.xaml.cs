@@ -1,6 +1,7 @@
 using System.Windows.Controls;
 using ServerMultiTool.ViewModels.Controls;
 using ServerMultiTool.ViewModels.Pages;
+using SettingsViewModel = ServerMultiTool.ViewModels.Pages.Settings.SettingsViewModel;
 
 namespace ServerMultiTool.Views.Pages;
 

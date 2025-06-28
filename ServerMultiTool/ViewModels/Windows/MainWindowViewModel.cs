@@ -46,13 +46,13 @@ namespace ServerMultiTool.ViewModels.Windows
         }
 
         [RelayCommand]
-        private void Close()
+        private static void Close()
         {
             Application.Current.MainWindow?.Close();
         }
 
         [RelayCommand]
-        private void Restore()
+        private static void Restore()
         {
             var window = Application.Current.MainWindow;
             if (window != null)
@@ -62,7 +62,7 @@ namespace ServerMultiTool.ViewModels.Windows
         }
 
         [RelayCommand]
-        private void Minimize()
+        private static void Minimize()
         {
             var window = Application.Current.MainWindow;
             if (window != null)
@@ -72,7 +72,7 @@ namespace ServerMultiTool.ViewModels.Windows
         }
 
         [RelayCommand]
-        private void ChangeTheme()
+        private static void ChangeTheme()
         {
             var theme = ThemesController.ThemeTypes.Light;
             

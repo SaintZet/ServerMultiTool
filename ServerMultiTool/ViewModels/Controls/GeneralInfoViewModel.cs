@@ -23,7 +23,7 @@ public class GeneralInfoViewModel : BaseViewModel
                 return;
             
             _selectedSolutionDirectory = value;
-            OnUpdateSelectedSolutionDirectory(value);
+            _ = OnUpdateSelectedSolutionDirectory(value);
             OnPropertyChanged();
         }
     }

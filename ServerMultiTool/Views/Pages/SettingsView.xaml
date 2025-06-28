@@ -3,14 +3,14 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-      xmlns:converters="clr-namespace:ServerMultiTool.ViewModels.Converters"
       xmlns:controls="clr-namespace:ServerMultiTool.Views.Controls"
       xmlns:pages="clr-namespace:ServerMultiTool.ViewModels.Pages"
+      xmlns:settings="clr-namespace:ServerMultiTool.ViewModels.Pages.Settings"
       mc:Ignorable="d" 
       d:DesignHeight="750" d:DesignWidth="700"
       Title="Pipeline" 
       FontFamily="Poppins" 
-      d:DataContext="{d:DesignInstance Type=pages:SettingsViewModel, IsDesignTimeCreatable=True}"
+      d:DataContext="{d:DesignInstance Type=settings:SettingsViewModel, IsDesignTimeCreatable=True}"
       >
     
     <Border CornerRadius="8" Background="{DynamicResource SecondaryBackgroundColor}">

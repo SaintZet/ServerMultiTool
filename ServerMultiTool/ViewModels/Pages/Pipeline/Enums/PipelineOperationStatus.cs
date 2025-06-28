@@ -1,4 +1,4 @@
-namespace ServerMultiTool.ViewModels.Data;
+namespace ServerMultiTool.ViewModels.Pages.Pipeline.Enums;
 
 public enum PipelineOperationStatus
 {

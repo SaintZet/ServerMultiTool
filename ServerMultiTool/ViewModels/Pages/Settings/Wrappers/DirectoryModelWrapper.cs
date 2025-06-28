@@ -1,9 +1,9 @@
 ﻿using ServerMultiTool.Model.Common;
-using CommunityToolkit.Mvvm.ComponentModel;
+using ServerMultiTool.ViewModels.Contracts;
 
-namespace ServerMultiTool.ViewModels.Data;
+namespace ServerMultiTool.ViewModels.Pages.Settings.Wrappers;
 
-public class DirectoryModelWrapper : ObservableObject
+public class DirectoryModelWrapper : BaseObservableWrapper
 {
     private DirectoryModel _directoryModel;
 

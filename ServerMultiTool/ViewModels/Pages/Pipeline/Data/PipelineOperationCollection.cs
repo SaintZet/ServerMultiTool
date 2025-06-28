@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
+using ServerMultiTool.ViewModels.Pages.Pipeline.Wrappers;
 
-namespace ServerMultiTool.ViewModels.Data;
+namespace ServerMultiTool.ViewModels.Pages.Pipeline.Data;
 
 public class PipelineOperationCollection : ObservableCollection<PipelineOperationWrapper>
 {

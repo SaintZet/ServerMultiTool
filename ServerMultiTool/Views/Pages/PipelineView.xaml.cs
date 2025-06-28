@@ -1,6 +1,7 @@
 ﻿using System.Windows.Controls;
 using ServerMultiTool.ViewModels.Controls;
 using ServerMultiTool.ViewModels.Pages;
+using PipelineViewModel = ServerMultiTool.ViewModels.Pages.Pipeline.PipelineViewModel;
 
 namespace ServerMultiTool.Views.Pages
 {

@@ -3,19 +3,20 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-      xmlns:converters="clr-namespace:ServerMultiTool.ViewModels.Converters"
       xmlns:controls="clr-namespace:ServerMultiTool.Views.Controls"
       xmlns:pages="clr-namespace:ServerMultiTool.ViewModels.Pages"
+      xmlns:pipeline="clr-namespace:ServerMultiTool.ViewModels.Pages.Pipeline"
+      xmlns:converters1="clr-namespace:ServerMultiTool.ViewModels.Pages.Pipeline.Converters"
       mc:Ignorable="d" 
       d:DesignHeight="600" d:DesignWidth="700"
       Title="Pipeline" 
       FontFamily="Poppins" 
-      d:DataContext="{d:DesignInstance Type=pages:PipelineViewModel, IsDesignTimeCreatable=True}">
+      d:DataContext="{d:DesignInstance Type=pipeline:PipelineViewModel, IsDesignTimeCreatable=True}">
     
     <Page.Resources>
-        <converters:PipelineStatusFillConverter x:Key="PipelineStatusFillConverter"/>
+        <converters1:PipelineStatusFillConverter x:Key="PipelineStatusFillConverter"/>
         <!-- <converters:LogMessageTypeToColorConverter x:Key="LogMessageTypeToColorConverter"/> -->
-        <converters:StringToVisibilityConverter x:Key="StringToVisibilityConverter"/>
+        <converters1:StringToVisibilityConverter x:Key="StringToVisibilityConverter"/>
     </Page.Resources>
 
     <Border CornerRadius="8" Background="{DynamicResource SecondaryBackgroundColor}">

@@ -3,13 +3,13 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
-using ServerMultiTool.ViewModels.Data;
+using ServerMultiTool.ViewModels.Pages.Pipeline.Enums;
 
-namespace ServerMultiTool.ViewModels.Converters
+namespace ServerMultiTool.ViewModels.Pages.Pipeline.Converters
 {
     public class PipelineStatusFillConverter : IValueConverter
     {
-        public object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
             if (value is not PipelineOperationStatus milestoneIndicator) 
                 return DependencyProperty.UnsetValue;
@@ -24,7 +24,7 @@ namespace ServerMultiTool.ViewModels.Converters
             };
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
         }
