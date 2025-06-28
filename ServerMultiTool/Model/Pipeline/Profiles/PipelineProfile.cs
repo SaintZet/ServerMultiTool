@@ -7,7 +7,7 @@ using ServerMultiTool.Model.ContinuousIntegration.Git;
 namespace ServerMultiTool.Model.Pipeline.Profiles;
 
 [Serializable]
-public record struct PipelineProfile
+public class PipelineProfile
 {
     public string Name { get; set; }
     public ProjectSettings[] SettingsPerProject { get; set; }

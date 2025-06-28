@@ -1,3 +1,4 @@
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -9,17 +10,24 @@ using ServerMultiTool.Model.Settings;
 using ServerMultiTool.ViewModels.Contracts;
 using ServerMultiTool.ViewModels.Controls;
 using ServerMultiTool.ViewModels.Data;
+using EditPipelineProfileViewModel = ServerMultiTool.ViewModels.Controls.EditPipelineProfile.EditPipelineProfileViewModel;
 
 namespace ServerMultiTool.ViewModels.Pages;
 
 public partial class SettingsViewModel : BaseViewModel
 {
     private readonly GeneralInfoViewModel _generalInfo;
-
     public GeneralInfoViewModel GeneralInfo
     {
         get => _generalInfo;
         init => SetProperty(ref _generalInfo, value);
+    }
+    
+    private readonly EditPipelineProfileViewModel _editPipelineProfile;
+    public EditPipelineProfileViewModel EditPipelineProfile
+    {
+        get => _editPipelineProfile;
+        init => SetProperty(ref _editPipelineProfile, value);
     }
     
     private bool _hasUnsavedChanges;
@@ -49,20 +57,34 @@ public partial class SettingsViewModel : BaseViewModel
         set => SetProperty(ref _selectedHttpDirectory, value);
     }
     
-    
     public ObservableCollection<PipelineProfile> PipelineProfiles { get; set; } = new();
     private PipelineProfile _selectedPipelineProfile;
 
     public PipelineProfile SelectedPipelineProfile
     {
         get => _selectedPipelineProfile;
-        set => SetProperty(ref _selectedPipelineProfile, value);
+        set
+        {
+            if (value.Equals(_selectedPipelineProfile)) 
+                return;
+
+            if (!SetProperty(ref _selectedPipelineProfile, value)) 
+               return;
+
+            EditPipelineProfile?.UpdateFromProfile(value);
+        }
     }
 
     public SettingsViewModel()
     {
         LoadSettings();
         LoadProfiles();
+
+        if (!PipelineProfiles.Any()) 
+            return;
+        
+        SelectedPipelineProfile = PipelineProfiles.First();
+        _editPipelineProfile = new EditPipelineProfileViewModel(SelectedPipelineProfile);
     }
 
     private void LoadSettings()
@@ -105,6 +127,8 @@ public partial class SettingsViewModel : BaseViewModel
         _initialSolutionDirectories = SolutionDirectories.Clone();
         _initialHttpDirectories = HttpDirectories.Clone();
 
+        // EditPipelineProfile.ApplyToProfile(SelectedPipelineProfile);
+
         PipelineProfilesService.SavePipelineProfiles(PipelineProfiles.ToList());
         
         GeneralInfo.UpdateData();
@@ -126,19 +150,26 @@ public partial class SettingsViewModel : BaseViewModel
     public void AddPipelineProfile()
     {
         HasUnsavedChanges = true;
-        PipelineProfiles.Add(new PipelineProfile
+        var newProfile = new PipelineProfile
         {
             Name = "New Profile", 
-            SettingsPerProject = new ProjectSettings[] { },
-        });
+            SettingsPerProject = []
+        };
+        
+        PipelineProfiles.Add(newProfile);
+        SelectedPipelineProfile = newProfile;
     }
+
 
     [RelayCommand]
     public void RemovePipelineProfile()
     {
         HasUnsavedChanges = true;
         PipelineProfiles.Remove(SelectedPipelineProfile);
+        
+        SelectedPipelineProfile = PipelineProfiles.Any() ? PipelineProfiles.First() : null;
     }
+
 
     [RelayCommand]
     public void AddSolutionDirectory()

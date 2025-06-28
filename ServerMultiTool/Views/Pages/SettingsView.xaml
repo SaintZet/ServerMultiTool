@@ -213,119 +213,100 @@
                     </Border>
                 </TabItem>
                 <TabItem Header="Pipeline Profiles">
-    <Border BorderThickness="0.8" BorderBrush="Gainsboro" Padding="10">
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-            
-            <Grid Grid.Row="0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-                
-                <Label Grid.Row="0"
-                       FontSize="14"
-                       Foreground="{DynamicResource PrimaryTextColor}"
-                       Content="Pipeline Profiles:"
-                       Margin="0,0,0,0"/>
-                
-                <ListBox Grid.Row="1"
-                         Height="190"
-                         ItemsSource="{Binding PipelineProfiles}"
-                         SelectedItem="{Binding SelectedPipelineProfile}"
-                         Background="{DynamicResource TertiaryBackgroundColor}"
-                         Foreground="{DynamicResource PrimaryTextColor}"
-                         Padding="0,0,0,0"
-                         Margin="0,0,0,0">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Vertical" Margin="0,5,0,5">
-                                <TextBox Text="{Binding Name}"
-                                         FontWeight="Bold"
-                                         VerticalAlignment="Center"
-                                         Margin="0,0,0,5"
-                                         Background="Transparent"
+                    <Border BorderThickness="0.8" BorderBrush="Gainsboro" Padding="10">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            
+                            <Grid Grid.Row="0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                
+                                <Label Grid.Row="0"
+                                       FontSize="14"
+                                       Foreground="{DynamicResource PrimaryTextColor}"
+                                       Content="Pipeline Profiles:"
+                                       Margin="0,0,0,0"/>
+                                
+                                <ListBox Grid.Row="1"
+                                         Height="160"
+                                         ItemsSource="{Binding PipelineProfiles}"
+                                         SelectedItem="{Binding SelectedPipelineProfile}"
+                                         Background="{DynamicResource TertiaryBackgroundColor}"
                                          Foreground="{DynamicResource PrimaryTextColor}"
-                                         BorderThickness="0"/>
-                                <ItemsControl ItemsSource="{Binding Operations}">
-                                    <ItemsControl.ItemTemplate>
+                                         Padding="0,0,0,0"
+                                         Margin="0,0,0,0">
+                                    <ListBox.ItemTemplate>
                                         <DataTemplate>
-                                            <TextBlock Text="{Binding DisplayName}"
-                                                      Foreground="{DynamicResource SecondaryTextColor}"
-                                                      Margin="10,2,0,0"/>
+                                            <StackPanel Orientation="Vertical" Margin="0,5,0,5">
+                                                <TextBox Text="{Binding Name}"
+                                                         FontWeight="Bold"
+                                                         VerticalAlignment="Center"
+                                                         Margin="0,0,0,5"
+                                                         Background="Transparent"
+                                                         Foreground="{DynamicResource PrimaryTextColor}"
+                                                         BorderThickness="0"/>
+                                                <ItemsControl ItemsSource="{Binding Operations}">
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <TextBlock Text="{Binding DisplayName}"
+                                                                      Foreground="{DynamicResource SecondaryTextColor}"
+                                                                      Margin="10,2,0,0"/>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
+                                            </StackPanel>
                                         </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                            </StackPanel>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-                
-                <StackPanel Grid.Row="2"
-                           Orientation="Horizontal"
-                           HorizontalAlignment="Left"
-                           VerticalAlignment="Top"
-                           Margin="0,5,0,0">
-                    <Button Content="Add"
-                            Command="{Binding AddPipelineProfileCommand}"
-                            Style="{StaticResource CustomButtonStyle}"
-                            Width="75"
-                            Height="20"
-                            Margin="0,5,5,0"/>
-                    <Button Content="Delete"
-                            Command="{Binding RemovePipelineProfileCommand}"
-                            CommandParameter="{Binding SelectedPipelineProfile}"
-                            Style="{StaticResource CustomButtonStyle}"
-                            Width="75"
-                            Height="20"
-                            Margin="0,5,5,0"/>
-                    <Button Content="Edit"
-                            Command="{Binding EditPipelineProfileCommand}"
-                            CommandParameter="{Binding SelectedPipelineProfile}"
-                            Style="{StaticResource CustomButtonStyle}"
-                            Width="75"
-                            Height="20"
-                            Margin="0,5,5,0"/>
-                </StackPanel>
-            </Grid>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                                
+                                <StackPanel Grid.Row="2"
+                                           Orientation="Horizontal"
+                                           HorizontalAlignment="Left"
+                                           VerticalAlignment="Top"
+                                           Margin="0,5,0,0">
+                                    <Button Content="Add"
+                                            Command="{Binding AddPipelineProfileCommand}"
+                                            Style="{StaticResource CustomButtonStyle}"
+                                            Width="75"
+                                            Height="20"
+                                            Margin="0,5,5,0"/>
+                                    <Button Content="Delete"
+                                            Command="{Binding RemovePipelineProfileCommand}"
+                                            CommandParameter="{Binding SelectedPipelineProfile}"
+                                            Style="{StaticResource CustomButtonStyle}"
+                                            Width="75"
+                                            Height="20"
+                                            Margin="0,5,5,0"/>
+                                </StackPanel>
+                            </Grid>
 
-            <Grid Grid.Row="1" Margin="0,15,0,0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-                
-                <Label Grid.Row="0"
-                       Content="Available Operations:"
-                       FontSize="14"
-                       Foreground="{DynamicResource PrimaryTextColor}"/>
-                
-                <ListBox Grid.Row="1"
-                         Height="190"
-                         ItemsSource="{Binding AvailableOperations}"
-                         Background="{DynamicResource TertiaryBackgroundColor}"
-                         Foreground="{DynamicResource PrimaryTextColor}">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Vertical" Margin="0,5,0,5">
-                                <TextBlock Text="{Binding DisplayName}"
-                                          FontWeight="Bold"/>
-                                <TextBlock Text="{Binding Description}"
-                                          Foreground="{DynamicResource SecondaryTextColor}"
-                                          TextWrapping="Wrap"/>
-                            </StackPanel>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-            </Grid>
-        </Grid>
-    </Border>
-</TabItem>
+                            <Grid Grid.Row="1" Margin="0,15,0,0" >
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                            
+                                <Label Grid.Row="0"
+                                       Content="Edit Pipeline Profile"
+                                       FontSize="14"
+                                       Foreground="{DynamicResource PrimaryTextColor}"/>
+                                
+                                <controls:EditPipelineProfileControl 
+                                    Grid.Row="1"
+                                    Background="{DynamicResource TertiaryBackgroundColor}"
+                                    DataContext="{Binding .EditPipelineProfile}"
+                                    Height="250"/>
+                            </Grid>
+                        </Grid>
+                    </Border>
+                </TabItem>
             </TabControl>
             
             <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
