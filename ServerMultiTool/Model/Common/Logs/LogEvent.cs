@@ -2,18 +2,11 @@ using System;
 
 namespace ServerMultiTool.Model.Common.Logs;
 
-public class LogEvent
+public class LogEvent(DateTime timestamp, string? sender, LogMessage message)
 {
-    public DateTime Timestamp { get; }
-    public string? Sender { get; }
-    public LogMessage  Message { get; }
-
-    public LogEvent(DateTime timestamp, string? sender, LogMessage message)
-    {
-        Timestamp = timestamp;
-        Sender = sender;
-        Message = message;
-    }
+    public DateTime Timestamp { get; } = timestamp;
+    public string? Sender { get; } = sender;
+    public LogMessage  Message { get; } = message;
 
     public override bool Equals(object? obj)
     {

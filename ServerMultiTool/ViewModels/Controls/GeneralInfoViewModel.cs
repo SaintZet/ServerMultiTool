@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Threading.Tasks;
 using ServerMultiTool.Model.Common;
 using ServerMultiTool.Model.ContinuousIntegration.Git;
 using ServerMultiTool.Model.Settings;
@@ -27,9 +28,14 @@ public class GeneralInfoViewModel : BaseViewModel
         }
     }
     
-    private async void OnUpdateSelectedSolutionDirectory(DirectoryModel value)
+    private async Task OnUpdateSelectedSolutionDirectory(DirectoryModel value)
     {
         CurrentGitBranch = await _gitService.GetCurrentBranchName(value.Path);
+
+        var appSettings = AppSettingsService.AppSettings;
+        appSettings.CurrentSolutionDirectoryName = value.Name;
+        
+        AppSettingsService.SaveAppSettings(appSettings);
     }
 
     public DirectoryModel[] HttpDirectories { get; set; }
@@ -44,8 +50,17 @@ public class GeneralInfoViewModel : BaseViewModel
                 return;
             
             _selectedHttpDirectory = value;
+            OnUpdateSelectedHttpDirectory(value);
             OnPropertyChanged();
         }
+    }
+
+    private static void OnUpdateSelectedHttpDirectory(DirectoryModel value)
+    {
+        var appSettings = AppSettingsService.AppSettings;
+        appSettings.CurrentHttpDirectoryName = value.Name;
+        
+        AppSettingsService.SaveAppSettings(appSettings);
     }
 
     private string? _currentGitBranch;

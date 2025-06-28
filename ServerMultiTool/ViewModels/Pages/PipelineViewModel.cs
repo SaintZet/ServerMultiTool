@@ -42,6 +42,7 @@ namespace ServerMultiTool.ViewModels.Pages
 
                 _selectedPipelineProfile = value;
 
+                UpdateSettings(value);
                 UpdatePipelineOperations(value);
                 UpdateMasterLogService(value);
 
@@ -87,6 +88,14 @@ namespace ServerMultiTool.ViewModels.Pages
             }
             
             GeneralInfo.CanChangeStates = true;
+        }
+
+        private static void UpdateSettings(PipelineProfile value)
+        {
+            var appSettings = AppSettingsService.AppSettings;
+            appSettings.CurrentPipelineProfileName = value.Name;
+            
+            AppSettingsService.SaveAppSettings(appSettings);
         }
 
         private void UpdatePipelineOperations(PipelineProfile pipeline)
