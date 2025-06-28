@@ -13,7 +13,6 @@
         <converters1:DeliveryDirectoryConverter x:Key="DeliveryDirectoryConverter"/>
     </UserControl.Resources>
 
-    
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel Margin="10">
             <!-- Поле для имени -->
@@ -22,7 +21,7 @@
                           VerticalAlignment="Center"
                           Margin="0,0,10,0"
                           Foreground="{DynamicResource PrimaryTextColor}"/>
-                <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
+                <TextBox Text="{Binding Profile.Name, UpdateSourceTrigger=PropertyChanged}"
                          Height="25"/>
             </DockPanel>
 
@@ -33,30 +32,36 @@
                           Foreground="{DynamicResource PrimaryTextColor}"/>
                 
                 <CheckBox Content="Git" 
-                         IsChecked="{Binding GitEnabled}"
+                         IsChecked="{Binding Profile.GitSettings.Enable}"
                          Margin="5"
                          Foreground="{DynamicResource PrimaryTextColor}"/>
                 
                 <CheckBox Content="IIS" 
-                         IsChecked="{Binding IisEnabled}"
+                         IsChecked="{Binding Profile.InternetInformationSettings.Enable}"
                          Margin="5"
                          Foreground="{DynamicResource PrimaryTextColor}"/>
                 
                 <CheckBox Content="SQL" 
-                         IsChecked="{Binding SqlEnabled}"
+                         IsChecked="{Binding Profile.SqlExecutionSettings.Enable}"
                          Margin="5"
                          Foreground="{DynamicResource PrimaryTextColor}"/>
                 
                 <CheckBox Content="Web Browser" 
-                         IsChecked="{Binding WebBrowserEnabled}"
+                         IsChecked="{Binding Profile.WebBrowserSettings.Enable}"
                          Margin="5"
                          Foreground="{DynamicResource PrimaryTextColor}"/>
                 
                 <CheckBox Content="HTTP Monitoring" 
-                         IsChecked="{Binding HttpMonitoringEnabled}"
+                         IsChecked="{Binding Profile.HttpMonitoringSettings.Enable}"
+                         Margin="5"
+                         Foreground="{DynamicResource PrimaryTextColor}"/>
+                
+                <CheckBox Content="Monitor Log Files" 
+                         IsChecked="{Binding Profile.MonitorLogFilesSettings.Enable}"
                          Margin="5"
                          Foreground="{DynamicResource PrimaryTextColor}"/>
             </StackPanel>
+
 
             <!-- Настройки проектов -->
             <StackPanel>
@@ -179,26 +184,6 @@
                                                 </Button>
                                             </StackPanel>
 
-                                            <!-- Post-Build Events -->
-                                            <TextBlock Text="Post-Build Events:" Margin="0,10,0,5"/>
-                                            <ItemsControl ItemsSource="{Binding PostBuildEvents}">
-                                                <ItemsControl.ItemTemplate>
-                                                    <DataTemplate>
-                                                        <Grid Margin="0,2">
-                                                            <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition Width="*"/>
-                                                                <ColumnDefinition Width="*"/>
-                                                            </Grid.ColumnDefinitions>
-                                                            <TextBox Text="{Binding Path, Mode=TwoWay}" 
-                                                                     Margin="0,0,5,0"
-                                                                     ToolTip="Path"/>
-                                                            <TextBox Text="{Binding Arguments, Mode=TwoWay}" 
-                                                                     Grid.Column="1"
-                                                                     ToolTip="Arguments"/>
-                                                        </Grid>
-                                                    </DataTemplate>
-                                                </ItemsControl.ItemTemplate>
-                                            </ItemsControl>
                                             <!-- Post-Build Events -->
                                             <TextBlock Text="Post-Build Events:" Margin="0,10,0,5"/>
                                             <ItemsControl ItemsSource="{Binding PostBuildEvents}">

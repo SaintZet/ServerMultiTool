@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
 using CommunityToolkit.Mvvm.Input;
+using ServerMultiTool.Model.Common.DefaultValues;
 using ServerMultiTool.Model.Pipeline.Profiles;
 using ServerMultiTool.Model.Settings;
 using ServerMultiTool.ViewModels.Contracts;
@@ -58,13 +59,13 @@ public partial class SettingsViewModel : BaseViewModel
     
     public ObservableCollection<PipelineProfile> PipelineProfiles { get; set; } = new();
     
-    private PipelineProfile _selectedPipelineProfile;
-    public PipelineProfile SelectedPipelineProfile
+    private PipelineProfile? _selectedPipelineProfile;
+    public PipelineProfile? SelectedPipelineProfile
     {
         get => _selectedPipelineProfile;
         set
         {
-            if (!SetProperty(ref _selectedPipelineProfile, value)) 
+            if (value is null|| !SetProperty(ref _selectedPipelineProfile, value)) 
                return;
 
             EditPipelineProfile.UpdateFromProfile(value);
@@ -120,8 +121,6 @@ public partial class SettingsViewModel : BaseViewModel
         _initialSolutionDirectories = SolutionDirectories.Clone();
         _initialHttpDirectories = HttpDirectories.Clone();
 
-        // EditPipelineProfile.ApplyToProfile(SelectedPipelineProfile);
-
         PipelineProfilesService.SavePipelineProfiles(PipelineProfiles.ToList());
         
         GeneralInfo.UpdateData();
@@ -142,27 +141,26 @@ public partial class SettingsViewModel : BaseViewModel
     [RelayCommand]
     private void AddPipelineProfile()
     {
-        HasUnsavedChanges = true;
-        var newProfile = new PipelineProfile
-        {
-            Name = "New Profile", 
-            SettingsPerProject = []
-        };
+        var newProfile = DefaultProfiles.GetDevProfile();
+        newProfile.Name = "New Profile";
         
         PipelineProfiles.Add(newProfile);
         SelectedPipelineProfile = newProfile;
+        
+        HasUnsavedChanges = true;
     }
-
 
     [RelayCommand]
     private void RemovePipelineProfile()
     {
-        HasUnsavedChanges = true;
-        PipelineProfiles.Remove(SelectedPipelineProfile);
+        if (SelectedPipelineProfile is null) 
+            return;
         
+        PipelineProfiles.Remove(SelectedPipelineProfile);
         SelectedPipelineProfile = PipelineProfiles.Any() ? PipelineProfiles.First() : null;
-    }
 
+        HasUnsavedChanges = true;
+    }
 
     [RelayCommand]
     private void AddSolutionDirectory()
