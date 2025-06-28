@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace ServerMultiTool.Model.ContinuousDeployment.Delivery;
 
@@ -7,12 +8,12 @@ public class DeliverySettings
 {
     public bool Enable { get; set; }
     public bool DeliveryBin { get; set; }
-    public DeliveryDirectories[] DeliveryDirectory { get; set; }
+    public List<DeliveryDirectories>? DeliveryDirectory { get; set; }
 }
 
 [Serializable]
 public class DeliveryDirectories
 {
-    public string Source { get; set; }
-    public string Destination { get; set; }
+    public required string Source { get; set; }
+    public required string Destination { get; set; }
 }

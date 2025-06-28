@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace ServerMultiTool.Model.ContinuousIntegration.MsBuild;
 
@@ -6,15 +7,15 @@ namespace ServerMultiTool.Model.ContinuousIntegration.MsBuild;
 public class MsBuildSettings
 {
     public bool Enable { get; set; }
-    public string[] Parameters { get; set; }
-    public ProcessEvent[] PreBuildEvents { get; set; }
-    public ProcessEvent[] PostBuildEvents { get; set; }
+    public List<string>? Parameters { get; set; }
+    public List<ProcessEvent>? PreBuildEvents { get; set; }
+    public List<ProcessEvent>? PostBuildEvents { get; set; }
 }
 
 
 [Serializable]
 public class ProcessEvent
 {
-    public string Path { get; set; }
-    public string Arguments { get; set; }
+    public required string Path { get; set; }
+    public string? Arguments { get; set; }
 }

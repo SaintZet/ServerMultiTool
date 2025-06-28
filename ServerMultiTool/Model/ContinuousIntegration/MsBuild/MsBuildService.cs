@@ -10,17 +10,12 @@ using ServerMultiTool.Model.Pipeline.Contracts;
 
 namespace ServerMultiTool.Model.ContinuousIntegration.MsBuild;
 
-public class MsBuildService : PipelineOperation
+public class MsBuildService(IEnumerable<ProjectSettings> settings) : PipelineOperation
 {
-    private readonly ProjectSettings[] _settings;
-    
-    public MsBuildService(ProjectSettings[] settings) => 
-        _settings = settings;
-
     protected override async Task<OperationResult> ExecuteOperationsAsync()
     {
-        var buildTasks = _settings
-            .Where(settings => settings.MsBuildSettings.Enable)
+        var buildTasks = settings
+            .Where(s => s.MsBuildSettings.Enable)
             .Select(ExecuteMsBuildAsync);
 
         await Task.WhenAll(buildTasks);

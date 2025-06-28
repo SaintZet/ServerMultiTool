@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using ServerMultiTool.Model.ContinuousDeployment.Delivery;
 using ServerMultiTool.Model.ContinuousDeployment.Integrations;
@@ -13,9 +14,9 @@ public static class DefaultProfiles
     public static PipelineProfile GetDevProfile() => new()
     {
         Name = "Dev Profile",
-        SettingsPerProject = new ProjectSettings[]
-        {
-            new()
+        SettingsPerProject =
+        [
+            new ProjectSettings
             {
                 Project = new DirectoryModel
                 {
@@ -25,7 +26,7 @@ public static class DefaultProfiles
                 MsBuildSettings = new MsBuildSettings
                 {
                     Enable = false,
-                    Parameters = new[]{"/p:Configuration=Debug", "/p:PreBuildEvent=", "/t:build"}
+                    Parameters = ["/p:Configuration=Debug", "/p:PreBuildEvent=", "/t:build"]
                 },
                 DeliverySettings = new DeliverySettings
                 {
@@ -33,7 +34,7 @@ public static class DefaultProfiles
                     DeliveryBin = false,
                 }
             },
-            new()
+            new ProjectSettings
             {
                 Project = new DirectoryModel
                 {
@@ -43,15 +44,15 @@ public static class DefaultProfiles
                 MsBuildSettings = new MsBuildSettings
                 {
                     Enable = false,
-                    Parameters = new[]{"/p:Configuration=Debug", "/p:PreBuildEvent=", "/t:build"}
+                    Parameters = ["/p:Configuration=Debug", "/p:PreBuildEvent=", "/t:build"]
                 },
                 DeliverySettings = new DeliverySettings
                 {
                     Enable = true,
                     DeliveryBin = false,
                 }
-            },
-        },
+            }
+        ],
         GitSettings = new GitSettings
         {
             Enable = false,
@@ -87,9 +88,9 @@ public static class DefaultProfiles
     public static PipelineProfile GetStandardProfile() => new()
     {
         Name = "Standard Profile",
-        SettingsPerProject = new ProjectSettings[]
-        {
-            new()
+        SettingsPerProject =
+        [
+            new ProjectSettings
             {
                 Project = new DirectoryModel
                 {
@@ -99,7 +100,7 @@ public static class DefaultProfiles
                 MsBuildSettings = new MsBuildSettings
                 {
                     Enable = true,
-                    Parameters = new[]{"/p:Configuration=Debug", "/p:PreBuildEvent=", "/t:build"}
+                    Parameters = new List<string>() { "/p:Configuration=Debug", "/p:PreBuildEvent=", "/t:build" }
                 },
                 DeliverySettings = new DeliverySettings
                 {
@@ -107,7 +108,7 @@ public static class DefaultProfiles
                     DeliveryBin = true,
                 }
             },
-            new()
+            new ProjectSettings
             {
                 Project = new DirectoryModel
                 {
@@ -117,15 +118,15 @@ public static class DefaultProfiles
                 MsBuildSettings = new MsBuildSettings
                 {
                     Enable = true,
-                    Parameters = new[]{"/p:Configuration=Debug", "/p:PreBuildEvent=", "/t:build"}
+                    Parameters = ["/p:Configuration=Debug", "/p:PreBuildEvent=", "/t:build"]
                 },
                 DeliverySettings = new DeliverySettings
                 {
                     Enable = true,
                     DeliveryBin = true,
                 }
-            },
-        },
+            }
+        ],
         GitSettings = new GitSettings
         {
             Enable = true,
@@ -163,19 +164,19 @@ public static class DefaultProfiles
     public static PipelineProfile GetExtendedProfile(DirectoryModel solutionDirectory, DirectoryModel httpDirectory) => new()
     {
         Name = "Extended Profile",
-        SettingsPerProject = new ProjectSettings[]
-        {
-            new()
+        SettingsPerProject =
+        [
+            new ProjectSettings
             {
                 Project = new DirectoryModel
                 {
-                    Name = "Master", 
+                    Name = "Master",
                     Path = @"Server\Service.Master\Service.Master.csproj"
                 },
                 MsBuildSettings = new MsBuildSettings
                 {
                     Enable = true,
-                    Parameters = new[]{"/p:Configuration=Debug", "/t:rebuild"},
+                    Parameters = ["/p:Configuration=Debug", "/t:rebuild"]
                 },
                 DeliverySettings = new DeliverySettings
                 {
@@ -183,17 +184,17 @@ public static class DefaultProfiles
                     DeliveryBin = true,
                 }
             },
-            new()
+            new ProjectSettings
             {
                 Project = new DirectoryModel
                 {
-                    Name = "Segment", 
+                    Name = "Segment",
                     Path = @"Server\Service.Segment\Service.Segment.csproj"
                 },
                 MsBuildSettings = new MsBuildSettings
                 {
                     Enable = true,
-                    Parameters = new[]{"/p:Configuration=Debug", "/t:rebuild"}
+                    Parameters = ["/p:Configuration=Debug", "/t:rebuild"]
                 },
                 DeliverySettings = new DeliverySettings
                 {
@@ -201,41 +202,41 @@ public static class DefaultProfiles
                     DeliveryBin = true,
                 }
             },
-            new()
+            new ProjectSettings
             {
                 Project = new DirectoryModel
                 {
-                    Name = "DataBlender", 
+                    Name = "DataBlender",
                     Path = @"Utils\DataBlender\DataBlender.csproj"
                 },
                 MsBuildSettings = new MsBuildSettings
                 {
                     Enable = true,
-                    Parameters = new[]{"/p:Configuration=Debug", "/t:rebuild"},
-                    PostBuildEvents = new ProcessEvent[]
-                    {
-                        new()
+                    Parameters = ["/p:Configuration=Debug", "/t:rebuild"],
+                    PostBuildEvents =
+                    [
+                        new ProcessEvent
                         {
                             Path = @"C:\Raid\Utils\DataBlender\bin\Debug\DataBlender.exe",
                             Arguments = "",
                         }
-                    },
+                    ],
                 },
                 DeliverySettings = new DeliverySettings
                 {
                     Enable = true,
                     DeliveryBin = false,
-                    DeliveryDirectory = new[]
-                    {
+                    DeliveryDirectory =
+                    [
                         new DeliveryDirectories
                         {
-                            Source = Path.Combine(solutionDirectory.Path, @"Server\Service.Master\App_Data\Storage"), 
+                            Source = Path.Combine(solutionDirectory.Path, @"Server\Service.Master\App_Data\Storage"),
                             Destination = Path.Combine(httpDirectory.Path, @"Master\App_Data\Storage\"),
-                        },
-                    },
+                        }
+                    ],
                 }
-            },
-        },
+            }
+        ],
         GitSettings = new GitSettings
         {
             Enable = true,

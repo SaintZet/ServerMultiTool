@@ -9,20 +9,15 @@ using ServerMultiTool.Model.Pipeline.Contracts;
 
 namespace ServerMultiTool.Model.ContinuousDeployment.Delivery;
 
-public class DeliveryService : PipelineOperation
+public class DeliveryService(IEnumerable<ProjectSettings> settings) : PipelineOperation
 {
-    private readonly ProjectSettings[] _settings;
-    
-    public DeliveryService(ProjectSettings[] settings) => 
-        _settings = settings;
-
     protected override async Task<OperationResult> ExecuteOperationsAsync()
     {
-        var deliveryBinTasks = _settings
+        var deliveryBinTasks = settings
             .Where(project => project.DeliverySettings.DeliveryBin)
             .Select(DeliveryProjectBinAsync);
 
-        var deliverySpecificFilesTasks = _settings
+        var deliverySpecificFilesTasks = settings
             .Where(project => project.DeliverySettings.DeliveryDirectory.IsNullOrEmpty() is not true)
             .Select(DeliveryProjectSpecificFilesAsync);
         

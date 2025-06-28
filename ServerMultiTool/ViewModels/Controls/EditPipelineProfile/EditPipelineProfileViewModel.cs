@@ -52,30 +52,6 @@ namespace ServerMultiTool.ViewModels.Controls.EditPipelineProfile
             ProjectSettings.Remove(project);
         }
 
-        [RelayCommand]
-        public void AddBuildParameter()
-        {
-            
-        }
-
-        [RelayCommand]
-        public void AddPreBuildEvent()
-        {
-            
-        }
-
-        [RelayCommand]
-        public void AddPostBuildEvent()
-        {
-            
-        }
-
-        [RelayCommand]
-        public void AddDeliveryDirectory()
-        {
-            
-        }
-
         partial void OnNameChanged(string value) => _profile.Name = value;
 
         partial void OnGitEnabledChanged(bool value) => _profile.GitSettings.Enable = value;
@@ -88,7 +64,7 @@ namespace ServerMultiTool.ViewModels.Controls.EditPipelineProfile
 
         partial void OnHttpMonitoringEnabledChanged(bool value) => _profile.HttpMonitoringSettings.Enable = value;
         
-        partial void OnProjectSettingsChanging(ObservableCollection<Wrappers.ProjectSettingsWrapper> value) =>
-            _profile.SettingsPerProject = value.Select(p => p.ToProjectSettings()).ToArray();
+        partial void OnProjectSettingsChanging(ObservableCollection<ProjectSettingsWrapper> value) =>
+            _profile.SettingsPerProject = [..value.Select(p => p.ToProjectSettings())];
     }
 }

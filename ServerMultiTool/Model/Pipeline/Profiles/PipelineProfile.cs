@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using ServerMultiTool.Model.Common;
 using ServerMultiTool.Model.ContinuousDeployment.Integrations;
 using ServerMultiTool.Model.ContinuousIntegration.GameServerLogs;
@@ -10,7 +11,7 @@ namespace ServerMultiTool.Model.Pipeline.Profiles;
 public class PipelineProfile
 {
     public string Name { get; set; }
-    public ProjectSettings[] SettingsPerProject { get; set; }
+    public List<ProjectSettings> SettingsPerProject { get; set; }
     public GitSettings GitSettings { get; set; }
     public InternetInformationSettings InternetInformationSettings { get; set; }
     public SqlExecutionSettings SqlExecutionSettings { get; set; }

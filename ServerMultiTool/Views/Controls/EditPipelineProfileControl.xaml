@@ -3,10 +3,16 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:controls="clr-namespace:ServerMultiTool.ViewModels.Controls"
              xmlns:editPipelineProfile="clr-namespace:ServerMultiTool.ViewModels.Controls.EditPipelineProfile"
+             xmlns:converters1="clr-namespace:ServerMultiTool.ViewModels.Controls.EditPipelineProfile.Converters"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=editPipelineProfile:EditPipelineProfileViewModel, IsDesignTimeCreatable=True}">
+    
+    <UserControl.Resources>
+        <converters1:ProcessEventConverter x:Key="ProcessEventConverter"/>
+        <converters1:DeliveryDirectoryConverter x:Key="DeliveryDirectoryConverter"/>
+    </UserControl.Resources>
+
     
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel Margin="10">
@@ -112,13 +118,20 @@
                                                     </DataTemplate>
                                                 </ItemsControl.ItemTemplate>
                                             </ItemsControl>
-                                            <Button Content="Add Parameter"
-                                                    Command="{Binding DataContext.AddBuildParameterCommand,
-                                                    RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                    Style="{StaticResource CustomButtonStyle}"
-                                                    Margin="0,5"
-                                                    Width="100"
-                                                    HorizontalAlignment="Left"/>
+                                            <StackPanel Orientation="Horizontal" Margin="0,5">
+                                                <TextBox x:Name="ParameterTextBox"
+                                                         Width="200"
+                                                         Height="25"
+                                                         Margin="0,0,10,0"
+                                                         VerticalContentAlignment="Center"/>
+    
+                                                <Button Content="Add"
+                                                        Command="{Binding AddBuildParameterCommand}"
+                                                        CommandParameter="{Binding ElementName=ParameterTextBox, Path=Text}"
+                                                        Style="{StaticResource CustomButtonStyle}"
+                                                        Width="100"/>
+                                            </StackPanel>
+
 
                                             <!-- Pre-Build Events -->
                                             <TextBlock Text="Pre-Build Events:" Margin="0,10,0,5"/>
@@ -140,13 +153,31 @@
                                                     </DataTemplate>
                                                 </ItemsControl.ItemTemplate>
                                             </ItemsControl>
-                                            <Button Content="Add Pre-Build Event"
-                                                    Command="{Binding DataContext.AddPreBuildEventCommand,
-                                                    RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                    Style="{StaticResource CustomButtonStyle}"
-                                                    Margin="0,5"
-                                                    Width="120"
-                                                    HorizontalAlignment="Left"/>
+                                            <StackPanel>
+                                                <DockPanel Margin="0,5">
+                                                    <TextBlock Text="Path:" Width="60" VerticalAlignment="Center"/>
+                                                    <TextBox x:Name="PathTextBox"
+                                                             Height="25"
+                                                             VerticalContentAlignment="Center"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="0,5">
+                                                    <TextBlock Text="Arguments:" Width="60" VerticalAlignment="Center"/>
+                                                    <TextBox x:Name="ArgumentsTextBox"
+                                                             Height="25"
+                                                             VerticalContentAlignment="Center"/>
+                                                </DockPanel>
+
+                                                <Button Content="Add Pre-Build Event"
+                                                        Command="{Binding AddPreBuildEventCommand}">
+                                                    <Button.CommandParameter>
+                                                        <MultiBinding Converter="{StaticResource ProcessEventConverter}">
+                                                            <Binding ElementName="PathTextBox" Path="Text"/>
+                                                            <Binding ElementName="ArgumentsTextBox" Path="Text"/>
+                                                        </MultiBinding>
+                                                    </Button.CommandParameter>
+                                                </Button>
+                                            </StackPanel>
 
                                             <!-- Post-Build Events -->
                                             <TextBlock Text="Post-Build Events:" Margin="0,10,0,5"/>
@@ -168,13 +199,51 @@
                                                     </DataTemplate>
                                                 </ItemsControl.ItemTemplate>
                                             </ItemsControl>
-                                            <Button Content="Add Post-Build Event"
-                                                    Command="{Binding DataContext.AddPostBuildEventCommand,
-                                                    RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                    Style="{StaticResource CustomButtonStyle}"
-                                                    Margin="0,5"
-                                                    Width="120"
-                                                    HorizontalAlignment="Left"/>
+                                            <!-- Post-Build Events -->
+                                            <TextBlock Text="Post-Build Events:" Margin="0,10,0,5"/>
+                                            <ItemsControl ItemsSource="{Binding PostBuildEvents}">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Grid Margin="0,2">
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="*"/>
+                                                            </Grid.ColumnDefinitions>
+                                                            <TextBox Text="{Binding Path, Mode=TwoWay}" 
+                                                                     Margin="0,0,5,0"
+                                                                     ToolTip="Path"/>
+                                                            <TextBox Text="{Binding Arguments, Mode=TwoWay}" 
+                                                                     Grid.Column="1"
+                                                                     ToolTip="Arguments"/>
+                                                        </Grid>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                            <StackPanel>
+                                                <DockPanel Margin="0,5">
+                                                    <TextBlock Text="Path:" Width="60" VerticalAlignment="Center"/>
+                                                    <TextBox x:Name="PostPathTextBox"
+                                                             Height="25"
+                                                             VerticalContentAlignment="Center"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="0,5">
+                                                    <TextBlock Text="Arguments:" Width="60" VerticalAlignment="Center"/>
+                                                    <TextBox x:Name="PostArgumentsTextBox"
+                                                             Height="25"
+                                                             VerticalContentAlignment="Center"/>
+                                                </DockPanel>
+
+                                                <Button Content="Add Post-Build Event"
+                                                        Command="{Binding AddPostBuildEventCommand}">
+                                                    <Button.CommandParameter>
+                                                        <MultiBinding Converter="{StaticResource ProcessEventConverter}">
+                                                            <Binding ElementName="PostPathTextBox" Path="Text"/>
+                                                            <Binding ElementName="PostArgumentsTextBox" Path="Text"/>
+                                                        </MultiBinding>
+                                                    </Button.CommandParameter>
+                                                </Button>
+                                            </StackPanel>
                                         </StackPanel>
                                     </Expander>
 
@@ -208,13 +277,31 @@
                                                     </DataTemplate>
                                                 </ItemsControl.ItemTemplate>
                                             </ItemsControl>
-                                            <Button Content="Add Directory" 
-                                                    Command="{Binding DataContext.AddDeliveryDirectoryCommand, 
-                                                    RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                    Style="{StaticResource CustomButtonStyle}"
-                                                    Margin="0,5"
-                                                    Width="100"
-                                                    HorizontalAlignment="Left"/>
+                                            <StackPanel>
+                                                <DockPanel Margin="0,5">
+                                                    <TextBlock Text="Source:" Width="60" VerticalAlignment="Center"/>
+                                                    <TextBox x:Name="SourceTextBox"
+                                                             Height="25"
+                                                             VerticalContentAlignment="Center"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="0,5">
+                                                    <TextBlock Text="Destination:" Width="60" VerticalAlignment="Center"/>
+                                                    <TextBox x:Name="DestinationTextBox"
+                                                             Height="25"
+                                                             VerticalContentAlignment="Center"/>
+                                                </DockPanel>
+
+                                                <Button Content="Add Directory"
+                                                        Command="{Binding AddDeliveryDirectoryCommand}">
+                                                    <Button.CommandParameter>
+                                                        <MultiBinding Converter="{StaticResource DeliveryDirectoryConverter}">
+                                                            <Binding ElementName="SourceTextBox" Path="Text"/>
+                                                            <Binding ElementName="DestinationTextBox" Path="Text"/>
+                                                        </MultiBinding>
+                                                    </Button.CommandParameter>
+                                                </Button>
+                                            </StackPanel>
                                         </StackPanel>
                                     </Expander>
                                 </StackPanel>
