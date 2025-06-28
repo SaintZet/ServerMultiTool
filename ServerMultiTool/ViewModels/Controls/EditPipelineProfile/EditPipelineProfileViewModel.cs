@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ServerMultiTool.Model.Common;
 using ServerMultiTool.Model.Pipeline.Profiles;
+using ServerMultiTool.ViewModels.Controls.EditPipelineProfile.Wrappers;
 
 namespace ServerMultiTool.ViewModels.Controls.EditPipelineProfile
 {
@@ -23,29 +24,30 @@ namespace ServerMultiTool.ViewModels.Controls.EditPipelineProfile
 
         [ObservableProperty] private bool _httpMonitoringEnabled;
 
-        [ObservableProperty] private ObservableCollection<Wrappers.ProjectSettingsWrapper> _projectSettings;
+        [ObservableProperty] private ObservableCollection<ProjectSettingsWrapper> _projectSettings;
 
         public void UpdateFromProfile(PipelineProfile profile)
         {
             _profile = profile;
+            
             Name = profile.Name;
             GitEnabled = profile.GitSettings?.Enable ?? false;
             IisEnabled = profile.InternetInformationSettings?.Enable  ?? false;
             SqlEnabled = profile.SqlExecutionSettings?.Enable  ?? false;
             WebBrowserEnabled = profile.WebBrowserSettings?.Enable  ?? false;
             HttpMonitoringEnabled = profile.HttpMonitoringSettings?.Enable  ?? false;
-            ProjectSettings = new ObservableCollection<Wrappers.ProjectSettingsWrapper>(
-                profile.SettingsPerProject.Select(p => new Wrappers.ProjectSettingsWrapper(p)));
+            ProjectSettings = new ObservableCollection<ProjectSettingsWrapper>(
+                profile.SettingsPerProject.Select(p => new ProjectSettingsWrapper(p)));
         }
 
         [RelayCommand]
         private void AddProject()
         {
-            ProjectSettings.Add(new Wrappers.ProjectSettingsWrapper(new ProjectSettings()));
+            ProjectSettings.Add(new ProjectSettingsWrapper(new ProjectSettings()));
         }
 
         [RelayCommand]
-        private void RemoveProject(Wrappers.ProjectSettingsWrapper project)
+        private void RemoveProject(ProjectSettingsWrapper project)
         {
             ProjectSettings.Remove(project);
         }
@@ -87,6 +89,6 @@ namespace ServerMultiTool.ViewModels.Controls.EditPipelineProfile
         partial void OnHttpMonitoringEnabledChanged(bool value) => _profile.HttpMonitoringSettings.Enable = value;
         
         partial void OnProjectSettingsChanging(ObservableCollection<Wrappers.ProjectSettingsWrapper> value) =>
-            _profile.SettingsPerProject = value?.Select(p => p?.ToProjectSettings())?.ToArray();
+            _profile.SettingsPerProject = value.Select(p => p.ToProjectSettings()).ToArray();
     }
 }
