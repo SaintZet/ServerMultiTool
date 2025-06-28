@@ -25,26 +25,17 @@ namespace ServerMultiTool.ViewModels.Controls.EditPipelineProfile
 
         [ObservableProperty] private ObservableCollection<Wrappers.ProjectSettingsWrapper> _projectSettings;
 
-        public EditPipelineProfileViewModel(PipelineProfile profile)
-        {
-            _profile = profile;
-            UpdateFromProfile(profile);
-        }
-
         public void UpdateFromProfile(PipelineProfile profile)
         {
+            _profile = profile;
             Name = profile.Name;
-            GitEnabled = profile.GitSettings.Enable;
-            IisEnabled = profile.InternetInformationSettings.Enable;
-            SqlEnabled = profile.SqlExecutionSettings.Enable;
-            WebBrowserEnabled = profile.WebBrowserSettings.Enable;
-            HttpMonitoringEnabled = profile.HttpMonitoringSettings.Enable;
-
-            if (profile.SettingsPerProject is not null)
-            {
-                ProjectSettings = new ObservableCollection<Wrappers.ProjectSettingsWrapper>(
-                    profile.SettingsPerProject?.Select(p => new Wrappers.ProjectSettingsWrapper(p)));
-            }
+            GitEnabled = profile.GitSettings?.Enable ?? false;
+            IisEnabled = profile.InternetInformationSettings?.Enable  ?? false;
+            SqlEnabled = profile.SqlExecutionSettings?.Enable  ?? false;
+            WebBrowserEnabled = profile.WebBrowserSettings?.Enable  ?? false;
+            HttpMonitoringEnabled = profile.HttpMonitoringSettings?.Enable  ?? false;
+            ProjectSettings = new ObservableCollection<Wrappers.ProjectSettingsWrapper>(
+                profile.SettingsPerProject.Select(p => new Wrappers.ProjectSettingsWrapper(p)));
         }
 
         [RelayCommand]

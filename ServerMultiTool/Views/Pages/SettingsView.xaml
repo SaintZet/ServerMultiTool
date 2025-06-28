@@ -235,9 +235,10 @@
                                        Margin="0,0,0,0"/>
                                 
                                 <ListBox Grid.Row="1"
-                                         Height="160"
+                                         Height="140"
                                          ItemsSource="{Binding PipelineProfiles}"
-                                         SelectedItem="{Binding SelectedPipelineProfile}"
+                                         SelectedItem="{Binding SelectedPipelineProfile, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                         IsSynchronizedWithCurrentItem="True"
                                          Background="{DynamicResource TertiaryBackgroundColor}"
                                          Foreground="{DynamicResource PrimaryTextColor}"
                                          Padding="0,0,0,0"
@@ -302,7 +303,7 @@
                                     Grid.Row="1"
                                     Background="{DynamicResource TertiaryBackgroundColor}"
                                     DataContext="{Binding .EditPipelineProfile}"
-                                    Height="250"/>
+                                    Height="270"/>
                             </Grid>
                         </Grid>
                     </Border>

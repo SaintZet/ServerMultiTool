@@ -22,8 +22,8 @@ public partial class SettingsViewModel : BaseViewModel
         get => _generalInfo;
         init => SetProperty(ref _generalInfo, value);
     }
-    
-    private readonly EditPipelineProfileViewModel _editPipelineProfile;
+
+    private readonly EditPipelineProfileViewModel _editPipelineProfile = new();
     public EditPipelineProfileViewModel EditPipelineProfile
     {
         get => _editPipelineProfile;
@@ -58,20 +58,17 @@ public partial class SettingsViewModel : BaseViewModel
     }
     
     public ObservableCollection<PipelineProfile> PipelineProfiles { get; set; } = new();
+    
     private PipelineProfile _selectedPipelineProfile;
-
     public PipelineProfile SelectedPipelineProfile
     {
         get => _selectedPipelineProfile;
         set
         {
-            if (value.Equals(_selectedPipelineProfile)) 
-                return;
-
             if (!SetProperty(ref _selectedPipelineProfile, value)) 
                return;
 
-            EditPipelineProfile?.UpdateFromProfile(value);
+            EditPipelineProfile.UpdateFromProfile(value);
         }
     }
 
@@ -80,11 +77,8 @@ public partial class SettingsViewModel : BaseViewModel
         LoadSettings();
         LoadProfiles();
 
-        if (!PipelineProfiles.Any()) 
-            return;
-        
-        SelectedPipelineProfile = PipelineProfiles.First();
-        _editPipelineProfile = new EditPipelineProfileViewModel(SelectedPipelineProfile);
+        if (PipelineProfiles.Any()) 
+            SelectedPipelineProfile = PipelineProfiles.First();
     }
 
     private void LoadSettings()
