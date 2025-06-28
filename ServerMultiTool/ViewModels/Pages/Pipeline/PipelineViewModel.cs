@@ -48,10 +48,10 @@ namespace ServerMultiTool.ViewModels.Pages.Pipeline
             }
         }
 
-        public PipelineOperationCollection PipelineOperations { get; } = new();
+        public PipelineOperationCollection PipelineOperations { get; } = [];
 
-        public ObservableCollection<LogEvent> AppLogMessages { get; } = new();
-        public ObservableCollection<LogEvent> MasterLogMessages { get; } = new();
+        public ObservableCollection<LogEvent> AppLogMessages { get; } = [];
+        public ObservableCollection<LogEvent> MasterLogMessages { get; } = [];
 
         private readonly LogMonitoringService _masterLogService;
 
