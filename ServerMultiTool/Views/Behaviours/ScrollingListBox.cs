@@ -2,7 +2,7 @@ using System;
 using System.Collections.Specialized;
 using System.Windows.Controls;
 
-namespace ServerMultiTool.Views.Controls;
+namespace ServerMultiTool.Views.Behaviours;
 
 public class ScrollingListBox : ListBox
 {
