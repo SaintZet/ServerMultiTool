@@ -1,3 +1,4 @@
+
 <Page x:Class="ServerMultiTool.Views.Pages.SettingsView"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -8,18 +9,16 @@
       xmlns:settings="clr-namespace:ServerMultiTool.ViewModels.Pages.Settings"
       mc:Ignorable="d" 
       d:DesignHeight="750" d:DesignWidth="700"
-      Title="Pipeline" 
+      Title="Settings" 
       FontFamily="Poppins" 
-      d:DataContext="{d:DesignInstance Type=settings:SettingsViewModel, IsDesignTimeCreatable=True}"
-      >
+      d:DataContext="{d:DesignInstance Type=settings:SettingsViewModel, IsDesignTimeCreatable=True}">
     
     <Border CornerRadius="8" Background="{DynamicResource SecondaryBackgroundColor}">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             
             <controls:GeneralInfoControl Grid.Row="0" 
@@ -66,265 +65,290 @@
                         </Setter>
                     </Style>
                 </TabControl.Resources>
+                
+                <!-- Main Settings Tab -->
                 <TabItem Header="Main Settings">
-                    <Border BorderThickness="0.8" BorderBrush="Gainsboro" Padding="10">
-                        <Grid >
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-                        <Grid Grid.Row="0">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <Label Grid.Row="0"
-                                    FontSize="14"
-                                    Foreground="{DynamicResource PrimaryTextColor}"
-                                    Content="Solution Directories:" 
-                                    Margin="0,0,0,0"/>
-                                <ListBox Grid.Row="1"
-                                         Height="190"
-                                         ItemsSource="{Binding SolutionDirectories}" 
-                                         SelectedItem="{Binding SelectedSolutionDirectory}" 
-                                         Background="{DynamicResource TertiaryBackgroundColor}"
-                                         Foreground="{DynamicResource PrimaryTextColor}"
-                                         Padding="0,0,0,0"
-                                         Margin="0,0,0,0">
-                                    <ListBox.ItemTemplate>
-                                        <DataTemplate>
-                                            <StackPanel Orientation="Vertical" Margin="0,5,0,5">
-                                                <TextBox Text="{Binding Name}" 
-                                                         FontWeight="Bold" 
-                                                         VerticalAlignment="Center"
-                                                         Margin="0,0,0,5"
-                                                         Background="Transparent"
-                                                         Foreground="{DynamicResource PrimaryTextColor}"
-                                                         BorderThickness="0"
-                                                         />
-                                                <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
-                                                    <TextBlock Text="{Binding Path}" 
-                                                               VerticalAlignment="Bottom"
-                                                               Foreground="{DynamicResource SecondaryTextColor}"
-                                                               />
-                                                    <Button Content="..." 
-                                                            Command="{Binding DataContext.SelectDirectoryCommand, RelativeSource={RelativeSource AncestorType=Page}}"
-                                                            CommandParameter="{Binding}" 
-                                                            Width="15" 
-                                                            Height="15" 
-                                                            Margin="5,0,0,0"/>
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                        <Border BorderThickness="0.8" BorderBrush="Gainsboro" Padding="10">
+                            <StackPanel>
+                                <!-- Solution Directories -->
+                                <DockPanel Margin="0,0,0,20">
+                                    <Label DockPanel.Dock="Top"
+                                           FontSize="14"
+                                           Foreground="{DynamicResource PrimaryTextColor}"
+                                           Content="Solution Directories:" 
+                                           Margin="0,0,0,5"/>
+                                    
+                                    <StackPanel DockPanel.Dock="Bottom"
+                                                Orientation="Horizontal" 
+                                                HorizontalAlignment="Left" 
+                                                Margin="0,5,0,0">
+                                        <Button Content="Add" 
+                                                Command="{Binding AddSolutionDirectoryCommand}" 
+                                                Style="{StaticResource CustomButtonStyle}"
+                                                MinWidth="60"
+                                                Height="30"
+                                                Margin="0,0,5,0"/>
+                                        <Button Content="Delete" 
+                                                Style="{StaticResource CustomButtonStyle}"
+                                                Command="{Binding RemoveSolutionDirectoryCommand}"
+                                                CommandParameter="{Binding SelectedSolutionDirectory}"
+                                                MinWidth="60"
+                                                Height="30"/>
+                                    </StackPanel>
+                                    
+                                    <ListBox ItemsSource="{Binding SolutionDirectories}" 
+                                             SelectedItem="{Binding SelectedSolutionDirectory}" 
+                                             Background="{DynamicResource TertiaryBackgroundColor}"
+                                             Foreground="{DynamicResource PrimaryTextColor}"
+                                             MinHeight="120"
+                                             MaxHeight="250"
+                                             Padding="5"
+                                             ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Vertical" Margin="0,5">
+                                                    <TextBox Text="{Binding Name}" 
+                                                             FontWeight="Bold" 
+                                                             Margin="0,0,0,5"
+                                                             Background="Transparent"
+                                                             Foreground="{DynamicResource PrimaryTextColor}"
+                                                             BorderThickness="0"/>
+                                                    <DockPanel>
+                                                        <Button DockPanel.Dock="Right"
+                                                                Content="..." 
+                                                                Command="{Binding DataContext.SelectDirectoryCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                                                CommandParameter="{Binding}" 
+                                                                Width="25" 
+                                                                Height="25" 
+                                                                Margin="5,0,0,0"/>
+                                                        <TextBlock Text="{Binding Path}" 
+                                                                   VerticalAlignment="Center"
+                                                                   Foreground="{DynamicResource SecondaryTextColor}"
+                                                                   TextTrimming="CharacterEllipsis"
+                                                                   TextWrapping="NoWrap"/>
+                                                    </DockPanel>
                                                 </StackPanel>
-                                            </StackPanel>
-                                        </DataTemplate>
-                                    </ListBox.ItemTemplate>
-                                </ListBox>
-                            <StackPanel Grid.Row="2"
-                                         Orientation="Horizontal" 
-                                         HorizontalAlignment="Left" 
-                                         VerticalAlignment="Top" 
-                                         Margin="0,5,0,0">
-                            
-                                <Button Content="Add" 
-                                        Command="{Binding AddSolutionDirectoryCommand}" 
-                                        Style="{StaticResource CustomButtonStyle}"
-                                        Width="75"
-                                        Height="20"
-                                        Margin="0,5,5,0"/>
-                                <Button Content="Delete" 
-                                        Style="{StaticResource CustomButtonStyle}"
-                                        Command="{Binding RemoveSolutionDirectoryCommand}"
-                                        CommandParameter="{Binding SelectedSolutionDirectory}"
-                                        Width="75"
-                                        Height="20"
-                                        Margin="0,5,5,0"/>
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                    </ListBox>
+                                </DockPanel>
+                                
+                                <!-- HTTP Directories -->
+                                <DockPanel>
+                                    <Label DockPanel.Dock="Top"
+                                           Content="Http Directories:" 
+                                           FontSize="14"
+                                           Foreground="{DynamicResource PrimaryTextColor}"
+                                           Margin="0,0,0,5"/>
+                                    
+                                    <StackPanel DockPanel.Dock="Bottom"
+                                                Orientation="Horizontal" 
+                                                HorizontalAlignment="Left" 
+                                                Margin="0,5,0,0">
+                                        <Button Content="Add" 
+                                                Command="{Binding AddHttpDirectoryCommand}" 
+                                                Style="{StaticResource CustomButtonStyle}"
+                                                MinWidth="60"
+                                                Height="30"
+                                                Margin="0,0,5,0"/>
+                                        <Button Content="Delete" 
+                                                Command="{Binding RemoveHttpDirectoryCommand}"
+                                                CommandParameter="{Binding SelectedHttpDirectory}"
+                                                Style="{StaticResource CustomButtonStyle}"
+                                                MinWidth="60"
+                                                Height="30"/>
+                                    </StackPanel>
+                                    
+                                    <ListBox ItemsSource="{Binding HttpDirectories}" 
+                                             SelectedItem="{Binding SelectedHttpDirectory}" 
+                                             Background="{DynamicResource TertiaryBackgroundColor}"
+                                             Foreground="{DynamicResource PrimaryTextColor}"
+                                             MinHeight="120"
+                                             MaxHeight="250"
+                                             Padding="5"
+                                             ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Vertical" Margin="0,5">
+                                                    <TextBox Text="{Binding Name}" 
+                                                             FontWeight="Bold" 
+                                                             Margin="0,0,0,5"
+                                                             Background="Transparent"
+                                                             Foreground="{DynamicResource PrimaryTextColor}"
+                                                             BorderThickness="0"/>
+                                                    <DockPanel>
+                                                        <Button DockPanel.Dock="Right"
+                                                                Content="..." 
+                                                                Command="{Binding DataContext.SelectDirectoryCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                                                CommandParameter="{Binding}" 
+                                                                Width="25" 
+                                                                Height="25" 
+                                                                Margin="5,0,0,0"/>
+                                                        <TextBlock Text="{Binding Path}" 
+                                                                   VerticalAlignment="Center"
+                                                                   Foreground="{DynamicResource SecondaryTextColor}"
+                                                                   TextTrimming="CharacterEllipsis"
+                                                                   TextWrapping="NoWrap"/>
+                                                    </DockPanel>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                    </ListBox>
+                                </DockPanel>
                             </StackPanel>
-                        </Grid>
-                        
-                        <Grid Grid.Row="1">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <Label Grid.Row="0"
-                                    Content="Http Directories:" 
-                                    FontSize="14"
-                                    Foreground="{DynamicResource PrimaryTextColor}"
-                                    Margin="0,15,0,0"/>
-                                <ListBox Grid.Row="1"
-                                         Height="190"
-                                         ItemsSource="{Binding HttpDirectories}" 
-                                         SelectedItem="{Binding SelectedHttpDirectory}" 
-                                         Background="{DynamicResource TertiaryBackgroundColor}"
-                                         Foreground="{DynamicResource PrimaryTextColor}"
-                                         Padding="0,0,0,0"
-                                         Margin="0,0,0,0">
-                                    <ListBox.ItemTemplate>
-                                        <DataTemplate>
-                                            <StackPanel Orientation="Vertical" Margin="0,5,0,5">
-                                                <TextBox Text="{Binding Name}" 
-                                                         FontWeight="Bold" 
-                                                         VerticalAlignment="Center"
-                                                         Margin="0,0,0,5"
-                                                         Background="Transparent"
-                                                         Foreground="{DynamicResource PrimaryTextColor}"
-                                                         BorderThickness="0">
-                                                </TextBox>
-                                                <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
-                                                    <TextBlock Text="{Binding Path}" 
-                                                               VerticalAlignment="Bottom"
-                                                               Foreground="{DynamicResource SecondaryTextColor}"
-                                                               />
-                                                <Button Content="..." 
-                                                        Command="{Binding DataContext.SelectDirectoryCommand, RelativeSource={RelativeSource AncestorType=Page}}"
-                                                        CommandParameter="{Binding}" 
-                                                        Width="15" 
-                                                        Height="15" 
-                                                        Margin="5,0,0,0"/>
-                                            </StackPanel>
-                                            </StackPanel>
-                                        </DataTemplate>
-                                    </ListBox.ItemTemplate>
-                                </ListBox>
-                            <StackPanel Grid.Row="2"
-                                         Orientation="Horizontal" 
-                                         HorizontalAlignment="Left" 
-                                         VerticalAlignment="Top" 
-                                         Margin="0,5,0,0">
-                            
-                                <Button Content="Add" 
-                                        Command="{Binding AddHttpDirectoryCommand}" 
-                                        Style="{StaticResource CustomButtonStyle}"
-                                        Width="75"
-                                        Height="20"
-                                        Margin="0,5,5,0"/>
-                                <Button Content="Delete" 
-                                        Command="{Binding RemoveHttpDirectoryCommand}"
-                                        CommandParameter="{Binding SelectedHttpDirectory}"
-                                        Style="{StaticResource CustomButtonStyle}"
-                                        Width="75"
-                                        Height="20"
-                                        Margin="0,5,5,0"/>
-                            </StackPanel>
-                        </Grid>
-                    </Grid>
-                    </Border>
+                        </Border>
+                    </ScrollViewer>
                 </TabItem>
+                
+                <!-- Pipeline Profiles Tab -->
                 <TabItem Header="Pipeline Profiles">
-                    <Border BorderThickness="0.8" BorderBrush="Gainsboro" Padding="10">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            
-                            <Grid Grid.Row="0">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                        <Border BorderThickness="0.8" BorderBrush="Gainsboro" Padding="10">
+                            <Grid>
                                 <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" MinHeight="200"/>
+                                    <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
                                 
-                                <Label Grid.Row="0"
-                                       FontSize="14"
-                                       Foreground="{DynamicResource PrimaryTextColor}"
-                                       Content="Pipeline Profiles:"
-                                       Margin="0,0,0,0"/>
+                                <!-- Pipeline Profiles List -->
+                                <DockPanel Grid.Row="0" Margin="0,0,0,20">
+                                    <Label DockPanel.Dock="Top"
+                                           FontSize="14"
+                                           Foreground="{DynamicResource PrimaryTextColor}"
+                                           Content="Pipeline Profiles:"
+                                           Margin="0,0,0,5"/>
+                                    
+                                    <StackPanel DockPanel.Dock="Bottom"
+                                                Orientation="Horizontal"
+                                                HorizontalAlignment="Left"
+                                                Margin="0,5,0,0">
+                                        <Button Content="Add"
+                                                Command="{Binding AddPipelineProfileCommand}"
+                                                Style="{StaticResource CustomButtonStyle}"
+                                                MinWidth="60"
+                                                Height="30"
+                                                Margin="0,0,5,0"/>
+                                        <Button Content="Delete"
+                                                Command="{Binding RemovePipelineProfileCommand}"
+                                                CommandParameter="{Binding SelectedPipelineProfile}"
+                                                Style="{StaticResource CustomButtonStyle}"
+                                                MinWidth="60"
+                                                Height="30"/>
+                                    </StackPanel>
+                                    
+                                    <ListBox ItemsSource="{Binding PipelineProfiles}"
+                                             SelectedItem="{Binding SelectedPipelineProfile, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                             IsSynchronizedWithCurrentItem="True"
+                                             Background="{DynamicResource TertiaryBackgroundColor}"
+                                             Foreground="{DynamicResource PrimaryTextColor}"
+                                             MinHeight="100"
+                                             MaxHeight="150"
+                                             Padding="5"
+                                             ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Vertical" Margin="0,5">
+                                                    <TextBox Text="{Binding Name, UpdateSourceTrigger=LostFocus}"
+                                                             FontWeight="Bold"
+                                                             Margin="0,0,0,5"
+                                                             Background="Transparent"
+                                                             Foreground="{DynamicResource PrimaryTextColor}"
+                                                             BorderThickness="0"/>
+                                                    <ScrollViewer MaxHeight="40" 
+                                                                  VerticalScrollBarVisibility="Auto"
+                                                                  HorizontalScrollBarVisibility="Disabled">
+                                                        <ItemsControl ItemsSource="{Binding Operations}">
+                                                            <ItemsControl.ItemTemplate>
+                                                                <DataTemplate>
+                                                                    <TextBlock Text="{Binding DisplayName}"
+                                                                              Foreground="{DynamicResource SecondaryTextColor}"
+                                                                              Margin="10,2,0,0"
+                                                                              TextWrapping="Wrap"/>
+                                                                </DataTemplate>
+                                                            </ItemsControl.ItemTemplate>
+                                                        </ItemsControl>
+                                                    </ScrollViewer>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                    </ListBox>
+                                </DockPanel>
                                 
-                                <ListBox Grid.Row="1"
-                                         Height="140"
-                                         ItemsSource="{Binding PipelineProfiles}"
-                                         SelectedItem="{Binding SelectedPipelineProfile, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                         IsSynchronizedWithCurrentItem="True"
-                                         Background="{DynamicResource TertiaryBackgroundColor}"
-                                         Foreground="{DynamicResource PrimaryTextColor}"
-                                         Padding="0,0,0,0"
-                                         Margin="0,0,0,0">
-                                    <ListBox.ItemTemplate>
-                                        <DataTemplate>
-                                            <StackPanel Orientation="Vertical" Margin="0,5,0,5">
-                                                <TextBox Text="{Binding Name, UpdateSourceTrigger=LostFocus}"
-                                                         FontWeight="Bold"
-                                                         VerticalAlignment="Center"
-                                                         Margin="0,0,0,5"
-                                                         Background="Transparent"
-                                                         Foreground="{DynamicResource PrimaryTextColor}"
-                                                         BorderThickness="0"/>
-                                                <ItemsControl ItemsSource="{Binding Operations}">
-                                                    <ItemsControl.ItemTemplate>
-                                                        <DataTemplate>
-                                                            <TextBlock Text="{Binding DisplayName}"
-                                                                      Foreground="{DynamicResource SecondaryTextColor}"
-                                                                      Margin="10,2,0,0"/>
-                                                        </DataTemplate>
-                                                    </ItemsControl.ItemTemplate>
-                                                </ItemsControl>
-                                            </StackPanel>
-                                        </DataTemplate>
-                                    </ListBox.ItemTemplate>
-                                </ListBox>
-                                
-                                <StackPanel Grid.Row="2"
-                                           Orientation="Horizontal"
-                                           HorizontalAlignment="Left"
-                                           VerticalAlignment="Top"
-                                           Margin="0,5,0,0">
-                                    <Button Content="Add"
-                                            Command="{Binding AddPipelineProfileCommand}"
-                                            Style="{StaticResource CustomButtonStyle}"
-                                            Width="75"
-                                            Height="20"
-                                            Margin="0,5,5,0"/>
-                                    <Button Content="Delete"
-                                            Command="{Binding RemovePipelineProfileCommand}"
-                                            CommandParameter="{Binding SelectedPipelineProfile}"
-                                            Style="{StaticResource CustomButtonStyle}"
-                                            Width="75"
-                                            Height="20"
-                                            Margin="0,5,5,0"/>
-                                </StackPanel>
-                            </Grid>
-
-                            <Grid Grid.Row="1" Margin="0,15,0,0" >
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
+                                <!-- Profile Editor -->
+                                <DockPanel Grid.Row="1">
+                                    <Label DockPanel.Dock="Top"
+                                           Content="Edit Pipeline Profile"
+                                           FontSize="14"
+                                           Foreground="{DynamicResource PrimaryTextColor}"
+                                           Margin="0,0,0,5"/>
+                                    
+                                    <Border BorderThickness="1"
+                                            BorderBrush="LightGray"
+                                            CornerRadius="5"
+                                            Padding="5"
+                                            Background="{DynamicResource TertiaryBackgroundColor}">
+                                        
+                                        <!-- Простий підхід без конверторів -->
+                                        <Grid>
+                                            <!-- Повідомлення коли профіль не вибраний -->
+                                            <TextBlock Text="Select a profile to edit its settings"
+                                                       Foreground="{DynamicResource SecondaryTextColor}"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center"
+                                                       TextAlignment="Center">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding SelectedPipelineProfile}" Value="{x:Null}">
+                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
                                             
-                                <Label Grid.Row="0"
-                                       Content="Edit Pipeline Profile"
-                                       FontSize="14"
-                                       Foreground="{DynamicResource PrimaryTextColor}"/>
-                                
-                                <controls:EditPipelineProfileControl 
-                                    Grid.Row="1"
-                                    Background="{DynamicResource TertiaryBackgroundColor}"
-                                    DataContext="{Binding .EditPipelineProfile}"
-                                    Height="270"/>
+                                            <!-- Контрол редагування профілю -->
+                                            <controls:EditPipelineProfileControl DataContext="{Binding EditPipelineProfile}">
+                                                <controls:EditPipelineProfileControl.Style>
+                                                    <Style TargetType="controls:EditPipelineProfileControl">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding DataContext.SelectedPipelineProfile, RelativeSource={RelativeSource AncestorType=Grid}}" Value="{x:Null}">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </controls:EditPipelineProfileControl.Style>
+                                            </controls:EditPipelineProfileControl>
+                                        </Grid>
+                                    </Border>
+                                </DockPanel>
                             </Grid>
-                        </Grid>
-                    </Border>
+                        </Border>
+                    </ScrollViewer>
                 </TabItem>
             </TabControl>
             
-            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
+            <!-- Save/Cancel buttons -->
+            <StackPanel Grid.Row="2" 
+                        Orientation="Horizontal" 
+                        HorizontalAlignment="Right"
+                        Margin="10">
                 <Button Content="Cancel" 
                         Command="{Binding CancelSettingsCommand}" 
                         IsEnabled="{Binding HasUnsavedChanges}"
                         Style="{StaticResource CustomButtonStyle}"
-                        Width="75"
-                        Height="40"
-                        Margin="0,10,10,10"/>
+                        MinWidth="70"
+                        Height="35"
+                        Margin="0,0,10,0"/>
                 <Button Content="Save" 
                         Command="{Binding SaveSettingsCommand}"
                         IsEnabled="{Binding HasUnsavedChanges}"
                         Style="{StaticResource CustomButtonStyle}"
-                        Width="75"
-                        Height="40"
-                        Margin="0,10,10,10"/>
+                        MinWidth="70"
+                        Height="35"/>
             </StackPanel>
         </Grid>
     </Border>
