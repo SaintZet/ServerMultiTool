@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 using ServerMultiTool.Model.ContinuousIntegration.MsBuild;
-using ServerMultiTool.ViewModels.Controls.EditPipelineProfile.Wrappers;
+using ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers.OperationsWrappers.SettingsPerProjectWrappers;
 
 namespace ServerMultiTool.ViewModels.Controls.EditPipelineProfile.Converters;
 

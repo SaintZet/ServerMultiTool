@@ -6,13 +6,13 @@ namespace ServerMultiTool.ViewModels.Pages.Settings.Wrappers;
 public class DirectoryModelWrapper : BaseObservableWrapper
 {
     private DirectoryModel _directoryModel;
-
+    
     public DirectoryModelWrapper(DirectoryModel directoryModel) => 
         _directoryModel = directoryModel;
-
+    
     public DirectoryModelWrapper(string name, string path) => 
         _directoryModel = new DirectoryModel { Name = name, Path = path, };
-
+    
     public string Name
     {
         get => _directoryModel.Name;
@@ -25,7 +25,7 @@ public class DirectoryModelWrapper : BaseObservableWrapper
             OnPropertyChanged();
         }
     }
-
+    
     public string Path
     {
         get => _directoryModel.Path;
@@ -37,5 +37,10 @@ public class DirectoryModelWrapper : BaseObservableWrapper
             _directoryModel.Path = value;
             OnPropertyChanged();
         }
+    }
+
+    public DirectoryModel ToDirectoryModel()
+    {
+        return _directoryModel;
     }
 }

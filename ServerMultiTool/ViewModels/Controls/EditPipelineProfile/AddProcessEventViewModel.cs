@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using ServerMultiTool.Model.ContinuousIntegration.MsBuild;
 using ServerMultiTool.ViewModels.Contracts;
-using ServerMultiTool.ViewModels.Controls.EditPipelineProfile.Wrappers;
+using ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers.OperationsWrappers.SettingsPerProjectWrappers;
 
 namespace ServerMultiTool.ViewModels.Controls.EditPipelineProfile;
 

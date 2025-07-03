@@ -2,7 +2,7 @@
 using ServerMultiTool.Model.ContinuousDeployment.Delivery;
 using ServerMultiTool.ViewModels.Contracts;
 
-namespace ServerMultiTool.ViewModels.Controls.EditPipelineProfile.Wrappers;
+namespace ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers.OperationsWrappers.SettingsPerProjectWrappers;
 
 public partial class DeliveryDirectoryWrapper : BaseObservableWrapper
 {

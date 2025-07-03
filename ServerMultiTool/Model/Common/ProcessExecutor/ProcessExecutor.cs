@@ -8,13 +8,8 @@ using ServerMultiTool.Model.Common.Logs;
 
 namespace ServerMultiTool.Model.Common.ProcessExecutor;
 
-public class ProcessExecutor
+public class ProcessExecutor(Logger logger)
 {
-    private readonly Logger _logger;
-
-    public ProcessExecutor(Logger logger) => 
-        _logger = logger;
-
     public async Task<ProcessOutput> StartProcessOnceAsync(ProcessStartInfo startInfo, CancellationToken cancellationToken = default) => 
         await StartProcessWithRetriesAsync(startInfo,  1, cancellationToken);
 
@@ -38,7 +33,7 @@ public class ProcessExecutor
         
         var messageDetails = string.Empty;
 
-        _logger.LogInfoWithPublish(startMessage);
+        logger.LogInfoWithPublish(startMessage);
         
         for (var retryNumber = 1; retryNumber <= retryCount; retryNumber++)
         {
@@ -47,15 +42,15 @@ public class ProcessExecutor
             
             if (response.Success is not true)
             {
-                _logger.LogWarnWithPublish(errorMessage + $"Retry {retryNumber} of {retryCount}.", messageDetails);
+                logger.LogWarnWithPublish(errorMessage + $"Retry {retryNumber} of {retryCount}.", messageDetails);
                 continue;
             }
 
-            _logger.LogInfoWithPublish(successMessage, messageDetails);
+            logger.LogInfoWithPublish(successMessage, messageDetails);
             return response;
         }
 
-        _logger.LogErrorWithPublish(errorMessage, messageDetails);
+        logger.LogErrorWithPublish(errorMessage, messageDetails);
         return response;
     }
 

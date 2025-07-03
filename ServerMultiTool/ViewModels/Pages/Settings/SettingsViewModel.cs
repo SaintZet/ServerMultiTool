@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
@@ -10,7 +11,8 @@ using ServerMultiTool.ViewModels.Contracts;
 using ServerMultiTool.ViewModels.Controls;
 using ServerMultiTool.ViewModels.Pages.Settings.Extensions;
 using ServerMultiTool.ViewModels.Pages.Settings.Wrappers;
-using EditPipelineProfileViewModel = ServerMultiTool.ViewModels.Controls.EditPipelineProfile.EditPipelineProfileViewModel;
+using ServerMultiTool.ViewModels.Controls.EditPipelineProfile;
+using ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers;
 
 namespace ServerMultiTool.ViewModels.Pages.Settings;
 
@@ -37,6 +39,9 @@ public partial class SettingsViewModel : BaseViewModel
         set => SetProperty(ref _hasUnsavedChanges, value);
     }
 
+    private bool _isInitializing;
+    private bool _isChangingProfile;
+
     public ObservableCollection<DirectoryModelWrapper> SolutionDirectories { get; private set; }
     public ObservableCollection<DirectoryModelWrapper> HttpDirectories { get; private set; }
     
@@ -57,28 +62,37 @@ public partial class SettingsViewModel : BaseViewModel
         set => SetProperty(ref _selectedHttpDirectory, value);
     }
     
-    public ObservableCollection<PipelineProfile> PipelineProfiles { get; set; } = new();
+    public ObservableCollection<PipelineProfileWrapper> PipelineProfiles { get; private set; } = [];
+    private ObservableCollection<PipelineProfileWrapper> _initialPipelineProfiles = [];
     
-    private PipelineProfile? _selectedPipelineProfile;
-    public PipelineProfile? SelectedPipelineProfile
+    private PipelineProfileWrapper? _selectedPipelineProfile;
+    public PipelineProfileWrapper? SelectedPipelineProfile
     {
         get => _selectedPipelineProfile;
         set
         {
-            if (value is null|| !SetProperty(ref _selectedPipelineProfile, value)) 
-               return;
+            if (value is null || !SetProperty(ref _selectedPipelineProfile, value)) 
+                return;
 
+            _isChangingProfile = true;
             EditPipelineProfile.UpdateFromProfile(value);
+            _isChangingProfile = false;
         }
     }
 
     public SettingsViewModel()
     {
+        _isInitializing = true;
+        
         LoadSettings();
         LoadProfiles();
 
+        EditPipelineProfile.PropertyChanged += OnEditPipelineProfilePropertyChanged;
+        
         if (PipelineProfiles.Any()) 
             SelectedPipelineProfile = PipelineProfiles.First();
+            
+        _isInitializing = false;
     }
 
     private void LoadSettings()
@@ -92,18 +106,64 @@ public partial class SettingsViewModel : BaseViewModel
         HttpDirectories = _initialHttpDirectories.CloneWithPropertyChanged(OnDirectoryPropertyChanged);
     }
 
+    private void LoadProfiles()
+    {
+        var pipelineProfiles = PipelineProfilesService.PipelineProfiles;
+        
+        _initialPipelineProfiles = new ObservableCollection<PipelineProfileWrapper>(
+            pipelineProfiles.Select(p => new PipelineProfileWrapper(p))
+        );
+        
+        PipelineProfiles = [];
+        
+        foreach (var wrapper in _initialPipelineProfiles)
+        {
+            var newWrapper = new PipelineProfileWrapper(wrapper.ToPipelineProfile());
+            newWrapper.PropertyChanged += OnProfilePropertyChanged;
+            PipelineProfiles.Add(newWrapper);
+        }
+        
+        PipelineProfiles.CollectionChanged += OnPipelineProfilesCollectionChanged;
+    }
+
+    private void OnEditPipelineProfilePropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (_isInitializing || _isChangingProfile)
+            return;
+            
+        HasUnsavedChanges = true;
+    }
+
     private void OnDirectoryPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        if (e.PropertyName is not nameof(DirectoryModelWrapper.Name))
+        if (_isInitializing || e.PropertyName is not nameof(DirectoryModelWrapper.Name))
             return;
 
         HasUnsavedChanges = true;
     }
-
-    private void LoadProfiles()
+    
+    private void OnPipelineProfilesCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
-        var pipelineProfiles = PipelineProfilesService.PipelineProfiles;
-        PipelineProfiles = new ObservableCollection<PipelineProfile>(pipelineProfiles);
+        if (_isInitializing)
+            return;
+            
+        if (e.NewItems != null)
+            foreach (PipelineProfileWrapper wrapper in e.NewItems) 
+                wrapper.PropertyChanged += OnProfilePropertyChanged;
+
+        if (e.OldItems != null) 
+            foreach (PipelineProfileWrapper wrapper in e.OldItems)
+                wrapper.PropertyChanged -= OnProfilePropertyChanged;
+                
+        HasUnsavedChanges = true;
+    }
+
+    private void OnProfilePropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (_isInitializing)
+            return;
+            
+        HasUnsavedChanges = true;
     }
 
     [RelayCommand]
@@ -121,7 +181,13 @@ public partial class SettingsViewModel : BaseViewModel
         _initialSolutionDirectories = SolutionDirectories.Clone();
         _initialHttpDirectories = HttpDirectories.Clone();
 
-        PipelineProfilesService.SavePipelineProfiles(PipelineProfiles.ToList());
+        PipelineProfilesService.SavePipelineProfiles(
+            PipelineProfiles.Select(w => w.ToPipelineProfile()).ToList()
+        );
+        
+        _initialPipelineProfiles = new ObservableCollection<PipelineProfileWrapper>(
+            PipelineProfiles.Select(w => new PipelineProfileWrapper(w.ToPipelineProfile()))
+        );
         
         GeneralInfo.UpdateData();
     }
@@ -129,6 +195,7 @@ public partial class SettingsViewModel : BaseViewModel
     [RelayCommand]
     private void CancelSettings()
     {
+        _isInitializing = true;
         HasUnsavedChanges = false;
         
         SolutionDirectories = _initialSolutionDirectories.CloneWithPropertyChanged(OnDirectoryPropertyChanged);
@@ -136,6 +203,19 @@ public partial class SettingsViewModel : BaseViewModel
         
         HttpDirectories = _initialHttpDirectories.CloneWithPropertyChanged(OnDirectoryPropertyChanged);
         OnPropertyChanged(nameof(HttpDirectories));
+        
+        PipelineProfiles.Clear();
+        foreach (var wrapper in _initialPipelineProfiles)
+        {
+            var newWrapper = new PipelineProfileWrapper(wrapper.ToPipelineProfile());
+            newWrapper.PropertyChanged += OnProfilePropertyChanged;
+            PipelineProfiles.Add(newWrapper);
+        }
+        
+        SelectedPipelineProfile = PipelineProfiles.Any() ? PipelineProfiles.First() : null;
+        OnPropertyChanged(nameof(PipelineProfiles));
+        
+        _isInitializing = false;
     }
 
     [RelayCommand]
@@ -144,8 +224,11 @@ public partial class SettingsViewModel : BaseViewModel
         var newProfile = DefaultProfiles.GetDevProfile();
         newProfile.Name = "New Profile";
         
-        PipelineProfiles.Add(newProfile);
-        SelectedPipelineProfile = newProfile;
+        var wrapper = new PipelineProfileWrapper(newProfile);
+        wrapper.PropertyChanged += OnProfilePropertyChanged;
+        
+        PipelineProfiles.Add(wrapper);
+        SelectedPipelineProfile = wrapper;
         
         HasUnsavedChanges = true;
     }
@@ -156,6 +239,7 @@ public partial class SettingsViewModel : BaseViewModel
         if (SelectedPipelineProfile is null) 
             return;
         
+        SelectedPipelineProfile.PropertyChanged -= OnProfilePropertyChanged;
         PipelineProfiles.Remove(SelectedPipelineProfile);
         SelectedPipelineProfile = PipelineProfiles.Any() ? PipelineProfiles.First() : null;
 

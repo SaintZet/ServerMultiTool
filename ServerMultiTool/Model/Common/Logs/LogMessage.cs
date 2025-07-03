@@ -2,18 +2,11 @@ using System;
 
 namespace ServerMultiTool.Model.Common.Logs;
 
-public class LogMessage
+public class LogMessage(LogMessageType type, string message)
 {
-    public LogMessageType Type { get; }
-    public string BaseMessage { get; }
-    public string ExtendedMessage { get; private set; } 
-    
-    public LogMessage(LogMessageType type, string message)
-    {
-        Type = type;
-        BaseMessage = message;
-        ExtendedMessage = string.Empty;
-    }
+    public LogMessageType Type { get; } = type;
+    public string BaseMessage { get; } = message;
+    public string ExtendedMessage { get; private set; } = string.Empty;
 
     public void AddDetails(string currentLine) => 
         ExtendedMessage += currentLine + Environment.NewLine;

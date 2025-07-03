@@ -6,7 +6,7 @@ using ServerMultiTool.Model.Common;
 using ServerMultiTool.Model.ContinuousIntegration.MsBuild;
 using ServerMultiTool.ViewModels.Contracts;
 
-namespace ServerMultiTool.ViewModels.Controls.EditPipelineProfile.Wrappers;
+namespace ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers.OperationsWrappers.SettingsPerProjectWrappers;
 
 public partial class ProjectSettingsWrapper : BaseObservableWrapper
 {
@@ -74,10 +74,10 @@ public partial class ProjectSettingsWrapper : BaseObservableWrapper
         _settings.MsBuildSettings.Parameters = BuildParameters?.ToList();
         
         if (PreBuildEvents != null)
-            _settings.MsBuildSettings.PreBuildEvents = [..PreBuildEvents.Select<ProcessEventWrapper, ProcessEvent>(e => e.ToProcessEvent())];
+            _settings.MsBuildSettings.PreBuildEvents = [..Enumerable.Select<ProcessEventWrapper, ProcessEvent>(PreBuildEvents, e => e.ToProcessEvent())];
         
         if (PostBuildEvents != null)
-            _settings.MsBuildSettings.PostBuildEvents = [..PostBuildEvents.Select<ProcessEventWrapper, ProcessEvent>(e => e.ToProcessEvent())];
+            _settings.MsBuildSettings.PostBuildEvents = [..Enumerable.Select<ProcessEventWrapper, ProcessEvent>(PostBuildEvents, e => e.ToProcessEvent())];
 
         _settings.DeliverySettings.Enable = DeliveryEnabled;
         _settings.DeliverySettings.DeliveryBin = DeliveryBin;
