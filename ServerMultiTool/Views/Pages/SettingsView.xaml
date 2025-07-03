@@ -289,9 +289,8 @@
                                             Padding="5"
                                             Background="{DynamicResource TertiaryBackgroundColor}">
                                         
-                                        <!-- Простий підхід без конверторів -->
                                         <Grid>
-                                            <!-- Повідомлення коли профіль не вибраний -->
+                                            <!-- Message when profile is not selected -->
                                             <TextBlock Text="Select a profile to edit its settings"
                                                        Foreground="{DynamicResource SecondaryTextColor}"
                                                        HorizontalAlignment="Center"
@@ -309,7 +308,7 @@
                                                 </TextBlock.Style>
                                             </TextBlock>
                                             
-                                            <!-- Контрол редагування профілю -->
+                                            <!-- Profile Edit Settings -->
                                             <controls:EditPipelineProfileControl DataContext="{Binding EditPipelineProfile}">
                                                 <controls:EditPipelineProfileControl.Style>
                                                     <Style TargetType="controls:EditPipelineProfileControl">

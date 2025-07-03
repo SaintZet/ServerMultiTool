@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="ServerMultiTool.Views.Controls.EditPipelineProfileControl"
+﻿
+<UserControl x:Class="ServerMultiTool.Views.Controls.EditPipelineProfileControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -15,17 +16,7 @@
 
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel Margin="10">
-            <!-- Поле для имени -->
-            <DockPanel Margin="0,0,0,10">
-                <TextBlock Text="Profile Name:" 
-                          VerticalAlignment="Center"
-                          Margin="0,0,10,0"
-                          Foreground="{DynamicResource PrimaryTextColor}"/>
-                <TextBox Text="{Binding Profile.Name, UpdateSourceTrigger=PropertyChanged}"
-                         Height="25"/>
-            </DockPanel>
-
-            <!-- Глобальные настройки с Expander'ами -->
+            <!-- Global settings with Expanders -->
             <TextBlock Text="Global Settings:"
                       Margin="0,0,0,10"
                       FontWeight="Bold"
@@ -125,10 +116,10 @@
                 </StackPanel>
             </Expander>
 
-            <!-- Настройки проектов -->
+            <!-- Settings Per Project -->
             <StackPanel Margin="0,20,0,0">
                 <DockPanel Margin="0,0,0,10">
-                    <TextBlock Text="Project Settings:"
+                    <TextBlock Text="Settings Per Project:"
                              Margin="0,0,10,0"
                              FontWeight="Bold"
                              FontSize="14"
