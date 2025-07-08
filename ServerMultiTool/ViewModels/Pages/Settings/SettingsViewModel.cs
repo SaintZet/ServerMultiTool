@@ -13,6 +13,7 @@ using ServerMultiTool.ViewModels.Pages.Settings.Extensions;
 using ServerMultiTool.ViewModels.Pages.Settings.Wrappers;
 using ServerMultiTool.ViewModels.Controls.EditPipelineProfile;
 using ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers;
+using Application = System.Windows.Application;
 
 namespace ServerMultiTool.ViewModels.Pages.Settings;
 
@@ -86,6 +87,7 @@ public partial class SettingsViewModel : BaseViewModel
         
         LoadSettings();
         LoadProfiles();
+        PipelineProfilesService.PipelineProfilesChanged += (_, _) => Application.Current.Dispatcher.Invoke(LoadProfiles);
 
         EditPipelineProfile.PropertyChanged += OnEditPipelineProfilePropertyChanged;
         
@@ -124,6 +126,8 @@ public partial class SettingsViewModel : BaseViewModel
         }
         
         PipelineProfiles.CollectionChanged += OnPipelineProfilesCollectionChanged;
+        
+        OnPropertyChanged(nameof(PipelineProfiles));
     }
 
     private void OnEditPipelineProfilePropertyChanged(object? sender, PropertyChangedEventArgs e)

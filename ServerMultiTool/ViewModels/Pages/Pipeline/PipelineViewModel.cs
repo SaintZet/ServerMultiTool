@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -27,7 +28,7 @@ namespace ServerMultiTool.ViewModels.Pages.Pipeline
             init => SetProperty(ref _generalInfo, value);
         }
 
-        public PipelineProfile[] PipelineProfiles { get; set; }
+        public List<PipelineProfile>  PipelineProfiles { get; set; }
 
         private PipelineProfile? _selectedPipelineProfile;
         public PipelineProfile? SelectedPipelineProfile
@@ -62,10 +63,20 @@ namespace ServerMultiTool.ViewModels.Pages.Pipeline
             
             GlobalEventAggregator.Instance.Subscribe<LogEvent>(AddNewGlobalLogEvent);
 
-            var appSettings = AppSettingsService.AppSettings;
+            LoadProfiles(AppSettingsService.AppSettings.CurrentPipelineProfileName);
+            PipelineProfilesService.PipelineProfilesChanged += (_, _) =>
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    LoadProfiles(_selectedPipelineProfile!.Name);
+                });
+            };
+        }
 
+        private void LoadProfiles(string selectedProfileName)
+        {
             PipelineProfiles = PipelineProfilesService.PipelineProfiles;
-            SelectedPipelineProfile = PipelineProfiles.FirstOrDefault(x => x.Name == appSettings.CurrentPipelineProfileName);
+            SelectedPipelineProfile = PipelineProfiles.FirstOrDefault(x => x.Name == selectedProfileName);
         }
 
         private bool CanExecutePipeline => GeneralInfo.CanChangeStates;

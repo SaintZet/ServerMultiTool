@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using System.Threading;
+using System.Threading.Tasks;
 using log4net;
+using Microsoft.IdentityModel.Tokens;
 using ServerMultiTool.Model.Common.DefaultValues;
 using ServerMultiTool.Model.Settings;
 
@@ -14,41 +17,100 @@ public static class PipelineProfilesService
     private static readonly ILog Log = LogManager.GetLogger(nameof(PipelineProfilesService));
 
     private const string SettingsFolderName = @"AppSettings\Profiles";
-    private const string SearchPattern = "*.json";
+    private const string ProfileSearchPattern = "*.json";
     
+    private static string _pathToProfilesDirectory = null!;
+    private static FileSystemWatcher? _settingsFileWatcher;
+    private static CancellationTokenSource? _fileChangeDebounceCts;
+
     private static readonly JsonSerializerOptions ReadJsonSerializerOptions = new()
     {
         PropertyNameCaseInsensitive = true,
         IncludeFields = true,
     };
-    
+
     private static readonly JsonSerializerOptions WriteJsonSerializerOptions = new()
     {
         WriteIndented = true,
     };
 
-    private static readonly List<PipelineProfile> _pipelineProfiles = [];
-    public static PipelineProfile[] PipelineProfiles => _pipelineProfiles.ToArray();
+    public static event EventHandler? PipelineProfilesChanged;
+    public static List<PipelineProfile> PipelineProfiles { get; private set; } = [];
 
     public static void LoadOrInitialize(string appDirectory)
     {
-        var pathToFolder = Path.Combine(appDirectory, SettingsFolderName);
+        var path = Path.Combine(appDirectory, SettingsFolderName);
+        _pathToProfilesDirectory = path;
 
-        var profiles = TryLoadSettingsFrom(pathToFolder);
-        if (profiles.Length is not 0)
+        var profiles = TryLoadSettingsFrom(path);
+        if (profiles.IsNullOrEmpty())
         {
-            Log.Info($"{nameof(PipelineProfiles)} have been successfully loaded.");
+            profiles = InitializeDefaultProfiles(path);
+            Log.Info($"{nameof(PipelineProfiles)} have been successfully initialized.");
         }
         else
         {
-            profiles = InitializeDefaultProfiles(pathToFolder);
-            Log.Info($"{nameof(PipelineProfiles)} have been successfully initialized.");
+            Log.Info($"{nameof(PipelineProfiles)} have been successfully loaded.");
         }
 
-        _pipelineProfiles.AddRange(profiles!);
+        PipelineProfiles = profiles;
+        
+        SetupFileWatcher(path);
+    }
+        
+    private static void SetupFileWatcher(string path)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(path)) 
+                return;
+
+            _settingsFileWatcher = new FileSystemWatcher(path)
+            {
+                Filter = ProfileSearchPattern,
+                NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.CreationTime
+            };
+
+            _settingsFileWatcher.Changed += OnSettingsFileChanged;
+            _settingsFileWatcher.EnableRaisingEvents = true;
+        }
+        catch (Exception ex)
+        {
+            Log.Error($"Failed to set up file watcher for {path}: {ex.Message}");
+        }
     }
 
-    private static PipelineProfile[] InitializeDefaultProfiles(string pathToFolder)
+    private static void OnSettingsFileChanged(object sender, FileSystemEventArgs e)
+    {
+        _fileChangeDebounceCts?.Cancel();
+        _fileChangeDebounceCts = new CancellationTokenSource();
+        var token = _fileChangeDebounceCts.Token;
+
+        Task.Delay(700, token).ContinueWith(t =>
+        {
+            if (!t.IsCanceled)
+                ReloadProfiles();
+        }, TaskScheduler.Default);
+    }
+    
+    private static void ReloadProfiles()
+    {
+        PipelineProfiles = TryLoadSettingsFrom(_pathToProfilesDirectory);
+        
+        if (PipelineProfiles.IsNullOrEmpty())
+        {
+            PipelineProfiles = InitializeDefaultProfiles(_pathToProfilesDirectory);
+            Log.Info($"{nameof(PipelineProfiles)} have been successfully re-initialized.");
+        }
+        else
+        {
+            Log.Info($"{nameof(PipelineProfiles)} have been successfully reloaded.");
+        }
+        
+        PipelineProfilesChanged?.Invoke(null, EventArgs.Empty);
+    }
+
+    private static List<PipelineProfile> InitializeDefaultProfiles(string pathToFolder)
     {
         var appSettings = AppSettingsService.AppSettings;
         var solutionDir = appSettings.SolutionDirectories.FirstOrDefault();
@@ -66,7 +128,7 @@ public static class PipelineProfilesService
         return [devProfile, standardProfile, extendedProfile];
     }
 
-    private static PipelineProfile?[] TryLoadSettingsFrom(string pathToFolder)
+    private static List<PipelineProfile> TryLoadSettingsFrom(string pathToFolder)
     {
         if (!Directory.Exists(pathToFolder))
         {
@@ -74,10 +136,10 @@ public static class PipelineProfilesService
             return [];
         }
     
-        var files = Directory.GetFiles(pathToFolder, SearchPattern);
+        var files = Directory.GetFiles(pathToFolder, ProfileSearchPattern);
         Log.Info($"Found {files.Length} profile files in {pathToFolder}.");
     
-        var profiles = new List<PipelineProfile?>();
+        var profiles = new List<PipelineProfile>();
     
         foreach (var filePath in files)
         {
@@ -85,17 +147,20 @@ public static class PipelineProfilesService
             {
                 var json = File.ReadAllText(filePath);
                 var profile = JsonSerializer.Deserialize<PipelineProfile>(json, ReadJsonSerializerOptions);
+
+                if (profile is null)
+                    throw new Exception("Failed to deserialize profile.");
+                
                 profiles.Add(profile);
                 Log.Info($"Successfully loaded profile from {Path.GetFileName(filePath)}.");
             }
             catch (Exception ex)
             {
                 Log.Error($"Failed to load profile from {Path.GetFileName(filePath)}: {ex.Message}");
-                profiles.Add(null);
             }
         }
     
-        return profiles.ToArray();
+        return profiles;
 }
 
     public static void SavePipelineProfiles(IEnumerable<PipelineProfile> profiles)
@@ -108,7 +173,7 @@ public static class PipelineProfilesService
         var profilesList = profiles.ToList();
         var profileNames = profilesList.Select(p => $"{p.Name}.json").ToHashSet();
         
-        var existingFiles = Directory.GetFiles(pathToFolder, SearchPattern);
+        var existingFiles = Directory.GetFiles(pathToFolder, ProfileSearchPattern);
         foreach (var file in existingFiles)
         {
             if (profileNames.Contains(Path.GetFileName(file))) 
