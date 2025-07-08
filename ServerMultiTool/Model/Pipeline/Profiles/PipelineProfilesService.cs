@@ -15,6 +15,17 @@ public static class PipelineProfilesService
 
     private const string SettingsFolderName = @"AppSettings\Profiles";
     private const string SearchPattern = "*.json";
+    
+    private static readonly JsonSerializerOptions ReadJsonSerializerOptions = new()
+    {
+        PropertyNameCaseInsensitive = true,
+        IncludeFields = true,
+    };
+    
+    private static readonly JsonSerializerOptions WriteJsonSerializerOptions = new()
+    {
+        WriteIndented = true,
+    };
 
     private static readonly List<PipelineProfile> _pipelineProfiles = [];
     public static PipelineProfile[] PipelineProfiles => _pipelineProfiles.ToArray();
@@ -34,7 +45,7 @@ public static class PipelineProfilesService
             Log.Info($"{nameof(PipelineProfiles)} have been successfully initialized.");
         }
 
-        _pipelineProfiles.AddRange(profiles);
+        _pipelineProfiles.AddRange(profiles!);
     }
 
     private static PipelineProfile[] InitializeDefaultProfiles(string pathToFolder)
@@ -55,24 +66,37 @@ public static class PipelineProfilesService
         return [devProfile, standardProfile, extendedProfile];
     }
 
-    private static PipelineProfile[] TryLoadSettingsFrom(string pathToFolder)
+    private static PipelineProfile?[] TryLoadSettingsFrom(string pathToFolder)
     {
         if (!Directory.Exists(pathToFolder))
+        {
+            Log.Info($"Profiles directory {pathToFolder} does not exist.");
             return [];
-        
-        return Directory.GetFiles(pathToFolder, SearchPattern)
-            .Select(filePath =>
+        }
+    
+        var files = Directory.GetFiles(pathToFolder, SearchPattern);
+        Log.Info($"Found {files.Length} profile files in {pathToFolder}.");
+    
+        var profiles = new List<PipelineProfile?>();
+    
+        foreach (var filePath in files)
+        {
+            try
             {
                 var json = File.ReadAllText(filePath);
-                var options = new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true,
-                    IncludeFields = true
-                };
-        
-                return JsonSerializer.Deserialize<PipelineProfile>(json, options);
-            }).ToArray();
-    }
+                var profile = JsonSerializer.Deserialize<PipelineProfile>(json, ReadJsonSerializerOptions);
+                profiles.Add(profile);
+                Log.Info($"Successfully loaded profile from {Path.GetFileName(filePath)}.");
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Failed to load profile from {Path.GetFileName(filePath)}: {ex.Message}");
+                profiles.Add(null);
+            }
+        }
+    
+        return profiles.ToArray();
+}
 
     public static void SavePipelineProfiles(IEnumerable<PipelineProfile> profiles)
     {
@@ -105,13 +129,23 @@ public static class PipelineProfilesService
 
     private static void SaveSettingsTo(PipelineProfile profile, string path)
     {
-        var directoryPath = Path.GetDirectoryName(path);
-        if (directoryPath is null)
-            throw new Exception("Directory path is null.");
+        try
+        {
+            var directoryPath = Path.GetDirectoryName(path);
+            if (directoryPath is null)
+                throw new Exception("Directory path is null.");
 
-        Directory.CreateDirectory(directoryPath);
+            Directory.CreateDirectory(directoryPath);
 
-        var json = JsonSerializer.Serialize(profile, new JsonSerializerOptions { WriteIndented = true });
-        File.WriteAllText(path, json);
+            var json = JsonSerializer.Serialize(profile, WriteJsonSerializerOptions);
+            File.WriteAllText(path, json);
+            
+            Log.Info($"Profile '{profile.Name}' has been successfully saved to {Path.GetFileName(path)}.");
+        }
+        catch (Exception ex)
+        {
+            Log.Error($"Failed to save profile '{profile.Name}' to {Path.GetFileName(path)}: {ex.Message}");
+            throw;
+        }
     }
 }
