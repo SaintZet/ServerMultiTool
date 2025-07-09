@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -76,7 +77,11 @@ namespace ServerMultiTool.ViewModels.Pages.Pipeline
         private void LoadProfiles(string selectedProfileName)
         {
             PipelineProfiles = PipelineProfilesService.PipelineProfiles;
-            SelectedPipelineProfile = PipelineProfiles.FirstOrDefault(x => x.Name == selectedProfileName);
+            OnPropertyChanged(nameof(PipelineProfiles));
+            
+            var selectedProfile = PipelineProfiles.FirstOrDefault(x => x.Name == selectedProfileName);
+            SelectedPipelineProfile = selectedProfile ?? PipelineProfiles.FirstOrDefault();
+            OnPropertyChanged(nameof(SelectedPipelineProfile));
         }
 
         private bool CanExecutePipeline => GeneralInfo.CanChangeStates;
