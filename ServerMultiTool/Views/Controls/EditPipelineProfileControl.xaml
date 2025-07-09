@@ -7,359 +7,569 @@
              xmlns:converters1="clr-namespace:ServerMultiTool.ViewModels.Controls.EditPipelineProfile.Converters"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=editPipelineProfile:EditPipelineProfileViewModel, IsDesignTimeCreatable=True}">
-    
+
     <UserControl.Resources>
         <converters1:ProcessEventConverter x:Key="ProcessEventConverter"/>
         <converters1:DeliveryDirectoryConverter x:Key="DeliveryDirectoryConverter"/>
+
+        <!-- Styles to match PipelineView.xaml -->
+        <Style TargetType="Expander">
+            <Setter Property="Margin" Value="0,0,0,6" />
+            <Setter Property="Foreground" Value="{DynamicResource PrimaryTextColor}" />
+            <Setter Property="FontSize" Value="13"/>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="Background" Value="{DynamicResource TertiaryBackgroundColor}"/>
+            <Setter Property="Margin" Value="0,0,0,8"/>
+            <Setter Property="Height" Value="28"/>
+            <Setter Property="Padding" Value="6,0"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Foreground" Value="{DynamicResource PrimaryTextColor}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource ControlBorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+        </Style>
+        <Style TargetType="CheckBox">
+            <Setter Property="Foreground" Value="{DynamicResource PrimaryTextColor}" />
+            <Setter Property="Margin" Value="0,0,0,8"/>
+            <Setter Property="FontSize" Value="13"/>
+        </Style>
+        <Style TargetType="TextBlock">
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Foreground" Value="{DynamicResource PrimaryTextColor}" />
+            <Setter Property="Margin" Value="0,8,0,2" />
+        </Style>
     </UserControl.Resources>
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <StackPanel Margin="10">
-            <!-- Global settings with Expanders -->
-            <TextBlock Text="Global Settings:"
-                      Margin="0,0,0,10"
-                      FontWeight="Bold"
-                      FontSize="14"
-                      Foreground="{DynamicResource PrimaryTextColor}"/>
+    <Border CornerRadius="8">
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="0" HorizontalAlignment="Left">
+                <!-- Git Settings -->
+                <Expander Header="Git Settings" IsExpanded="True">
+                    <StackPanel Margin="18,6,5,2">
+                        <CheckBox Content="Enable Git"
+                                  IsChecked="{Binding Profile.GitSettings.Enable, 
+                                  Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        <CheckBox Content="Should Pull"
+                                  IsChecked="{Binding Profile.GitSettings.ShouldPull, 
+                                  Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    </StackPanel>
+                </Expander>
 
-            <!-- Git Settings -->
-            <Expander Header="Git Settings" Margin="0,0,0,5">
-                <StackPanel Margin="20,5">
-                    <CheckBox Content="Enable Git" 
-                             IsChecked="{Binding Profile.GitSettings.Enable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                             Margin="0,0,0,10"
-                             Foreground="{DynamicResource PrimaryTextColor}"/>
-                    
-                    <CheckBox Content="Should Pull" 
-                             IsChecked="{Binding Profile.GitSettings.ShouldPull, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                             Margin="0,0,0,5"
-                             Foreground="{DynamicResource PrimaryTextColor}"/>
-                </StackPanel>
-            </Expander>
+                <!-- IIS Settings -->
+                <Expander Header="IIS Settings">
+                    <StackPanel Margin="18,6,5,2">
+                        <CheckBox Content="Enable IIS Restart"
+                                  IsChecked="{Binding Profile.InternetInformationSettings.Enable, 
+                                  Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                  />
+                    </StackPanel>
+                </Expander>
 
-            <!-- IIS Settings -->
-            <Expander Header="IIS Settings" Margin="0,0,0,5">
-                <StackPanel Margin="20,5">
-                    <CheckBox Content="Enable IIS Restart" 
-                             IsChecked="{Binding Profile.InternetInformationSettings.Enable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                             Margin="0,0,0,10"
-                             Foreground="{DynamicResource PrimaryTextColor}"/>
-                </StackPanel>
-            </Expander>
+                <!-- SQL Settings -->
+                <Expander Header="SQL Settings">
+                    <StackPanel Margin="18,6,5,2">
+                        <CheckBox Content="Enable SQL Execution" IsChecked="{Binding Profile.SqlExecutionSettings.Enable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        <TextBlock Text="Connection String:"/>
+                        <TextBox Text="{Binding Profile.SqlExecutionSettings.ConnectionString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        <TextBlock Text="Path to SQL script:"/>
+                        <TextBox Text="{Binding Profile.SqlExecutionSettings.PathToSqlScript, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    </StackPanel>
+                </Expander>
 
-            <!-- SQL Settings -->
-            <Expander Header="SQL Settings" Margin="0,0,0,5">
-                <StackPanel Margin="20,5">
-                    <CheckBox Content="Enable SQL Execution" 
-                             IsChecked="{Binding Profile.SqlExecutionSettings.Enable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                             Margin="0,0,0,10"
-                             Foreground="{DynamicResource PrimaryTextColor}"/>
-                    <TextBlock Text="Connection String:" Margin="0,0,0,5"/>
-                    <TextBox Text="{Binding Profile.SqlExecutionSettings.ConnectionString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                             Height="25" 
-                             Margin="0,0,0,10"/>
-                    
-                    <TextBlock Text="Path to SQL script:" Margin="0,0,0,5"/>
-                    <TextBox Text="{Binding Profile.SqlExecutionSettings.PathToSqlScript, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                             Height="25" 
-                             Margin="0,0,0,10"/>
+                <!-- Web Browser Settings -->
+                <Expander Header="Web Browser Settings">
+                    <StackPanel Margin="18,6,5,2">
+                        <CheckBox Content="Enable open window in Web Browser"
+                                  IsChecked="{Binding Profile.WebBrowserSettings.Enable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-                </StackPanel>
-            </Expander>
+                        <Grid Margin="0,0,0,5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
 
-            <!-- Web Browser Settings -->
-            <Expander Header="Web Browser Settings" Margin="0,0,0,5">
-                <StackPanel Margin="20,5">
-                    <CheckBox Content="Enable open window in Web Browser" 
-                             IsChecked="{Binding Profile.WebBrowserSettings.Enable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                             Margin="0,0,0,10"
-                             Foreground="{DynamicResource PrimaryTextColor}"/>
-                    
-                    <TextBlock Text="URL:" Margin="0,0,0,5" Foreground="{DynamicResource PrimaryTextColor}"/>
-                    <TextBox Text="{Binding Profile.WebBrowserSettings.Url, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                             Height="25" 
-                             Margin="0,0,0,10"/>
-                </StackPanel>
-            </Expander>
+                            <TextBlock Grid.Column="0" Text="URL:" VerticalAlignment="Center" Margin="0,0,5,0"/>
 
-            <!-- HTTP Monitoring Settings -->
-            <Expander Header="HTTP Monitoring Settings" Margin="0,0,0,5">
-                <StackPanel Margin="20,5">
-                    <CheckBox Content="Enable HTTP Monitoring" 
-                             IsChecked="{Binding Profile.HttpMonitoringSettings.Enable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                             Margin="0,0,0,10"
-                             Foreground="{DynamicResource PrimaryTextColor}"/>
-                    
-                    <CheckBox Content="Ping Segment" 
-                             IsChecked="{Binding Profile.HttpMonitoringSettings.PingSegment, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                             Margin="0,0,0,5"
-                             Foreground="{DynamicResource PrimaryTextColor}"/>
-                    
-                    <CheckBox Content="Ping Master" 
-                             IsChecked="{Binding Profile.HttpMonitoringSettings.PingMaster, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                             Margin="0,0,0,10"
-                             Foreground="{DynamicResource PrimaryTextColor}"/>
-                    
-                    <TextBlock Text="Timeout (Minutes):" Margin="0,0,0,5" Foreground="{DynamicResource PrimaryTextColor}"/>
-                    <TextBox Text="{Binding Profile.HttpMonitoringSettings.TimeoutMinutes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                             Height="25" 
-                             Margin="0,0,0,10"/>
-                </StackPanel>
-            </Expander>
+                            <TextBox Grid.Column="1"
+                                     Text="{Binding Profile.WebBrowserSettings.Url, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                     Margin="0,0,0,0"
+                                     MinWidth="200"/>
+                        </Grid>
+                    </StackPanel>
+                </Expander>
+                
+                <!-- HTTP Monitoring Settings-->
+                <Expander Header="HTTP Monitoring Settings">
+                    <StackPanel Margin="18,6,5,2">
+                        <CheckBox Content="Enable HTTP Monitoring"
+                                  IsChecked="{Binding Profile.HttpMonitoringSettings.Enable, 
+                                  Mode=TwoWay, 
+                                  UpdateSourceTrigger=PropertyChanged}"/>
+                        <!--<TextBlock Text="URL Filter:"/>
+                        <TextBox Text="{Binding Profile.HttpMonitoringSettings.UrlFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBlock Text="Log File Path:"/>
+                        <TextBox Text="{Binding Profile.HttpMonitoringSettings.LogFilePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />-->
+                    </StackPanel>
+                </Expander>
+                
+                <!-- Settings Per Project -->
+                <StackPanel Margin="0,10,0,0">
+                    <DockPanel Margin="0,0,0,10">
+                        <TextBlock Text="Settings Per Project:"
+                                   Margin="0,0,0,0"
+                                   FontWeight="SemiBold"
+                                   FontSize="14"
+                                   VerticalAlignment="Center"
+                                   Foreground="{DynamicResource PrimaryTextColor}"/>
+                        <Button Content="Add"
+                                Command="{Binding AddProjectCommand}"
+                                Style="{StaticResource CustomButtonStyle}"
+                                HorizontalAlignment="Right"
+                                Margin="0,0,10,0"
+                                Width="70"
+                                Height="25"
+                                BorderThickness="0.5"
+                                BorderBrush="Black"/>
+                    </DockPanel>
 
-            <!-- Monitor Log Files Settings -->
-            <Expander Header="Log Files Monitoring Settings" Margin="0,0,0,5">
-                <StackPanel Margin="20,5">
-                    <CheckBox Content="Enable Log Files Monitoring" 
-                             IsChecked="{Binding Profile.MonitorLogFilesSettings.Enable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                             Margin="0,0,0,10"
-                             Foreground="{DynamicResource PrimaryTextColor}"/>
-                    
-                    <TextBlock Text="Log Directory Name:" Margin="0,0,0,5" Foreground="{DynamicResource PrimaryTextColor}"/>
-                    <TextBox Text="{Binding Profile.MonitorLogFilesSettings.LogDirectory.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                             Height="25" 
-                             Margin="0,0,0,5"/>
-                    
-                    <TextBlock Text="Log Directory Path:" Margin="0,0,0,5" Foreground="{DynamicResource PrimaryTextColor}"/>
-                    <TextBox Text="{Binding Profile.MonitorLogFilesSettings.LogDirectory.Path, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                             Height="25" 
-                             Margin="0,0,0,10"/>
-                </StackPanel>
-            </Expander>
+                    <ItemsControl ItemsSource="{Binding ProjectSettings}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="{DynamicResource SecondaryBackgroundColor}"
+                                        Margin="0,0,0,10"
+                                        Padding="10"
+                                        CornerRadius="5">
+                                    <StackPanel>
+                                        <!-- Project Info -->
+                                        <Grid Margin="0,0,0,10">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
 
-            <!-- Settings Per Project -->
-            <StackPanel Margin="0,20,0,0">
-                <DockPanel Margin="0,0,0,10">
-                    <TextBlock Text="Settings Per Project:"
-                             Margin="0,0,10,0"
-                             FontWeight="Bold"
-                             FontSize="14"
-                             Foreground="{DynamicResource PrimaryTextColor}"/>
-                    <Button Content="Add Project"
-                            Command="{Binding AddProjectCommand}"
-                            Style="{StaticResource CustomButtonStyle}"
-                            HorizontalAlignment="Right"
-                            Width="100"
-                            Height="25"/>
-                </DockPanel>
+                                            <Grid Grid.Column="0" Margin="0,0,0,0" IsSharedSizeScope="True">
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                </Grid.RowDefinitions>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto" SharedSizeGroup="Lbl"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
 
-                <ItemsControl ItemsSource="{Binding ProjectSettings}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Border Background="{DynamicResource SecondaryBackgroundColor}"
-                                    Margin="0,0,0,10"
-                                    Padding="10"
-                                    CornerRadius="5">
-                                <StackPanel>
-                                    <!-- Project Info -->
-                                    <DockPanel Margin="0,0,0,10">
-                                        <Button Content="Remove"
-                                                Command="{Binding DataContext.RemoveProjectCommand, 
-                                                          RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                CommandParameter="{Binding}"
-                                                Style="{StaticResource CustomButtonStyle}"
-                                                DockPanel.Dock="Right"
-                                                Width="70"
-                                                Height="25"/>
-                                        
-                                        <StackPanel>
-                                            <DockPanel Margin="0,0,10,5">
-                                                <TextBlock Text="Name:" Width="50"/>
-                                                <TextBox Text="{Binding ProjectName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="25"/>
-                                            </DockPanel>
-                                            <DockPanel Margin="0,0,10,0">
-                                                <TextBlock Text="Path:" Width="50"/>
-                                                <TextBox Text="{Binding ProjectPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="25"/>
-                                            </DockPanel>
-                                        </StackPanel>
-                                    </DockPanel>
+                                                <TextBlock Grid.Row="0" Grid.Column="0"
+                                                           Text="Name:"
+                                                           VerticalAlignment="Center"
+                                                           Margin="0,0,5,0"/>
+                                                <TextBox  Grid.Row="0" Grid.Column="1"
+                                                          Text="{Binding ProjectName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                          Margin="0,0,0,0"
+                                                          MinWidth="200"/>
 
-                                    <!-- MSBuild Settings -->
-                                    <Expander Header="Build Settings" Margin="0,0,0,5">
-                                        <StackPanel Margin="20,5">
-                                            <CheckBox Content="Enable MSBuild" 
-                                                      IsChecked="{Binding MsBuildEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                      Margin="0,0,0,5"/>
+                                                <TextBlock Grid.Row="1" Grid.Column="0"
+                                                           Text="Path:"
+                                                           VerticalAlignment="Center"
+                                                           Margin="0,5,5,0"/>
+                                                <TextBox  Grid.Row="1" Grid.Column="1"
+                                                          Text="{Binding ProjectPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                          Margin="0,5,0,0"
+                                                          MinWidth="200"/>
+                                            </Grid>
 
-                                            <TextBlock Text="Build Parameters:" Margin="0,5"/>
-                                            <ItemsControl ItemsSource="{Binding BuildParameters}">
-                                                <ItemsControl.ItemTemplate>
-                                                    <DataTemplate>
-                                                        <TextBox Text="{Binding Path=., Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                                                                 Margin="0,2"/>
-                                                    </DataTemplate>
-                                                </ItemsControl.ItemTemplate>
-                                            </ItemsControl>
-                                            <StackPanel Orientation="Horizontal" Margin="0,5">
-                                                <TextBox x:Name="ParameterTextBox"
-                                                         Width="200"
-                                                         Height="25"
-                                                         Margin="0,0,10,0"
-                                                         VerticalContentAlignment="Center"/>
-    
-                                                <Button Content="Add"
-                                                        Command="{Binding AddBuildParameterCommand}"
-                                                        CommandParameter="{Binding ElementName=ParameterTextBox, Path=Text}"
-                                                        Style="{StaticResource CustomButtonStyle}"
-                                                        Width="100"/>
-                                            </StackPanel>
+                                            <Button Grid.Column="1"
+                                                    Content="Remove"
+                                                    Command="{Binding DataContext.RemoveProjectCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                    CommandParameter="{Binding}"
+                                                    Style="{StaticResource CustomButtonStyle}"
+                                                    Width="70"
+                                                    Height="25"
+                                                    Margin="20, 0, 0, 0"
+                                                    VerticalAlignment="Center"/>
+                                        </Grid>
 
-                                            <!-- Pre-Build Events -->
-                                            <TextBlock Text="Pre-Build Events:" Margin="0,10,0,5"/>
-                                            <ItemsControl ItemsSource="{Binding PreBuildEvents}">
-                                                <ItemsControl.ItemTemplate>
-                                                    <DataTemplate>
-                                                        <Grid Margin="0,2">
+                                        <!-- MSBuild Settings -->
+                                        <Expander Header="Build Settings" >
+                                            <StackPanel Margin="20,10,0,10">
+                                                <CheckBox Content="Enable MSBuild" IsChecked="{Binding MsBuildEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                                                <!-- Build Parameters -->
+                                                <GroupBox Header="Build Parameters" Margin="0,10,0,0">
+                                                    <StackPanel>
+                                                        <!-- Список Build Parameters -->
+                                                        <ItemsControl ItemsSource="{Binding BuildParameters}" Margin="0,5,0,0">
+                                                            <ItemsControl.ItemTemplate>
+                                                                <DataTemplate>
+                                                                    <Grid Margin="0,2">
+                                                                        <Grid.ColumnDefinitions>
+                                                                            <ColumnDefinition Width="*" />
+                                                                            <ColumnDefinition Width="Auto" />
+                                                                        </Grid.ColumnDefinitions>
+
+                                                                        <!-- Текстовое поле параметра -->
+                                                                        <TextBox Grid.Column="0"
+                                                                                 Text="{Binding ., Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                                                 Height="25"
+                                                                                 Margin="0,0,10,0"
+                                                                                 VerticalContentAlignment="Center" />
+
+                                                                        <!-- Кнопка Remove -->
+                                                                        <Button Grid.Column="1"
+                                                                                Content="Remove"
+                                                                                Style="{StaticResource CustomButtonStyle}"
+                                                                                MinWidth="70"
+                                                                                Height="25"
+                                                                                Command="{Binding DataContext.RemoveBuildParameterCommand,
+                                                                                                  RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                                                CommandParameter="{Binding}" />
+                                                                    </Grid>
+                                                                </DataTemplate>
+                                                            </ItemsControl.ItemTemplate>
+                                                        </ItemsControl>
+                                                        <Grid Margin="0,5">
                                                             <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="*" />
+                                                                <ColumnDefinition Width="Auto" />
+                                                            </Grid.ColumnDefinitions>
+
+                                                            <TextBox x:Name="ParameterTextBox"
+                                                                     Grid.Column="0"
+                                                                     Height="25"
+                                                                     Margin="0,0,10,0"
+                                                                     VerticalContentAlignment="Center"/>
+
+                                                            <Button Grid.Column="1"
+                                                                    Content="Add"
+                                                                    Command="{Binding AddBuildParameterCommand}"
+                                                                    CommandParameter="{Binding ElementName=ParameterTextBox, Path=Text}"
+                                                                    Style="{StaticResource CustomButtonStyle}"
+                                                                    MinWidth="70"
+                                                                    Height="25"/>
+                                                        </Grid>
+                                                    </StackPanel>
+                                                </GroupBox>
+                                                <!-- Build Parameters -->
+
+                                                <!-- Pre-Build Events -->
+                                                <GroupBox Header="Pre-Build Events" Margin="0,10,0,0">
+                                                    <StackPanel>
+                                                        <ItemsControl ItemsSource="{Binding PreBuildEvents}">
+                                                            <ItemsControl.ItemTemplate>
+                                                                <DataTemplate>
+                                                                    <Grid Margin="0,2">
+                                                                        <Grid.ColumnDefinitions>
+                                                                            <ColumnDefinition Width="*"/>
+                                                                            <ColumnDefinition Width="*"/>
+                                                                        </Grid.ColumnDefinitions>
+                                                                        <TextBox Text="{Binding Path, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                                                             Margin="0,0,5,0"
+                                                                             ToolTip="Path"/>
+                                                                        <TextBox Text="{Binding Arguments, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                                                             Grid.Column="1"
+                                                                             ToolTip="Arguments"/>
+                                                                    </Grid>
+                                                                </DataTemplate>
+                                                            </ItemsControl.ItemTemplate>
+                                                        </ItemsControl>
+                                                        <Grid Margin="0,5,0,0" IsSharedSizeScope="True">
+
+                                                            <Grid.RowDefinitions>
+                                                                <RowDefinition Height="Auto"/>
+                                                                <RowDefinition Height="Auto"/>
+                                                                <RowDefinition Height="Auto"/>
+                                                            </Grid.RowDefinitions>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="Auto" SharedSizeGroup="Labels"/>
+                                                                <ColumnDefinition Width="*" />
+                                                            </Grid.ColumnDefinitions>
+
+                                                            <!-- Row 0: Path -->
+                                                            <TextBlock Grid.Row="0" Grid.Column="0"
+                                                                   Text="Path:"
+                                                                   VerticalAlignment="Center"
+                                                                   Margin="0,5,0,0"/>
+                                                            <TextBox x:Name="PathTextBox"
+                                                                 Grid.Row="0" Grid.Column="1"
+                                                                 Height="25"
+                                                                 VerticalContentAlignment="Center"
+                                                                 MinWidth="200"
+                                                                 Margin="10,5,0,0"/>
+
+                                                            <!-- Row 1: Arguments -->
+                                                            <TextBlock Grid.Row="1" Grid.Column="0"
+                                                                   Text="Arguments:"
+                                                                   VerticalAlignment="Center"
+                                                                   Margin="0,5,0,0"/>
+                                                            <TextBox x:Name="ArgumentsTextBox"
+                                                                 Grid.Row="1" Grid.Column="1"
+                                                                 Height="25"
+                                                                 Margin="10,5,0,0"
+                                                                 VerticalContentAlignment="Center"
+                                                                 MinWidth="200"/>
+
+                                                            <!-- Row 2: Button -->
+                                                            <Button Grid.Row="2" Grid.Column="1"
+                                                                Content="Add"
+                                                                Command="{Binding AddPreBuildEventCommand}"
+                                                                Style="{StaticResource CustomButtonStyle}"
+                                                                HorizontalAlignment="Right"
+                                                                Margin="0,10,0,0"
+                                                                MinWidth="70"
+                                                                Height="25">
+                                                                <Button.CommandParameter>
+                                                                    <MultiBinding Converter="{StaticResource ProcessEventConverter}">
+                                                                        <Binding ElementName="PathTextBox" Path="Text"/>
+                                                                        <Binding ElementName="ArgumentsTextBox" Path="Text"/>
+                                                                    </MultiBinding>
+                                                                </Button.CommandParameter>
+                                                            </Button>
+                                                        </Grid>
+                                                    </StackPanel>
+                                                </GroupBox>
+                                                <!-- Pre-Build Events -->
+
+                                                <!-- Post-Build Events -->
+                                                <GroupBox Header="Post-Build Events" Margin="0,10,0,0">
+                                                    <StackPanel>
+                                                        <!-- Post-Build Events список -->
+                                                        <ItemsControl Margin="0,10,0,10" ItemsSource="{Binding PostBuildEvents}">
+                                                            <ItemsControl.ItemTemplate>
+                                                                <DataTemplate>
+                                                                    <Grid>
+                                                                        <Grid.RowDefinitions>
+                                                                            <RowDefinition Height="Auto"/>
+                                                                            <RowDefinition Height="Auto"/>
+                                                                            <RowDefinition Height="Auto"/>
+                                                                        </Grid.RowDefinitions>
+                                                                        <Grid.ColumnDefinitions>
+                                                                            <ColumnDefinition Width="Auto" SharedSizeGroup="Labels"/>
+                                                                            <ColumnDefinition Width="*"/>
+                                                                        </Grid.ColumnDefinitions>
+
+                                                                        <!-- ───────── Path ───────── -->
+                                                                        <TextBlock Grid.Row="0" Grid.Column="0"
+                                                                                   Text="Path:"
+                                                                                   VerticalAlignment="Center"
+                                                                                   Margin="0,5,0,0"/>
+                                                                        <TextBox  Grid.Row="0" Grid.Column="1"
+                                                                                  Text="{Binding Path, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                                                  VerticalContentAlignment="Center"
+                                                                                  Margin="10,5,0,0"/>
+
+                                                                        <!-- ──────── Arguments ──────── -->
+                                                                        <TextBlock Grid.Row="1" Grid.Column="0"
+                                                                                   Text="Arguments:"
+                                                                                   VerticalAlignment="Center"
+                                                                                   Margin="0,5,0,0"/>
+                                                                        <TextBox  Grid.Row="1" Grid.Column="1"
+                                                                                  Text="{Binding Arguments, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                                                  VerticalContentAlignment="Center"
+                                                                                  Margin="10,5,0,0"/>
+
+                                                                        <!-- ──────── Remove btn ──────── -->
+                                                                        <Button   Grid.Row="2" Grid.Column="1"
+                                                                                  Content="Remove"
+                                                                                  Style="{StaticResource CustomButtonStyle}"
+                                                                                  HorizontalAlignment="Right"
+                                                                                  Margin="0,10,0,0"
+                                                                                  MinWidth="70" Height="25"
+                                                                                  Command="{Binding DataContext.RemovePostBuildEventCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                                                  CommandParameter="{Binding}" />
+                                                                    </Grid>
+                                                                </DataTemplate>
+                                                            </ItemsControl.ItemTemplate>
+                                                        </ItemsControl>
+
+                                                        <Grid Margin="0,10,0,10" IsSharedSizeScope="True">
+                                                            <Grid.RowDefinitions>
+                                                                <RowDefinition Height="Auto"/>
+                                                                <RowDefinition Height="Auto"/>
+                                                                <RowDefinition Height="Auto"/>
+                                                            </Grid.RowDefinitions>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="Auto" SharedSizeGroup="Labels"/>
                                                                 <ColumnDefinition Width="*"/>
                                                             </Grid.ColumnDefinitions>
-                                                            <TextBox Text="{Binding Path, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                                                                     Margin="0,0,5,0"
-                                                                     ToolTip="Path"/>
-                                                            <TextBox Text="{Binding Arguments, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                                                                     Grid.Column="1"
-                                                                     ToolTip="Arguments"/>
+
+                                                            <!-- Row 0: Path -->
+                                                            <TextBlock Grid.Row="0" Grid.Column="0"
+                                                                       Text="Path:"
+                                                                       VerticalAlignment="Center"
+                                                                       Margin="0,5,0,0"/>
+                                                            <TextBox x:Name="PostPathTextBox"
+                                                                     Grid.Row="0" Grid.Column="1"
+                                                                     Height="25"
+                                                                     VerticalContentAlignment="Center"
+                                                                     MinWidth="200"
+                                                                     Margin="10,5,0,0"/>
+
+                                                            <!-- Row 1: Arguments -->
+                                                            <TextBlock Grid.Row="1" Grid.Column="0"
+                                                                       Text="Arguments:"
+                                                                       VerticalAlignment="Center"
+                                                                       Margin="0,5,0,0"/>
+                                                            <TextBox x:Name="PostArgumentsTextBox"
+                                                                     Grid.Row="1" Grid.Column="1"
+                                                                     Height="25"
+                                                                     Margin="10,5,0,0"
+                                                                     VerticalContentAlignment="Center"
+                                                                     MinWidth="200"/>
+
+                                                            <!-- Row 2: Button -->
+                                                            <Button Grid.Row="2" Grid.Column="1"
+                                                                    Content="Add"
+                                                                    Command="{Binding AddPostBuildEventCommand}"
+                                                                    Style="{StaticResource CustomButtonStyle}"
+                                                                    HorizontalAlignment="Right"
+                                                                    Margin="0,10,0,0"
+                                                                    MinWidth="70"
+                                                                    Height="25">
+                                                                <Button.CommandParameter>
+                                                                    <MultiBinding Converter="{StaticResource ProcessEventConverter}">
+                                                                        <Binding ElementName="PostPathTextBox" Path="Text"/>
+                                                                        <Binding ElementName="PostArgumentsTextBox" Path="Text"/>
+                                                                    </MultiBinding>
+                                                                </Button.CommandParameter>
+                                                            </Button>
                                                         </Grid>
-                                                    </DataTemplate>
-                                                </ItemsControl.ItemTemplate>
-                                            </ItemsControl>
-                                            <StackPanel>
-                                                <DockPanel Margin="0,5">
-                                                    <TextBlock Text="Path:" Width="60" VerticalAlignment="Center"/>
-                                                    <TextBox x:Name="PathTextBox"
-                                                             Height="25"
-                                                             VerticalContentAlignment="Center"/>
-                                                </DockPanel>
-
-                                                <DockPanel Margin="0,5">
-                                                    <TextBlock Text="Arguments:" Width="60" VerticalAlignment="Center"/>
-                                                    <TextBox x:Name="ArgumentsTextBox"
-                                                             Height="25"
-                                                             VerticalContentAlignment="Center"/>
-                                                </DockPanel>
-
-                                                <Button Content="Add Pre-Build Event"
-                                                        Command="{Binding AddPreBuildEventCommand}">
-                                                    <Button.CommandParameter>
-                                                        <MultiBinding Converter="{StaticResource ProcessEventConverter}">
-                                                            <Binding ElementName="PathTextBox" Path="Text"/>
-                                                            <Binding ElementName="ArgumentsTextBox" Path="Text"/>
-                                                        </MultiBinding>
-                                                    </Button.CommandParameter>
-                                                </Button>
+                                                    </StackPanel>
+                                                </GroupBox>
+                                                <!-- Post-Build Events -->
                                             </StackPanel>
+                                        </Expander>
 
-                                            <!-- Post-Build Events -->
-                                            <TextBlock Text="Post-Build Events:" Margin="0,10,0,5"/>
-                                            <ItemsControl ItemsSource="{Binding PostBuildEvents}">
-                                                <ItemsControl.ItemTemplate>
-                                                    <DataTemplate>
-                                                        <Grid Margin="0,2">
+                                        <!-- Delivery Settings -->
+                                        <Expander Header="Delivery Settings" >
+                                            <StackPanel Margin="20,10,0,10">
+                                                <CheckBox Content="Delivery Bin" IsChecked="{Binding DeliveryBin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                
+                                                <CheckBox Content="Enable Custom Delivery" IsChecked="{Binding DeliveryEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                                                <GroupBox Header="Custom Delivery Directories" Margin="0,10,0,0">
+                                                    
+                                                    <Grid IsSharedSizeScope="True">
+                                                        <Grid.RowDefinitions>
+                                                            <RowDefinition Height="Auto"/>
+                                                            <RowDefinition Height="Auto"/>
+                                                        </Grid.RowDefinitions>
+
+                                                        <!-- Список добавленных директорий -->
+                                                        <ItemsControl Grid.Row="0" ItemsSource="{Binding DeliveryDirectories}">
+                                                            <ItemsControl.ItemTemplate>
+                                                                <DataTemplate>
+                                                                    <Grid Margin="0,5,0,0">
+                                                                        <Grid.RowDefinitions>
+                                                                            <RowDefinition Height="Auto"/>
+                                                                            <RowDefinition Height="Auto"/>
+                                                                            <RowDefinition Height="Auto"/>
+                                                                        </Grid.RowDefinitions>
+
+                                                                        <Grid.ColumnDefinitions>
+                                                                            <ColumnDefinition Width="Auto" SharedSizeGroup="Labels"/>
+                                                                            <ColumnDefinition Width="*"/>
+                                                                        </Grid.ColumnDefinitions>
+
+                                                                        <!-- Source -->
+                                                                        <TextBlock Grid.Row="0" Grid.Column="0"
+                                                                                   Text="Source:"
+                                                                                   VerticalAlignment="Center"
+                                                                                   Margin="0,5,0,0"/>
+                                                                        <TextBox  Grid.Row="0" Grid.Column="1" 
+                                                                                  Text="{Binding Source}"
+                                                                                  Margin="10,5,0,0"
+                                                                                  VerticalContentAlignment="Center"/>
+
+                                                                        <!-- Destination -->
+                                                                        <TextBlock Grid.Row="1" Grid.Column="0"
+                                                                                   Text="Destination:"
+                                                                                   VerticalAlignment="Center"
+                                                                                   Margin="0,5,0,0"/>
+                                                                        <TextBox  Grid.Row="1" Grid.Column="1"
+                                                                                  Text="{Binding Destination}"
+                                                                                  Margin="10,5,0,0"
+                                                                                  VerticalContentAlignment="Center"/>
+
+                                                                        <!-- Кнопка удаления (третья строка) -->
+                                                                        <Button Grid.Row="2" Grid.Column="1"
+                                                                                Command="{Binding DataContext.RemoveDeliveryDirectoryCommand,RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                                                CommandParameter="{Binding}"
+                                                                                Content="Remove"
+                                                                                Style="{StaticResource CustomButtonStyle}"
+                                                                                HorizontalAlignment="Right"
+                                                                                Margin="0,10,0,0"
+                                                                                MinWidth="70"
+                                                                                Height="25" />
+                                                                    </Grid>
+                                                                </DataTemplate>
+
+                                                            </ItemsControl.ItemTemplate>
+                                                        </ItemsControl>
+
+
+                                                        <!-- Добавление новой пары Source + Destination -->
+                                                        <Grid Grid.Row="1" Margin="0,10,0,0">
+                                                            <Grid.RowDefinitions>
+                                                                <RowDefinition Height="Auto"/>
+                                                                <RowDefinition Height="Auto"/>
+                                                                <RowDefinition Height="Auto"/>
+                                                            </Grid.RowDefinitions>
                                                             <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="Auto" SharedSizeGroup="Labels"/>
                                                                 <ColumnDefinition Width="*"/>
                                                             </Grid.ColumnDefinitions>
-                                                            <TextBox Text="{Binding Path, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                                                                     Margin="0,0,5,0"
-                                                                     ToolTip="Path"/>
-                                                            <TextBox Text="{Binding Arguments, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                                                                     Grid.Column="1"
-                                                                     ToolTip="Arguments"/>
+
+                                                            <TextBlock Grid.Row="0" Grid.Column="0"
+                                                                       Text="Source:"
+                                                                       VerticalAlignment="Center"
+                                                                       Margin="0,5,0,0"/>
+                                                            <TextBox x:Name="SourceTextBox"
+                                                                     Grid.Row="0" Grid.Column="1"
+                                                                     Height="25"
+                                                                     VerticalContentAlignment="Center"
+                                                                     MinWidth="200"
+                                                                     Margin="10,5,0,0"/>
+
+                                                            <TextBlock Grid.Row="1" Grid.Column="0"
+                                                                       Text="Destination:"
+                                                                       VerticalAlignment="Center"
+                                                                       Margin="0,5,0,0"/>
+                                                            <TextBox x:Name="DestinationTextBox"
+                                                                     Grid.Row="1" Grid.Column="1"
+                                                                     Height="25"
+                                                                     Margin="10,5,0,0"
+                                                                     VerticalContentAlignment="Center"
+                                                                     MinWidth="200"/>
+
+                                                            <Button Grid.Row="2" Grid.Column="1"
+                                                                    Content="Add"
+                                                                    Command="{Binding AddDeliveryDirectoryCommand}"
+                                                                    Style="{StaticResource CustomButtonStyle}"
+                                                                    HorizontalAlignment="Right"
+                                                                    Margin="0,10,0,0"
+                                                                    MinWidth="70"
+                                                                    Height="25">
+                                                                <Button.CommandParameter>
+                                                                    <MultiBinding Converter="{StaticResource DeliveryDirectoryConverter}">
+                                                                        <Binding ElementName="SourceTextBox" Path="Text"/>
+                                                                        <Binding ElementName="DestinationTextBox" Path="Text"/>
+                                                                    </MultiBinding>
+                                                                </Button.CommandParameter>
+                                                            </Button>
                                                         </Grid>
-                                                    </DataTemplate>
-                                                </ItemsControl.ItemTemplate>
-                                            </ItemsControl>
-                                            <StackPanel>
-                                                <DockPanel Margin="0,5">
-                                                    <TextBlock Text="Path:" Width="60" VerticalAlignment="Center"/>
-                                                    <TextBox x:Name="PostPathTextBox"
-                                                             Height="25"
-                                                             VerticalContentAlignment="Center"/>
-                                                </DockPanel>
+                                                    </Grid>
+                                                </GroupBox>
 
-                                                <DockPanel Margin="0,5">
-                                                    <TextBlock Text="Arguments:" Width="60" VerticalAlignment="Center"/>
-                                                    <TextBox x:Name="PostArgumentsTextBox"
-                                                             Height="25"
-                                                             VerticalContentAlignment="Center"/>
-                                                </DockPanel>
 
-                                                <Button Content="Add Post-Build Event"
-                                                        Command="{Binding AddPostBuildEventCommand}">
-                                                    <Button.CommandParameter>
-                                                        <MultiBinding Converter="{StaticResource ProcessEventConverter}">
-                                                            <Binding ElementName="PostPathTextBox" Path="Text"/>
-                                                            <Binding ElementName="PostArgumentsTextBox" Path="Text"/>
-                                                        </MultiBinding>
-                                                    </Button.CommandParameter>
-                                                </Button>
                                             </StackPanel>
-                                        </StackPanel>
-                                    </Expander>
-
-                                    <!-- Delivery Settings -->
-                                    <Expander Header="Delivery Settings" Margin="0,0,0,5">
-                                        <StackPanel Margin="20,5">
-                                            <CheckBox Content="Enable Delivery" 
-                                                    IsChecked="{Binding DeliveryEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                    Margin="0,0,0,5"/>
-                                            
-                                            <CheckBox Content="Delivery Bin" 
-                                                    IsChecked="{Binding DeliveryBin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                    Margin="0,0,0,10"/>
-
-                                            <TextBlock Text="Delivery Directories:" Margin="0,0,0,5"/>
-                                            <ItemsControl ItemsSource="{Binding DeliveryDirectories}">
-                                                <ItemsControl.ItemTemplate>
-                                                    <DataTemplate>
-                                                        <Grid Margin="0,2">
-                                                            <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition Width="*"/>
-                                                                <ColumnDefinition Width="*"/>
-                                                            </Grid.ColumnDefinitions>
-                                                            <TextBox Text="{Binding Source}" 
-                                                                     Margin="0,0,5,0"
-                                                                     ToolTip="Source"/>
-                                                            <TextBox Text="{Binding Destination}" 
-                                                                     Grid.Column="1"
-                                                                     ToolTip="Destination"/>
-                                                        </Grid>
-                                                    </DataTemplate>
-                                                </ItemsControl.ItemTemplate>
-                                            </ItemsControl>
-                                            <StackPanel>
-                                                <DockPanel Margin="0,5">
-                                                    <TextBlock Text="Source:" Width="60" VerticalAlignment="Center"/>
-                                                    <TextBox x:Name="SourceTextBox"
-                                                             Height="25"
-                                                             VerticalContentAlignment="Center"/>
-                                                </DockPanel>
-
-                                                <DockPanel Margin="0,5">
-                                                    <TextBox x:Name="DestinationTextBox"
-                                                             Height="25"
-                                                             VerticalContentAlignment="Center"/>
-                                                </DockPanel>
-
-                                                <Button Content="Add Directory"
-                                                        Command="{Binding AddDeliveryDirectoryCommand}">
-                                                    <Button.CommandParameter>
-                                                        <MultiBinding Converter="{StaticResource DeliveryDirectoryConverter}">
-                                                            <Binding ElementName="SourceTextBox" Path="Text"/>
-                                                            <Binding ElementName="DestinationTextBox" Path="Text"/>
-                                                        </MultiBinding>
-                                                    </Button.CommandParameter>
-                                                </Button>
-                                            </StackPanel>
-                                        </StackPanel>
-                                    </Expander>
-                                </StackPanel>
-                            </Border>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
+                                        </Expander>
+                                        <!-- Delivery Settings -->
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
             </StackPanel>
-        </StackPanel>
-    </ScrollViewer>
+        </ScrollViewer>
+    </Border>
 </UserControl>

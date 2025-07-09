@@ -5,13 +5,13 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:controls="clr-namespace:ServerMultiTool.Views.Controls"
-      xmlns:pages="clr-namespace:ServerMultiTool.ViewModels.Pages"
       xmlns:settings="clr-namespace:ServerMultiTool.ViewModels.Pages.Settings"
       mc:Ignorable="d" 
       d:DesignHeight="750" d:DesignWidth="700"
       Title="Settings" 
-      FontFamily="Poppins" 
-      d:DataContext="{d:DesignInstance Type=settings:SettingsViewModel, IsDesignTimeCreatable=True}">
+      FontFamily="Poppins">
+      <!--d:DataContext="{d:DesignInstance Type=settings:SettingsViewModel, IsDesignTimeCreatable=True}"-->
+      
     
     <Border CornerRadius="8" Background="{DynamicResource SecondaryBackgroundColor}">
         <Grid>
@@ -21,9 +21,9 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             
-            <controls:GeneralInfoControl Grid.Row="0" 
-                                         Margin="10" 
-                                         DataContext="{Binding .GeneralInfo}"/>
+            <controls:GeneralInfoControl Grid.Row="0"  
+                                        Margin="10"  
+                                        DataContext="{Binding GeneralInfo}"/>
             
             <TabControl Grid.Row="1"  
                         Margin="10,10,10,0"
@@ -75,6 +75,7 @@
                                 <DockPanel Margin="0,0,0,20">
                                     <Label DockPanel.Dock="Top"
                                            FontSize="14"
+                                           FontWeight="SemiBold"
                                            Foreground="{DynamicResource PrimaryTextColor}"
                                            Content="Solution Directories:" 
                                            Margin="0,0,0,5"/>
@@ -139,6 +140,7 @@
                                     <Label DockPanel.Dock="Top"
                                            Content="Http Directories:" 
                                            FontSize="14"
+                                           FontWeight="SemiBold"
                                            Foreground="{DynamicResource PrimaryTextColor}"
                                            Margin="0,0,0,5"/>
                                     
@@ -164,7 +166,7 @@
                                              SelectedItem="{Binding SelectedHttpDirectory}" 
                                              Background="{DynamicResource TertiaryBackgroundColor}"
                                              Foreground="{DynamicResource PrimaryTextColor}"
-                                             MinHeight="120"
+                                             MinHeight="150"
                                              MaxHeight="250"
                                              Padding="5"
                                              ScrollViewer.HorizontalScrollBarVisibility="Disabled">
@@ -213,12 +215,7 @@
                                 
                                 <!-- Pipeline Profiles List -->
                                 <DockPanel Grid.Row="0" Margin="0,0,0,20">
-                                    <Label DockPanel.Dock="Top"
-                                           FontSize="14"
-                                           Foreground="{DynamicResource PrimaryTextColor}"
-                                           Content="Pipeline Profiles:"
-                                           Margin="0,0,0,5"/>
-                                    
+
                                     <StackPanel DockPanel.Dock="Bottom"
                                                 Orientation="Horizontal"
                                                 HorizontalAlignment="Left"
@@ -242,8 +239,8 @@
                                              IsSynchronizedWithCurrentItem="True"
                                              Background="{DynamicResource TertiaryBackgroundColor}"
                                              Foreground="{DynamicResource PrimaryTextColor}"
-                                             MinHeight="100"
-                                             MaxHeight="150"
+                                             MinHeight="150"
+                                             MaxHeight="250"
                                              Padding="5"
                                              ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                                         <ListBox.ItemTemplate>
@@ -251,6 +248,7 @@
                                                 <StackPanel Orientation="Vertical" Margin="0,5">
                                                     <TextBox Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                              FontWeight="Bold"
+                                                             FontSize="13"
                                                              Margin="0,0,0,5"
                                                              Background="Transparent"
                                                              Foreground="{DynamicResource PrimaryTextColor}"
@@ -280,9 +278,11 @@
                                 <DockPanel Grid.Row="1">
                                     <Label DockPanel.Dock="Top"
                                            Content="Edit Pipeline Profile"
+                                           FontWeight="SemiBold"
                                            FontSize="14"
                                            Foreground="{DynamicResource PrimaryTextColor}"
                                            Margin="0,0,0,5"/>
+
                                     
                                     <Border BorderThickness="1"
                                             BorderBrush="LightGray"
