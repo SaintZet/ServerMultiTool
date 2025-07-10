@@ -96,16 +96,33 @@ namespace ServerMultiTool.Views.Windows
 
         protected override void OnKeyDown(KeyEventArgs e)
         {
-            if (e.Key == Key.F12)
+            if (Keyboard.Modifiers == ModifierKeys.Control)
             {
-                WindowState = WindowState.Normal;
-                var screen = System.Windows.Forms.Screen.PrimaryScreen.WorkingArea;
-                Width = 800;
-                Height = 600;
-                Left = screen.Left + 100;
-                Top = screen.Top + 100;
+                switch (e.Key)
+                {
+                    case Key.M:
+                        WindowState = (WindowState == WindowState.Maximized) ? WindowState.Normal : WindowState.Maximized;
+                        break;
+                    case Key.Enter:
+                        ResetWindowSize();
+                        break;
+                }
             }
+
             base.OnKeyDown(e);
+        }
+
+        private void ResetWindowSize()
+        {
+            WindowState = WindowState.Normal;
+
+            var screen = System.Windows.Forms.Screen.PrimaryScreen.WorkingArea;
+
+            Width = 800;
+            Height = 600;
+
+            Left = screen.Left + 100;
+            Top = screen.Top + 100;
         }
     }
 }
