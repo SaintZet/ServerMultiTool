@@ -50,3 +50,4 @@ artifacts/
 
 # Mono Auto Generated Files
 mono_crash.*
+/.vs
