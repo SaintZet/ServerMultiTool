@@ -1,151 +1,168 @@
 ﻿
-<Page x:Class="ServerMultiTool.Views.Pages.PipelineView"
-      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-      xmlns:controls="clr-namespace:ServerMultiTool.Views.Controls"
-      xmlns:pages="clr-namespace:ServerMultiTool.ViewModels.Pages"
-      xmlns:pipeline="clr-namespace:ServerMultiTool.ViewModels.Pages.Pipeline"
-      xmlns:converters1="clr-namespace:ServerMultiTool.ViewModels.Pages.Pipeline.Converters"
-      xmlns:behaviours="clr-namespace:ServerMultiTool.Views.Behaviours"
-      mc:Ignorable="d" 
-      d:DesignHeight="600" d:DesignWidth="700"
-      Title="Pipeline" 
-      FontFamily="Poppins" 
-      d:DataContext="{d:DesignInstance Type=pipeline:PipelineViewModel, IsDesignTimeCreatable=True}">
-    
+<Page
+    x:Class="ServerMultiTool.Views.Pages.PipelineView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:behaviours="clr-namespace:ServerMultiTool.Views.Behaviours"
+    xmlns:controls="clr-namespace:ServerMultiTool.Views.Controls"
+    xmlns:converters1="clr-namespace:ServerMultiTool.ViewModels.Pages.Pipeline.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:pipeline="clr-namespace:ServerMultiTool.ViewModels.Pages.Pipeline"
+    Title="Pipeline"
+    d:DataContext="{d:DesignInstance Type=pipeline:PipelineViewModel,
+                                     IsDesignTimeCreatable=True}"
+    d:DesignHeight="600"
+    d:DesignWidth="700"
+    FontFamily="Poppins"
+    mc:Ignorable="d">
+
     <Page.Resources>
-        <converters1:PipelineStatusFillConverter x:Key="PipelineStatusFillConverter"/>
-        <converters1:StringToVisibilityConverter x:Key="StringToVisibilityConverter"/>
+        <converters1:PipelineStatusFillConverter x:Key="PipelineStatusFillConverter" />
+        <converters1:StringToVisibilityConverter x:Key="StringToVisibilityConverter" />
     </Page.Resources>
 
-    <Border CornerRadius="8" Background="{DynamicResource SecondaryBackgroundColor}">
+    <Border Background="{DynamicResource SecondaryBackgroundColor}" CornerRadius="8">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            
-            <controls:GeneralInfoControl Grid.Row="0" 
-                                         Margin="10" 
-                                         DataContext="{Binding .GeneralInfo}"/>
+
+            <controls:GeneralInfoControl
+                Grid.Row="0"
+                Margin="10"
+                DataContext="{Binding .GeneralInfo}" />
             <Grid Grid.Row="1" Margin="10">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                
-                <TextBlock Grid.Row="0" Grid.Column="0" 
-                           Text="Pipeline Profile:"
-                           HorizontalAlignment="Right"
-                           VerticalAlignment="Center"
-                           Style="{DynamicResource CustomTextBlockStyle}"/>
-                
-                <Grid Grid.Row="0" Grid.Column="1" 
-                      HorizontalAlignment="Stretch"
-                      Margin="10,0,0,0">
+
+                <TextBlock
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Style="{DynamicResource CustomTextBlockStyle}"
+                    Text="Pipeline Profile:" />
+
+                <Grid
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Margin="10,0,0,0"
+                    HorizontalAlignment="Stretch">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" MaxWidth="250"/>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*" MaxWidth="250" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    
-                    <ComboBox Grid.Column="0"
-                              ItemsSource="{Binding PipelineProfiles, Mode=TwoWay}"
-                              SelectedItem="{Binding SelectedPipelineProfile, Mode=TwoWay}"
-                              DisplayMemberPath="Name"
-                              IsEnabled="{Binding .GeneralInfo.CanChangeStates}"
-                              Style="{DynamicResource ComboBoxStyle}"
-                              MinWidth="150"
-                              Height="30"
-                              Margin="0,5,5,5"/>
-                    
-                    <Button Grid.Column="1"
-                            Content="{DynamicResource Settings}"
-                            IsEnabled="{Binding .GeneralInfo.CanChangeStates}"
-                            Style="{DynamicResource IconButtonsStyle}" 
-                            Margin="5,0,0,0"/>
-                    
-                    <Button Grid.Column="2"
-                            Content="{DynamicResource Start}" 
-                            Command="{Binding ExecutePipelineCommand}" 
-                            Style="{StaticResource IconButtonsStyle}" 
-                            Margin="5,0,0,0"/>
-                    
-                    <ItemsControl Grid.Column="3" 
-                                  ItemsSource="{Binding PipelineOperations}" 
-                                  HorizontalAlignment="Right"
-                                  VerticalAlignment="Center">
+
+                    <ComboBox
+                        Grid.Column="0"
+                        Height="30"
+                        MinWidth="150"
+                        Margin="0,5,5,5"
+                        DisplayMemberPath="Name"
+                        IsEnabled="{Binding .GeneralInfo.CanChangeStates}"
+                        ItemsSource="{Binding PipelineProfiles, Mode=TwoWay}"
+                        SelectedItem="{Binding SelectedPipelineProfile, Mode=TwoWay}"
+                        Style="{DynamicResource ComboBoxStyle}" />
+
+                    <Button
+                        Grid.Column="1"
+                        Margin="5,0,0,0"
+                        Content="{DynamicResource Settings}"
+                        IsEnabled="{Binding .GeneralInfo.CanChangeStates}"
+                        Style="{DynamicResource IconButtonsStyle}" />
+
+                    <Button
+                        Grid.Column="2"
+                        Margin="5,0,0,0"
+                        Command="{Binding ExecutePipelineCommand}"
+                        Content="{DynamicResource Start}"
+                        Style="{StaticResource IconButtonsStyle}" />
+
+                    <ItemsControl
+                        Grid.Column="3"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        ItemsSource="{Binding PipelineOperations}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
-                                <UniformGrid Columns="{Binding Path=Items.Count, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"
-                                             Rows="1" 
-                                             Margin="10,0,0,0"/>
+                                <UniformGrid
+                                    Margin="10,0,0,0"
+                                    Columns="{Binding Path=Items.Count, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"
+                                    Rows="1" />
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <StackPanel VerticalAlignment="Center" Margin="5,0">
-                                    <Ellipse x:Name="Ellipse"
-                                             Height="16"
-                                             Width="16"
-                                             VerticalAlignment="Center"
-                                             HorizontalAlignment="Center"
-                                             Fill="{Binding .PipelineOperationStatus, Mode=OneWay, Converter={StaticResource PipelineStatusFillConverter}}"
-                                             Stroke="{DynamicResource PrimaryWhiteColor}"
-                                             StrokeThickness="2">
+                                <StackPanel Margin="5,0" VerticalAlignment="Center">
+                                    <Ellipse
+                                        x:Name="Ellipse"
+                                        Width="16"
+                                        Height="16"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Fill="{Binding .PipelineOperationStatus, Mode=OneWay, Converter={StaticResource PipelineStatusFillConverter}}"
+                                        Stroke="{DynamicResource PrimaryWhiteColor}"
+                                        StrokeThickness="2">
                                         <Ellipse.Effect>
-                                            <DropShadowEffect ShadowDepth="0.5" Opacity=".2"/>
+                                            <DropShadowEffect Opacity=".2" ShadowDepth="0.5" />
                                         </Ellipse.Effect>
                                     </Ellipse>
-                                    <TextBlock Text="{Binding .DisplayName}" 
-                                               Style= "{DynamicResource CustomTextBlockStyle}"
-                                               FontSize="10"
-                                               TextAlignment="Center"
-                                               Margin="0,3,0,0"/>
+                                    <TextBlock
+                                        Margin="0,3,0,0"
+                                        FontSize="10"
+                                        Style="{DynamicResource CustomTextBlockStyle}"
+                                        Text="{Binding .DisplayName}"
+                                        TextAlignment="Center" />
                                 </StackPanel>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                 </Grid>
             </Grid>
-            
-            <TabControl Grid.Row="2"  
-                        Margin="10"
-                        HorizontalAlignment="Stretch"
-                        VerticalAlignment="Stretch"
-                        Background="Transparent"
-                        BorderBrush="Transparent"
-                        BorderThickness="0">
+
+            <TabControl
+                Grid.Row="2"
+                Margin="10"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                Background="Transparent"
+                BorderBrush="Transparent"
+                BorderThickness="0">
                 <TabControl.Resources>
-                    <Style TargetType="TabItem" BasedOn="{StaticResource {x:Type TabItem}}">
+                    <Style BasedOn="{StaticResource {x:Type TabItem}}" TargetType="TabItem">
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="TabItem">
-                                    <Border Name="Border" 
-                                            BorderThickness="1,1,1,0" 
-                                            BorderBrush="Gainsboro" 
-                                            CornerRadius="4,4,0,0" 
-                                            Margin="2,0,2,-1"
-                                            Padding="0,0,0,2">
-                                        <ContentPresenter x:Name="ContentSite"
-                                                          VerticalAlignment="Center"
-                                                          HorizontalAlignment="Center"
-                                                          ContentSource="Header"
-                                                          Margin="10,2"/>
+                                    <Border
+                                        Name="Border"
+                                        Margin="2,0,2,-1"
+                                        Padding="0,0,0,2"
+                                        BorderBrush="Gainsboro"
+                                        BorderThickness="1,1,1,0"
+                                        CornerRadius="4,4,0,0">
+                                        <ContentPresenter
+                                            x:Name="ContentSite"
+                                            Margin="10,2"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            ContentSource="Header" />
                                     </Border>
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsSelected" Value="True">
-                                            <Setter Property="Panel.ZIndex" Value="1"/>
-                                            <Setter Property="Foreground" Value="{DynamicResource SecondaryTextColor}"/>
-                                            <Setter TargetName="Border" Property="Background" Value="{DynamicResource TertiaryBackgroundColor}"/>
+                                            <Setter Property="Panel.ZIndex" Value="1" />
+                                            <Setter Property="Foreground" Value="{DynamicResource SecondaryTextColor}" />
+                                            <Setter TargetName="Border" Property="Background" Value="{DynamicResource TertiaryBackgroundColor}" />
                                         </Trigger>
                                         <Trigger Property="IsSelected" Value="False">
-                                            <Setter Property="Foreground" Value="{DynamicResource PrimaryTextColor}"/>
-                                            <Setter TargetName="Border" Property="Background" Value="{DynamicResource SecondaryBackgroundColor}"/>
+                                            <Setter Property="Foreground" Value="{DynamicResource PrimaryTextColor}" />
+                                            <Setter TargetName="Border" Property="Background" Value="{DynamicResource SecondaryBackgroundColor}" />
                                         </Trigger>
                                     </ControlTemplate.Triggers>
                                 </ControlTemplate>
@@ -154,16 +171,16 @@
                     </Style>
                 </TabControl.Resources>
                 <TabItem Header="App Log">
-                    <behaviours:ScrollingListBox ItemsSource="{Binding AppLogMessages}"
-                                               Background="{DynamicResource TertiaryBackgroundColor}"
-                                               Foreground="{DynamicResource PrimaryTextColor}"
-                                               Padding="10">
+                    <behaviours:ScrollingListBox
+                        Padding="10"
+                        Background="{DynamicResource TertiaryBackgroundColor}"
+                        Foreground="{DynamicResource PrimaryTextColor}"
+                        ItemsSource="{Binding AppLogMessages}">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Margin="0,2">
                                     <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="{Binding Sender}"
-                                                   FontWeight="Bold">
+                                        <TextBlock FontWeight="Bold" Text="{Binding Sender}">
                                             <TextBlock.Style>
                                                 <Style TargetType="TextBlock">
                                                     <Style.Triggers>
@@ -188,7 +205,7 @@
                                             </TextBlock.Style>
                                         </TextBlock>
                                         <TextBlock Text=": " />
-                                        <TextBlock Text="{Binding Message.BaseMessage}" TextWrapping="Wrap"/>
+                                        <TextBlock Text="{Binding Message.BaseMessage}" TextWrapping="Wrap" />
                                     </StackPanel>
                                 </StackPanel>
                             </DataTemplate>
@@ -196,20 +213,21 @@
                     </behaviours:ScrollingListBox>
                 </TabItem>
                 <TabItem Header="GS Log">
-                    <behaviours:ScrollingListBox ItemsSource="{Binding MasterLogMessages}"
-                                               Background="{DynamicResource TertiaryBackgroundColor}"
-                                               Foreground="{DynamicResource PrimaryTextColor}"
-                                               Padding="10">
+                    <behaviours:ScrollingListBox
+                        Padding="10"
+                        Background="{DynamicResource TertiaryBackgroundColor}"
+                        Foreground="{DynamicResource PrimaryTextColor}"
+                        ItemsSource="{Binding MasterLogMessages}">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Margin="0,2">
                                     <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="{Binding .Timestamp}"
-                                                   FontWeight="Bold"
-                                                   Foreground="{DynamicResource PrimaryTextColor}"
-                                                   Visibility="Collapsed"/>
-                                        <TextBlock Text="{Binding Sender}"
-                                                   FontWeight="Bold">
+                                        <TextBlock
+                                            FontWeight="Bold"
+                                            Foreground="{DynamicResource PrimaryTextColor}"
+                                            Text="{Binding .Timestamp}"
+                                            Visibility="Collapsed" />
+                                        <TextBlock FontWeight="Bold" Text="{Binding Sender}">
                                             <TextBlock.Style>
                                                 <Style TargetType="TextBlock">
                                                     <Style.Triggers>
@@ -234,16 +252,18 @@
                                             </TextBlock.Style>
                                         </TextBlock>
                                         <TextBlock Text=": " />
-                                        <TextBlock Text="{Binding Message.BaseMessage}" TextWrapping="Wrap"/>
+                                        <TextBlock Text="{Binding Message.BaseMessage}" TextWrapping="Wrap" />
                                     </StackPanel>
-                                    <Expander Header="Full message"
-                                              ExpandDirection="Down"
-                                              Margin="0,5,0,0"
-                                              Foreground="{DynamicResource PrimaryTextColor}"
-                                              Visibility="{Binding Message.ExtendedMessage, Converter={StaticResource StringToVisibilityConverter}}">
-                                        <TextBlock Text="{Binding Message.ExtendedMessage}" 
-                                                   Foreground="{DynamicResource PrimaryTextColor}"
-                                                   TextWrapping="Wrap"/>
+                                    <Expander
+                                        Margin="0,5,0,0"
+                                        ExpandDirection="Down"
+                                        Foreground="{DynamicResource PrimaryTextColor}"
+                                        Header="Full message"
+                                        Visibility="{Binding Message.ExtendedMessage, Converter={StaticResource StringToVisibilityConverter}}">
+                                        <TextBlock
+                                            Foreground="{DynamicResource PrimaryTextColor}"
+                                            Text="{Binding Message.ExtendedMessage}"
+                                            TextWrapping="Wrap" />
                                     </Expander>
                                 </StackPanel>
                             </DataTemplate>
