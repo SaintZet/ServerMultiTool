@@ -8,6 +8,6 @@ namespace ServerMultiTool.Model.Common;
 public class ProjectSettings
 {
     public DirectoryModel Project { get; set; }
-    public MsBuildSettings MsBuildSettings { get; set; }
-    public DeliverySettings DeliverySettings { get; set; }
+    public MsBuildSettings MsBuildSettings { get; set; } = new();
+    public DeliverySettings DeliverySettings { get; set; } = new();
 }
