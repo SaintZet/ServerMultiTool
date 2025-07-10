@@ -14,7 +14,6 @@
         WindowState="Normal" 
         FontFamily="Poppins"
         Icon="/Views/Assets/Icons/plarium-logo.png"
-        MouseLeftButtonDown="Window_MouseLeftButtonDown"
         d:DataContext="{d:DesignInstance Type=windows:MainWindowViewModel, IsDesignTimeCreatable=True}">
     
     <WindowChrome.WindowChrome>
@@ -22,15 +21,20 @@
                       ResizeBorderThickness="5" 
                       UseAeroCaptionButtons="False"/>
     </WindowChrome.WindowChrome>
-    
+
     <Grid Background="{DynamicResource PrimaryBackgroundColor}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="250"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
         <!-- Start: GridColumn Left -->
-        <Border Grid.Column="0"
+        <Border Grid.Column="0" Grid.Row="0" Grid.RowSpan="2"
                 Padding="10"
                 Background="{DynamicResource SecondaryBackgroundColor}">
             <Grid>
@@ -40,7 +44,7 @@
                     <RowDefinition Height="130"/>
                     <RowDefinition Height="80"/>
                 </Grid.RowDefinitions>
-                
+
                 <!-- Start:  Logo -->
                 <Border Grid.Row="0">
                     <StackPanel Orientation="Horizontal">
@@ -61,7 +65,7 @@
                     </StackPanel>
                 </Border>
                 <!-- End:  Logo -->
-                
+
                 <!-- Start:  Menu -->
                 <StackPanel Grid.Row="1" Margin="0 30 0 30" >
                     <RadioButton Content="CI/CD Pipeline" 
@@ -87,7 +91,7 @@
                                  CommandParameter="Settings"/>
                 </StackPanel>
                 <!-- End:  Menu -->
-                
+
                 <!-- Start:  Theme -->
                 <Border Grid.Row="3" 
                         CornerRadius="18" 
@@ -126,17 +130,18 @@
         <!-- End: GridColumn Left -->
 
         <!-- Start: GridColumn Right -->
-        <Grid Grid.Column="1">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="40"/>
-                <RowDefinition/>
-            </Grid.RowDefinitions>
-            
-            <!-- Start: Button Close | Restore | Minimize -->
-            <Border Grid.Row="0" Margin="-1,0,0,0"
-                    Background="{DynamicResource SecondaryBackgroundColor}" 
-                    CornerRadius="0,10,0,0">
-                <StackPanel Grid.Row="0" Grid.Column="4" 
+
+
+        <!-- Start: Button Close | Restore | Minimize -->
+        <Border Grid.Row="0" Grid.Column="1" 
+                Margin="-1,0,0,0" 
+                MouseLeftButtonDown="DragArea_MouseLeftButtonDown"
+                MouseMove="DragArea_MouseMove"
+                MouseLeftButtonUp="DragArea_MouseLeftButtonUp"
+
+                Background="{DynamicResource SecondaryBackgroundColor}" 
+                CornerRadius="0,10,0,0">
+            <StackPanel Grid.Row="0" Grid.Column="4" 
                         HorizontalAlignment="Right" 
                         VerticalAlignment="Top" 
                         Margin="0,5,10,0" 
@@ -164,18 +169,17 @@
                         Content="{DynamicResource Minimize}" 
                         Command="{Binding MinimizeCommand}"/>
             </StackPanel>
-            </Border>
-            <!-- End: Button Close | Restore | Minimize -->
-            
-            <!-- Start: Frame Container -->
-            <Border Grid.Row="1"  Background="Transparent">
-                <Frame NavigationUIVisibility="Hidden" 
+        </Border>
+        <!-- End: Button Close | Restore | Minimize -->
+
+
+        <!-- Start: Frame Container -->
+        <Border Grid.Column="1" Grid.Row="1"  Background="Transparent">
+            <Frame NavigationUIVisibility="Hidden" 
                        Content="{Binding CurrentPage}" 
                        Margin="10"/>
-            </Border>
-            <!-- End: Frame Container -->
-        </Grid>
+        </Border>
+        <!-- End: Frame Container -->
         <!-- End: GridColumn Right -->
     </Grid>
-    
 </Window>
