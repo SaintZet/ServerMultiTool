@@ -33,41 +33,75 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
 
+        <!-- Start: Top Bar -->
+        <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
+        Background="{DynamicResource SecondaryBackgroundColor}"
+        CornerRadius="0,10,0,0"
+        MouseLeftButtonDown="DragArea_MouseLeftButtonDown"
+        MouseMove="DragArea_MouseMove"
+        MouseLeftButtonUp="DragArea_MouseLeftButtonUp">
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Logo and Title -->
+                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="10,10,0,0">
+                    <Path Data="{DynamicResource Plarium}" 
+                  Stretch="Fill" 
+                          Width="28" Height="28"   
+                  Fill="{DynamicResource PrimaryTextColor}" 
+                  VerticalAlignment="Center"
+                  Margin="10 0 10 0"/>
+                    <Label Content="Raid GS Tools"
+                   Foreground="{DynamicResource PrimaryTextColor}" 
+                   FontFamily="Segoe UI Semibold"
+                   FontSize="20"
+                   VerticalContentAlignment="Center"
+                   Padding="0" />
+                </StackPanel>
+
+                <!-- Buttons -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,5,10,0" FlowDirection="RightToLeft">
+                    <Button Style="{StaticResource IconButtonsStyle}" 
+                    Content="{DynamicResource Close}" 
+                    Command="{Binding CloseCommand}" 
+                    Tag="IsCloseButton"/>
+                    <Button Margin="5 0" Command="{Binding RestoreCommand}">
+                        <Button.Style>
+                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource IconButtonsStyle}">
+                                <Setter Property="Content" Value="{DynamicResource Maximize}"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=WindowState}" Value="Maximized">
+                                        <Setter Property="Content" Value="{DynamicResource Restore}"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <Button Style="{DynamicResource IconButtonsStyle}" 
+                    Content="{DynamicResource Minimize}" 
+                    Command="{Binding MinimizeCommand}"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+        <!-- End: Top Bar -->
+
         <!-- Start: GridColumn Left -->
-        <Border Grid.Column="0" Grid.Row="0" Grid.RowSpan="2"
+        <Border Grid.Column="0" Grid.Row="1"
                 Padding="10"
                 Background="{DynamicResource SecondaryBackgroundColor}">
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="50"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="130"/>
                     <RowDefinition Height="80"/>
                 </Grid.RowDefinitions>
 
-                <!-- Start:  Logo -->
-                <Border Grid.Row="0">
-                    <StackPanel Orientation="Horizontal">
-                        <Path Data="{DynamicResource Plarium}" 
-                              Stretch="Fill" 
-                              Fill="{DynamicResource PrimaryTextColor}" 
-                              VerticalAlignment="Center"
-                              Margin="10 0 0 6"/>
-                        <Label Content="Raid GS Tools"
-                               Foreground="{DynamicResource PrimaryTextColor}" 
-                               FontFamily="Segoe UI Italic"
-                               FontSize="20" 
-                               VerticalContentAlignment="Top"  
-                               HorizontalContentAlignment="Left" 
-                               HorizontalAlignment="Left" 
-                               Padding="0,0,0,0" 
-                               Margin="10 0 0 0"/>
-                    </StackPanel>
-                </Border>
-                <!-- End:  Logo -->
-
                 <!-- Start:  Menu -->
-                <StackPanel Grid.Row="1" Margin="0 30 0 30" >
+                <StackPanel Grid.Row="0" Margin="0 30 0 30" >
                     <RadioButton Content="CI/CD Pipeline" 
                                  Style="{DynamicResource MenuRadioButtonStyle}" 
                                  Tag="{DynamicResource Airplane}" 
@@ -127,50 +161,6 @@
                 <!-- End:  Theme -->
             </Grid>
         </Border>
-        <!-- End: GridColumn Left -->
-
-        <!-- Start: GridColumn Right -->
-
-
-        <!-- Start: Button Close | Restore | Minimize -->
-        <Border Grid.Row="0" Grid.Column="1" 
-                Margin="-1,0,0,0" 
-                MouseLeftButtonDown="DragArea_MouseLeftButtonDown"
-                MouseMove="DragArea_MouseMove"
-                MouseLeftButtonUp="DragArea_MouseLeftButtonUp"
-
-                Background="{DynamicResource SecondaryBackgroundColor}" 
-                CornerRadius="0,10,0,0">
-            <StackPanel Grid.Row="0" Grid.Column="4" 
-                        HorizontalAlignment="Right" 
-                        VerticalAlignment="Top" 
-                        Margin="0,5,10,0" 
-                        Height="30" 
-                        Orientation="Horizontal" 
-                        FlowDirection="RightToLeft">
-                <Button Style="{StaticResource IconButtonsStyle}" 
-                        Content="{DynamicResource Close}" 
-                        Command="{Binding CloseCommand}" 
-                        Tag="IsCloseButton"/>
-                <Button Margin="5 0" 
-                        Command="{Binding RestoreCommand}">
-                    <Button.Style>
-                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource IconButtonsStyle}">
-                            <Setter Property="Content" Value="{DynamicResource Maximize}"/>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=WindowState}" Value="Maximized">
-                                    <Setter Property="Content" Value="{DynamicResource Restore}"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
-                </Button>
-                <Button Style="{DynamicResource IconButtonsStyle}" 
-                        Content="{DynamicResource Minimize}" 
-                        Command="{Binding MinimizeCommand}"/>
-            </StackPanel>
-        </Border>
-        <!-- End: Button Close | Restore | Minimize -->
 
 
         <!-- Start: Frame Container -->
@@ -180,6 +170,6 @@
                        Margin="10"/>
         </Border>
         <!-- End: Frame Container -->
-        <!-- End: GridColumn Right -->
+        <!-- End: GridColumn Left -->
     </Grid>
 </Window>

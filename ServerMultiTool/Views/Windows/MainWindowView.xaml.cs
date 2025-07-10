@@ -1,22 +1,21 @@
-﻿using System.Windows;
+﻿using ServerMultiTool.ViewModels.Windows;
+using System.Windows;
 using System.Windows.Input;
-using ServerMultiTool.ViewModels.Windows;
 
 namespace ServerMultiTool.Views.Windows
 {
     public partial class MainWindowView : Window
     {
+        private bool _restoreForDragMove = false;
+
         public MainWindowView()
         {
             DataContext = new MainWindowViewModel();
             InitializeComponent();
         }
 
-        private bool _restoreForDragMove = false;
-
         private void DragArea_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            // Двойной клик — максимизация/восстановление
             if (e.ClickCount == 2)
             {
                 WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
@@ -26,7 +25,6 @@ namespace ServerMultiTool.Views.Windows
             if (WindowState == WindowState.Maximized)
             {
                 _restoreForDragMove = true;
-                // Захватываем мышь, чтобы отследить следующий MouseMove
                 Mouse.Capture((UIElement)sender);
             }
             else
@@ -49,7 +47,7 @@ namespace ServerMultiTool.Views.Windows
 
                 var screen = System.Windows.Forms.Screen.FromHandle(new System.Windows.Interop.WindowInteropHelper(this).Handle).WorkingArea;
                 Left = e.GetPosition(null).X - (ActualWidth * percentX);
-                Top = 2; // небольшой отступ от верхнего края
+                Top = 2;
 
                 DragMove();
             }
