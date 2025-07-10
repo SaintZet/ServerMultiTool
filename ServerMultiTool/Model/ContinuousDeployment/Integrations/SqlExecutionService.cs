@@ -5,19 +5,16 @@ using ServerMultiTool.Model.Pipeline.Contracts;
 
 namespace ServerMultiTool.Model.ContinuousDeployment.Integrations;
 
-public class SqlExecutionService : PipelineOperation
+public class SqlExecutionService(SqlExecutionSettings settings) : PipelineOperation
 {
-    private readonly SqlExecutionSettings _settings;
-
-    public SqlExecutionService(SqlExecutionSettings settings) => 
-        _settings = settings;
-
     protected override async Task<OperationResult> ExecuteOperationsAsync()
     {
-        var sqlScript = await File.ReadAllTextAsync(_settings.PathToSqlScript);
-        var connectionString = _settings.ConnectionString;
+        if (string.IsNullOrEmpty(settings.PathToSqlScript) || string.IsNullOrEmpty(settings.ConnectionString))
+            return OperationResult.Cancelled;
+
+        var sqlScript = await File.ReadAllTextAsync(settings.PathToSqlScript);
+        var count = await ExecuteSqlScript(sqlScript, settings.ConnectionString);
         
-        var count = await ExecuteSqlScript(sqlScript, connectionString);
         Logger.LogInfoWithPublish($"Affected row count {count}");
 
         return OperationResult.Success;

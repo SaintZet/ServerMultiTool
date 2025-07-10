@@ -13,7 +13,7 @@ public class DeliverySettings
 }
 
 [Serializable]
-public record DeliveryDirectory
+public class DeliveryDirectory
 {
     public required string Source { get; set; }
     public required string Destination { get; set; }

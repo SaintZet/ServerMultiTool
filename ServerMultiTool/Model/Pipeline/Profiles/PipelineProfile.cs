@@ -10,12 +10,12 @@ namespace ServerMultiTool.Model.Pipeline.Profiles;
 [Serializable]
 public class PipelineProfile
 {
-    public string Name { get; set; }
-    public List<ProjectSettings> SettingsPerProject { get; set; }
-    public GitSettings GitSettings { get; set; }
-    public InternetInformationSettings InternetInformationSettings { get; set; }
-    public SqlExecutionSettings SqlExecutionSettings { get; set; }
-    public WebBrowserSettings WebBrowserSettings { get; set; }
-    public LogMonitoringSettings MonitorLogFilesSettings { get; set; }
-    public HttpMonitoringSettings HttpMonitoringSettings { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public List<ProjectSettings> SettingsPerProject { get; set; } = [];
+    public GitSettings GitSettings { get; set; } = new();
+    public InternetInformationSettings InternetInformationSettings { get; set; } = new();
+    public SqlExecutionSettings SqlExecutionSettings { get; set; } = new();
+    public WebBrowserSettings WebBrowserSettings { get; set; } = new();
+    public LogMonitoringSettings MonitorLogFilesSettings { get; set; } = new();
+    public HttpMonitoringSettings HttpMonitoringSettings { get; set; } = new();
 }

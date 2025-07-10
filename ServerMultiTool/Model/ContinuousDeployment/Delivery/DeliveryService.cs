@@ -31,7 +31,7 @@ public class DeliveryService(IEnumerable<ProjectSettings> settings) : PipelineOp
 
     private async Task DeliveryProjectSpecificFilesAsync(ProjectSettings projectSettings)
     {
-        await Task.WhenAll(projectSettings.DeliverySettings.CustomDeliveryDirectories
+        await Task.WhenAll(projectSettings.DeliverySettings.CustomDeliveryDirectories!
             .Select(async directory =>
             {
                 if (directory.Source.IsNullOrEmpty() || Path.GetDirectoryName(directory.Source) is null)

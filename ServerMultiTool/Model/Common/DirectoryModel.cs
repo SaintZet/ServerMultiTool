@@ -3,10 +3,10 @@ using System;
 namespace ServerMultiTool.Model.Common;
 
 [Serializable]
-public record struct DirectoryModel
+public class DirectoryModel
 {
-    public string Name { get; set; }
-    public string Path { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string Path { get; set; }= string.Empty;
     
     public bool IsSameDirectory(DirectoryModel directory) => 
         string.Equals(Path, directory.Path, StringComparison.OrdinalIgnoreCase);

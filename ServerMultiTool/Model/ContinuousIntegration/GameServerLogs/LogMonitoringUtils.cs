@@ -24,7 +24,7 @@ public static class LogMonitoringUtils
                 continue;
             }
 
-            if (currentLogEvent is null && result.Any()) 
+            if (currentLogEvent is null && result.Count != 0) 
                 result.Last().Message.AddDetails(currentLine);
         }
 

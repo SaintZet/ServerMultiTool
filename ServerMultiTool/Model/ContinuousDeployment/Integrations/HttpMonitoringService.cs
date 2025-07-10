@@ -8,24 +8,19 @@ using ServerMultiTool.Model.Pipeline.Contracts;
 
 namespace ServerMultiTool.Model.ContinuousDeployment.Integrations;
 
-public class HttpMonitoringService : PipelineOperation
+public class HttpMonitoringService(HttpMonitoringSettings settings) : PipelineOperation
 {
-    private readonly HttpMonitoringSettings _settings;
-
-    public HttpMonitoringService(HttpMonitoringSettings settings) => 
-        _settings = settings;
-
     protected override async Task<OperationResult> ExecuteOperationsAsync()
     {
         var urls = new List<string>();
 
-        if (_settings.PingSegment) 
+        if (settings.PingSegment) 
             urls.Add("http://localhost/Raid/Segment00/Segment.ashx");
 
-        if (_settings.PingMaster) 
+        if (settings.PingMaster) 
             urls.Add("http://localhost/Raid/Master00/Master.ashx");
 
-        var timeout = _settings.TimeoutMinutes;
+        var timeout = settings.TimeoutMinutes;
         var tasks = urls.Select(url => MakeRequestAsync(url, timeout)).ToList();
 
         var results = await Task.WhenAll(tasks);
@@ -40,8 +35,10 @@ public class HttpMonitoringService : PipelineOperation
 
     private async Task<OperationResult> MakeRequestAsync(string url, double timeout)
     {
-        using var client = new HttpClient { Timeout = TimeSpan.FromMinutes(timeout) };
-            
+        using var client = new HttpClient();
+        
+        client.Timeout = TimeSpan.FromMinutes(timeout);
+
         var response = await client.GetAsync(url);
         var message = $"{url} return {response.StatusCode}";
         

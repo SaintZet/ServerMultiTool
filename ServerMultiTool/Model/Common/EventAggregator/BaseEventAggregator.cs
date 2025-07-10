@@ -22,10 +22,10 @@ public class BaseEventAggregator
             return;
 
         var eventType = typeof(TEvent);
-        if (!_eventHandlers.ContainsKey(eventType))
+        if (!_eventHandlers.TryGetValue(eventType, out var value))
             return;
 
-        foreach (var handler in _eventHandlers[eventType])
+        foreach (var handler in value)
             handler(@event);
     }
 }

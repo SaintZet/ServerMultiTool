@@ -6,5 +6,5 @@ namespace ServerMultiTool.Model.ContinuousDeployment.Integrations;
 public class WebBrowserSettings
 {
     public bool Enable { get; set; }
-    public string Url { get; set; }
+    public string? Url { get; set; }
 }

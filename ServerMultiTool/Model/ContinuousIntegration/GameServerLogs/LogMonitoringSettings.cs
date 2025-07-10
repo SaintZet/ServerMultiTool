@@ -7,5 +7,5 @@ namespace ServerMultiTool.Model.ContinuousIntegration.GameServerLogs;
 public class LogMonitoringSettings
 {
     public bool Enable { get; set; }
-    public DirectoryModel LogDirectory { get; set; }
+    public DirectoryModel? LogDirectory { get; set; }
 }

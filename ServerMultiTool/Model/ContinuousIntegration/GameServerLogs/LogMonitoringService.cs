@@ -82,7 +82,7 @@ public class LogMonitoringService : BaseEventAggregator
         _logger.LogInfo($"Start monitoring {directory.Path}");
         
         _cancellationToken = new CancellationTokenSource();
-        await MonitorLogDirectoryAsync(_cancellationToken.Token, directory);
+        await MonitorLogDirectoryAsync(directory, _cancellationToken.Token);
     }
 
     private async Task StopMonitoringAsync()
@@ -98,7 +98,7 @@ public class LogMonitoringService : BaseEventAggregator
         _logger.LogInfo($"Stop monitoring {_settings!.LogDirectory.Path}");
     }
     
-    private async Task MonitorLogDirectoryAsync(CancellationToken cancellationToken, DirectoryModel directory)
+    private async Task MonitorLogDirectoryAsync(DirectoryModel directory, CancellationToken cancellationToken)
     {
         var startTime = DateTime.Now;
         
