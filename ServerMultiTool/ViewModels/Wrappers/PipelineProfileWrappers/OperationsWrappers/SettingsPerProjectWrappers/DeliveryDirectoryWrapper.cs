@@ -9,12 +9,12 @@ public partial class DeliveryDirectoryWrapper : BaseObservableWrapper
     [ObservableProperty] private string _source;
     [ObservableProperty] private string _destination;
 
-    public DeliveryDirectoryWrapper(DeliveryDirectories directory)
+    public DeliveryDirectoryWrapper(DeliveryDirectory directory)
     {
         Source = directory.Source;
         Destination = directory.Destination;
     }
 
-    public DeliveryDirectories ToDeliveryDirectory() => 
+    public DeliveryDirectory ToDeliveryDirectory() => 
         new() { Source = Source, Destination = Destination };
 }

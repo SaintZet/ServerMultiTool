@@ -23,8 +23,8 @@ public partial class ProjectSettingsWrapper : BaseObservableWrapper
     [ObservableProperty] private ObservableCollection<ProcessEventWrapper>? _postBuildEvents;
 
     // Delivery Settings
-    [ObservableProperty] private bool _deliveryEnabled;
-    [ObservableProperty] private bool _deliveryBin;
+    [ObservableProperty] private bool _enableCustomDelivery;
+    [ObservableProperty] private bool _enableDeliveryBin;
     [ObservableProperty] private ObservableCollection<DeliveryDirectoryWrapper>? _deliveryDirectories;
 
     public ProjectSettingsWrapper(ProjectSettings settings)
@@ -52,12 +52,12 @@ public partial class ProjectSettingsWrapper : BaseObservableWrapper
 
         // Delivery Settings
         var delivery = settings.DeliverySettings;
-        DeliveryEnabled = delivery.Enable;
-        DeliveryBin = delivery.DeliveryBin;
+        EnableCustomDelivery = delivery.EnableCustomDelivery;
+        EnableDeliveryBin = delivery.EnableDeliveryBin;
 
-        if (delivery.DeliveryDirectory != null)
+        if (delivery.CustomDeliveryDirectories != null)
             DeliveryDirectories = new ObservableCollection<DeliveryDirectoryWrapper>(
-                delivery.DeliveryDirectory.Select(d => new DeliveryDirectoryWrapper(d)));
+                delivery.CustomDeliveryDirectories.Select(d => new DeliveryDirectoryWrapper(d)));
     }
 
     public ProjectSettings ToProjectSettings()
@@ -79,11 +79,11 @@ public partial class ProjectSettingsWrapper : BaseObservableWrapper
         if (PostBuildEvents != null)
             _settings.MsBuildSettings.PostBuildEvents = [..Enumerable.Select<ProcessEventWrapper, ProcessEvent>(PostBuildEvents, e => e.ToProcessEvent())];
 
-        _settings.DeliverySettings.Enable = DeliveryEnabled;
-        _settings.DeliverySettings.DeliveryBin = DeliveryBin;
+        _settings.DeliverySettings.EnableCustomDelivery = EnableCustomDelivery;
+        _settings.DeliverySettings.EnableDeliveryBin = EnableDeliveryBin;
         
         if (DeliveryDirectories != null)
-            _settings.DeliverySettings.DeliveryDirectory = [..DeliveryDirectories.Select(d => d.ToDeliveryDirectory())];
+            _settings.DeliverySettings.CustomDeliveryDirectories = [..DeliveryDirectories.Select(d => d.ToDeliveryDirectory())];
 
         return _settings;
     }

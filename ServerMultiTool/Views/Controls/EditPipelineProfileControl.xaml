@@ -441,9 +441,9 @@
                                         <!-- Delivery Settings -->
                                         <Expander Header="Delivery Settings" >
                                             <StackPanel Margin="20,10,0,10">
-                                                <CheckBox Content="Delivery Bin" IsChecked="{Binding DeliveryBin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                <CheckBox Content="Delivery Bin" IsChecked="{Binding EnableDeliveryBin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                                                 
-                                                <CheckBox Content="Enable Custom Delivery" IsChecked="{Binding DeliveryEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                <CheckBox Content="Enable Custom Delivery" IsChecked="{Binding EnableCustomDelivery, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
                                                 <GroupBox Header="Custom Delivery Directories" Margin="0,10,0,0">
                                                     

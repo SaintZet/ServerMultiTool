@@ -14,11 +14,12 @@ public class DeliveryService(IEnumerable<ProjectSettings> settings) : PipelineOp
     protected override async Task<OperationResult> ExecuteOperationsAsync()
     {
         var deliveryBinTasks = settings
-            .Where(project => project.DeliverySettings.DeliveryBin)
+            .Where(project => project.DeliverySettings.EnableDeliveryBin)
             .Select(DeliveryProjectBinAsync);
 
         var deliverySpecificFilesTasks = settings
-            .Where(project => project.DeliverySettings.DeliveryDirectory.IsNullOrEmpty() is not true)
+            .Where(project => project.DeliverySettings.EnableCustomDelivery && 
+                              project.DeliverySettings.CustomDeliveryDirectories.IsNullOrEmpty() is not true)
             .Select(DeliveryProjectSpecificFilesAsync);
         
         var allDeliveryTasks = deliveryBinTasks.Concat(deliverySpecificFilesTasks);
@@ -30,7 +31,7 @@ public class DeliveryService(IEnumerable<ProjectSettings> settings) : PipelineOp
 
     private async Task DeliveryProjectSpecificFilesAsync(ProjectSettings projectSettings)
     {
-        await Task.WhenAll(projectSettings.DeliverySettings.DeliveryDirectory
+        await Task.WhenAll(projectSettings.DeliverySettings.CustomDeliveryDirectories
             .Select(async directory =>
             {
                 if (directory.Source.IsNullOrEmpty() || Path.GetDirectoryName(directory.Source) is null)

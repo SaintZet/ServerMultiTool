@@ -13,7 +13,7 @@ public static class DefaultProfiles
 {
     public static PipelineProfile GetDevProfile() => new()
     {
-        Name = "Dev Profile",
+        Name = "IIS Reset",
         SettingsPerProject =
         [
             new ProjectSettings
@@ -30,8 +30,8 @@ public static class DefaultProfiles
                 },
                 DeliverySettings = new DeliverySettings
                 {
-                    Enable = true,
-                    DeliveryBin = false,
+                    EnableCustomDelivery = false,
+                    EnableDeliveryBin = false,
                 }
             },
             new ProjectSettings
@@ -48,8 +48,8 @@ public static class DefaultProfiles
                 },
                 DeliverySettings = new DeliverySettings
                 {
-                    Enable = true,
-                    DeliveryBin = false,
+                    EnableCustomDelivery = false,
+                    EnableDeliveryBin = false,
                 }
             }
         ],
@@ -64,12 +64,12 @@ public static class DefaultProfiles
         },
         WebBrowserSettings = new WebBrowserSettings
         {
-            Enable = false,
+            Enable = true,
             Url = "http://localhost/Raid/Segment00/Segment.ashx",
         },
         InternetInformationSettings = new InternetInformationSettings()
         {
-            Enable = false,
+            Enable = true,
         },
         MonitorLogFilesSettings = new LogMonitoringSettings
         {
@@ -104,8 +104,8 @@ public static class DefaultProfiles
                 },
                 DeliverySettings = new DeliverySettings
                 {
-                    Enable = true,
-                    DeliveryBin = true,
+                    EnableCustomDelivery = true,
+                    EnableDeliveryBin = true,
                 }
             },
             new ProjectSettings
@@ -122,8 +122,8 @@ public static class DefaultProfiles
                 },
                 DeliverySettings = new DeliverySettings
                 {
-                    Enable = true,
-                    DeliveryBin = true,
+                    EnableCustomDelivery = true,
+                    EnableDeliveryBin = true,
                 }
             }
         ],
@@ -152,7 +152,7 @@ public static class DefaultProfiles
             Enable = true,
             LogDirectory = new DirectoryModel { Name = "Standard Profile Master", Path = @"C:\HTTP\Raid\Master\log" },
         },
-        HttpMonitoringSettings = new HttpMonitoringSettings()
+        HttpMonitoringSettings = new HttpMonitoringSettings
         {
             Enable = true,
             PingMaster = true,
@@ -180,8 +180,8 @@ public static class DefaultProfiles
                 },
                 DeliverySettings = new DeliverySettings
                 {
-                    Enable = true,
-                    DeliveryBin = true,
+                    EnableCustomDelivery = true,
+                    EnableDeliveryBin = true,
                 }
             },
             new ProjectSettings
@@ -198,8 +198,8 @@ public static class DefaultProfiles
                 },
                 DeliverySettings = new DeliverySettings
                 {
-                    Enable = true,
-                    DeliveryBin = true,
+                    EnableCustomDelivery = true,
+                    EnableDeliveryBin = true,
                 }
             },
             new ProjectSettings
@@ -224,11 +224,11 @@ public static class DefaultProfiles
                 },
                 DeliverySettings = new DeliverySettings
                 {
-                    Enable = true,
-                    DeliveryBin = false,
-                    DeliveryDirectory =
+                    EnableCustomDelivery = true,
+                    EnableDeliveryBin = false,
+                    CustomDeliveryDirectories =
                     [
-                        new DeliveryDirectories
+                        new DeliveryDirectory
                         {
                             Source = Path.Combine(solutionDirectory.Path, @"Server\Service.Master\App_Data\Storage"),
                             Destination = Path.Combine(httpDirectory.Path, @"Master\App_Data\Storage\"),

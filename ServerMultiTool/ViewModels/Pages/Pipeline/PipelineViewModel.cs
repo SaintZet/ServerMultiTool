@@ -125,7 +125,7 @@ namespace ServerMultiTool.ViewModels.Pages.Pipeline
             if (pipeline.InternetInformationSettings.Enable)
               PipelineOperations.Add(new(new InternetInformationServices("/stop"), "IIS Stop"));
 
-            if (pipeline.SettingsPerProject.Any(x => x.DeliverySettings.Enable))
+            if (pipeline.SettingsPerProject.Any(x => x.DeliverySettings.EnableCustomDelivery || x.DeliverySettings.EnableDeliveryBin))
                 PipelineOperations.Add(new(new DeliveryService(pipeline.SettingsPerProject), "Delivery"));
 
             if (pipeline.SqlExecutionSettings.Enable)

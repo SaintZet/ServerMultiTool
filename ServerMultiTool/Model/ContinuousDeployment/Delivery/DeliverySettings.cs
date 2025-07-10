@@ -6,13 +6,14 @@ namespace ServerMultiTool.Model.ContinuousDeployment.Delivery;
 [Serializable]
 public class DeliverySettings
 {
-    public bool Enable { get; set; }
-    public bool DeliveryBin { get; set; }
-    public List<DeliveryDirectories>? DeliveryDirectory { get; set; }
+    public bool EnableDeliveryBin { get; set; }
+    
+    public bool EnableCustomDelivery { get; set; }
+    public List<DeliveryDirectory>? CustomDeliveryDirectories { get; set; }
 }
 
 [Serializable]
-public class DeliveryDirectories
+public record DeliveryDirectory
 {
     public required string Source { get; set; }
     public required string Destination { get; set; }

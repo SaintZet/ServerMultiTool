@@ -14,7 +14,7 @@ public class MsBuildSettings
 
 
 [Serializable]
-public class ProcessEvent
+public record ProcessEvent
 {
     public required string Path { get; set; }
     public string? Arguments { get; set; }

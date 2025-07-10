@@ -19,7 +19,7 @@ public class DeliveryDirectoryConverter : IMultiValueConverter
         if (string.IsNullOrEmpty(source) || string.IsNullOrEmpty(destination))
             return null;
 
-        return new DeliveryDirectoryWrapper(new DeliveryDirectories { Source = source, Destination = destination });
+        return new DeliveryDirectoryWrapper(new DeliveryDirectory { Source = source, Destination = destination });
     }
 
     public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
