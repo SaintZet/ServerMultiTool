@@ -126,6 +126,7 @@
                 <!--  Start:  Menu  -->
                 <StackPanel Grid.Row="0" Margin="0,30,0,30">
                     <RadioButton
+                        IsChecked="True"
                         Command="{Binding NavigateCommand}"
                         CommandParameter="Pipeline"
                         Content="CI/CD Pipeline"
