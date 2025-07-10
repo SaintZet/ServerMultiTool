@@ -116,7 +116,7 @@ public static class PipelineProfilesService
         var solutionDir = appSettings.SolutionDirectories.FirstOrDefault();
         var httpDir = appSettings.HttpDirectories.FirstOrDefault();
 
-        var devProfile = DefaultProfiles.GetDevProfile();
+        var devProfile = DefaultProfiles.GetIisResetProfile();
         SaveSettingsTo(devProfile, Path.Combine(pathToFolder, $"{devProfile.Name}.json"));
         
         var standardProfile = DefaultProfiles.GetStandardProfile();

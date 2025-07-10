@@ -225,7 +225,8 @@ public partial class SettingsViewModel : BaseViewModel
     [RelayCommand]
     private void AddPipelineProfile()
     {
-        var newProfile = DefaultProfiles.GetDevProfile();
+        // todo: maybe change default profile
+        var newProfile = DefaultProfiles.GetIisResetProfile();
         newProfile.Name = "New Profile";
         
         var wrapper = new PipelineProfileWrapper(newProfile);

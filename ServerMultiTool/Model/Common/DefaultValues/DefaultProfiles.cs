@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using ServerMultiTool.Model.ContinuousDeployment.Delivery;
 using ServerMultiTool.Model.ContinuousDeployment.Integrations;
 using ServerMultiTool.Model.ContinuousIntegration.GameServerLogs;
@@ -11,263 +12,205 @@ namespace ServerMultiTool.Model.Common.DefaultValues;
 
 public static class DefaultProfiles
 {
-    public static PipelineProfile GetDevProfile() => new()
+    public static PipelineProfile GetIisResetProfile()
     {
-        Name = "IIS Reset",
-        SettingsPerProject =
-        [
-            new ProjectSettings
-            {
-                Project = new DirectoryModel
-                {
-                    Name = "Master", 
-                    Path = @"Server\Service.Master\Service.Master.csproj"
-                },
-                MsBuildSettings = new MsBuildSettings
-                {
-                    Enable = false,
-                    Parameters = ["/p:Configuration=Debug", "/p:PreBuildEvent=", "/t:build"]
-                },
-                DeliverySettings = new DeliverySettings
-                {
-                    EnableCustomDelivery = false,
-                    EnableDeliveryBin = false,
-                }
-            },
-            new ProjectSettings
-            {
-                Project = new DirectoryModel
-                {
-                    Name = "Segment", 
-                    Path = @"Server\Service.Segment\Service.Segment.csproj"
-                },
-                MsBuildSettings = new MsBuildSettings
-                {
-                    Enable = false,
-                    Parameters = ["/p:Configuration=Debug", "/p:PreBuildEvent=", "/t:build"]
-                },
-                DeliverySettings = new DeliverySettings
-                {
-                    EnableCustomDelivery = false,
-                    EnableDeliveryBin = false,
-                }
-            }
-        ],
-        GitSettings = new GitSettings
-        {
-            Enable = false,
-            ShouldPull = false,
-        },
-        SqlExecutionSettings = new SqlExecutionSettings
-        {
-            Enable = false,
-        },
-        WebBrowserSettings = new WebBrowserSettings
-        {
-            Enable = true,
-            Url = "http://localhost/Raid/Segment00/Segment.ashx",
-        },
-        InternetInformationSettings = new InternetInformationSettings()
-        {
-            Enable = true,
-        },
-        MonitorLogFilesSettings = new LogMonitoringSettings
-        {
-            Enable = true,
-            LogDirectory = new DirectoryModel { Name = "Dev Profile Master", Path = @"C:\HTTP\Raid\Master\log" },
-        },
-        HttpMonitoringSettings = new HttpMonitoringSettings()
-        {
-            Enable = true,
-            PingMaster = true,
-            PingSegment = true,
-            TimeoutMinutes = 5,
-        }
-    };
+        var master = CreateProjectSettings(
+            name: "Master",
+            path: @"Server\Service.Master\Service.Master.csproj",
+            msBuildEnable: false
+        );
+        
+        var segment = CreateProjectSettings(
+            name:  "Segment",
+            path: @"Server\Service.Segment\Service.Segment.csproj",
+            msBuildEnable: false
+        );
 
-    public static PipelineProfile GetStandardProfile() => new()
-    {
-        Name = "Standard Profile",
-        SettingsPerProject =
-        [
-            new ProjectSettings
-            {
-                Project = new DirectoryModel
-                {
-                    Name = "Master", 
-                    Path = @"Server\Service.Master\Service.Master.csproj"
-                },
-                MsBuildSettings = new MsBuildSettings
-                {
-                    Enable = true,
-                    Parameters = new List<string>() { "/p:Configuration=Debug", "/p:PreBuildEvent=", "/t:build" }
-                },
-                DeliverySettings = new DeliverySettings
-                {
-                    EnableCustomDelivery = true,
-                    EnableDeliveryBin = true,
-                }
-            },
-            new ProjectSettings
-            {
-                Project = new DirectoryModel
-                {
-                    Name = "Segment", 
-                    Path = @"Server\Service.Segment\Service.Segment.csproj"
-                },
-                MsBuildSettings = new MsBuildSettings
-                {
-                    Enable = true,
-                    Parameters = ["/p:Configuration=Debug", "/p:PreBuildEvent=", "/t:build"]
-                },
-                DeliverySettings = new DeliverySettings
-                {
-                    EnableCustomDelivery = true,
-                    EnableDeliveryBin = true,
-                }
-            }
-        ],
-        GitSettings = new GitSettings
-        {
-            Enable = true,
-            ShouldPull = true,
-        },
-        SqlExecutionSettings = new SqlExecutionSettings
-        {
-            Enable = true,
-            ConnectionString = "Server=PLSCHEPETS;Database=raidMaster;User Id=geotopia;Password=super;TrustServerCertificate=True",
-            PathToSqlScript = @"C:\ServerDeployTool\RaidDeploy\BatchFiles\script.sql",
-        },
-        WebBrowserSettings = new WebBrowserSettings
-        {
-            Enable = true,
-            Url = "http://localhost/Raid/Segment00/Segment.ashx",
-        },
-        InternetInformationSettings = new InternetInformationSettings
-        {
-            Enable = true,
-        },
-        MonitorLogFilesSettings = new LogMonitoringSettings
-        {
-            Enable = true,
-            LogDirectory = new DirectoryModel { Name = "Standard Profile Master", Path = @"C:\HTTP\Raid\Master\log" },
-        },
-        HttpMonitoringSettings = new HttpMonitoringSettings
-        {
-            Enable = true,
-            PingMaster = true,
-            PingSegment = true,
-            TimeoutMinutes = 5,
-        }
-    };
+        return CreateProfile(
+            name: "IIS Reset",
+            projects: [master, segment],
+            webEnable: true,
+            logDirectory: new DirectoryModel { Name = "IIS Profile Profile Master", Path = @"C:\HTTP\Raid\Master\log" }
+        );
+    }
     
-    public static PipelineProfile GetExtendedProfile(DirectoryModel solutionDirectory, DirectoryModel httpDirectory) => new()
+    public static PipelineProfile GetStandardProfile()
     {
-        Name = "Extended Profile",
-        SettingsPerProject =
-        [
-            new ProjectSettings
+        var master = CreateProjectSettings(
+            name: "Master",
+            path: @"Server\Service.Master\Service.Master.csproj",
+            msBuildEnable: true,
+            msBuildParameters: ["/p:Configuration=Debug", "/p:PreBuildEvent=", "/t:build"],
+            enableDeliveryBin: true
+        );
+        
+        var segment = CreateProjectSettings(
+            name: "Segment",
+            path: @"Server\Service.Segment\Service.Segment.csproj",
+            msBuildEnable: true,
+            msBuildParameters: ["/p:Configuration=Debug", "/p:PreBuildEvent=", "/t:build"],
+            enableDeliveryBin: true
+        );
+
+        return CreateProfile(
+            name: "Standard Profile",
+            projects: [master, segment],
+            gitEnable: true,
+            gitPull: true,
+            sqlEnable: true,
+            connectionString: "Server=PLSCHEPETS;Database=raidMaster;User Id=geotopia;Password=super;TrustServerCertificate=True",
+            sqlScriptPath: @"C:\ServerDeployTool\RaidDeploy\BatchFiles\script.sql",
+            webEnable: true,
+            webUrl: "http://localhost/Raid/Segment00/Segment.ashx",
+            logDirectory: new DirectoryModel
             {
-                Project = new DirectoryModel
-                {
-                    Name = "Master",
-                    Path = @"Server\Service.Master\Service.Master.csproj"
-                },
-                MsBuildSettings = new MsBuildSettings
-                {
-                    Enable = true,
-                    Parameters = ["/p:Configuration=Debug", "/t:rebuild"]
-                },
-                DeliverySettings = new DeliverySettings
-                {
-                    EnableCustomDelivery = true,
-                    EnableDeliveryBin = true,
-                }
+                Name = "Standard Profile Master",
+                Path = @"C:\HTTP\Raid\Master\log"
             },
-            new ProjectSettings
-            {
-                Project = new DirectoryModel
+            httpMonitorEnable: true
+        );
+    }
+
+    public static PipelineProfile GetExtendedProfile(DirectoryModel solutionDirectory, DirectoryModel httpDirectory)
+    {
+        var master = CreateProjectSettings(
+            name: "Master",
+            path: @"Server\Service.Master\Service.Master.csproj",
+            msBuildEnable: true,
+            msBuildParameters: ["/p:Configuration=Debug", "/t:rebuild"],
+            enableDeliveryBin: true
+        );
+        
+        var segment = CreateProjectSettings(
+            name: "Segment",
+            path: @"Server\Service.Segment\Service.Segment.csproj",
+            msBuildEnable: true,
+            msBuildParameters: ["/p:Configuration=Debug", "/t:rebuild"],
+            enableDeliveryBin: true
+        );
+        var dataBlender = CreateProjectSettings(
+            name: "DataBlender",
+            path: @"Utils\DataBlender\DataBlender.csproj",
+            msBuildEnable: true,
+            msBuildParameters: ["/p:Configuration=Debug", "/t:rebuild"],
+            enableCustomDelivery: true,
+            enableDeliveryBin: false,
+            customDeliveryDirectories:
+            [
+                new DeliveryDirectory
                 {
-                    Name = "Segment",
-                    Path = @"Server\Service.Segment\Service.Segment.csproj"
-                },
-                MsBuildSettings = new MsBuildSettings
-                {
-                    Enable = true,
-                    Parameters = ["/p:Configuration=Debug", "/t:rebuild"]
-                },
-                DeliverySettings = new DeliverySettings
-                {
-                    EnableCustomDelivery = true,
-                    EnableDeliveryBin = true,
+                    Source = Path.Combine(solutionDirectory.Path, @"Server\Service.Master\App_Data\Storage"),
+                    Destination = Path.Combine(httpDirectory.Path, @"Master\App_Data\Storage\")
                 }
+            ],
+            postBuildEvents:
+            [
+                new ProcessEvent
+                {
+                    Path = @"C:\Raid\Utils\DataBlender\bin\Debug\DataBlender.exe",
+                    Arguments = ""
+                }
+            ]
+        );
+
+        return CreateProfile(
+            name: "Extended Profile",
+            projects: [master, segment, dataBlender],
+            gitEnable: true,
+            gitPull: true,
+            sqlEnable: true,
+            connectionString:
+            "Server=PLSCHEPETS;Database=raidMaster;User Id=geotopia;Password=super;TrustServerCertificate=True",
+            sqlScriptPath: @"C:\ServerDeployTool\RaidDeploy\BatchFiles\script.sql",
+            webEnable: true,
+            webUrl: "http://localhost/Raid/Segment00/Segment.ashx",
+            logDirectory: new DirectoryModel
+            {
+                Name = "Extended Profile Master",
+                Path = @"C:\HTTP\Raid\Master\log"
             },
-            new ProjectSettings
+            httpMonitorEnable: true
+        );
+    }
+
+    private static ProjectSettings CreateProjectSettings(
+        string name,
+        string path,
+        bool msBuildEnable,
+        IEnumerable<string>? msBuildParameters = null,
+        bool enableCustomDelivery = false,
+        bool enableDeliveryBin = false,
+        List<DeliveryDirectory>? customDeliveryDirectories = null,
+        List<ProcessEvent>? postBuildEvents = null)
+    {
+        return new ProjectSettings
+        {
+            Project = new DirectoryModel { Name = name, Path = path },
+            MsBuildSettings = new MsBuildSettings
             {
-                Project = new DirectoryModel
-                {
-                    Name = "DataBlender",
-                    Path = @"Utils\DataBlender\DataBlender.csproj"
-                },
-                MsBuildSettings = new MsBuildSettings
-                {
-                    Enable = true,
-                    Parameters = ["/p:Configuration=Debug", "/t:rebuild"],
-                    PostBuildEvents =
-                    [
-                        new ProcessEvent
-                        {
-                            Path = @"C:\Raid\Utils\DataBlender\bin\Debug\DataBlender.exe",
-                            Arguments = "",
-                        }
-                    ],
-                },
-                DeliverySettings = new DeliverySettings
-                {
-                    EnableCustomDelivery = true,
-                    EnableDeliveryBin = false,
-                    CustomDeliveryDirectories =
-                    [
-                        new DeliveryDirectory
-                        {
-                            Source = Path.Combine(solutionDirectory.Path, @"Server\Service.Master\App_Data\Storage"),
-                            Destination = Path.Combine(httpDirectory.Path, @"Master\App_Data\Storage\"),
-                        }
-                    ],
-                }
+                Enable = msBuildEnable,
+                Parameters = msBuildParameters?.ToList() ?? ["/p:Configuration=Debug", "/t:build"],
+                PostBuildEvents = postBuildEvents ?? []
+            },
+            DeliverySettings = new DeliverySettings
+            {
+                EnableCustomDelivery = enableCustomDelivery,
+                EnableDeliveryBin = enableDeliveryBin,
+                CustomDeliveryDirectories = customDeliveryDirectories
             }
-        ],
-        GitSettings = new GitSettings
+        };
+    }
+
+    private static PipelineProfile CreateProfile(
+        string name,
+        IEnumerable<ProjectSettings> projects,
+        bool gitEnable = false,
+        bool gitPull = false,
+        bool sqlEnable = false,
+        string? connectionString = null,
+        string? sqlScriptPath = null,
+        bool webEnable = true,
+        string? webUrl = null,
+        DirectoryModel? logDirectory = null,
+        bool httpMonitorEnable = true
+    )
+    {
+        return new PipelineProfile
         {
-            Enable = true,
-            ShouldPull = true,
-        },
-        SqlExecutionSettings = new SqlExecutionSettings
-        {
-            Enable = true,
-            ConnectionString = "Server=PLSCHEPETS;Database=raidMaster;User Id=geotopia;Password=super;TrustServerCertificate=True",
-            PathToSqlScript = @"C:\ServerDeployTool\RaidDeploy\BatchFiles\script.sql",
-        },
-        WebBrowserSettings = new WebBrowserSettings
-        {
-            Enable = true,
-            Url = "http://localhost/Raid/Segment00/Segment.ashx",
-        },
-        InternetInformationSettings = new InternetInformationSettings
-        {
-            Enable = true,
-        },
-        MonitorLogFilesSettings = new LogMonitoringSettings
-        {
-            Enable = true,
-            LogDirectory = new DirectoryModel { Name = "Extended Profile Master", Path = @"C:\HTTP\Raid\Master\log" },
-        },
-        HttpMonitoringSettings = new HttpMonitoringSettings
-        {
-            Enable = true,
-            PingMaster = true,
-            PingSegment = true,
-            TimeoutMinutes = 5,
-        }
-    };
+            Name = name,
+            SettingsPerProject = projects.ToList(),
+            GitSettings = new GitSettings
+            {
+                Enable = gitEnable,
+                ShouldPull = gitPull
+            },
+            SqlExecutionSettings = new SqlExecutionSettings
+            {
+                Enable = sqlEnable,
+                ConnectionString = connectionString,
+                PathToSqlScript = sqlScriptPath
+            },
+            WebBrowserSettings = new WebBrowserSettings
+            {
+                Enable = webEnable,
+                Url = webUrl ?? "http://localhost/Raid/Segment00/Segment.ashx"
+            },
+            InternetInformationSettings = new InternetInformationSettings
+            {
+                Enable = true
+            },
+            MonitorLogFilesSettings = new LogMonitoringSettings
+            {
+                Enable = true,
+                LogDirectory = logDirectory
+            },
+            HttpMonitoringSettings = new HttpMonitoringSettings
+            {
+                Enable = httpMonitorEnable,
+                PingMaster = true,
+                PingSegment = true,
+                TimeoutMinutes = 5
+            }
+        };
+    }
 }

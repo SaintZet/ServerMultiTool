@@ -15,7 +15,7 @@ public static class DefaultAppSettings
             CurrentSolutionDirectoryName = solutionDirectories[0].Name,
             HttpDirectories = httpDirectories,
             CurrentHttpDirectoryName = httpDirectories[0].Name,
-            CurrentPipelineProfileName = "Dev Profile",
+            CurrentPipelineProfileName = "Standard Profile",
             Log4NetConfigPath = "log4net.config",
         };
     }
