@@ -52,7 +52,7 @@ public partial class EditPipelineProfileViewModel : BaseViewModel
     [RelayCommand]
     private void AddProject()
     {
-        if (Profile == null) 
+        if (Profile is null) 
             return;
 
         var newProjectSettings = new ProjectSettings();
@@ -67,11 +67,14 @@ public partial class EditPipelineProfileViewModel : BaseViewModel
     [RelayCommand]
     private void RemoveProject(ProjectSettingsWrapper project)
     {
-        if (Profile == null) 
+        if (Profile is null) 
             return;
 
         Profile.SettingsPerProject.Remove(project);
         ProjectSettings.Remove(project);
+
+        if (ProjectSettings.Count is 0) 
+            AddProject();
         
         OnPropertyChanged(nameof(ProjectSettings));
         OnPropertyChanged(string.Empty);
