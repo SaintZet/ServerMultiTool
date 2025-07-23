@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using ServerMultiTool.Model.Common;
 using ServerMultiTool.Model.Pipeline.Contracts;
@@ -24,9 +25,9 @@ public class PipelineOperationWrapper(PipelineOperation operation, string displa
     public void UpdateHttpDirectory(DirectoryModel directory) =>
         operation.UpdateHttpDirectory(directory);
 
-    public async Task<OperationResult> ExecuteAsync()
+    public async Task<OperationResult> ExecuteAsync(CancellationToken cancellationToken)
     {
-        var result = await operation.ExecuteAsync();
+        var result = await operation.ExecuteAsync(cancellationToken);
 
         PipelineOperationStatus = OperationResultToStatus(result);
 

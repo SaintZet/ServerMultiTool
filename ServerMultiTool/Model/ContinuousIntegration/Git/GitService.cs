@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 using ServerMultiTool.Model.Pipeline.Contracts;
 
@@ -13,10 +14,12 @@ public class GitService : PipelineOperation
     public GitService(GitSettings? settings) => 
         _settings = settings;
 
-    protected override async Task<OperationResult> ExecuteOperationsAsync()
+    protected override async Task<OperationResult> ExecuteOperationsAsync(CancellationToken cancellationToken)
     {
-        if (_settings!.ShouldPull)
-            await GitPull();
+        cancellationToken.ThrowIfCancellationRequested();
+        
+        if (_settings!.ShouldPull) 
+            await GitPull(cancellationToken);
         
         return OperationResult.Success;
     }
@@ -32,14 +35,14 @@ public class GitService : PipelineOperation
         return response.Output;
     }
 
-    private async Task<string?> GitPull()
+    private async Task<string?> GitPull(CancellationToken cancellationToken)
     {
         const string fileName = "git";
         const string arguments = "pull";
         
         var info = new ProcessStartInfo(fileName, arguments) { WorkingDirectory = SolutionDirectory };
-        var response = await ProcessExecutor.StartProcessOnceAsync(info);
-
+        var response = await ProcessExecutor.StartProcessOnceAsync(info, cancellationToken);
+        
         return response.Output;
     }
 }

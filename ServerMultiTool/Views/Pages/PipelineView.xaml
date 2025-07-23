@@ -5,7 +5,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:behaviours="clr-namespace:ServerMultiTool.Views.Behaviours"
     xmlns:controls="clr-namespace:ServerMultiTool.Views.Controls"
-    xmlns:converters1="clr-namespace:ServerMultiTool.ViewModels.Pages.Pipeline.Converters"
+    xmlns:pipelineConverters="clr-namespace:ServerMultiTool.ViewModels.Pages.Pipeline.Converters"
+    xmlns:globalConverters="clr-namespace:ServerMultiTool.ViewModels.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:pipeline="clr-namespace:ServerMultiTool.ViewModels.Pages.Pipeline"
@@ -18,8 +19,9 @@
     mc:Ignorable="d">
 
     <Page.Resources>
-        <converters1:PipelineStatusFillConverter x:Key="PipelineStatusFillConverter" />
-        <converters1:StringToVisibilityConverter x:Key="StringToVisibilityConverter" />
+        <pipelineConverters:PipelineStatusFillConverter x:Key="PipelineStatusFillConverter" />
+        <pipelineConverters:StringToVisibilityConverter x:Key="StringToVisibilityConverter" />
+        <globalConverters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
     </Page.Resources>
 
     <Border Background="{DynamicResource SecondaryBackgroundColor}" CornerRadius="8">
@@ -44,7 +46,6 @@
                     Grid.Row="0"
                     Grid.Column="0"
                     HorizontalAlignment="Right"
-                    VerticalAlignment="Center"
                     Style="{DynamicResource CustomTextBlockStyle}"
                     Text="Pipeline Profile:" />
 
@@ -55,6 +56,7 @@
                     HorizontalAlignment="Stretch">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" MaxWidth="250" />
+                        <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
@@ -85,8 +87,16 @@
                         Content="{DynamicResource Start}"
                         Style="{StaticResource IconButtonsStyle}" />
 
-                    <ItemsControl
+                    <Button
                         Grid.Column="3"
+                        Margin="5,0,0,0"
+                        Command="{Binding StopPipelineCommand}"
+                        Visibility="{Binding IsPipelineRunning, Converter={StaticResource BoolToVisibilityConverter}}"
+                        Content="{DynamicResource Stop}"
+                        Style="{StaticResource IconButtonsStyle}" />
+
+                    <ItemsControl
+                        Grid.Column="4"
                         HorizontalAlignment="Right"
                         VerticalAlignment="Center"
                         ItemsSource="{Binding PipelineOperations}">

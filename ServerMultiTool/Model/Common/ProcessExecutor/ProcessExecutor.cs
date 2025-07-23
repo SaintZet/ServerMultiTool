@@ -71,7 +71,9 @@ public class ProcessExecutor(Logger logger)
     {
         try
         {
-            using var process = new Process { StartInfo = startInfo };
+            using var process = new Process();
+            process.StartInfo = startInfo;
+            
             if (process is null)
                 throw new InvalidOperationException("Failed to start process. Process is null");
 

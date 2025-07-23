@@ -1,10 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
-using CommunityToolkit.Mvvm.Input;
+﻿using CommunityToolkit.Mvvm.Input;
 using ServerMultiTool.Model.Common.EventAggregator;
 using ServerMultiTool.Model.Common.Logs;
 using ServerMultiTool.Model.ContinuousDeployment.Delivery;
@@ -17,6 +11,13 @@ using ServerMultiTool.Model.Settings;
 using ServerMultiTool.ViewModels.Contracts;
 using ServerMultiTool.ViewModels.Controls;
 using ServerMultiTool.ViewModels.Pages.Pipeline.Data;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows;
 
 namespace ServerMultiTool.ViewModels.Pages.Pipeline
 {
@@ -29,7 +30,7 @@ namespace ServerMultiTool.ViewModels.Pages.Pipeline
             init => SetProperty(ref _generalInfo, value);
         }
 
-        public List<PipelineProfile>  PipelineProfiles { get; set; }
+        public List<PipelineProfile> PipelineProfiles { get; set; } = [];
 
         private PipelineProfile? _selectedPipelineProfile;
         public PipelineProfile? SelectedPipelineProfile
@@ -37,7 +38,7 @@ namespace ServerMultiTool.ViewModels.Pages.Pipeline
             get => _selectedPipelineProfile;
             set
             {
-                if (value is null || value.Equals(_selectedPipelineProfile)) 
+                if (value is null || value.Equals(_selectedPipelineProfile))
                     return;
 
                 _selectedPipelineProfile = value;
@@ -57,11 +58,35 @@ namespace ServerMultiTool.ViewModels.Pages.Pipeline
 
         private readonly LogMonitoringService _masterLogService;
 
+        private CancellationTokenSource? _pipelineCancellationTokenSource;
+
+        private bool _isPipelineRunning;
+        public bool IsPipelineRunning
+        {
+            get => _isPipelineRunning;
+            set
+            {
+                if (!SetProperty(ref _isPipelineRunning, value))
+                    return;
+
+                StopPipelineCommand.NotifyCanExecuteChanged();
+                ExecutePipelineCommand.NotifyCanExecuteChanged();
+            }
+        }
+
+        private bool CanStopPipeline => _isPipelineRunning;
+
+        [RelayCommand(CanExecute = nameof(CanStopPipeline))]
+        private void StopPipeline()
+        {
+            _pipelineCancellationTokenSource?.Cancel();
+        }
+
         public PipelineViewModel()
         {
             _masterLogService = new LogMonitoringService();
             _masterLogService.Subscribe<LogEvent>(AddNewMasterLogEvent);
-            
+
             GlobalEventAggregator.Instance.Subscribe<LogEvent>(AddNewGlobalLogEvent);
 
             LoadProfiles(AppSettingsService.AppSettings.CurrentPipelineProfileName);
@@ -78,37 +103,54 @@ namespace ServerMultiTool.ViewModels.Pages.Pipeline
         {
             PipelineProfiles = PipelineProfilesService.PipelineProfiles;
             OnPropertyChanged(nameof(PipelineProfiles));
-            
+
             var selectedProfile = PipelineProfiles.FirstOrDefault(x => x.Name == selectedProfileName);
             SelectedPipelineProfile = selectedProfile ?? PipelineProfiles.FirstOrDefault();
             OnPropertyChanged(nameof(SelectedPipelineProfile));
         }
 
-        private bool CanExecutePipeline => GeneralInfo.CanChangeStates;
+        public bool CanExecutePipeline => GeneralInfo.CanChangeStates && !_isPipelineRunning;
 
         [RelayCommand(CanExecute = nameof(CanExecutePipeline))]
         private async Task ExecutePipeline()
         {
             GeneralInfo.CanChangeStates = false;
-            
+            IsPipelineRunning = true;
+
+            _pipelineCancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = _pipelineCancellationTokenSource.Token;
+
             PipelineOperations.ClearStatuses();
-            
-            foreach (var operation in PipelineOperations)
+
+            try
             {
-                operation.UpdateSolutionDirectory(GeneralInfo.SelectedSolutionDirectory);
-                operation.UpdateHttpDirectory(GeneralInfo.SelectedHttpDirectory);
-            
-                await operation.ExecuteAsync();
+                foreach (var operation in PipelineOperations)
+                {
+                    operation.UpdateSolutionDirectory(GeneralInfo.SelectedSolutionDirectory);
+                    operation.UpdateHttpDirectory(GeneralInfo.SelectedHttpDirectory);
+
+                    await operation.ExecuteAsync(cancellationToken);
+                    if (cancellationToken.IsCancellationRequested)
+                        break;
+                }
             }
-            
-            GeneralInfo.CanChangeStates = true;
+            catch (OperationCanceledException)
+            {
+                AppLogMessages.Clear();
+                PipelineOperations.ClearStatuses();
+            }
+            finally
+            {
+                IsPipelineRunning = false;
+                GeneralInfo.CanChangeStates = true;
+            }
         }
 
         private static void UpdateSettings(PipelineProfile value)
         {
             var appSettings = AppSettingsService.AppSettings;
             appSettings.CurrentPipelineProfileName = value.Name;
-            
+
             AppSettingsService.SaveAppSettings(appSettings);
         }
 
@@ -123,7 +165,7 @@ namespace ServerMultiTool.ViewModels.Pages.Pipeline
                 PipelineOperations.Add(new(new MsBuildService(pipeline.SettingsPerProject), "MsBuild"));
 
             if (pipeline.InternetInformationSettings.Enable)
-              PipelineOperations.Add(new(new InternetInformationServices("/stop"), "IIS Stop"));
+                PipelineOperations.Add(new(new InternetInformationServices("/stop"), "IIS Stop"));
 
             if (pipeline.SettingsPerProject.Any(x => x.DeliverySettings.EnableCustomDelivery || x.DeliverySettings.EnableDeliveryBin))
                 PipelineOperations.Add(new(new DeliveryService(pipeline.SettingsPerProject), "Delivery"));
@@ -144,7 +186,7 @@ namespace ServerMultiTool.ViewModels.Pages.Pipeline
         private void UpdateMasterLogService(PipelineProfile profile)
         {
             _ = _masterLogService.UpdateSettings(profile.MonitorLogFilesSettings);
-            
+
             Application.Current.Dispatcher.Invoke(() =>
             {
                 MasterLogMessages.Clear();
@@ -157,7 +199,7 @@ namespace ServerMultiTool.ViewModels.Pages.Pipeline
             {
                 if (MasterLogMessages.Contains(logEvent))
                     return;
-                
+
                 MasterLogMessages.Add(logEvent);
             });
         }

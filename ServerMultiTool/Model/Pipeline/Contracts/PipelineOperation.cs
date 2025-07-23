@@ -1,4 +1,4 @@
-using System;
+using System.Threading;
 using System.Threading.Tasks;
 using ServerMultiTool.Model.Common;
 using ServerMultiTool.Model.Common.Logs;
@@ -8,7 +8,7 @@ namespace ServerMultiTool.Model.Pipeline.Contracts;
 
 public interface IPipelineOperation
 {
-    Task<OperationResult> ExecuteAsync();
+    Task<OperationResult> ExecuteAsync(CancellationToken cancellationToken);
     void UpdateSolutionDirectory(DirectoryModel directory);
     void UpdateHttpDirectory(DirectoryModel directory);
 }
@@ -27,19 +27,12 @@ public abstract class PipelineOperation : IPipelineOperation
         ProcessExecutor = new ProcessExecutor(Logger);
     }
 
-    protected abstract Task<OperationResult> ExecuteOperationsAsync();
+    protected abstract Task<OperationResult> ExecuteOperationsAsync(CancellationToken cancellationToken);
 
-    public async Task<OperationResult> ExecuteAsync()
+    public async Task<OperationResult> ExecuteAsync(CancellationToken cancellationToken)
     {
-        try
-        {
-            return await ExecuteOperationsAsync();
-        }
-        catch (Exception ex)
-        {
-            Logger.LogException(ex);
-            return OperationResult.Failure;
-        }
+        cancellationToken.ThrowIfCancellationRequested();
+        return await ExecuteOperationsAsync(cancellationToken);
     }
 
     public virtual void UpdateSolutionDirectory(DirectoryModel directory) => 
