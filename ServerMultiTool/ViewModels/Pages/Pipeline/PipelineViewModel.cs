@@ -11,7 +11,6 @@ using ServerMultiTool.Model.Settings;
 using ServerMultiTool.ViewModels.Contracts;
 using ServerMultiTool.ViewModels.Controls;
 using ServerMultiTool.ViewModels.Pages.Pipeline.Data;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -121,28 +120,23 @@ namespace ServerMultiTool.ViewModels.Pages.Pipeline
 
             PipelineOperations.ClearStatuses();
 
-            try
+            foreach (var operation in PipelineOperations)
             {
-                foreach (var operation in PipelineOperations)
-                {
-                    operation.UpdateSolutionDirectory(GeneralInfo.SelectedSolutionDirectory);
-                    operation.UpdateHttpDirectory(GeneralInfo.SelectedHttpDirectory);
+                operation.UpdateSolutionDirectory(GeneralInfo.SelectedSolutionDirectory);
+                operation.UpdateHttpDirectory(GeneralInfo.SelectedHttpDirectory);
 
-                    await operation.ExecuteAsync(cancellationToken);
-                    if (cancellationToken.IsCancellationRequested)
-                        break;
-                }
-            }
-            catch (OperationCanceledException)
-            {
+                await operation.ExecuteAsync(cancellationToken);
+
+                if (cancellationToken.IsCancellationRequested is not true)
+                    continue;
+
                 AppLogMessages.Clear();
                 PipelineOperations.ClearStatuses();
+                break;
             }
-            finally
-            {
-                IsPipelineRunning = false;
-                GeneralInfo.CanChangeStates = true;
-            }
+
+            IsPipelineRunning = false;
+            GeneralInfo.CanChangeStates = true;
         }
 
         private static void UpdateSettings(PipelineProfile value)
