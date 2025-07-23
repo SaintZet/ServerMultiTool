@@ -74,14 +74,6 @@ namespace ServerMultiTool.ViewModels.Pages.Pipeline
             }
         }
 
-        private bool CanStopPipeline => _isPipelineRunning;
-
-        [RelayCommand(CanExecute = nameof(CanStopPipeline))]
-        private void StopPipeline()
-        {
-            _pipelineCancellationTokenSource?.Cancel();
-        }
-
         public PipelineViewModel()
         {
             _masterLogService = new LogMonitoringService();
@@ -108,8 +100,15 @@ namespace ServerMultiTool.ViewModels.Pages.Pipeline
             SelectedPipelineProfile = selectedProfile ?? PipelineProfiles.FirstOrDefault();
             OnPropertyChanged(nameof(SelectedPipelineProfile));
         }
+        private bool CanStopPipeline => _isPipelineRunning;
 
-        public bool CanExecutePipeline => GeneralInfo.CanChangeStates && !_isPipelineRunning;
+        [RelayCommand(CanExecute = nameof(CanStopPipeline))]
+        private void StopPipeline()
+        {
+            _pipelineCancellationTokenSource?.Cancel();
+        }
+
+        public bool CanExecutePipeline => GeneralInfo?.CanChangeStates is true && _isPipelineRunning is false;
 
         [RelayCommand(CanExecute = nameof(CanExecutePipeline))]
         private async Task ExecutePipeline()

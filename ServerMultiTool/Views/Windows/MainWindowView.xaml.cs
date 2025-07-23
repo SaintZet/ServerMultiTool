@@ -116,13 +116,20 @@ namespace ServerMultiTool.Views.Windows
         {
             WindowState = WindowState.Normal;
 
-            var screen = System.Windows.Forms.Screen.PrimaryScreen.WorkingArea;
+            var screen = System.Windows.Forms.Screen.PrimaryScreen?.WorkingArea;
 
-            Width = 800;
-            Height = 600;
+            if (screen != null)
+            {
+                Width = 800;
+                Height = 600;
 
-            Left = screen.Left + 100;
-            Top = screen.Top + 100;
+                Left = screen.Value.X + 100;
+                Top = screen.Value.Y + 100;
+            }
+            else
+            {
+                Debug.WriteLine("PrimaryScreen or WorkingArea is null. Cannot reset window size.");
+            }
         }
     }
 }
