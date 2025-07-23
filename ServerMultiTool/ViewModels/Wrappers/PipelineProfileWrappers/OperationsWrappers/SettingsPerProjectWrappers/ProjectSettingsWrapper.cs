@@ -1,10 +1,11 @@
-﻿using System.Collections.ObjectModel;
-using System.Linq;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ServerMultiTool.Model.Common;
 using ServerMultiTool.Model.ContinuousIntegration.MsBuild;
 using ServerMultiTool.ViewModels.Contracts;
+using System;
+using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers.OperationsWrappers.SettingsPerProjectWrappers;
 
@@ -30,16 +31,16 @@ public partial class ProjectSettingsWrapper : BaseObservableWrapper
     public ProjectSettingsWrapper(ProjectSettings settings)
     {
         _settings = settings;
-        
+
         // Project Properties
         ProjectName = settings.Project.Name;
         ProjectPath = settings.Project.Path;
-        
+
         // MsBuild Settings
         var msBuild = settings.MsBuildSettings;
         MsBuildEnabled = msBuild.Enable;
 
-        if (msBuild.Parameters != null) 
+        if (msBuild.Parameters != null)
             BuildParameters = new ObservableCollection<string>(msBuild.Parameters);
 
         if (msBuild.PreBuildEvents != null)
@@ -67,52 +68,52 @@ public partial class ProjectSettingsWrapper : BaseObservableWrapper
             Name = ProjectName,
             Path = ProjectPath
         };
-        
+
         _settings.Project = project;
 
         _settings.MsBuildSettings.Enable = MsBuildEnabled;
         _settings.MsBuildSettings.Parameters = BuildParameters?.ToList();
-        
+
         if (PreBuildEvents != null)
-            _settings.MsBuildSettings.PreBuildEvents = [..Enumerable.Select<ProcessEventWrapper, ProcessEvent>(PreBuildEvents, e => e.ToProcessEvent())];
-        
+            _settings.MsBuildSettings.PreBuildEvents = [.. Enumerable.Select<ProcessEventWrapper, ProcessEvent>(PreBuildEvents, e => e.ToProcessEvent())];
+
         if (PostBuildEvents != null)
-            _settings.MsBuildSettings.PostBuildEvents = [..Enumerable.Select<ProcessEventWrapper, ProcessEvent>(PostBuildEvents, e => e.ToProcessEvent())];
+            _settings.MsBuildSettings.PostBuildEvents = [.. Enumerable.Select<ProcessEventWrapper, ProcessEvent>(PostBuildEvents, e => e.ToProcessEvent())];
 
         _settings.DeliverySettings.EnableCustomDelivery = EnableCustomDelivery;
         _settings.DeliverySettings.EnableDeliveryBin = EnableDeliveryBin;
-        
+
         if (DeliveryDirectories != null)
-            _settings.DeliverySettings.CustomDeliveryDirectories = [..DeliveryDirectories.Select(d => d.ToDeliveryDirectory())];
+            _settings.DeliverySettings.CustomDeliveryDirectories = [.. DeliveryDirectories.Select(d => d.ToDeliveryDirectory())];
 
         return _settings;
     }
-    
+
     [RelayCommand]
     private void AddBuildParameter(string parameter)
     {
         if (string.IsNullOrWhiteSpace(parameter))
             return;
-        
+
         BuildParameters?.Add(parameter);
     }
-    
+
     [RelayCommand]
     private void AddPreBuildEvent(ProcessEventWrapper? processEvent)
     {
         if (processEvent == null)
             return;
-        
+
         PreBuildEvents ??= [];
         PreBuildEvents.Add(processEvent);
     }
-    
+
     [RelayCommand]
     private void AddPostBuildEvent(ProcessEventWrapper? processEvent)
     {
         if (processEvent == null)
             return;
-        
+
         PostBuildEvents ??= [];
         PostBuildEvents.Add(processEvent);
     }
@@ -122,8 +123,15 @@ public partial class ProjectSettingsWrapper : BaseObservableWrapper
     {
         if (deliveryDirectory == null)
             return;
-        
+
         DeliveryDirectories ??= [];
         DeliveryDirectories.Add(deliveryDirectory);
+    }
+
+    [RelayCommand]
+    private void RemoveBuildParameter()
+    {
+        // #16 todo: Implement logic to remove a build parameter 
+        throw new NotImplementedException();
     }
 }

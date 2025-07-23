@@ -81,7 +81,7 @@ public partial class SettingsViewModel : BaseViewModel
         }
     }
 
-    private string _selectedTabKey = "MainSettings";
+    private string _selectedTabKey = SetiignsPageTabKeys.General;
     public string SelectedTabKey
     {
         get => _selectedTabKey;

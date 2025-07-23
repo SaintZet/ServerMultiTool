@@ -39,6 +39,7 @@
                 SelectedValuePath="Tag">
                 <TabControl.Resources>
                     <Style BasedOn="{StaticResource {x:Type TabItem}}" TargetType="TabItem">
+                        <Setter Property="FontSize" Value="15" />
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="TabItem">
@@ -73,8 +74,8 @@
                     </Style>
                 </TabControl.Resources>
 
-                <!--  Main Settings Tab  -->
-                <TabItem Header="Main Settings" Tag="MainSettings">
+                <!--  General Tab  -->
+                <TabItem Header="General" Tag="General">
                     <Border
                         Padding="10"
                         BorderBrush="Gainsboro"
@@ -117,12 +118,14 @@
                                                         Width="50"
                                                         Margin="0,0,5,0"
                                                         VerticalAlignment="Center"
+                                                        FontSize="13"
                                                         FontWeight="SemiBold"
                                                         Foreground="{DynamicResource SecondaryTextColor}"
                                                         Text="Name:" />
                                                     <TextBox
                                                         Background="Transparent"
                                                         BorderThickness="0"
+                                                        FontSize="13"
                                                         FontWeight="Bold"
                                                         Foreground="{DynamicResource PrimaryTextColor}"
                                                         Text="{Binding Name}" />
@@ -132,11 +135,13 @@
                                                         Width="50"
                                                         Margin="0,0,5,0"
                                                         VerticalAlignment="Center"
+                                                        FontSize="13"
                                                         FontWeight="SemiBold"
                                                         Foreground="{DynamicResource SecondaryTextColor}"
                                                         Text="Path:" />
                                                     <TextBlock
                                                         VerticalAlignment="Center"
+                                                        FontSize="13"
                                                         Foreground="{DynamicResource SecondaryTextColor}"
                                                         Text="{Binding Path}"
                                                         TextTrimming="CharacterEllipsis"
@@ -211,12 +216,14 @@
                                                         Width="50"
                                                         Margin="0,0,5,0"
                                                         VerticalAlignment="Center"
+                                                        FontSize="13"
                                                         FontWeight="SemiBold"
                                                         Foreground="{DynamicResource SecondaryTextColor}"
                                                         Text="Name:" />
                                                     <TextBox
                                                         Background="Transparent"
                                                         BorderThickness="0"
+                                                        FontSize="13"
                                                         FontWeight="Bold"
                                                         Foreground="{DynamicResource PrimaryTextColor}"
                                                         Text="{Binding Name}" />
@@ -226,11 +233,13 @@
                                                         Width="50"
                                                         Margin="0,0,5,0"
                                                         VerticalAlignment="Center"
+                                                        FontSize="13"
                                                         FontWeight="SemiBold"
                                                         Foreground="{DynamicResource SecondaryTextColor}"
                                                         Text="Path:" />
                                                     <TextBlock
                                                         VerticalAlignment="Center"
+                                                        FontSize="13"
                                                         Foreground="{DynamicResource SecondaryTextColor}"
                                                         Text="{Binding Path}"
                                                         TextTrimming="CharacterEllipsis"

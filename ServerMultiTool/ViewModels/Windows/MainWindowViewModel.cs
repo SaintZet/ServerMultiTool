@@ -26,7 +26,7 @@ namespace ServerMultiTool.ViewModels.Windows
             private set => SetProperty(ref _currentPage, value);
         }
 
-        private string _selectedMenu = "Pipeline";
+        private string _selectedMenu = PageNames.PipelinePage;
         public string SelectedMenu
         {
             get => _selectedMenu;
@@ -51,10 +51,10 @@ namespace ServerMultiTool.ViewModels.Windows
 
                     settingsViewModel.SelectedTabKey = tabKey;
 
-                    if (tabKey is "PipelineProfiles" && string.IsNullOrEmpty(param) is false)
+                    if (tabKey is SetiignsPageTabKeys.PipelineProfiles && string.IsNullOrEmpty(param) is false)
                         settingsViewModel.SelectedPipelineProfile = settingsViewModel.PipelineProfiles.First(x => x.Name == param);
 
-                    NavigateCommand.Execute("Settings");
+                    Navigate(PageNames.SettingsPage);
                 },
             });
 
@@ -68,9 +68,9 @@ namespace ServerMultiTool.ViewModels.Windows
         {
             CurrentPage = pageName switch
             {
-                "Pipeline" => _pipelinePage,
-                "JsonParser" => _jsonParserPage,
-                "Settings" => _settingsPage,
+                PageNames.PipelinePage => _pipelinePage,
+                PageNames.JsonParserPage => _jsonParserPage,
+                PageNames.SettingsPage => _settingsPage,
                 _ => CurrentPage
             };
 

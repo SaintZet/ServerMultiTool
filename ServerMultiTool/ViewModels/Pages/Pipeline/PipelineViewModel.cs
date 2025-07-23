@@ -113,7 +113,7 @@ namespace ServerMultiTool.ViewModels.Pages.Pipeline
                 return;
             }
 
-            NavigateToSettingsAction?.Invoke("PipelineProfiles", SelectedPipelineProfile.Name);
+            NavigateToSettingsAction?.Invoke(SetiignsPageTabKeys.PipelineProfiles, SelectedPipelineProfile.Name);
         }
 
         private bool CanStopPipeline => _isPipelineRunning;

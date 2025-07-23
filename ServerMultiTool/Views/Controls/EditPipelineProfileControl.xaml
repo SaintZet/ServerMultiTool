@@ -190,7 +190,8 @@
                                                     Grid.Column="0"
                                                     Margin="0,0,5,0"
                                                     VerticalAlignment="Center"
-                                                    Text="Name:" />
+                                                    Text="Name:"
+                                                    FontSize="13"/>
                                                 <TextBox
                                                     Grid.Row="0"
                                                     Grid.Column="1"
@@ -203,7 +204,8 @@
                                                     Grid.Column="0"
                                                     Margin="0,5,5,0"
                                                     VerticalAlignment="Center"
-                                                    Text="Path:" />
+                                                    Text="Path:"
+                                                    FontSize="13"/>
                                                 <TextBox
                                                     Grid.Row="1"
                                                     Grid.Column="1"
