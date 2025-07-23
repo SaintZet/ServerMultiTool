@@ -127,6 +127,8 @@ namespace ServerMultiTool.ViewModels.Pages.Pipeline
             {
                 foreach (var operation in PipelineOperations)
                 {
+                    operation.OperationStarted();
+
                     operation.UpdateSolutionDirectory(GeneralInfo.SelectedSolutionDirectory);
                     operation.UpdateHttpDirectory(GeneralInfo.SelectedHttpDirectory);
 

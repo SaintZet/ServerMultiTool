@@ -21,6 +21,15 @@
         <pipelineConverters:PipelineStatusFillConverter x:Key="PipelineStatusFillConverter" />
         <pipelineConverters:StringToVisibilityConverter x:Key="StringToVisibilityConverter" />
         <globalConverters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <Storyboard x:Key="GreenFlashingAnimation">
+            <ColorAnimation
+                AutoReverse="True"
+                RepeatBehavior="Forever"
+                Storyboard.TargetProperty="Fill.(SolidColorBrush.Color)"
+                From="#4CAF50"
+                To="#2E7D32"
+                Duration="0:0:0.8" />
+        </Storyboard>
     </Page.Resources>
 
     <Border Background="{DynamicResource SecondaryBackgroundColor}" CornerRadius="8">
@@ -124,6 +133,20 @@
                                         <Ellipse.Effect>
                                             <DropShadowEffect Opacity=".2" ShadowDepth="0.5" />
                                         </Ellipse.Effect>
+                                        <Ellipse.Style>
+                                            <Style TargetType="Ellipse">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding PipelineOperationStatus}" Value="InProgress">
+                                                        <DataTrigger.EnterActions>
+                                                            <BeginStoryboard Name="FlashingStoryboard" Storyboard="{StaticResource GreenFlashingAnimation}" />
+                                                        </DataTrigger.EnterActions>
+                                                        <DataTrigger.ExitActions>
+                                                            <StopStoryboard BeginStoryboardName="FlashingStoryboard" />
+                                                        </DataTrigger.ExitActions>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Ellipse.Style>
                                     </Ellipse>
                                     <TextBlock
                                         Margin="0,3,0,0"

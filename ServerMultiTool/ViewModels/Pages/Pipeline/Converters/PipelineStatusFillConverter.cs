@@ -1,9 +1,9 @@
+using ServerMultiTool.ViewModels.Pages.Pipeline.Enums;
 using System;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
-using ServerMultiTool.ViewModels.Pages.Pipeline.Enums;
 
 namespace ServerMultiTool.ViewModels.Pages.Pipeline.Converters
 {
@@ -11,17 +11,26 @@ namespace ServerMultiTool.ViewModels.Pages.Pipeline.Converters
     {
         public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
-            if (value is not PipelineOperationStatus milestoneIndicator) 
+            if (value is not PipelineOperationStatus milestoneIndicator)
                 return DependencyProperty.UnsetValue;
 
             return milestoneIndicator switch
             {
-                PipelineOperationStatus.Wait => Application.Current.Resources["SecondaryGrayColor"] as Brush,
-                PipelineOperationStatus.Success => Application.Current.Resources["PrimaryGreenColor"] as Brush,
-                PipelineOperationStatus.Warning => Application.Current.Resources["PrimaryYellowColor"] as Brush,
-                PipelineOperationStatus.Failure => Application.Current.Resources["PrimaryRedColor"] as Brush,
+                PipelineOperationStatus.Wait => GetClone("PrimaryGrayColor"),
+                PipelineOperationStatus.InProgress => GetClone("PrimaryGreenColor"),
+                PipelineOperationStatus.Success => GetClone("PrimaryGreenColor"),
+                PipelineOperationStatus.Warning => GetClone("PrimaryYellowColor"),
+                PipelineOperationStatus.Failure => GetClone("PrimaryRedColor"),
                 _ => DependencyProperty.UnsetValue
             };
+        }
+
+        private static SolidColorBrush? GetClone(string key)
+        {
+            if (Application.Current.Resources[key] is SolidColorBrush brush)
+                return brush.Clone();
+
+            return null;
         }
 
         public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
