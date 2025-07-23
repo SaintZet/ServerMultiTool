@@ -13,7 +13,6 @@
     mc:Ignorable="d">
     <!--  d:DataContext="{d:DesignInstance Type=settings:SettingsViewModel, IsDesignTimeCreatable=True}"  -->
 
-
     <Border Background="{DynamicResource SecondaryBackgroundColor}" CornerRadius="8">
         <Grid>
             <Grid.RowDefinitions>
@@ -34,7 +33,8 @@
                 VerticalAlignment="Stretch"
                 Background="Transparent"
                 BorderBrush="Transparent"
-                BorderThickness="0">
+                BorderThickness="0"
+                IsEnabled="{Binding GeneralInfo.CanChangeStates}">
                 <TabControl.Resources>
                     <Style BasedOn="{StaticResource {x:Type TabItem}}" TargetType="TabItem">
                         <Setter Property="Template">
@@ -323,32 +323,14 @@
                                         SelectedItem="{Binding SelectedPipelineProfile, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>
-                                                <StackPanel Margin="0,5" Orientation="Vertical">
-                                                    <TextBox
-                                                        Margin="0,0,0,5"
-                                                        Background="Transparent"
-                                                        BorderThickness="0"
-                                                        FontSize="13"
-                                                        FontWeight="Bold"
-                                                        Foreground="{DynamicResource PrimaryTextColor}"
-                                                        Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                                                    <ScrollViewer
-                                                        MaxHeight="40"
-                                                        HorizontalScrollBarVisibility="Disabled"
-                                                        VerticalScrollBarVisibility="Auto">
-                                                        <ItemsControl ItemsSource="{Binding Operations}">
-                                                            <ItemsControl.ItemTemplate>
-                                                                <DataTemplate>
-                                                                    <TextBlock
-                                                                        Margin="10,2,0,0"
-                                                                        Foreground="{DynamicResource SecondaryTextColor}"
-                                                                        Text="{Binding DisplayName}"
-                                                                        TextWrapping="Wrap" />
-                                                                </DataTemplate>
-                                                            </ItemsControl.ItemTemplate>
-                                                        </ItemsControl>
-                                                    </ScrollViewer>
-                                                </StackPanel>
+                                                <TextBox
+                                                    Margin="0,10,0,10"
+                                                    Background="Transparent"
+                                                    BorderThickness="0"
+                                                    FontSize="13"
+                                                    FontWeight="Bold"
+                                                    Foreground="{DynamicResource PrimaryTextColor}"
+                                                    Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                                             </DataTemplate>
                                         </ListBox.ItemTemplate>
                                     </ListBox>

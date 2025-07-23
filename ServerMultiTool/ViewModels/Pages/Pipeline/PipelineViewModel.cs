@@ -11,6 +11,7 @@ using ServerMultiTool.Model.Settings;
 using ServerMultiTool.ViewModels.Contracts;
 using ServerMultiTool.ViewModels.Controls;
 using ServerMultiTool.ViewModels.Pages.Pipeline.Data;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -112,31 +113,38 @@ namespace ServerMultiTool.ViewModels.Pages.Pipeline
         [RelayCommand(CanExecute = nameof(CanExecutePipeline))]
         private async Task ExecutePipeline()
         {
-            GeneralInfo.CanChangeStates = false;
             IsPipelineRunning = true;
+            GeneralInfo.CanChangeStates = false;
+
+            AppLogMessages.Clear();
+            PipelineOperations.ClearStatuses();
 
             _pipelineCancellationTokenSource = new CancellationTokenSource();
             var cancellationToken = _pipelineCancellationTokenSource.Token;
 
             PipelineOperations.ClearStatuses();
-
-            foreach (var operation in PipelineOperations)
+            try
             {
-                operation.UpdateSolutionDirectory(GeneralInfo.SelectedSolutionDirectory);
-                operation.UpdateHttpDirectory(GeneralInfo.SelectedHttpDirectory);
+                foreach (var operation in PipelineOperations)
+                {
+                    operation.UpdateSolutionDirectory(GeneralInfo.SelectedSolutionDirectory);
+                    operation.UpdateHttpDirectory(GeneralInfo.SelectedHttpDirectory);
 
-                await operation.ExecuteAsync(cancellationToken);
+                    await operation.ExecuteAsync(cancellationToken);
 
-                if (cancellationToken.IsCancellationRequested is not true)
-                    continue;
-
+                    cancellationToken.ThrowIfCancellationRequested();
+                }
+            }
+            catch (OperationCanceledException)
+            {
                 AppLogMessages.Clear();
                 PipelineOperations.ClearStatuses();
-                break;
             }
-
-            IsPipelineRunning = false;
-            GeneralInfo.CanChangeStates = true;
+            finally
+            {
+                IsPipelineRunning = false;
+                GeneralInfo.CanChangeStates = true;
+            }
         }
 
         private static void UpdateSettings(PipelineProfile value)

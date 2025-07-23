@@ -4,11 +4,11 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:behaviours="clr-namespace:ServerMultiTool.Views.Behaviours"
     xmlns:controls="clr-namespace:ServerMultiTool.Views.Controls"
-    xmlns:pipelineConverters="clr-namespace:ServerMultiTool.ViewModels.Pages.Pipeline.Converters"
-    xmlns:globalConverters="clr-namespace:ServerMultiTool.ViewModels.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:globalConverters="clr-namespace:ServerMultiTool.ViewModels.Converters"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:pipeline="clr-namespace:ServerMultiTool.ViewModels.Pages.Pipeline"
+    xmlns:pipelineConverters="clr-namespace:ServerMultiTool.ViewModels.Pages.Pipeline.Converters"
     Title="Pipeline"
     d:DataContext="{d:DesignInstance Type=pipeline:PipelineViewModel,
                                      IsDesignTimeCreatable=True}"
@@ -75,25 +75,26 @@
                     <Button
                         Grid.Column="1"
                         Margin="5,0,0,0"
-                        Content="{DynamicResource Settings}"
-                        IsEnabled="{Binding GeneralInfo.CanChangeStates}"
-                        Style="{DynamicResource IconButtonsStyle}" />
+                        Command="{Binding ExecutePipelineCommand}"
+                        Content="{DynamicResource Start}"
+                        Style="{StaticResource IconButtonsStyle}"
+                        Visibility="{Binding IsPipelineRunning, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Invert}" />
 
                     <Button
                         Grid.Column="2"
                         Margin="5,0,0,0"
-                        Command="{Binding ExecutePipelineCommand}"
-                        Content="{DynamicResource Start}"
+                        Command="{Binding StopPipelineCommand}"
+                        Content="{DynamicResource Stop}"
                         Style="{StaticResource IconButtonsStyle}"
-                        IsEnabled="{Binding ExecutePipelineCommand.CanExecute, Converter={StaticResource BoolToVisibilityConverter}}" />
+                        Visibility="{Binding IsPipelineRunning, Converter={StaticResource BoolToVisibilityConverter}}" />
+
 
                     <Button
                         Grid.Column="3"
                         Margin="5,0,0,0"
-                        Command="{Binding StopPipelineCommand}"
-                        Visibility="{Binding IsPipelineRunning, Converter={StaticResource BoolToVisibilityConverter}}"
-                        Content="{DynamicResource Stop}"
-                        Style="{StaticResource IconButtonsStyle}" />
+                        Content="{DynamicResource Settings}"
+                        Style="{DynamicResource IconButtonsStyle}"
+                        Visibility="{Binding IsPipelineRunning, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Invert}" />
 
                     <ItemsControl
                         Grid.Column="4"
