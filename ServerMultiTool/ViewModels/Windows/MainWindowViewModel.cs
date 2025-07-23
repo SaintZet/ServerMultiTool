@@ -1,10 +1,14 @@
-using System.Windows;
-using System.Windows.Controls;
 using CommunityToolkit.Mvvm.Input;
 using ServerMultiTool.ViewModels.Contracts;
 using ServerMultiTool.ViewModels.Controls;
+using ServerMultiTool.ViewModels.Pages.JsonParser;
+using ServerMultiTool.ViewModels.Pages.Pipeline;
+using ServerMultiTool.ViewModels.Pages.Settings;
 using ServerMultiTool.Views.Pages;
 using ServerMultiTool.Views.Themes;
+using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace ServerMultiTool.ViewModels.Windows
 {
@@ -12,18 +16,7 @@ namespace ServerMultiTool.ViewModels.Windows
     {
         private readonly Page _pipelinePage;
         private readonly Page _jsonParserPage;
-        private readonly SettingsView _settingsPage;
-
-        public MainWindowViewModel()
-        {
-            var generalInfoViewModel = new GeneralInfoViewModel();
-            
-            _pipelinePage = new PipelineView(generalInfoViewModel);
-            _jsonParserPage = new JsonParserView(generalInfoViewModel);
-            _settingsPage = new SettingsView(generalInfoViewModel);
-
-            _currentPage = _pipelinePage;
-        }
+        private readonly Page _settingsPage;
 
         private Page _currentPage;
 
@@ -31,6 +24,43 @@ namespace ServerMultiTool.ViewModels.Windows
         {
             get => _currentPage;
             private set => SetProperty(ref _currentPage, value);
+        }
+
+        private string _selectedMenu = "Pipeline";
+        public string SelectedMenu
+        {
+            get => _selectedMenu;
+            private set => SetProperty(ref _selectedMenu, value);
+        }
+
+        public MainWindowViewModel()
+        {
+            var generalInfo = new GeneralInfoViewModel();
+
+            var settingsViewModel = new SettingsViewModel { GeneralInfo = generalInfo };
+            _settingsPage = new SettingsView(settingsViewModel);
+
+            _pipelinePage = new PipelineView(new PipelineViewModel
+            {
+                GeneralInfo = generalInfo,
+                NavigateToSettingsAction = (tabKey, param) =>
+                {
+                    if (string.IsNullOrEmpty(tabKey))
+                        return;
+
+
+                    settingsViewModel.SelectedTabKey = tabKey;
+
+                    if (tabKey is "PipelineProfiles" && string.IsNullOrEmpty(param) is false)
+                        settingsViewModel.SelectedPipelineProfile = settingsViewModel.PipelineProfiles.First(x => x.Name == param);
+
+                    NavigateCommand.Execute("Settings");
+                },
+            });
+
+            _jsonParserPage = new JsonParserView(new JsonParserViewModel { GeneralInfo = generalInfo });
+
+            _currentPage = _pipelinePage;
         }
 
         [RelayCommand]
@@ -43,6 +73,8 @@ namespace ServerMultiTool.ViewModels.Windows
                 "Settings" => _settingsPage,
                 _ => CurrentPage
             };
+
+            SelectedMenu = pageName;
         }
 
         [RelayCommand]
@@ -75,10 +107,10 @@ namespace ServerMultiTool.ViewModels.Windows
         private static void ChangeTheme()
         {
             var theme = ThemesController.ThemeTypes.Light;
-            
+
             if (ThemesController.CurrentTheme == ThemesController.ThemeTypes.Light)
                 theme = ThemesController.ThemeTypes.Dark;
-            
+
             ThemesController.ChangeTheme(theme);
         }
     }

@@ -101,6 +101,7 @@
                     <Button
                         Grid.Column="3"
                         Margin="5,0,0,0"
+                        Command="{Binding NavigateToSettingsCommand}"
                         Content="{DynamicResource Settings}"
                         Style="{DynamicResource IconButtonsStyle}"
                         Visibility="{Binding IsPipelineRunning, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Invert}" />

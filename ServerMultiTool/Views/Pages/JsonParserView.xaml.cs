@@ -1,19 +1,12 @@
-﻿using System.Windows.Controls;
-using ServerMultiTool.ViewModels.Controls;
-using ServerMultiTool.ViewModels.Pages;
-using ServerMultiTool.ViewModels.Pages.JsonParser;
+﻿using ServerMultiTool.ViewModels.Pages.JsonParser;
+using System.Windows.Controls;
 
 namespace ServerMultiTool.Views.Pages
 {
     public partial class JsonParserView : Page
     {
-        public JsonParserView(GeneralInfoViewModel generalInfo)
+        public JsonParserView(JsonParserViewModel viewModel)
         {
-            var viewModel = new JsonParserViewModel
-            {
-                GeneralInfo = generalInfo
-            };
-            
             DataContext = viewModel;
             InitializeComponent();
         }

@@ -1,18 +1,12 @@
 ﻿using System.Windows.Controls;
-using ServerMultiTool.ViewModels.Controls;
 using PipelineViewModel = ServerMultiTool.ViewModels.Pages.Pipeline.PipelineViewModel;
 
 namespace ServerMultiTool.Views.Pages
 {
     public partial class PipelineView : Page
     {
-        public PipelineView(GeneralInfoViewModel generalInfo)
+        public PipelineView(PipelineViewModel viewModel)
         {
-            var viewModel = new PipelineViewModel
-            {
-                GeneralInfo = generalInfo
-            };
-            
             DataContext = viewModel;
             InitializeComponent();
         }

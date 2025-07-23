@@ -18,6 +18,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using static ServerMultiTool.ViewModels.Contracts.Delegates;
 
 namespace ServerMultiTool.ViewModels.Pages.Pipeline
 {
@@ -91,6 +92,8 @@ namespace ServerMultiTool.ViewModels.Pages.Pipeline
             };
         }
 
+        public NavigateToSettingsDelegate? NavigateToSettingsAction { get; set; }
+
         private void LoadProfiles(string selectedProfileName)
         {
             PipelineProfiles = PipelineProfilesService.PipelineProfiles;
@@ -100,6 +103,19 @@ namespace ServerMultiTool.ViewModels.Pages.Pipeline
             SelectedPipelineProfile = selectedProfile ?? PipelineProfiles.FirstOrDefault();
             OnPropertyChanged(nameof(SelectedPipelineProfile));
         }
+
+        [RelayCommand]
+        private void NavigateToSettings()
+        {
+            if (SelectedPipelineProfile is null)
+            {
+                MessageBox.Show("Please select a pipeline profile first.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            NavigateToSettingsAction?.Invoke("PipelineProfiles", SelectedPipelineProfile.Name);
+        }
+
         private bool CanStopPipeline => _isPipelineRunning;
 
         [RelayCommand(CanExecute = nameof(CanStopPipeline))]

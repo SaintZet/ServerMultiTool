@@ -34,7 +34,9 @@
                 Background="Transparent"
                 BorderBrush="Transparent"
                 BorderThickness="0"
-                IsEnabled="{Binding GeneralInfo.CanChangeStates}">
+                IsEnabled="{Binding GeneralInfo.CanChangeStates}"
+                SelectedValue="{Binding SelectedTabKey, Mode=TwoWay}"
+                SelectedValuePath="Tag">
                 <TabControl.Resources>
                     <Style BasedOn="{StaticResource {x:Type TabItem}}" TargetType="TabItem">
                         <Setter Property="Template">
@@ -72,7 +74,7 @@
                 </TabControl.Resources>
 
                 <!--  Main Settings Tab  -->
-                <TabItem Header="Main Settings">
+                <TabItem Header="Main Settings" Tag="MainSettings">
                     <Border
                         Padding="10"
                         BorderBrush="Gainsboro"
@@ -275,7 +277,7 @@
                 </TabItem>
 
                 <!--  Pipeline Profiles Tab  -->
-                <TabItem Header="Pipeline Profiles">
+                <TabItem Header="Pipeline Profiles" Tag="PipelineProfiles">
                     <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                         <Border
                             Padding="10"
