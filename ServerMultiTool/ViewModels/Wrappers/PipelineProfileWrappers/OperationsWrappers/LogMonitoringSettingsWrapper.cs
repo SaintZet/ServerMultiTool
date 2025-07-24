@@ -13,7 +13,7 @@ public partial class LogMonitoringSettingsWrapper : BaseObservableWrapper
     public LogMonitoringSettingsWrapper(LogMonitoringSettings settings)
     {
         Enable = settings.Enable;
-        LogDirectory = new DirectoryModelWrapper(settings.LogDirectory.Name ?? string.Empty, settings.LogDirectory.Path ?? string.Empty);
+        LogDirectory = new DirectoryModelWrapper(settings.LogDirectory!.Name ?? string.Empty, settings.LogDirectory.Path ?? string.Empty);
         LogDirectory.PropertyChanged += (_, _) => OnPropertyChanged(string.Empty);
     }
 

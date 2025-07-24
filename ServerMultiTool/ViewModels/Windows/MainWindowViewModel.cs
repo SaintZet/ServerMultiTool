@@ -1,3 +1,4 @@
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ServerMultiTool.ViewModels.Contracts;
 using ServerMultiTool.ViewModels.Controls;
@@ -14,24 +15,25 @@ namespace ServerMultiTool.ViewModels.Windows
 {
     public partial class MainWindowViewModel : BaseViewModel
     {
+        #region Observable Properties
+
+        [ObservableProperty]
+        private Page _currentPage;
+
+        [ObservableProperty]
+        private string _selectedMenu = PageNames.PipelinePage;
+
+        #endregion
+
+        #region Private Fields
+
         private readonly Page _pipelinePage;
         private readonly Page _jsonParserPage;
         private readonly Page _settingsPage;
 
-        private Page _currentPage;
+        #endregion
 
-        public Page CurrentPage
-        {
-            get => _currentPage;
-            private set => SetProperty(ref _currentPage, value);
-        }
-
-        private string _selectedMenu = PageNames.PipelinePage;
-        public string SelectedMenu
-        {
-            get => _selectedMenu;
-            private set => SetProperty(ref _selectedMenu, value);
-        }
+        #region Constructors
 
         public MainWindowViewModel()
         {
@@ -62,6 +64,10 @@ namespace ServerMultiTool.ViewModels.Windows
 
             _currentPage = _pipelinePage;
         }
+
+        #endregion
+
+        #region Commands
 
         [RelayCommand]
         private void Navigate(string pageName)
@@ -113,5 +119,7 @@ namespace ServerMultiTool.ViewModels.Windows
 
             ThemesController.ChangeTheme(theme);
         }
+
+        #endregion
     }
 }

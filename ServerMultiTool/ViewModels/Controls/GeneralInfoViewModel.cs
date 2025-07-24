@@ -1,104 +1,116 @@
-using System.Linq;
-using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.ComponentModel;
 using ServerMultiTool.Model.Common;
 using ServerMultiTool.Model.ContinuousIntegration.Git;
 using ServerMultiTool.Model.Settings;
 using ServerMultiTool.ViewModels.Contracts;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace ServerMultiTool.ViewModels.Controls;
 
-public class GeneralInfoViewModel : BaseViewModel
+public partial class GeneralInfoViewModel : BaseViewModel
 {
-    private readonly GitService _gitService = new();
-    
-    public DirectoryModel[] SolutionDirectories { get; set; }
+    #region Observable Properties
 
-    private DirectoryModel _selectedSolutionDirectory;
-    public DirectoryModel SelectedSolutionDirectory
+    [ObservableProperty]
+    private bool _canChangeStates = true;
+
+    [ObservableProperty]
+    private string? _currentGitBranch;
+
+    [ObservableProperty]
+    private DirectoryModel[] _solutionDirectories = [];
+
+    [ObservableProperty]
+    private DirectoryModel[] _httpDirectories = [];
+
+    private DirectoryModel? _selectedSolutionDirectory;
+    public DirectoryModel? SelectedSolutionDirectory
     {
         get => _selectedSolutionDirectory;
         set
         {
-            if (value.Equals(_selectedSolutionDirectory)) 
+            if (value is null || value.Equals(_selectedSolutionDirectory))
                 return;
-            
+
             _selectedSolutionDirectory = value;
-            _ = OnUpdateSelectedSolutionDirectory(value);
+
+            OnUpdateSelectedSolutionDirectory(value).ConfigureAwait(false);
             OnPropertyChanged();
         }
     }
-    
-    private async Task OnUpdateSelectedSolutionDirectory(DirectoryModel value)
-    {
-        CurrentGitBranch = await _gitService.GetCurrentBranchName(value.Path);
 
-        var appSettings = AppSettingsService.AppSettings;
-        appSettings.CurrentSolutionDirectoryName = value.Name;
-        
-        AppSettingsService.SaveAppSettings(appSettings);
-    }
-
-    public DirectoryModel[] HttpDirectories { get; set; }
-    
-    private DirectoryModel _selectedHttpDirectory;
-    public DirectoryModel SelectedHttpDirectory
+    private DirectoryModel? _selectedHttpDirectory;
+    public DirectoryModel? SelectedHttpDirectory
     {
         get => _selectedHttpDirectory;
         set
         {
-            if (value.Equals(_selectedHttpDirectory)) 
+            if (value is null || value.Equals(_selectedHttpDirectory))
                 return;
-            
+
             _selectedHttpDirectory = value;
+
             OnUpdateSelectedHttpDirectory(value);
             OnPropertyChanged();
         }
     }
 
-    private static void OnUpdateSelectedHttpDirectory(DirectoryModel value)
-    {
-        var appSettings = AppSettingsService.AppSettings;
-        appSettings.CurrentHttpDirectoryName = value.Name;
-        
-        AppSettingsService.SaveAppSettings(appSettings);
-    }
+    #endregion
 
-    private string? _currentGitBranch;
-    public string? CurrentGitBranch
-    {
-        get => _currentGitBranch;
-        private set => SetProperty(ref _currentGitBranch, value);
-    }
+    #region Private Fields
 
-    private bool _canChangeStates = true;
-    public bool CanChangeStates
-    {
-        get => _canChangeStates;
-        set => SetProperty(ref _canChangeStates, value);
-    }
+    private readonly GitService _gitService = new();
+
+    #endregion
+
+    #region Constructor
 
     public GeneralInfoViewModel()
     {
         var appSettings = AppSettingsService.AppSettings;
-        
+
         SolutionDirectories = appSettings.SolutionDirectories;
         HttpDirectories = appSettings.HttpDirectories;
-        
+
         SelectedSolutionDirectory = SolutionDirectories.FirstOrDefault(x => x.Name == appSettings.CurrentSolutionDirectoryName);
         SelectedHttpDirectory = HttpDirectories.FirstOrDefault(x => x.Name == appSettings.CurrentHttpDirectoryName);
     }
-    
+
+    #endregion
+
+    #region Methods
+
     public void UpdateData()
     {
         var appSettings = AppSettingsService.LoadOrInitialize();
 
         SolutionDirectories = appSettings.SolutionDirectories;
         HttpDirectories = appSettings.HttpDirectories;
-        
+
         SelectedSolutionDirectory = SolutionDirectories.FirstOrDefault(x => x.Name == appSettings.CurrentSolutionDirectoryName);
         SelectedHttpDirectory = HttpDirectories.FirstOrDefault(x => x.Name == appSettings.CurrentHttpDirectoryName);
 
         OnPropertyChanged(nameof(SolutionDirectories));
         OnPropertyChanged(nameof(HttpDirectories));
     }
+
+    private async Task OnUpdateSelectedSolutionDirectory(DirectoryModel value)
+    {
+        CurrentGitBranch = await _gitService.GetCurrentBranchName(value.Path);
+
+        var appSettings = AppSettingsService.AppSettings;
+        appSettings.CurrentSolutionDirectoryName = value.Name;
+
+        AppSettingsService.SaveAppSettings(appSettings);
+    }
+    private static void OnUpdateSelectedHttpDirectory(DirectoryModel value)
+    {
+        var appSettings = AppSettingsService.AppSettings;
+        appSettings.CurrentHttpDirectoryName = value.Name;
+
+        AppSettingsService.SaveAppSettings(appSettings);
+    }
+
+    #endregion
 }

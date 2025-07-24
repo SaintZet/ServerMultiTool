@@ -1,3 +1,7 @@
+using Microsoft.IdentityModel.Tokens;
+using ServerMultiTool.Model.Common;
+using ServerMultiTool.Model.Common.EventAggregator;
+using ServerMultiTool.Model.Common.Logs;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -7,31 +11,27 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
-using Microsoft.IdentityModel.Tokens;
-using ServerMultiTool.Model.Common;
-using ServerMultiTool.Model.Common.EventAggregator;
-using ServerMultiTool.Model.Common.Logs;
 using Timer = System.Timers.Timer;
 
 namespace ServerMultiTool.Model.ContinuousIntegration.GameServerLogs;
 
-public class LogMonitoringService : BaseEventAggregator
+public partial class LogMonitoringService : BaseEventAggregator
 {
     private const string LogFileNameFormat = @"yyyy-MM-dd\\all.HH-00";
     private const string LogFileExtension = ".log";
-    
-    private static readonly Regex TimeStampRegex = new(@"\b\d{2}:\d{2}:\d{2}\.\d{3}\b");
+
+    private static readonly Regex TimeStampRegex = GetTimeStampRegex();
 
     private readonly Logger _logger;
     private readonly Timer _hourlyTimer;
-    
+
     private CancellationTokenSource? _cancellationToken;
     private LogMonitoringSettings? _settings;
 
     public LogMonitoringService()
     {
         _logger = new Logger(GetType());
-        
+
         _hourlyTimer = new Timer();
         _hourlyTimer.Elapsed += async (sender, e) => await OnTimerElapsed(sender, e);
         _hourlyTimer.Interval = GetIntervalToNextHour();
@@ -44,10 +44,10 @@ public class LogMonitoringService : BaseEventAggregator
 
         if (_settings is { Enable: true })
             await StopMonitoringAsync();
-        
-        if (newSettings.Enable) 
+
+        if (newSettings.Enable && newSettings.LogDirectory is not null)
             await StartMonitoringAsync(newSettings.LogDirectory);
-        
+
         _settings = newSettings;
     }
 
@@ -55,9 +55,9 @@ public class LogMonitoringService : BaseEventAggregator
     {
         _hourlyTimer.Interval = GetIntervalToNextHour();
 
-        if (_settings is null)
+        if (_settings?.LogDirectory is null)
             return;
-        
+
         await StopMonitoringAsync();
         await StartMonitoringAsync(_settings.LogDirectory);
     }
@@ -67,10 +67,10 @@ public class LogMonitoringService : BaseEventAggregator
         var currentTime = DateTime.Now;
         var nextHour = currentTime.AddHours(1).Date.AddHours(currentTime.Hour + 1);
         var millisecondsToNextHour = (nextHour - currentTime).TotalMilliseconds;
-            
+
         return millisecondsToNextHour;
     }
-    
+
     private async Task StartMonitoringAsync(DirectoryModel directory)
     {
         if (_cancellationToken is not null)
@@ -78,9 +78,9 @@ public class LogMonitoringService : BaseEventAggregator
 
         if (directory.Path.IsNullOrEmpty())
             return;
-        
+
         _logger.LogInfo($"Start monitoring {directory.Path}");
-        
+
         _cancellationToken = new CancellationTokenSource();
         await MonitorLogDirectoryAsync(directory, _cancellationToken.Token);
     }
@@ -89,25 +89,25 @@ public class LogMonitoringService : BaseEventAggregator
     {
         if (_cancellationToken is null)
             return;
-    
+
         await _cancellationToken.CancelAsync();
 
         _cancellationToken.Dispose();
         _cancellationToken = null;
-        
-        _logger.LogInfo($"Stop monitoring {_settings!.LogDirectory.Path}");
+
+        _logger.LogInfo($"Stop monitoring {_settings?.LogDirectory?.Path ?? "unknown directory"}");
     }
-    
+
     private async Task MonitorLogDirectoryAsync(DirectoryModel directory, CancellationToken cancellationToken)
     {
         var startTime = DateTime.Now;
-        
+
         while (!cancellationToken.IsCancellationRequested)
         {
             await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken);
-            
+
             var path = GetActualLogFileName(directory);
-            
+
             if (File.Exists(path) is false)
                 continue;
 
@@ -133,7 +133,7 @@ public class LogMonitoringService : BaseEventAggregator
         var lines = await ReadRemainingLinesAsync(reader, cancellationToken);
         var filteredLines = FilterAndShortenLines(lines);
 
-        foreach (var logEvent in LogMonitoringUtils.ParseLogLines(filteredLines)) 
+        foreach (var logEvent in LogMonitoringUtils.ParseLogLines(filteredLines))
             Publish(logEvent);
     }
 
@@ -157,14 +157,14 @@ public class LogMonitoringService : BaseEventAggregator
                 break;
         }
     }
-    
+
     private static DateTime? ExtractTimeStamp(string line)
     {
         var match = TimeStampRegex.Match(line);
 
-        if (match.Success is false) 
+        if (match.Success is false)
             return null;
-        
+
         if (DateTime.TryParseExact(match.Value, "HH:mm:ss.fff", CultureInfo.InvariantCulture, DateTimeStyles.None, out var timestamp))
             return timestamp;
 
@@ -189,4 +189,7 @@ public class LogMonitoringService : BaseEventAggregator
         lines
             .Where(line => line.Contains("ClusterSettings") is false)
             .Select(line => line.Length > 300 ? line[..300] + "..." : line);
+
+    [GeneratedRegex(@"\b\d{2}:\d{2}:\d{2}\.\d{3}\b")]
+    private static partial Regex GetTimeStampRegex();
 }

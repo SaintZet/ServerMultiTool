@@ -1,3 +1,4 @@
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ServerMultiTool.Model.Common.DefaultValues;
 using ServerMultiTool.Model.Pipeline.Profiles;
@@ -17,54 +18,27 @@ using Application = System.Windows.Application;
 
 namespace ServerMultiTool.ViewModels.Pages.Settings;
 
-public partial class SettingsViewModel : BaseViewModel
+public partial class SettingsViewModel : BaseViewModel, IPage
 {
-    private readonly GeneralInfoViewModel _generalInfo;
-    public GeneralInfoViewModel GeneralInfo
-    {
-        get => _generalInfo;
-        init => SetProperty(ref _generalInfo, value);
-    }
+    #region Observable Properties
 
-    private readonly EditPipelineProfileViewModel _editPipelineProfile = new();
-    public EditPipelineProfileViewModel EditPipelineProfile
-    {
-        get => _editPipelineProfile;
-        init => SetProperty(ref _editPipelineProfile, value);
-    }
-
+    [ObservableProperty]
     private bool _hasUnsavedChanges;
-    public bool HasUnsavedChanges
-    {
-        get => _hasUnsavedChanges;
-        set => SetProperty(ref _hasUnsavedChanges, value);
-    }
 
-    private bool _isInitializing;
-    private bool _isChangingProfile;
+    [ObservableProperty]
+    private string _selectedTabKey = SetiignsPageTabKeys.General;
 
-    public ObservableCollection<DirectoryModelWrapper> SolutionDirectories { get; private set; }
-    public ObservableCollection<DirectoryModelWrapper> HttpDirectories { get; private set; }
-
-    private ObservableCollection<DirectoryModelWrapper> _initialSolutionDirectories;
-    private ObservableCollection<DirectoryModelWrapper> _initialHttpDirectories;
-
+    [ObservableProperty]
     private DirectoryModelWrapper? _selectedSolutionDirectory;
-    public DirectoryModelWrapper? SelectedSolutionDirectory
-    {
-        get => _selectedSolutionDirectory;
-        set => SetProperty(ref _selectedSolutionDirectory, value);
-    }
 
+    [ObservableProperty]
     private DirectoryModelWrapper? _selectedHttpDirectory;
-    public DirectoryModelWrapper? SelectedHttpDirectory
-    {
-        get => _selectedHttpDirectory;
-        set => SetProperty(ref _selectedHttpDirectory, value);
-    }
 
-    public ObservableCollection<PipelineProfileWrapper> PipelineProfiles { get; private set; } = [];
-    private ObservableCollection<PipelineProfileWrapper> _initialPipelineProfiles = [];
+    [ObservableProperty]
+    private GeneralInfoViewModel _generalInfo = null!;
+
+    [ObservableProperty]
+    private EditPipelineProfileViewModel _editPipelineProfile = new();
 
     private PipelineProfileWrapper? _selectedPipelineProfile;
     public PipelineProfileWrapper? SelectedPipelineProfile
@@ -81,12 +55,29 @@ public partial class SettingsViewModel : BaseViewModel
         }
     }
 
-    private string _selectedTabKey = SetiignsPageTabKeys.General;
-    public string SelectedTabKey
-    {
-        get => _selectedTabKey;
-        set => SetProperty(ref _selectedTabKey, value);
-    }
+    #endregion
+
+    #region Private Fields
+
+    private bool _isInitializing;
+    private bool _isChangingProfile;
+
+    // Initial state for cancel
+    private ObservableCollection<DirectoryModelWrapper> _initialSolutionDirectories = [];
+    private ObservableCollection<DirectoryModelWrapper> _initialHttpDirectories = [];
+    private ObservableCollection<PipelineProfileWrapper> _initialPipelineProfiles = [];
+
+    #endregion
+
+    #region Collections
+
+    public ObservableCollection<DirectoryModelWrapper> SolutionDirectories { get; private set; } = [];
+    public ObservableCollection<DirectoryModelWrapper> HttpDirectories { get; private set; } = [];
+    public ObservableCollection<PipelineProfileWrapper> PipelineProfiles { get; private set; } = [];
+
+    #endregion
+
+    #region Constructor
 
     public SettingsViewModel()
     {
@@ -103,6 +94,10 @@ public partial class SettingsViewModel : BaseViewModel
 
         _isInitializing = false;
     }
+
+    #endregion
+
+    #region Load Methods
 
     private void LoadSettings()
     {
@@ -128,9 +123,18 @@ public partial class SettingsViewModel : BaseViewModel
             PipelineProfiles.Add(wrapper);
         }
 
+        _initialPipelineProfiles = new ObservableCollection<PipelineProfileWrapper>(
+            PipelineProfiles.Select(w => new PipelineProfileWrapper(w.ToPipelineProfile()))
+        );
+
         OnPropertyChanged(nameof(PipelineProfiles));
 
-        if (string.IsNullOrEmpty(selectedName) is false)
+        RestoreSelectedPipelineProfile(selectedName);
+    }
+
+    private void RestoreSelectedPipelineProfile(string? selectedName)
+    {
+        if (!string.IsNullOrEmpty(selectedName))
         {
             SelectedPipelineProfile = PipelineProfiles.FirstOrDefault(p => p.Name == selectedName) ?? PipelineProfiles.FirstOrDefault();
         }
@@ -139,6 +143,10 @@ public partial class SettingsViewModel : BaseViewModel
             SelectedPipelineProfile = PipelineProfiles.First();
         }
     }
+
+    #endregion
+
+    #region Property Changed Handlers
 
     private void OnEditPipelineProfilePropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
@@ -180,6 +188,10 @@ public partial class SettingsViewModel : BaseViewModel
         HasUnsavedChanges = true;
     }
 
+    #endregion
+
+    #region Commands
+
     [RelayCommand]
     private void SaveSettings()
     {
@@ -196,7 +208,7 @@ public partial class SettingsViewModel : BaseViewModel
         _initialHttpDirectories = HttpDirectories.Clone();
 
         PipelineProfilesService.SavePipelineProfiles(
-            PipelineProfiles.Select(w => w.ToPipelineProfile()).ToList()
+            [.. PipelineProfiles.Select(w => w.ToPipelineProfile())]
         );
 
         _initialPipelineProfiles = new ObservableCollection<PipelineProfileWrapper>(
@@ -218,7 +230,10 @@ public partial class SettingsViewModel : BaseViewModel
         HttpDirectories = _initialHttpDirectories.CloneWithPropertyChanged(OnDirectoryPropertyChanged);
         OnPropertyChanged(nameof(HttpDirectories));
 
+        var selectedName = SelectedPipelineProfile?.Name;
+
         PipelineProfiles.Clear();
+
         foreach (var wrapper in _initialPipelineProfiles)
         {
             var newWrapper = new PipelineProfileWrapper(wrapper.ToPipelineProfile());
@@ -226,8 +241,9 @@ public partial class SettingsViewModel : BaseViewModel
             PipelineProfiles.Add(newWrapper);
         }
 
-        SelectedPipelineProfile = PipelineProfiles.Any() ? PipelineProfiles.First() : null;
         OnPropertyChanged(nameof(PipelineProfiles));
+
+        RestoreSelectedPipelineProfile(selectedName);
 
         _isInitializing = false;
     }
@@ -235,7 +251,6 @@ public partial class SettingsViewModel : BaseViewModel
     [RelayCommand]
     private void AddPipelineProfile()
     {
-        // todo: maybe change default profile
         var newProfile = DefaultProfiles.GetIisResetProfile();
         newProfile.Name = "New Profile";
 
@@ -318,4 +333,6 @@ public partial class SettingsViewModel : BaseViewModel
 
         HasUnsavedChanges = true;
     }
+
+    #endregion
 }

@@ -1,31 +1,25 @@
-using System;
-using System.IO;
-using System.Text.Json;
 using log4net;
 using log4net.Config;
 using ServerMultiTool.Model.Common.DefaultValues;
+using System;
+using System.IO;
+using System.Text.Json;
 
 namespace ServerMultiTool.Model.Settings
 {
     public static class AppSettingsService
     {
         private static readonly ILog Log = LogManager.GetLogger(nameof(AppSettingsService));
+        private static readonly JsonSerializerOptions JsonSerializerOptions = new() { WriteIndented = true };
 
         private const string SettingsFolderName = "AppSettings";
         private const string SettingsFileName = "AppSettings.json";
-        
+
         private static string _pathToSettingFile = null!;
         private static string _appSettingsDirectory = null!;
 
         public static AppSettings AppSettings { get; private set; }
 
-        public static void UpdateSettings(string key, object value)
-        {
-            throw new NotImplementedException();
-
-            SaveSettingsTo(AppSettings, _pathToSettingFile);
-        }
-        
         public static void SaveAppSettings(AppSettings settings)
         {
             if (string.IsNullOrEmpty(_pathToSettingFile))
@@ -35,27 +29,27 @@ namespace ServerMultiTool.Model.Settings
             Log.Info($"{nameof(AppSettings)} have been successfully saved.");
         }
 
-        public static AppSettings LoadOrInitialize() => 
+        public static AppSettings LoadOrInitialize() =>
             LoadOrInitialize(_appSettingsDirectory);
 
         public static AppSettings LoadOrInitialize(string appSettingsDirectory)
         {
             _appSettingsDirectory = appSettingsDirectory;
-            
+
             var pathToFolder = Path.Combine(appSettingsDirectory, SettingsFolderName);
             if (Directory.Exists(pathToFolder) is false)
                 Directory.CreateDirectory(pathToFolder);
-            
+
             var pathToFile = Path.Combine(pathToFolder, SettingsFileName);
             _pathToSettingFile = pathToFile;
-            
+
             AppSettings = File.Exists(pathToFile) ? LoadSettingsFrom(pathToFile) : InitializeDefaultSettings(pathToFile);
-            
+
             var logConfig = new FileInfo(AppSettings.Log4NetConfigPath);
             XmlConfigurator.Configure(logConfig);
-            
+
             Log.Info($"{nameof(AppSettings)} have been successfully loaded.");
-            
+
             return AppSettings;
         }
 
@@ -68,7 +62,7 @@ namespace ServerMultiTool.Model.Settings
         private static AppSettings InitializeDefaultSettings(string path)
         {
             var defaultSettings = DefaultAppSettings.GetDefaultAppSettings();
-            
+
             SaveSettingsTo(defaultSettings, path);
 
             return defaultSettings;
@@ -76,13 +70,12 @@ namespace ServerMultiTool.Model.Settings
 
         private static void SaveSettingsTo(AppSettings settings, string path)
         {
-            var directoryPath = Path.GetDirectoryName(path);
-            if (directoryPath is null)
-                throw new Exception(); //TODO
-            
+            var directoryPath = Path.GetDirectoryName(path)
+                ?? throw new Exception(); // todo: add message
+
             Directory.CreateDirectory(directoryPath);
-            
-            var json = JsonSerializer.Serialize(settings, new JsonSerializerOptions { WriteIndented = true });
+
+            var json = JsonSerializer.Serialize(settings, JsonSerializerOptions);
             File.WriteAllTextAsync(path, json);
         }
     }
