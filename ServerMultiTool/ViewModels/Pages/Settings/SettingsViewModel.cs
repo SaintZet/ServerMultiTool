@@ -117,24 +117,27 @@ public partial class SettingsViewModel : BaseViewModel
 
     private void LoadProfiles()
     {
-        var pipelineProfiles = PipelineProfilesService.PipelineProfiles;
+        var selectedName = SelectedPipelineProfile?.Name;
 
-        _initialPipelineProfiles = new ObservableCollection<PipelineProfileWrapper>(
-            pipelineProfiles.Select(p => new PipelineProfileWrapper(p))
-        );
+        PipelineProfiles.Clear();
 
-        PipelineProfiles = [];
-
-        foreach (var wrapper in _initialPipelineProfiles)
+        foreach (var profile in PipelineProfilesService.PipelineProfiles)
         {
-            var newWrapper = new PipelineProfileWrapper(wrapper.ToPipelineProfile());
-            newWrapper.PropertyChanged += OnProfilePropertyChanged;
-            PipelineProfiles.Add(newWrapper);
+            var wrapper = new PipelineProfileWrapper(profile);
+            wrapper.PropertyChanged += OnProfilePropertyChanged;
+            PipelineProfiles.Add(wrapper);
         }
 
-        PipelineProfiles.CollectionChanged += OnPipelineProfilesCollectionChanged;
-
         OnPropertyChanged(nameof(PipelineProfiles));
+
+        if (string.IsNullOrEmpty(selectedName) is false)
+        {
+            SelectedPipelineProfile = PipelineProfiles.FirstOrDefault(p => p.Name == selectedName) ?? PipelineProfiles.FirstOrDefault();
+        }
+        else if (PipelineProfiles.Any())
+        {
+            SelectedPipelineProfile = PipelineProfiles.First();
+        }
     }
 
     private void OnEditPipelineProfilePropertyChanged(object? sender, PropertyChangedEventArgs e)
