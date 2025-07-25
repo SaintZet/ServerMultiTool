@@ -1,3 +1,4 @@
+using ServerMultiTool.Model.Pipeline.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -5,7 +6,6 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using ServerMultiTool.Model.Pipeline.Contracts;
 
 namespace ServerMultiTool.Model.ContinuousDeployment.Integrations;
 
@@ -14,13 +14,13 @@ public class HttpMonitoringService(HttpMonitoringSettings settings) : PipelineOp
     protected override async Task<OperationResult> ExecuteOperationsAsync(CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        
+
         var urls = new List<string>();
 
-        if (settings.PingSegment) 
+        if (settings.PingSegment)
             urls.Add("http://localhost/Raid/Segment00/Segment.ashx");
 
-        if (settings.PingMaster) 
+        if (settings.PingMaster)
             urls.Add("http://localhost/Raid/Master00/Master.ashx");
 
         var timeout = settings.TimeoutMinutes;
@@ -39,13 +39,16 @@ public class HttpMonitoringService(HttpMonitoringSettings settings) : PipelineOp
     private async Task<OperationResult> MakeRequestAsync(string url, double timeout, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        
+
         using var client = new HttpClient();
         client.Timeout = TimeSpan.FromMinutes(timeout);
 
         HttpResponseMessage response;
         try
         {
+            if (cancellationToken.IsCancellationRequested)
+                return OperationResult.Cancelled;
+
             response = await client.GetAsync(url, cancellationToken);
         }
         catch (TaskCanceledException)
@@ -58,15 +61,15 @@ public class HttpMonitoringService(HttpMonitoringSettings settings) : PipelineOp
             Logger.LogErrorWithPublish($"{url} exception: {ex.Message}");
             return OperationResult.Failure;
         }
-        
+
         var message = $"{url} return {response.StatusCode}";
-        
+
         if (response.StatusCode is HttpStatusCode.NotFound)
         {
             Logger.LogInfoWithPublish(message);
             return OperationResult.Success;
         }
-        
+
         Logger.LogErrorWithPublish(message);
         return OperationResult.Failure;
     }

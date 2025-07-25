@@ -1,8 +1,8 @@
+using Microsoft.Data.SqlClient;
+using ServerMultiTool.Model.Pipeline.Contracts;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Data.SqlClient;
-using ServerMultiTool.Model.Pipeline.Contracts;
 
 namespace ServerMultiTool.Model.ContinuousDeployment.Integrations;
 
@@ -11,24 +11,27 @@ public class SqlExecutionService(SqlExecutionSettings settings) : PipelineOperat
     protected override async Task<OperationResult> ExecuteOperationsAsync(CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        
+
         if (string.IsNullOrEmpty(settings.PathToSqlScript) || string.IsNullOrEmpty(settings.ConnectionString))
-            return OperationResult.Cancelled;
+            return OperationResult.Failure;
 
         if (!File.Exists(settings.PathToSqlScript))
         {
             Logger.LogErrorWithPublish($"File not found: {settings.PathToSqlScript}");
             return OperationResult.Failure;
         }
-        
+
+        if (cancellationToken.IsCancellationRequested)
+            return OperationResult.Cancelled;
+
         var sqlScript = await File.ReadAllTextAsync(settings.PathToSqlScript, cancellationToken);
         var count = await ExecuteSqlScript(sqlScript, settings.ConnectionString, cancellationToken);
-        
+
         Logger.LogInfoWithPublish($"Affected row count {count}");
 
         return OperationResult.Success;
     }
-    
+
     private static async Task<int> ExecuteSqlScript(string script, string connectionString, CancellationToken cancellationToken)
     {
         await using var connection = new SqlConnection(connectionString);

@@ -44,7 +44,9 @@ public class PipelineOperationWrapper(PipelineOperation operation, string displa
         result switch
         {
             OperationResult.Failure => PipelineOperationStatus.Failure,
-            OperationResult.Success or OperationResult.PartialSuccess or OperationResult.Cancelled => PipelineOperationStatus.Success,
+            OperationResult.Success => PipelineOperationStatus.Success,
+            OperationResult.PartialSuccess => PipelineOperationStatus.Warning,
+            OperationResult.Cancelled => PipelineOperationStatus.Cancelled,
             _ => throw new ArgumentOutOfRangeException(nameof(result), result, null)
         };
 }

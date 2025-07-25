@@ -7,4 +7,5 @@ public enum PipelineOperationStatus
     Success,
     Warning,
     Failure,
+    Cancelled,
 }

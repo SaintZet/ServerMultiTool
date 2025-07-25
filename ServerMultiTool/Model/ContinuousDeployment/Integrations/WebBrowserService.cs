@@ -1,7 +1,7 @@
+using ServerMultiTool.Model.Pipeline.Contracts;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
-using ServerMultiTool.Model.Pipeline.Contracts;
 
 namespace ServerMultiTool.Model.ContinuousDeployment.Integrations;
 
@@ -10,14 +10,20 @@ public class WebBrowserService(WebBrowserSettings settings) : PipelineOperation
     protected override async Task<OperationResult> ExecuteOperationsAsync(CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        
+
         if (string.IsNullOrEmpty(settings.Url))
+        {
+            Logger.LogErrorWithPublish("The URL is not specified in the settings.");
+            return OperationResult.Failure;
+        }
+
+        if (cancellationToken.IsCancellationRequested)
             return OperationResult.Cancelled;
-        
+
         await OpenPageAsync(settings.Url, cancellationToken);
-        
+
         Logger.LogInfoWithPublish("The web page has been successfully opened.");
-        
+
         return OperationResult.Success;
     }
 
