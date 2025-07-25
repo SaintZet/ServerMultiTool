@@ -5,10 +5,10 @@
     xmlns:controls="clr-namespace:ServerMultiTool.ViewModels.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    d:DataContext="{d:DesignInstance Type=controls:GeneralInfoViewModel, IsDesignTimeCreatable=True}"
     mc:Ignorable="d">
+    <!--  d:DataContext="{d:DesignInstance Type=controls:GeneralInfoViewModel, IsDesignTimeCreatable=True}"  -->
 
-    <Grid>
+    <Grid Background="{DynamicResource SecondaryBackgroundColor}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />

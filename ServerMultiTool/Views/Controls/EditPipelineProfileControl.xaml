@@ -43,11 +43,11 @@
         </Style>
     </UserControl.Resources>
 
-    <Border CornerRadius="8">
+    <Border Background="{DynamicResource SecondaryBackgroundColor}" CornerRadius="8">
         <ScrollViewer VerticalScrollBarVisibility="Auto">
             <StackPanel Margin="0" HorizontalAlignment="Left">
                 <!--  Git Settings  -->
-                <Expander Header="Git Settings" IsExpanded="True">
+                <Expander Header="Git Settings">
                     <StackPanel Margin="18,6,5,2">
                         <CheckBox Content="Enable Git" IsChecked="{Binding Profile.GitSettings.Enable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         <StackPanel IsEnabled="{Binding Profile.GitSettings.Enable}">
