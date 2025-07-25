@@ -224,7 +224,6 @@ public partial class PipelineViewModel : BaseViewModel, IPage
         }
         catch (OperationCanceledException)
         {
-            AppLogMessages.Clear();
             PipelineOperations.ClearStatuses();
         }
         finally

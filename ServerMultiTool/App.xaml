@@ -1,16 +1,17 @@
-﻿<Application x:Class="ServerMultiTool.App"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+﻿<Application
+    x:Class="ServerMultiTool.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/Views/Themes/LightTheme.xaml"/>
-                <ResourceDictionary Source="/Views/Assets/Icons/Icons.xaml"/>
-                <ResourceDictionary Source="/Views/Styles/RadioButtonStyle.xaml"/>
-                <ResourceDictionary Source="/Views/Styles/ButtonStyle.xaml"/>
-                <ResourceDictionary Source="/Views/Styles/ComboBoxStyle.xaml"/>
-                <ResourceDictionary Source="/Views/Styles/TextBlockStyle.xaml"/>
-                <ResourceDictionary Source="/Views/Styles/ToggleButtonStyle.xaml"/>
+                <ResourceDictionary Source="/Views/Themes/LightTheme.xaml" />
+                <ResourceDictionary Source="/Views/Assets/Icons/Icons.xaml" />
+                <ResourceDictionary Source="/Views/Styles/RadioButtonStyle.xaml" />
+                <ResourceDictionary Source="/Views/Styles/ButtonStyle.xaml" />
+                <ResourceDictionary Source="/Views/Styles/ComboBoxStyle.xaml" />
+                <ResourceDictionary Source="/Views/Styles/TextBlockStyle.xaml" />
+                <ResourceDictionary Source="/Views/Styles/ToggleButtonStyle.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
