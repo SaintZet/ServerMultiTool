@@ -6,7 +6,8 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:editPipelineProfile="clr-namespace:ServerMultiTool.ViewModels.Controls.EditPipelineProfile"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    d:DataContext="{d:DesignInstance Type=editPipelineProfile:EditPipelineProfileViewModel, IsDesignTimeCreatable=True}"
+    d:DataContext="{d:DesignInstance Type=editPipelineProfile:EditPipelineProfileViewModel,
+                                     IsDesignTimeCreatable=True}"
     mc:Ignorable="d">
 
     <UserControl.Resources>
@@ -190,8 +191,8 @@
                                                     Grid.Column="0"
                                                     Margin="0,0,5,0"
                                                     VerticalAlignment="Center"
-                                                    Text="Name:"
-                                                    FontSize="13"/>
+                                                    FontSize="13"
+                                                    Text="Name:" />
                                                 <TextBox
                                                     Grid.Row="0"
                                                     Grid.Column="1"
@@ -204,8 +205,8 @@
                                                     Grid.Column="0"
                                                     Margin="0,5,5,0"
                                                     VerticalAlignment="Center"
-                                                    Text="Path:"
-                                                    FontSize="13"/>
+                                                    FontSize="13"
+                                                    Text="Path:" />
                                                 <TextBox
                                                     Grid.Row="1"
                                                     Grid.Column="1"
@@ -235,6 +236,28 @@
                                                 <GroupBox Margin="0,10,0,0" Header="Build Parameters">
                                                     <StackPanel>
                                                         <!--  Список Build Parameters  -->
+                                                        <Grid Margin="0,5">
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="*" />
+                                                                <ColumnDefinition Width="Auto" />
+                                                            </Grid.ColumnDefinitions>
+
+                                                            <TextBox
+                                                                x:Name="ParameterTextBox"
+                                                                Grid.Column="0"
+                                                                Height="25"
+                                                                Margin="0,0,10,0"
+                                                                VerticalContentAlignment="Center" />
+
+                                                            <Button
+                                                                Grid.Column="1"
+                                                                Height="25"
+                                                                MinWidth="70"
+                                                                Command="{Binding AddBuildParameterCommand}"
+                                                                CommandParameter="{Binding ElementName=ParameterTextBox, Path=Text}"
+                                                                Content="Add"
+                                                                Style="{StaticResource CustomButtonStyle}" />
+                                                        </Grid>
                                                         <ItemsControl Margin="0,5,0,0" ItemsSource="{Binding BuildParameters}">
                                                             <ItemsControl.ItemTemplate>
                                                                 <DataTemplate>
@@ -265,28 +288,6 @@
                                                                 </DataTemplate>
                                                             </ItemsControl.ItemTemplate>
                                                         </ItemsControl>
-                                                        <Grid Margin="0,5">
-                                                            <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition Width="*" />
-                                                                <ColumnDefinition Width="Auto" />
-                                                            </Grid.ColumnDefinitions>
-
-                                                            <TextBox
-                                                                x:Name="ParameterTextBox"
-                                                                Grid.Column="0"
-                                                                Height="25"
-                                                                Margin="0,0,10,0"
-                                                                VerticalContentAlignment="Center" />
-
-                                                            <Button
-                                                                Grid.Column="1"
-                                                                Height="25"
-                                                                MinWidth="70"
-                                                                Command="{Binding AddBuildParameterCommand}"
-                                                                CommandParameter="{Binding ElementName=ParameterTextBox, Path=Text}"
-                                                                Content="Add"
-                                                                Style="{StaticResource CustomButtonStyle}" />
-                                                        </Grid>
                                                     </StackPanel>
                                                 </GroupBox>
                                                 <!--  Build Parameters  -->
@@ -294,36 +295,16 @@
                                                 <!--  Pre-Build Events  -->
                                                 <GroupBox Margin="0,10,0,0" Header="Pre-Build Events">
                                                     <StackPanel>
-                                                        <ItemsControl ItemsSource="{Binding PreBuildEvents}">
-                                                            <ItemsControl.ItemTemplate>
-                                                                <DataTemplate>
-                                                                    <Grid Margin="0,2">
-                                                                        <Grid.ColumnDefinitions>
-                                                                            <ColumnDefinition Width="*" />
-                                                                            <ColumnDefinition Width="*" />
-                                                                        </Grid.ColumnDefinitions>
-                                                                        <TextBox
-                                                                            Margin="0,0,5,0"
-                                                                            Text="{Binding Path, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                                            ToolTip="Path" />
-                                                                        <TextBox
-                                                                            Grid.Column="1"
-                                                                            Text="{Binding Arguments, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                                            ToolTip="Arguments" />
-                                                                    </Grid>
-                                                                </DataTemplate>
-                                                            </ItemsControl.ItemTemplate>
-                                                        </ItemsControl>
-                                                        <Grid Margin="0,5,0,0" IsSharedSizeScope="True">
-
+                                                        <!--  Post-Build Events Add  -->
+                                                        <Grid Margin="10" IsSharedSizeScope="True">
                                                             <Grid.RowDefinitions>
-                                                                <RowDefinition Height="Auto" />
                                                                 <RowDefinition Height="Auto" />
                                                                 <RowDefinition Height="Auto" />
                                                             </Grid.RowDefinitions>
                                                             <Grid.ColumnDefinitions>
                                                                 <ColumnDefinition Width="Auto" SharedSizeGroup="Labels" />
                                                                 <ColumnDefinition Width="*" />
+                                                                <ColumnDefinition Width="Auto" />
                                                             </Grid.ColumnDefinitions>
 
                                                             <!--  Row 0: Path  -->
@@ -358,14 +339,15 @@
                                                                 Margin="10,5,0,0"
                                                                 VerticalContentAlignment="Center" />
 
-                                                            <!--  Row 2: Button  -->
+                                                            <!--  Button (placed on the right side)  -->
                                                             <Button
-                                                                Grid.Row="2"
-                                                                Grid.Column="1"
+                                                                Grid.Row="0"
+                                                                Grid.RowSpan="2"
+                                                                Grid.Column="2"
                                                                 Height="25"
                                                                 MinWidth="70"
-                                                                Margin="0,10,0,0"
-                                                                HorizontalAlignment="Right"
+                                                                Margin="10,5,0,0"
+                                                                VerticalAlignment="Center"
                                                                 Command="{Binding AddPreBuildEventCommand}"
                                                                 Content="Add"
                                                                 Style="{StaticResource CustomButtonStyle}">
@@ -377,65 +359,38 @@
                                                                 </Button.CommandParameter>
                                                             </Button>
                                                         </Grid>
-                                                    </StackPanel>
-                                                </GroupBox>
-                                                <!--  Pre-Build Events  -->
 
-                                                <!--  Post-Build Events  -->
-                                                <GroupBox Margin="0,10,0,0" Header="Post-Build Events">
-                                                    <StackPanel>
-                                                        <!--  Post-Build Events список  -->
-                                                        <ItemsControl Margin="0,10,0,10" ItemsSource="{Binding PostBuildEvents}">
+                                                        <!--  Pre-Build Events Collection  -->
+                                                        <ItemsControl Margin="0,10,0,0" ItemsSource="{Binding PreBuildEvents}">
                                                             <ItemsControl.ItemTemplate>
                                                                 <DataTemplate>
-                                                                    <Grid>
-                                                                        <Grid.RowDefinitions>
-                                                                            <RowDefinition Height="Auto" />
-                                                                            <RowDefinition Height="Auto" />
-                                                                            <RowDefinition Height="Auto" />
-                                                                        </Grid.RowDefinitions>
+                                                                    <Grid Margin="0,2">
                                                                         <Grid.ColumnDefinitions>
-                                                                            <ColumnDefinition Width="Auto" SharedSizeGroup="Labels" />
                                                                             <ColumnDefinition Width="*" />
+                                                                            <ColumnDefinition Width="*" />
+                                                                            <ColumnDefinition Width="Auto" />
                                                                         </Grid.ColumnDefinitions>
-
-                                                                        <!--  ───────── Path ─────────  -->
-                                                                        <TextBlock
-                                                                            Grid.Row="0"
-                                                                            Grid.Column="0"
-                                                                            Margin="0,5,0,0"
-                                                                            VerticalAlignment="Center"
-                                                                            Text="Path:" />
                                                                         <TextBox
-                                                                            Grid.Row="0"
-                                                                            Grid.Column="1"
-                                                                            Margin="10,5,0,0"
-                                                                            VerticalContentAlignment="Center"
-                                                                            Text="{Binding Path, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-
-                                                                        <!--  ──────── Arguments ────────  -->
-                                                                        <TextBlock
-                                                                            Grid.Row="1"
                                                                             Grid.Column="0"
-                                                                            Margin="0,5,0,0"
-                                                                            VerticalAlignment="Center"
-                                                                            Text="Arguments:" />
-                                                                        <TextBox
-                                                                            Grid.Row="1"
-                                                                            Grid.Column="1"
-                                                                            Margin="10,5,0,0"
-                                                                            VerticalContentAlignment="Center"
-                                                                            Text="{Binding Arguments, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                                            Margin="0,0,5,0"
+                                                                            IsReadOnly="True"
+                                                                            Text="{Binding Path, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                                            ToolTip="Path" />
 
-                                                                        <!--  ──────── Remove btn ────────  -->
+                                                                        <TextBox
+                                                                            Grid.Column="1"
+                                                                            Margin="0,0,5,0"
+                                                                            IsReadOnly="True"
+                                                                            Text="{Binding Arguments, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                                            ToolTip="Arguments" />
+
                                                                         <Button
-                                                                            Grid.Row="2"
-                                                                            Grid.Column="1"
+                                                                            Grid.Column="2"
                                                                             Height="25"
                                                                             MinWidth="70"
-                                                                            Margin="0,10,0,0"
+                                                                            Margin="0,0,0,0"
                                                                             HorizontalAlignment="Right"
-                                                                            Command="{Binding DataContext.RemovePostBuildEventCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                                            Command="{Binding DataContext.RemovePreBuildEventCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                                                             CommandParameter="{Binding}"
                                                                             Content="Remove"
                                                                             Style="{StaticResource CustomButtonStyle}" />
@@ -443,16 +398,23 @@
                                                                 </DataTemplate>
                                                             </ItemsControl.ItemTemplate>
                                                         </ItemsControl>
+                                                    </StackPanel>
+                                                </GroupBox>
+                                                <!--  Pre-Build Events  -->
 
-                                                        <Grid Margin="0,10,0,10" IsSharedSizeScope="True">
+                                                <!--  Post-Build Events  -->
+                                                <GroupBox Margin="0,10,0,0" Header="Post-Build Events">
+                                                    <StackPanel>
+                                                        <!--  Post-Build Events Add  -->
+                                                        <Grid Margin="10" IsSharedSizeScope="True">
                                                             <Grid.RowDefinitions>
-                                                                <RowDefinition Height="Auto" />
                                                                 <RowDefinition Height="Auto" />
                                                                 <RowDefinition Height="Auto" />
                                                             </Grid.RowDefinitions>
                                                             <Grid.ColumnDefinitions>
                                                                 <ColumnDefinition Width="Auto" SharedSizeGroup="Labels" />
                                                                 <ColumnDefinition Width="*" />
+                                                                <ColumnDefinition Width="Auto" />
                                                             </Grid.ColumnDefinitions>
 
                                                             <!--  Row 0: Path  -->
@@ -487,14 +449,15 @@
                                                                 Margin="10,5,0,0"
                                                                 VerticalContentAlignment="Center" />
 
-                                                            <!--  Row 2: Button  -->
+                                                            <!--  Button (placed on the right side)  -->
                                                             <Button
-                                                                Grid.Row="2"
-                                                                Grid.Column="1"
+                                                                Grid.Row="0"
+                                                                Grid.RowSpan="2"
+                                                                Grid.Column="2"
                                                                 Height="25"
                                                                 MinWidth="70"
-                                                                Margin="0,10,0,0"
-                                                                HorizontalAlignment="Right"
+                                                                Margin="10,5,0,0"
+                                                                VerticalAlignment="Center"
                                                                 Command="{Binding AddPostBuildEventCommand}"
                                                                 Content="Add"
                                                                 Style="{StaticResource CustomButtonStyle}">
@@ -506,6 +469,45 @@
                                                                 </Button.CommandParameter>
                                                             </Button>
                                                         </Grid>
+
+                                                        <!--  Post-Build Events Collection  -->
+                                                        <ItemsControl Margin="0,10,0,0" ItemsSource="{Binding PostBuildEvents}">
+                                                            <ItemsControl.ItemTemplate>
+                                                                <DataTemplate>
+                                                                    <Grid Margin="0,2">
+                                                                        <Grid.ColumnDefinitions>
+                                                                            <ColumnDefinition Width="*" />
+                                                                            <ColumnDefinition Width="*" />
+                                                                            <ColumnDefinition Width="Auto" />
+                                                                        </Grid.ColumnDefinitions>
+                                                                        <TextBox
+                                                                            Grid.Column="0"
+                                                                            Margin="0,0,5,0"
+                                                                            IsReadOnly="True"
+                                                                            Text="{Binding Path, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                                            ToolTip="Path" />
+
+                                                                        <TextBox
+                                                                            Grid.Column="1"
+                                                                            Margin="0,0,5,0"
+                                                                            IsReadOnly="True"
+                                                                            Text="{Binding Arguments, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                                            ToolTip="Arguments" />
+
+                                                                        <Button
+                                                                            Grid.Column="2"
+                                                                            Height="25"
+                                                                            MinWidth="70"
+                                                                            Margin="0,0,0,0"
+                                                                            HorizontalAlignment="Right"
+                                                                            Command="{Binding DataContext.RemovePostBuildEventCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                                            CommandParameter="{Binding}"
+                                                                            Content="Remove"
+                                                                            Style="{StaticResource CustomButtonStyle}" />
+                                                                    </Grid>
+                                                                </DataTemplate>
+                                                            </ItemsControl.ItemTemplate>
+                                                        </ItemsControl>
                                                     </StackPanel>
                                                 </GroupBox>
                                                 <!--  Post-Build Events  -->
@@ -520,88 +522,20 @@
                                                 <CheckBox Content="Enable Custom Delivery" IsChecked="{Binding EnableCustomDelivery, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
                                                 <GroupBox Margin="0,10,0,0" Header="Custom Delivery Directories">
-
-                                                    <Grid IsSharedSizeScope="True">
-                                                        <Grid.RowDefinitions>
-                                                            <RowDefinition Height="Auto" />
-                                                            <RowDefinition Height="Auto" />
-                                                        </Grid.RowDefinitions>
-
-                                                        <!--  Список добавленных директорий  -->
-                                                        <ItemsControl Grid.Row="0" ItemsSource="{Binding DeliveryDirectories}">
-                                                            <ItemsControl.ItemTemplate>
-                                                                <DataTemplate>
-                                                                    <Grid Margin="0,5,0,0">
-                                                                        <Grid.RowDefinitions>
-                                                                            <RowDefinition Height="Auto" />
-                                                                            <RowDefinition Height="Auto" />
-                                                                            <RowDefinition Height="Auto" />
-                                                                        </Grid.RowDefinitions>
-
-                                                                        <Grid.ColumnDefinitions>
-                                                                            <ColumnDefinition Width="Auto" SharedSizeGroup="Labels" />
-                                                                            <ColumnDefinition Width="*" />
-                                                                        </Grid.ColumnDefinitions>
-
-                                                                        <!--  Source  -->
-                                                                        <TextBlock
-                                                                            Grid.Row="0"
-                                                                            Grid.Column="0"
-                                                                            Margin="0,5,0,0"
-                                                                            VerticalAlignment="Center"
-                                                                            Text="Source:" />
-                                                                        <TextBox
-                                                                            Grid.Row="0"
-                                                                            Grid.Column="1"
-                                                                            Margin="10,5,0,0"
-                                                                            VerticalContentAlignment="Center"
-                                                                            Text="{Binding Source}" />
-
-                                                                        <!--  Destination  -->
-                                                                        <TextBlock
-                                                                            Grid.Row="1"
-                                                                            Grid.Column="0"
-                                                                            Margin="0,5,0,0"
-                                                                            VerticalAlignment="Center"
-                                                                            Text="Destination:" />
-                                                                        <TextBox
-                                                                            Grid.Row="1"
-                                                                            Grid.Column="1"
-                                                                            Margin="10,5,0,0"
-                                                                            VerticalContentAlignment="Center"
-                                                                            Text="{Binding Destination}" />
-
-                                                                        <!--  Кнопка удаления (третья строка)  -->
-                                                                        <Button
-                                                                            Grid.Row="2"
-                                                                            Grid.Column="1"
-                                                                            Height="25"
-                                                                            MinWidth="70"
-                                                                            Margin="0,10,0,0"
-                                                                            HorizontalAlignment="Right"
-                                                                            Command="{Binding DataContext.RemoveDeliveryDirectoryCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                                                            CommandParameter="{Binding}"
-                                                                            Content="Remove"
-                                                                            Style="{StaticResource CustomButtonStyle}" />
-                                                                    </Grid>
-                                                                </DataTemplate>
-
-                                                            </ItemsControl.ItemTemplate>
-                                                        </ItemsControl>
-
-
-                                                        <!--  Добавление новой пары Source + Destination  -->
-                                                        <Grid Grid.Row="1" Margin="0,10,0,0">
+                                                    <StackPanel>
+                                                        <!--  Add new pair Source + Destination  -->
+                                                        <Grid Margin="10" IsSharedSizeScope="True">
                                                             <Grid.RowDefinitions>
-                                                                <RowDefinition Height="Auto" />
                                                                 <RowDefinition Height="Auto" />
                                                                 <RowDefinition Height="Auto" />
                                                             </Grid.RowDefinitions>
                                                             <Grid.ColumnDefinitions>
                                                                 <ColumnDefinition Width="Auto" SharedSizeGroup="Labels" />
                                                                 <ColumnDefinition Width="*" />
+                                                                <ColumnDefinition Width="Auto" />
                                                             </Grid.ColumnDefinitions>
 
+                                                            <!--  Row 0: Source  -->
                                                             <TextBlock
                                                                 Grid.Row="0"
                                                                 Grid.Column="0"
@@ -617,6 +551,7 @@
                                                                 Margin="10,5,0,0"
                                                                 VerticalContentAlignment="Center" />
 
+                                                            <!--  Row 1: Destination  -->
                                                             <TextBlock
                                                                 Grid.Row="1"
                                                                 Grid.Column="0"
@@ -632,13 +567,15 @@
                                                                 Margin="10,5,0,0"
                                                                 VerticalContentAlignment="Center" />
 
+                                                            <!--  Button (placed on the right side)  -->
                                                             <Button
-                                                                Grid.Row="2"
-                                                                Grid.Column="1"
+                                                                Grid.Row="0"
+                                                                Grid.RowSpan="2"
+                                                                Grid.Column="2"
                                                                 Height="25"
                                                                 MinWidth="70"
-                                                                Margin="0,10,0,0"
-                                                                HorizontalAlignment="Right"
+                                                                Margin="10,5,0,0"
+                                                                VerticalAlignment="Center"
                                                                 Command="{Binding AddDeliveryDirectoryCommand}"
                                                                 Content="Add"
                                                                 Style="{StaticResource CustomButtonStyle}">
@@ -650,10 +587,47 @@
                                                                 </Button.CommandParameter>
                                                             </Button>
                                                         </Grid>
-                                                    </Grid>
+
+                                                        <!--  Added Derictories Collection  -->
+                                                        <ItemsControl Margin="0,10,0,0" ItemsSource="{Binding DeliveryDirectories}">
+                                                            <ItemsControl.ItemTemplate>
+                                                                <DataTemplate>
+                                                                    <Grid Margin="0,2">
+                                                                        <Grid.ColumnDefinitions>
+                                                                            <ColumnDefinition Width="*" />
+                                                                            <ColumnDefinition Width="*" />
+                                                                            <ColumnDefinition Width="Auto" />
+                                                                        </Grid.ColumnDefinitions>
+                                                                        <TextBox
+                                                                            Grid.Column="0"
+                                                                            Margin="0,0,5,0"
+                                                                            IsReadOnly="True"
+                                                                            Text="{Binding Source, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                                            ToolTip="Source" />
+
+                                                                        <TextBox
+                                                                            Grid.Column="1"
+                                                                            Margin="0,0,5,0"
+                                                                            IsReadOnly="True"
+                                                                            Text="{Binding Destination, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                                            ToolTip="Destination" />
+
+                                                                        <Button
+                                                                            Grid.Column="2"
+                                                                            Height="25"
+                                                                            MinWidth="70"
+                                                                            Margin="0,0,0,0"
+                                                                            HorizontalAlignment="Right"
+                                                                            Command="{Binding DataContext.RemoveDeliveryDirectoryCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                                            CommandParameter="{Binding}"
+                                                                            Content="Remove"
+                                                                            Style="{StaticResource CustomButtonStyle}" />
+                                                                    </Grid>
+                                                                </DataTemplate>
+                                                            </ItemsControl.ItemTemplate>
+                                                        </ItemsControl>
+                                                    </StackPanel>
                                                 </GroupBox>
-
-
                                             </StackPanel>
                                         </Expander>
                                         <!--  Delivery Settings  -->

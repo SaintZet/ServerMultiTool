@@ -3,7 +3,6 @@ using CommunityToolkit.Mvvm.Input;
 using ServerMultiTool.Model.Common;
 using ServerMultiTool.Model.ContinuousIntegration.MsBuild;
 using ServerMultiTool.ViewModels.Contracts;
-using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 
@@ -96,42 +95,84 @@ public partial class ProjectSettingsWrapper : BaseObservableWrapper
             return;
 
         BuildParameters?.Add(parameter);
+
+        OnPropertyChanged(nameof(BuildParameters));
+    }
+
+    [RelayCommand]
+    private void RemoveBuildParameter(string parameter)
+    {
+        if (string.IsNullOrWhiteSpace(parameter) || BuildParameters is null)
+            return;
+
+        if (BuildParameters.Remove(parameter))
+            OnPropertyChanged(nameof(BuildParameters));
     }
 
     [RelayCommand]
     private void AddPreBuildEvent(ProcessEventWrapper? processEvent)
     {
-        if (processEvent == null)
+        if (processEvent is null)
             return;
 
         PreBuildEvents ??= [];
-        PreBuildEvents.Add(processEvent);
+        PreBuildEvents.Add(processEvent.Clone());
+
+        OnPropertyChanged(nameof(PreBuildEvents));
+    }
+
+    [RelayCommand]
+    private void RemovePreBuildEvent(ProcessEventWrapper processEvent)
+    {
+        if (PreBuildEvents is null)
+            return;
+
+        if (PreBuildEvents.Remove(processEvent))
+            OnPropertyChanged(nameof(PreBuildEvents));
+
     }
 
     [RelayCommand]
     private void AddPostBuildEvent(ProcessEventWrapper? processEvent)
     {
-        if (processEvent == null)
+        if (processEvent is null)
             return;
 
         PostBuildEvents ??= [];
-        PostBuildEvents.Add(processEvent);
+        PostBuildEvents.Add(processEvent.Clone());
+
+        OnPropertyChanged(nameof(PostBuildEvents));
+    }
+
+    [RelayCommand]
+    private void RemovePostBuildEvent(ProcessEventWrapper processEvent)
+    {
+        if (PostBuildEvents is null)
+            return;
+
+        if (PostBuildEvents.Remove(processEvent))
+            OnPropertyChanged(nameof(PostBuildEvents));
     }
 
     [RelayCommand]
     private void AddDeliveryDirectory(DeliveryDirectoryWrapper? deliveryDirectory)
     {
-        if (deliveryDirectory == null)
+        if (deliveryDirectory is null)
             return;
 
         DeliveryDirectories ??= [];
-        DeliveryDirectories.Add(deliveryDirectory);
+        DeliveryDirectories.Add(deliveryDirectory.Clone());
+
+        OnPropertyChanged(nameof(DeliveryDirectories));
     }
 
     [RelayCommand]
-    private void RemoveBuildParameter()
+    private void RemoveDeliveryDirectory(DeliveryDirectoryWrapper deliveryDirectory)
     {
-        // #16 todo: Implement logic to remove a build parameter 
-        throw new NotImplementedException();
+        if (DeliveryDirectories is null)
+            return;
+
+        if (DeliveryDirectories.Remove(deliveryDirectory))
+            OnPropertyChanged(nameof(DeliveryDirectories));
     }
 }

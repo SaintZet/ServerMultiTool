@@ -16,6 +16,15 @@ public partial class ProcessEventWrapper : BaseObservableWrapper
         Arguments = processEvent.Arguments;
     }
 
-    public ProcessEvent ToProcessEvent() => 
+    public ProcessEventWrapper(ProcessEventWrapper processEvent)
+    {
+        Path = processEvent.Path;
+        Arguments = processEvent.Arguments;
+    }
+
+    public ProcessEvent ToProcessEvent() =>
         new() { Path = Path, Arguments = Arguments };
+
+    public ProcessEventWrapper Clone() =>
+        new(this);
 }

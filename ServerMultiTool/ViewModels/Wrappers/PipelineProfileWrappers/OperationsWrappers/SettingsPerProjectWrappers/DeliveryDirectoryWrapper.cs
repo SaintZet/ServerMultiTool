@@ -15,6 +15,15 @@ public partial class DeliveryDirectoryWrapper : BaseObservableWrapper
         Destination = directory.Destination;
     }
 
-    public DeliveryDirectory ToDeliveryDirectory() => 
+    public DeliveryDirectoryWrapper(DeliveryDirectoryWrapper directory)
+    {
+        Source = directory.Source;
+        Destination = directory.Destination;
+    }
+
+    public DeliveryDirectory ToDeliveryDirectory() =>
         new() { Source = Source, Destination = Destination };
+
+    internal DeliveryDirectoryWrapper Clone() =>
+        new(this);
 }
