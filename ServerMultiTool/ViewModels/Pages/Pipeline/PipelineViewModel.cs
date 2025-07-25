@@ -7,11 +7,13 @@ using ServerMultiTool.Model.ContinuousDeployment.Integrations;
 using ServerMultiTool.Model.ContinuousIntegration.GameServerLogs;
 using ServerMultiTool.Model.ContinuousIntegration.Git;
 using ServerMultiTool.Model.ContinuousIntegration.MsBuild;
+using ServerMultiTool.Model.Pipeline.Contracts;
 using ServerMultiTool.Model.Pipeline.Profiles;
 using ServerMultiTool.Model.Settings;
 using ServerMultiTool.ViewModels.Contracts;
 using ServerMultiTool.ViewModels.Controls;
 using ServerMultiTool.ViewModels.Pages.Pipeline.Data;
+using ServerMultiTool.ViewModels.Pages.Pipeline.Enums;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -69,6 +71,7 @@ public partial class PipelineViewModel : BaseViewModel, IPage
 
     private readonly LogMonitoringService _masterLogService;
     private CancellationTokenSource? _pipelineCancellationTokenSource;
+    private readonly Logger _logger;
 
     #endregion
 
@@ -85,6 +88,8 @@ public partial class PipelineViewModel : BaseViewModel, IPage
 
     public PipelineViewModel()
     {
+        _logger = new Logger(GetType());
+
         _masterLogService = new LogMonitoringService();
         _masterLogService.Subscribe<LogEvent>(AddNewMasterLogEvent);
 
@@ -204,11 +209,18 @@ public partial class PipelineViewModel : BaseViewModel, IPage
         _pipelineCancellationTokenSource = new CancellationTokenSource();
         var cancellationToken = _pipelineCancellationTokenSource.Token;
 
-        PipelineOperations.ClearStatuses();
         try
         {
             foreach (var operation in PipelineOperations)
             {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    PipelineOperations.Where(op => op.PipelineOperationStatus == PipelineOperationStatus.Wait)
+                        .ToList()
+                        .ForEach(op => op.CancelOperation());
+                    break;
+                }
+
                 operation.OperationStarted();
 
                 if (GeneralInfo.SelectedSolutionDirectory is not null)
@@ -217,14 +229,36 @@ public partial class PipelineViewModel : BaseViewModel, IPage
                 if (GeneralInfo.SelectedHttpDirectory is not null)
                     operation.UpdateHttpDirectory(GeneralInfo.SelectedHttpDirectory);
 
-                await operation.ExecuteAsync(cancellationToken);
+                try
+                {
+                    var result = await operation.ExecuteAsync(cancellationToken);
 
-                cancellationToken.ThrowIfCancellationRequested();
+                    if (result == OperationResult.Cancelled)
+                    {
+                        PipelineOperations.Where(op => op.PipelineOperationStatus == PipelineOperationStatus.Wait)
+                            .ToList()
+                            .ForEach(op => op.CancelOperation());
+                        break;
+                    }
+                }
+                catch (OperationCanceledException)
+                {
+                    operation.CancelOperation();
+
+                    PipelineOperations.Where(op => op.PipelineOperationStatus == PipelineOperationStatus.Wait)
+                        .ToList()
+                        .ForEach(op => op.CancelOperation());
+                    break;
+                }
             }
         }
         catch (OperationCanceledException)
         {
-            PipelineOperations.ClearStatuses();
+            _logger.LogInfoWithPublish("Pipeline execution was cancelled.");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogErrorWithPublish($"Error during pipeline execution: {ex.Message}");
         }
         finally
         {

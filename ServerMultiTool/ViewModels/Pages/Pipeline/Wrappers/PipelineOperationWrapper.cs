@@ -31,6 +31,9 @@ public class PipelineOperationWrapper(PipelineOperation operation, string displa
     public void ClearStatus() =>
         PipelineOperationStatus = PipelineOperationStatus.Wait;
 
+    public void CancelOperation() =>
+        PipelineOperationStatus = PipelineOperationStatus.Cancelled;
+
     public async Task<OperationResult> ExecuteAsync(CancellationToken cancellationToken)
     {
         var result = await operation.ExecuteAsync(cancellationToken);

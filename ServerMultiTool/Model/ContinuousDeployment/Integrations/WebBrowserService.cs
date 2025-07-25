@@ -1,4 +1,5 @@
 using ServerMultiTool.Model.Pipeline.Contracts;
+using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,7 +10,8 @@ public class WebBrowserService(WebBrowserSettings settings) : PipelineOperation
 {
     protected override async Task<OperationResult> ExecuteOperationsAsync(CancellationToken cancellationToken)
     {
-        cancellationToken.ThrowIfCancellationRequested();
+        if (cancellationToken.IsCancellationRequested)
+            return OperationResult.Cancelled;
 
         if (string.IsNullOrEmpty(settings.Url))
         {
@@ -17,14 +19,17 @@ public class WebBrowserService(WebBrowserSettings settings) : PipelineOperation
             return OperationResult.Failure;
         }
 
-        if (cancellationToken.IsCancellationRequested)
+        try
+        {
+            await OpenPageAsync(settings.Url, cancellationToken);
+
+            Logger.LogInfoWithPublish("The web page has been successfully opened.");
+            return OperationResult.Success;
+        }
+        catch (OperationCanceledException)
+        {
             return OperationResult.Cancelled;
-
-        await OpenPageAsync(settings.Url, cancellationToken);
-
-        Logger.LogInfoWithPublish("The web page has been successfully opened.");
-
-        return OperationResult.Success;
+        }
     }
 
     private static async Task OpenPageAsync(string url, CancellationToken cancellationToken)

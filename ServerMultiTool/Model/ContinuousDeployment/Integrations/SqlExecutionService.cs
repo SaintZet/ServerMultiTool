@@ -1,5 +1,6 @@
 using Microsoft.Data.SqlClient;
 using ServerMultiTool.Model.Pipeline.Contracts;
+using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,7 +11,8 @@ public class SqlExecutionService(SqlExecutionSettings settings) : PipelineOperat
 {
     protected override async Task<OperationResult> ExecuteOperationsAsync(CancellationToken cancellationToken)
     {
-        cancellationToken.ThrowIfCancellationRequested();
+        if (cancellationToken.IsCancellationRequested)
+            return OperationResult.Cancelled;
 
         if (string.IsNullOrEmpty(settings.PathToSqlScript) || string.IsNullOrEmpty(settings.ConnectionString))
             return OperationResult.Failure;
@@ -21,15 +23,19 @@ public class SqlExecutionService(SqlExecutionSettings settings) : PipelineOperat
             return OperationResult.Failure;
         }
 
-        if (cancellationToken.IsCancellationRequested)
+        try
+        {
+            var sqlScript = await File.ReadAllTextAsync(settings.PathToSqlScript, cancellationToken);
+            var count = await ExecuteSqlScript(sqlScript, settings.ConnectionString, cancellationToken);
+
+            Logger.LogInfoWithPublish($"Affected row count {count}");
+
+            return OperationResult.Success;
+        }
+        catch (OperationCanceledException)
+        {
             return OperationResult.Cancelled;
-
-        var sqlScript = await File.ReadAllTextAsync(settings.PathToSqlScript, cancellationToken);
-        var count = await ExecuteSqlScript(sqlScript, settings.ConnectionString, cancellationToken);
-
-        Logger.LogInfoWithPublish($"Affected row count {count}");
-
-        return OperationResult.Success;
+        }
     }
 
     private static async Task<int> ExecuteSqlScript(string script, string connectionString, CancellationToken cancellationToken)

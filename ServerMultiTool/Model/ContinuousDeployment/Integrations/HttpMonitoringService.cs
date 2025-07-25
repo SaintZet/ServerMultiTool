@@ -13,32 +13,41 @@ public class HttpMonitoringService(HttpMonitoringSettings settings) : PipelineOp
 {
     protected override async Task<OperationResult> ExecuteOperationsAsync(CancellationToken cancellationToken)
     {
-        cancellationToken.ThrowIfCancellationRequested();
+        if (cancellationToken.IsCancellationRequested)
+            return OperationResult.Cancelled;
 
-        var urls = new List<string>();
+        try
+        {
+            var urls = new List<string>();
 
-        if (settings.PingSegment)
-            urls.Add("http://localhost/Raid/Segment00/Segment.ashx");
+            if (settings.PingSegment)
+                urls.Add("http://localhost/Raid/Segment00/Segment.ashx");
 
-        if (settings.PingMaster)
-            urls.Add("http://localhost/Raid/Master00/Master.ashx");
+            if (settings.PingMaster)
+                urls.Add("http://localhost/Raid/Master00/Master.ashx");
 
-        var timeout = settings.TimeoutMinutes;
-        var tasks = urls.Select(url => MakeRequestAsync(url, timeout, cancellationToken)).ToList();
+            var timeout = settings.TimeoutMinutes;
+            var tasks = urls.Select(url => MakeRequestAsync(url, timeout, cancellationToken)).ToList();
 
-        var results = await Task.WhenAll(tasks);
+            var results = await Task.WhenAll(tasks);
 
-        var resultDictionary = urls.Zip(results, (url, result) => new { url, result })
-            .ToDictionary(item => item.url, item => item.result);
+            var resultDictionary = urls.Zip(results, (url, result) => new { url, result })
+                .ToDictionary(item => item.url, item => item.result);
 
-        var allComplete = resultDictionary.All(x => x.Value is OperationResult.Success);
+            var allComplete = resultDictionary.All(x => x.Value is OperationResult.Success);
 
-        return allComplete ? OperationResult.Success : OperationResult.Failure;
+            return allComplete ? OperationResult.Success : OperationResult.Failure;
+        }
+        catch (OperationCanceledException)
+        {
+            return OperationResult.Cancelled;
+        }
     }
 
     private async Task<OperationResult> MakeRequestAsync(string url, double timeout, CancellationToken cancellationToken)
     {
-        cancellationToken.ThrowIfCancellationRequested();
+        if (cancellationToken.IsCancellationRequested)
+            return OperationResult.Cancelled;
 
         using var client = new HttpClient();
         client.Timeout = TimeSpan.FromMinutes(timeout);
@@ -46,9 +55,6 @@ public class HttpMonitoringService(HttpMonitoringSettings settings) : PipelineOp
         HttpResponseMessage response;
         try
         {
-            if (cancellationToken.IsCancellationRequested)
-                return OperationResult.Cancelled;
-
             response = await client.GetAsync(url, cancellationToken);
         }
         catch (TaskCanceledException)

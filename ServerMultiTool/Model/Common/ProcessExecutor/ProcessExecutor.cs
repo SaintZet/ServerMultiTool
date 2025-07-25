@@ -30,6 +30,7 @@ public class ProcessExecutor(Logger logger)
         var startMessage = $"{baseMessage} has started. ";
         var successMessage = $"{baseMessage} has completed successfully. ";
         var errorMessage = $"{baseMessage} has failed. ";
+        var cancelMessage = $"{baseMessage} was cancelled. ";
 
         var messageDetails = string.Empty;
 
@@ -37,24 +38,45 @@ public class ProcessExecutor(Logger logger)
 
         for (var retryNumber = 1; retryNumber <= retryCount; retryNumber++)
         {
-            response = await RunProcessAndGetOutputAsync(startInfo, cancellationToken);
-
-            if (cancellationToken.IsCancellationRequested)
-                break;
-
-            messageDetails = response.Output;
-
-            if (response.Success is not true)
+            try
             {
-                logger.LogWarnWithPublish(errorMessage + $"Retry {retryNumber} of {retryCount}.", messageDetails);
-                continue;
-            }
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    logger.LogInfoWithPublish(cancelMessage);
+                    throw new OperationCanceledException(cancellationToken);
+                }
 
-            logger.LogInfoWithPublish(successMessage, messageDetails);
-            return response;
+                response = await RunProcessAndGetOutputAsync(startInfo, cancellationToken);
+
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    logger.LogInfoWithPublish(cancelMessage);
+                    throw new OperationCanceledException(cancellationToken);
+                }
+
+                messageDetails = response.Output;
+
+                if (response.Success is not true)
+                {
+                    logger.LogWarnWithPublish(errorMessage + $"Retry {retryNumber} of {retryCount}.", messageDetails);
+                    continue;
+                }
+
+                logger.LogInfoWithPublish(successMessage, messageDetails);
+                return response;
+            }
+            catch (OperationCanceledException)
+            {
+                logger.LogInfoWithPublish(cancelMessage);
+                throw;
+            }
         }
 
-        logger.LogErrorWithPublish(errorMessage, messageDetails);
+        if (!cancellationToken.IsCancellationRequested)
+        {
+            logger.LogErrorWithPublish(errorMessage, messageDetails);
+        }
+
         return response;
     }
 
@@ -86,25 +108,44 @@ public class ProcessExecutor(Logger logger)
             var outputTask = process.StandardOutput.ReadToEndAsync(cancellationToken);
             var errorTask = process.StandardError.ReadToEndAsync(cancellationToken);
 
-            var processExitTask = process.WaitForExitAsync(cancellationToken);
-            var completedTask = await Task.WhenAny(processExitTask, Task.Delay(-1, cancellationToken));
-
-            if (completedTask == processExitTask)
+            try
             {
+                await process.WaitForExitAsync(cancellationToken);
+
+                // Only try to get output if not cancelled
+                if (!cancellationToken.IsCancellationRequested)
+                {
+                    await Task.WhenAll(outputTask, errorTask);
+                    return new ProcessOutput(process.ExitCode, await outputTask, await errorTask);
+                }
+                else
+                {
+                    // Try to kill the process if it's still running
+                    if (!process.HasExited)
+                    {
+                        try { process.Kill(true); } catch { /* ignore errors during cleanup */ }
+                    }
+                    throw new OperationCanceledException(cancellationToken);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // Try to kill the process if it's still running
                 if (!process.HasExited)
-                    throw new InvalidOperationException("Process has not exited.");
-
-                await Task.WhenAll(outputTask, errorTask);
+                {
+                    try { process.Kill(true); } catch { /* ignore errors during cleanup */ }
+                }
+                throw;
             }
-            else
-            {
-                throw new TimeoutException("Reading process output timed out.");
-            }
-
-            return new ProcessOutput(process.ExitCode, await outputTask, await errorTask);
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
         }
         catch (Exception ex)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             return new ProcessOutput(-1, $"Error: {ex.Message}");
         }
     }

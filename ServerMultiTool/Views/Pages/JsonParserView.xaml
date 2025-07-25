@@ -23,7 +23,7 @@
             <controls:GeneralInfoControl
                 Grid.Row="0"
                 Margin="10"
-                DataContext="{Binding .GeneralInfo}" />
+                DataContext="{Binding GeneralInfo}" />
 
             <Border
                 Grid.Row="1"
