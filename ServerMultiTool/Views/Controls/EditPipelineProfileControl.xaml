@@ -51,7 +51,7 @@
                     <StackPanel Margin="18,6,5,2">
                         <CheckBox Content="Enable Git" IsChecked="{Binding Profile.GitSettings.Enable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         <StackPanel IsEnabled="{Binding Profile.GitSettings.Enable}">
-                        <CheckBox Content="Should Pull" IsChecked="{Binding Profile.GitSettings.ShouldPull, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <CheckBox Content="Should Pull" IsChecked="{Binding Profile.GitSettings.ShouldPull, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </StackPanel>
                     </StackPanel>
                 </Expander>
@@ -68,10 +68,10 @@
                     <StackPanel Margin="18,6,5,2">
                         <CheckBox Content="Enable SQL Execution" IsChecked="{Binding Profile.SqlExecutionSettings.Enable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         <StackPanel IsEnabled="{Binding Profile.SqlExecutionSettings.Enable}">
-                        <TextBlock Text="Connection String:" />
-                        <TextBox Text="{Binding Profile.SqlExecutionSettings.ConnectionString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                        <TextBlock Text="Path to SQL script:" />
-                        <TextBox Text="{Binding Profile.SqlExecutionSettings.PathToSqlScript, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <TextBlock Text="Connection String:" />
+                            <TextBox Text="{Binding Profile.SqlExecutionSettings.ConnectionString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <TextBlock Text="Path to SQL script:" />
+                            <TextBox Text="{Binding Profile.SqlExecutionSettings.PathToSqlScript, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </StackPanel>
                     </StackPanel>
                 </Expander>
@@ -116,18 +116,18 @@
                                 </Grid.ColumnDefinitions>
 
                                 <TextBlock
-                                Grid.Column="0"
-                                Margin="0,0,5,0"
-                                VerticalAlignment="Center"
-                                Text="Timeout (in minutes):" />
+                                    Grid.Column="0"
+                                    Margin="0,0,5,0"
+                                    VerticalAlignment="Center"
+                                    Text="Timeout (in minutes):" />
 
                                 <TextBox
-                                Grid.Column="1"
-                                Width="30"
-                                Height="20"
-                                Margin="0,0,0,0"
-                                HorizontalAlignment="Left"
-                                Text="{Binding Profile.HttpMonitoringSettings.TimeoutMinutes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                    Grid.Column="1"
+                                    Width="30"
+                                    Height="20"
+                                    Margin="0,0,0,0"
+                                    HorizontalAlignment="Left"
+                                    Text="{Binding Profile.HttpMonitoringSettings.TimeoutMinutes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                             </Grid>
                         </StackPanel>
                     </StackPanel>
@@ -238,7 +238,7 @@
                                             <StackPanel Margin="20,10,0,10">
                                                 <CheckBox Content="Enable MSBuild" IsChecked="{Binding MsBuildEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-                                                <StackPanel Orientation="Vertical" IsEnabled="{Binding MsBuildEnabled}">
+                                                <StackPanel IsEnabled="{Binding MsBuildEnabled}" Orientation="Vertical">
                                                     <!--  Build Parameters  -->
                                                     <GroupBox Margin="0,10,0,0" Header="Build Parameters">
                                                         <StackPanel>
@@ -250,20 +250,20 @@
                                                                 </Grid.ColumnDefinitions>
 
                                                                 <TextBox
-                                                                x:Name="ParameterTextBox"
-                                                                Grid.Column="0"
-                                                                Height="25"
-                                                                Margin="0,0,10,0"
-                                                                VerticalContentAlignment="Center" />
+                                                                    x:Name="ParameterTextBox"
+                                                                    Grid.Column="0"
+                                                                    Height="25"
+                                                                    Margin="0,0,10,0"
+                                                                    VerticalContentAlignment="Center" />
 
                                                                 <Button
-                                                                Grid.Column="1"
-                                                                Height="25"
-                                                                MinWidth="70"
-                                                                Command="{Binding AddBuildParameterCommand}"
-                                                                CommandParameter="{Binding ElementName=ParameterTextBox, Path=Text}"
-                                                                Content="Add"
-                                                                Style="{StaticResource CustomButtonStyle}" />
+                                                                    Grid.Column="1"
+                                                                    Height="25"
+                                                                    MinWidth="70"
+                                                                    Command="{Binding AddBuildParameterCommand}"
+                                                                    CommandParameter="{Binding ElementName=ParameterTextBox, Path=Text}"
+                                                                    Content="Add"
+                                                                    Style="{StaticResource CustomButtonStyle}" />
                                                             </Grid>
                                                             <ItemsControl Margin="0,5,0,0" ItemsSource="{Binding BuildParameters}">
                                                                 <ItemsControl.ItemTemplate>
@@ -276,21 +276,21 @@
 
                                                                             <!--  Текстовое поле параметра  -->
                                                                             <TextBox
-                                                                            Grid.Column="0"
-                                                                            Height="25"
-                                                                            Margin="0,0,10,0"
-                                                                            VerticalContentAlignment="Center"
-                                                                            Text="{Binding ., Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                                                Grid.Column="0"
+                                                                                Height="25"
+                                                                                Margin="0,0,10,0"
+                                                                                VerticalContentAlignment="Center"
+                                                                                Text="{Binding ., Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
                                                                             <!--  Кнопка Remove  -->
                                                                             <Button
-                                                                            Grid.Column="1"
-                                                                            Height="25"
-                                                                            MinWidth="70"
-                                                                            Command="{Binding DataContext.RemoveBuildParameterCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                                                            CommandParameter="{Binding}"
-                                                                            Content="Remove"
-                                                                            Style="{StaticResource CustomButtonStyle}" />
+                                                                                Grid.Column="1"
+                                                                                Height="25"
+                                                                                MinWidth="70"
+                                                                                Command="{Binding DataContext.RemoveBuildParameterCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                                                CommandParameter="{Binding}"
+                                                                                Content="Remove"
+                                                                                Style="{StaticResource CustomButtonStyle}" />
                                                                         </Grid>
                                                                     </DataTemplate>
                                                                 </ItemsControl.ItemTemplate>
@@ -316,48 +316,48 @@
 
                                                                 <!--  Row 0: Path  -->
                                                                 <TextBlock
-                                                                Grid.Row="0"
-                                                                Grid.Column="0"
-                                                                Margin="0,5,0,0"
-                                                                VerticalAlignment="Center"
-                                                                Text="Path:" />
+                                                                    Grid.Row="0"
+                                                                    Grid.Column="0"
+                                                                    Margin="0,5,0,0"
+                                                                    VerticalAlignment="Center"
+                                                                    Text="Path:" />
                                                                 <TextBox
-                                                                x:Name="PathTextBox"
-                                                                Grid.Row="0"
-                                                                Grid.Column="1"
-                                                                Height="25"
-                                                                MinWidth="200"
-                                                                Margin="10,5,0,0"
-                                                                VerticalContentAlignment="Center" />
+                                                                    x:Name="PathTextBox"
+                                                                    Grid.Row="0"
+                                                                    Grid.Column="1"
+                                                                    Height="25"
+                                                                    MinWidth="200"
+                                                                    Margin="10,5,0,0"
+                                                                    VerticalContentAlignment="Center" />
 
                                                                 <!--  Row 1: Arguments  -->
                                                                 <TextBlock
-                                                                Grid.Row="1"
-                                                                Grid.Column="0"
-                                                                Margin="0,5,0,0"
-                                                                VerticalAlignment="Center"
-                                                                Text="Arguments:" />
+                                                                    Grid.Row="1"
+                                                                    Grid.Column="0"
+                                                                    Margin="0,5,0,0"
+                                                                    VerticalAlignment="Center"
+                                                                    Text="Arguments:" />
                                                                 <TextBox
-                                                                x:Name="ArgumentsTextBox"
-                                                                Grid.Row="1"
-                                                                Grid.Column="1"
-                                                                Height="25"
-                                                                MinWidth="200"
-                                                                Margin="10,5,0,0"
-                                                                VerticalContentAlignment="Center" />
+                                                                    x:Name="ArgumentsTextBox"
+                                                                    Grid.Row="1"
+                                                                    Grid.Column="1"
+                                                                    Height="25"
+                                                                    MinWidth="200"
+                                                                    Margin="10,5,0,0"
+                                                                    VerticalContentAlignment="Center" />
 
                                                                 <!--  Button (placed on the right side)  -->
                                                                 <Button
-                                                                Grid.Row="0"
-                                                                Grid.RowSpan="2"
-                                                                Grid.Column="2"
-                                                                Height="25"
-                                                                MinWidth="70"
-                                                                Margin="10,5,0,0"
-                                                                VerticalAlignment="Center"
-                                                                Command="{Binding AddPreBuildEventCommand}"
-                                                                Content="Add"
-                                                                Style="{StaticResource CustomButtonStyle}">
+                                                                    Grid.Row="0"
+                                                                    Grid.RowSpan="2"
+                                                                    Grid.Column="2"
+                                                                    Height="25"
+                                                                    MinWidth="70"
+                                                                    Margin="10,5,0,0"
+                                                                    VerticalAlignment="Center"
+                                                                    Command="{Binding AddPreBuildEventCommand}"
+                                                                    Content="Add"
+                                                                    Style="{StaticResource CustomButtonStyle}">
                                                                     <Button.CommandParameter>
                                                                         <MultiBinding Converter="{StaticResource ProcessEventConverter}">
                                                                             <Binding ElementName="PathTextBox" Path="Text" />
@@ -378,29 +378,29 @@
                                                                                 <ColumnDefinition Width="Auto" />
                                                                             </Grid.ColumnDefinitions>
                                                                             <TextBox
-                                                                            Grid.Column="0"
-                                                                            Margin="0,0,5,0"
-                                                                            IsReadOnly="True"
-                                                                            Text="{Binding Path, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                                            ToolTip="Path" />
+                                                                                Grid.Column="0"
+                                                                                Margin="0,0,5,0"
+                                                                                IsReadOnly="True"
+                                                                                Text="{Binding Path, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                                                ToolTip="Path" />
 
                                                                             <TextBox
-                                                                            Grid.Column="1"
-                                                                            Margin="0,0,5,0"
-                                                                            IsReadOnly="True"
-                                                                            Text="{Binding Arguments, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                                            ToolTip="Arguments" />
+                                                                                Grid.Column="1"
+                                                                                Margin="0,0,5,0"
+                                                                                IsReadOnly="True"
+                                                                                Text="{Binding Arguments, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                                                ToolTip="Arguments" />
 
                                                                             <Button
-                                                                            Grid.Column="2"
-                                                                            Height="25"
-                                                                            MinWidth="70"
-                                                                            Margin="0,0,0,0"
-                                                                            HorizontalAlignment="Right"
-                                                                            Command="{Binding DataContext.RemovePreBuildEventCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                                                            CommandParameter="{Binding}"
-                                                                            Content="Remove"
-                                                                            Style="{StaticResource CustomButtonStyle}" />
+                                                                                Grid.Column="2"
+                                                                                Height="25"
+                                                                                MinWidth="70"
+                                                                                Margin="0,0,0,0"
+                                                                                HorizontalAlignment="Right"
+                                                                                Command="{Binding DataContext.RemovePreBuildEventCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                                                CommandParameter="{Binding}"
+                                                                                Content="Remove"
+                                                                                Style="{StaticResource CustomButtonStyle}" />
                                                                         </Grid>
                                                                     </DataTemplate>
                                                                 </ItemsControl.ItemTemplate>
@@ -426,48 +426,48 @@
 
                                                                 <!--  Row 0: Path  -->
                                                                 <TextBlock
-                                                                Grid.Row="0"
-                                                                Grid.Column="0"
-                                                                Margin="0,5,0,0"
-                                                                VerticalAlignment="Center"
-                                                                Text="Path:" />
+                                                                    Grid.Row="0"
+                                                                    Grid.Column="0"
+                                                                    Margin="0,5,0,0"
+                                                                    VerticalAlignment="Center"
+                                                                    Text="Path:" />
                                                                 <TextBox
-                                                                x:Name="PostPathTextBox"
-                                                                Grid.Row="0"
-                                                                Grid.Column="1"
-                                                                Height="25"
-                                                                MinWidth="200"
-                                                                Margin="10,5,0,0"
-                                                                VerticalContentAlignment="Center" />
+                                                                    x:Name="PostPathTextBox"
+                                                                    Grid.Row="0"
+                                                                    Grid.Column="1"
+                                                                    Height="25"
+                                                                    MinWidth="200"
+                                                                    Margin="10,5,0,0"
+                                                                    VerticalContentAlignment="Center" />
 
                                                                 <!--  Row 1: Arguments  -->
                                                                 <TextBlock
-                                                                Grid.Row="1"
-                                                                Grid.Column="0"
-                                                                Margin="0,5,0,0"
-                                                                VerticalAlignment="Center"
-                                                                Text="Arguments:" />
+                                                                    Grid.Row="1"
+                                                                    Grid.Column="0"
+                                                                    Margin="0,5,0,0"
+                                                                    VerticalAlignment="Center"
+                                                                    Text="Arguments:" />
                                                                 <TextBox
-                                                                x:Name="PostArgumentsTextBox"
-                                                                Grid.Row="1"
-                                                                Grid.Column="1"
-                                                                Height="25"
-                                                                MinWidth="200"
-                                                                Margin="10,5,0,0"
-                                                                VerticalContentAlignment="Center" />
+                                                                    x:Name="PostArgumentsTextBox"
+                                                                    Grid.Row="1"
+                                                                    Grid.Column="1"
+                                                                    Height="25"
+                                                                    MinWidth="200"
+                                                                    Margin="10,5,0,0"
+                                                                    VerticalContentAlignment="Center" />
 
                                                                 <!--  Button (placed on the right side)  -->
                                                                 <Button
-                                                                Grid.Row="0"
-                                                                Grid.RowSpan="2"
-                                                                Grid.Column="2"
-                                                                Height="25"
-                                                                MinWidth="70"
-                                                                Margin="10,5,0,0"
-                                                                VerticalAlignment="Center"
-                                                                Command="{Binding AddPostBuildEventCommand}"
-                                                                Content="Add"
-                                                                Style="{StaticResource CustomButtonStyle}">
+                                                                    Grid.Row="0"
+                                                                    Grid.RowSpan="2"
+                                                                    Grid.Column="2"
+                                                                    Height="25"
+                                                                    MinWidth="70"
+                                                                    Margin="10,5,0,0"
+                                                                    VerticalAlignment="Center"
+                                                                    Command="{Binding AddPostBuildEventCommand}"
+                                                                    Content="Add"
+                                                                    Style="{StaticResource CustomButtonStyle}">
                                                                     <Button.CommandParameter>
                                                                         <MultiBinding Converter="{StaticResource ProcessEventConverter}">
                                                                             <Binding ElementName="PostPathTextBox" Path="Text" />
@@ -488,29 +488,29 @@
                                                                                 <ColumnDefinition Width="Auto" />
                                                                             </Grid.ColumnDefinitions>
                                                                             <TextBox
-                                                                            Grid.Column="0"
-                                                                            Margin="0,0,5,0"
-                                                                            IsReadOnly="True"
-                                                                            Text="{Binding Path, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                                            ToolTip="Path" />
+                                                                                Grid.Column="0"
+                                                                                Margin="0,0,5,0"
+                                                                                IsReadOnly="True"
+                                                                                Text="{Binding Path, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                                                ToolTip="Path" />
 
                                                                             <TextBox
-                                                                            Grid.Column="1"
-                                                                            Margin="0,0,5,0"
-                                                                            IsReadOnly="True"
-                                                                            Text="{Binding Arguments, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                                            ToolTip="Arguments" />
+                                                                                Grid.Column="1"
+                                                                                Margin="0,0,5,0"
+                                                                                IsReadOnly="True"
+                                                                                Text="{Binding Arguments, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                                                ToolTip="Arguments" />
 
                                                                             <Button
-                                                                            Grid.Column="2"
-                                                                            Height="25"
-                                                                            MinWidth="70"
-                                                                            Margin="0,0,0,0"
-                                                                            HorizontalAlignment="Right"
-                                                                            Command="{Binding DataContext.RemovePostBuildEventCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                                                            CommandParameter="{Binding}"
-                                                                            Content="Remove"
-                                                                            Style="{StaticResource CustomButtonStyle}" />
+                                                                                Grid.Column="2"
+                                                                                Height="25"
+                                                                                MinWidth="70"
+                                                                                Margin="0,0,0,0"
+                                                                                HorizontalAlignment="Right"
+                                                                                Command="{Binding DataContext.RemovePostBuildEventCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                                                CommandParameter="{Binding}"
+                                                                                Content="Remove"
+                                                                                Style="{StaticResource CustomButtonStyle}" />
                                                                         </Grid>
                                                                     </DataTemplate>
                                                                 </ItemsControl.ItemTemplate>
@@ -529,7 +529,10 @@
 
                                                 <CheckBox Content="Enable Custom Delivery" IsChecked="{Binding EnableCustomDelivery, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-                                                <GroupBox Margin="0,10,0,0" Header="Custom Delivery Directories" IsEnabled="{Binding EnableCustomDelivery}">
+                                                <GroupBox
+                                                    Margin="0,10,0,0"
+                                                    Header="Custom Delivery Directories"
+                                                    IsEnabled="{Binding EnableCustomDelivery}">
                                                     <StackPanel>
                                                         <!--  Add new pair Source + Destination  -->
                                                         <Grid Margin="10" IsSharedSizeScope="True">
