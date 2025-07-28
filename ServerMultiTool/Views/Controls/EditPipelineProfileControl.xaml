@@ -49,9 +49,9 @@
                 <!--  Git Settings  -->
                 <Expander Header="Git Settings">
                     <StackPanel Margin="18,6,5,2">
-                        <CheckBox Content="Enable Git" IsChecked="{Binding Profile.GitSettings.Enable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <CheckBox Content="Enable Git Features" IsChecked="{Binding Profile.GitSettings.Enable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         <StackPanel IsEnabled="{Binding Profile.GitSettings.Enable}">
-                            <CheckBox Content="Should Pull" IsChecked="{Binding Profile.GitSettings.ShouldPull, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <CheckBox Content="Git Pull" IsChecked="{Binding Profile.GitSettings.ShouldPull, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </StackPanel>
                     </StackPanel>
                 </Expander>
@@ -105,7 +105,7 @@
                 <!--  HTTP Monitoring Settings  -->
                 <Expander Header="HTTP Monitoring Settings">
                     <StackPanel Margin="18,6,5,2">
-                        <CheckBox Content="Enable HTTP Monitoring" IsChecked="{Binding Profile.HttpMonitoringSettings.Enable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <CheckBox Content="Enable" IsChecked="{Binding Profile.HttpMonitoringSettings.Enable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         <StackPanel IsEnabled="{Binding Profile.HttpMonitoringSettings.Enable}">
                             <CheckBox Content="Ping Master" IsChecked="{Binding Profile.HttpMonitoringSettings.PingMaster, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                             <CheckBox Content="Ping Segment" IsChecked="{Binding Profile.HttpMonitoringSettings.PingSegment, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
@@ -128,6 +128,92 @@
                                     Margin="0,0,0,0"
                                     HorizontalAlignment="Left"
                                     Text="{Binding Profile.HttpMonitoringSettings.TimeoutMinutes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            </Grid>
+                        </StackPanel>
+                    </StackPanel>
+                </Expander>
+
+                <!--  Log Monitoring Settings  -->
+                <Expander Header="Log Monitoring Settings">
+                    <StackPanel Margin="18,6,5,2">
+                        <CheckBox Content="Enable" IsChecked="{Binding Profile.MonitorLogFilesSettings.Enable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <StackPanel IsEnabled="{Binding Profile.MonitorLogFilesSettings.Enable}">
+                            <!--  Master Log Directory Settings  -->
+                            <TextBlock Text="Master Log Directory:" />
+                            <Grid Margin="10,8,0,10" IsSharedSizeScope="True">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="Lbl" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    Margin="0,0,5,0"
+                                    VerticalAlignment="Center"
+                                    Text="Name:" />
+                                <TextBox
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                    MinWidth="200"
+                                    Margin="0,0,0,0"
+                                    Text="{Binding Profile.MonitorLogFilesSettings.MasterLogDirectory.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                                <TextBlock
+                                    Grid.Row="1"
+                                    Grid.Column="0"
+                                    Margin="0,5,5,0"
+                                    VerticalAlignment="Center"
+                                    Text="Path:" />
+                                <TextBox
+                                    Grid.Row="1"
+                                    Grid.Column="1"
+                                    MinWidth="200"
+                                    Margin="0,5,0,0"
+                                    Text="{Binding Profile.MonitorLogFilesSettings.MasterLogDirectory.Path, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            </Grid>
+
+                            <!--  Segment Log Directory Settings  -->
+                            <TextBlock Text="Segment Log Directory:" />
+                            <Grid Margin="10,8,0,0" IsSharedSizeScope="True">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="Lbl" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    Margin="0,0,5,0"
+                                    VerticalAlignment="Center"
+                                    Text="Name:" />
+                                <TextBox
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                    MinWidth="200"
+                                    Margin="0,0,0,0"
+                                    Text="{Binding Profile.MonitorLogFilesSettings.SegmentLogDirectory.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                                <TextBlock
+                                    Grid.Row="1"
+                                    Grid.Column="0"
+                                    Margin="0,5,5,0"
+                                    VerticalAlignment="Center"
+                                    Text="Path:" />
+                                <TextBox
+                                    Grid.Row="1"
+                                    Grid.Column="1"
+                                    MinWidth="200"
+                                    Margin="0,5,0,0"
+                                    Text="{Binding Profile.MonitorLogFilesSettings.SegmentLogDirectory.Path, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                             </Grid>
                         </StackPanel>
                     </StackPanel>

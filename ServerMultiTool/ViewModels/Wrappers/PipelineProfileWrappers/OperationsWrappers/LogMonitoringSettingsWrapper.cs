@@ -7,14 +7,45 @@ namespace ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers.Operations
 
 public partial class LogMonitoringSettingsWrapper : BaseObservableWrapper
 {
-    [ObservableProperty] private bool _enable;
-    [ObservableProperty] private DirectoryModelWrapper _logDirectory;
+    [ObservableProperty]
+    private bool _enable;
+
+    [ObservableProperty]
+    private
+    DirectoryModelWrapper _masterLogDirectory;
+
+    [ObservableProperty]
+    private DirectoryModelWrapper _segmentLogDirectory;
 
     public LogMonitoringSettingsWrapper(LogMonitoringSettings settings)
     {
         Enable = settings.Enable;
-        LogDirectory = new DirectoryModelWrapper(settings.MasterLogDirectory!.Name ?? string.Empty, settings.MasterLogDirectory.Path ?? string.Empty);
-        LogDirectory.PropertyChanged += (_, _) => OnPropertyChanged(string.Empty);
+
+        // Handle the master log directory
+        if (settings.MasterLogDirectory != null)
+        {
+            MasterLogDirectory = new DirectoryModelWrapper(
+                settings.MasterLogDirectory.Name ?? string.Empty,
+                settings.MasterLogDirectory.Path ?? string.Empty);
+        }
+        else
+        {
+            MasterLogDirectory = new DirectoryModelWrapper("Master Logs", string.Empty);
+        }
+        MasterLogDirectory.PropertyChanged += (_, _) => OnPropertyChanged(string.Empty);
+
+        // Handle the segment log directory
+        if (settings.SegmentLogDirectory != null)
+        {
+            SegmentLogDirectory = new DirectoryModelWrapper(
+                settings.SegmentLogDirectory.Name ?? string.Empty,
+                settings.SegmentLogDirectory.Path ?? string.Empty);
+        }
+        else
+        {
+            SegmentLogDirectory = new DirectoryModelWrapper("Segment Logs", string.Empty);
+        }
+        SegmentLogDirectory.PropertyChanged += (_, _) => OnPropertyChanged(string.Empty);
     }
 
     public LogMonitoringSettings ToLogMonitoringSettings()
@@ -22,7 +53,8 @@ public partial class LogMonitoringSettingsWrapper : BaseObservableWrapper
         return new LogMonitoringSettings
         {
             Enable = Enable,
-            MasterLogDirectory = LogDirectory.ToDirectoryModel()
+            MasterLogDirectory = MasterLogDirectory.ToDirectoryModel(),
+            SegmentLogDirectory = SegmentLogDirectory.ToDirectoryModel()
         };
     }
 
