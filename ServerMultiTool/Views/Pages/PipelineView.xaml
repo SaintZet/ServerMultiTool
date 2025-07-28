@@ -22,6 +22,8 @@
         <pipelineConverters:StringToVisibilityConverter x:Key="StringToVisibilityConverter" />
         <pipelineConverters:TimestampConverter x:Key="TimestampConverter" />
         <globalConverters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <globalConverters:NumericValueConverter x:Key="NumericValueConverter" />
+        
         <Storyboard x:Key="GreenFlashingAnimation">
             <ColorAnimation
                 AutoReverse="True"
@@ -72,10 +74,17 @@
                     Foreground="{DynamicResource PrimaryTextColor}"
                     Header="Full message"
                     Visibility="{Binding Message.ExtendedMessage, Converter={StaticResource StringToVisibilityConverter}}">
-                    <TextBlock
-                        Foreground="{DynamicResource PrimaryTextColor}"
-                        Text="{Binding Message.ExtendedMessage}"
-                        TextWrapping="Wrap" />
+                    <Border MaxWidth="{Binding RelativeSource={RelativeSource AncestorType=behaviours:ScrollingListBox}, Path=ActualWidth, Converter={StaticResource NumericValueConverter}, ConverterParameter=1}">
+                        <ScrollViewer MaxHeight="350" 
+                                      VerticalScrollBarVisibility="Auto" 
+                                      HorizontalScrollBarVisibility="Auto">
+                            <TextBlock
+                                Margin="5"
+                                Foreground="{DynamicResource PrimaryTextColor}"
+                                Text="{Binding Message.ExtendedMessage}"
+                                TextWrapping="Wrap" />
+                        </ScrollViewer>
+                    </Border>
                 </Expander>
             </StackPanel>
         </DataTemplate>
@@ -267,7 +276,8 @@
                         Background="{DynamicResource TertiaryBackgroundColor}"
                         Foreground="{DynamicResource PrimaryTextColor}"
                         ItemTemplate="{StaticResource LogMessageTemplate}"
-                        ItemsSource="{Binding AppLogMessages}" />
+                        ItemsSource="{Binding AppLogMessages}"
+                        ScrollViewer.HorizontalScrollBarVisibility="Disabled" />
                 </TabItem>
 
                 <!--  Master Logs Tab  -->
@@ -278,7 +288,8 @@
                         Background="{DynamicResource TertiaryBackgroundColor}"
                         Foreground="{DynamicResource PrimaryTextColor}"
                         ItemTemplate="{StaticResource LogMessageTemplate}"
-                        ItemsSource="{Binding MasterLogMessages}" />
+                        ItemsSource="{Binding MasterLogMessages}"
+                        ScrollViewer.HorizontalScrollBarVisibility="Disabled" />
                 </TabItem>
 
                 <!--  Segment Logs Tab  -->
@@ -289,7 +300,8 @@
                         Background="{DynamicResource TertiaryBackgroundColor}"
                         Foreground="{DynamicResource PrimaryTextColor}"
                         ItemTemplate="{StaticResource LogMessageTemplate}"
-                        ItemsSource="{Binding SegmentLogMessages}" />
+                        ItemsSource="{Binding SegmentLogMessages}"
+                        ScrollViewer.HorizontalScrollBarVisibility="Disabled" />
                 </TabItem>
             </TabControl>
         </Grid>
