@@ -27,7 +27,8 @@ public class GitService : PipelineOperation
 
             if (_settings!.ShouldPull is false)
             {
-                return OperationResult.Success; // git pull is not required and the only one operation right now
+                Logger.LogWarnWithPublish("Git features are enabled, but no one is marked.");
+                return OperationResult.PartialSuccess; // git pull is not required and the only one operation right now
             }
 
             output = await GitPull(cancellationToken);
@@ -41,8 +42,9 @@ public class GitService : PipelineOperation
             if (output.Success is false)
             {
                 if (output.Output is not null)
-                    Logger.LogErrorWithPublish(output.Output);
+                    Logger.LogError(output.Output);
 
+                Logger.LogErrorWithPublish("Something is going wrong. Check log details for more information.");
                 return OperationResult.Failure;
             }
 
