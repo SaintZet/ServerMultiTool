@@ -45,7 +45,7 @@ public partial class PipelineViewModel : BaseViewModel, IPage
 
             UpdateSettings(value);
             UpdatePipelineOperations(value);
-            UpdateMasterLogService(value);
+            UpdateGameServerLogServices(value);
 
             OnPropertyChanged();
         }
@@ -70,9 +70,11 @@ public partial class PipelineViewModel : BaseViewModel, IPage
     #region Private Fields
 
     private readonly LogMonitoringService _masterLogService;
-    private CancellationTokenSource? _pipelineCancellationTokenSource;
+    private readonly LogMonitoringService _segmentLogService;
+
     private readonly Logger _logger;
 
+    private CancellationTokenSource? _pipelineCancellationTokenSource;
     #endregion
 
     #region Collections
@@ -81,6 +83,7 @@ public partial class PipelineViewModel : BaseViewModel, IPage
     public PipelineOperationCollection PipelineOperations { get; } = [];
     public ObservableCollection<LogEvent> AppLogMessages { get; } = [];
     public ObservableCollection<LogEvent> MasterLogMessages { get; } = [];
+    public ObservableCollection<LogEvent> SegmentLogMessages { get; } = [];
 
     #endregion
 
@@ -92,6 +95,9 @@ public partial class PipelineViewModel : BaseViewModel, IPage
 
         _masterLogService = new LogMonitoringService();
         _masterLogService.Subscribe<LogEvent>(AddNewMasterLogEvent);
+
+        _segmentLogService = new LogMonitoringService();
+        _segmentLogService.Subscribe<LogEvent>(AddNewSegmentLogEvent);
 
         GlobalEventAggregator.Instance.Subscribe<LogEvent>(AddNewGlobalLogEvent);
 
@@ -173,13 +179,17 @@ public partial class PipelineViewModel : BaseViewModel, IPage
             PipelineOperations.Add(new(new HttpMonitoringService(pipeline.HttpMonitoringSettings), "Http"));
     }
 
-    private void UpdateMasterLogService(PipelineProfile profile)
+    private void UpdateGameServerLogServices(PipelineProfile profile)
     {
-        _ = _masterLogService.UpdateSettings(profile.MonitorLogFilesSettings);
+        var settings = profile.MonitorLogFilesSettings;
+
+        _ = _masterLogService.UpdateSettings(settings.Enable, settings.MasterLogDirectory);
+        _ = _segmentLogService.UpdateSettings(settings.Enable, settings.SegmentLogDirectory);
 
         Application.Current.Dispatcher.Invoke(() =>
         {
             MasterLogMessages.Clear();
+            SegmentLogMessages.Clear();
         });
     }
 
@@ -271,22 +281,23 @@ public partial class PipelineViewModel : BaseViewModel, IPage
 
     #region Log Event Handlers
 
-    private void AddNewMasterLogEvent(LogEvent logEvent)
+    private void AddNewMasterLogEvent(LogEvent logEvent) =>
+        AddNewLogEvent(logEvent, MasterLogMessages);
+
+    private void AddNewSegmentLogEvent(LogEvent logEvent) =>
+        AddNewLogEvent(logEvent, SegmentLogMessages);
+
+    private void AddNewGlobalLogEvent(LogEvent logEvent) =>
+        AddNewLogEvent(logEvent, AppLogMessages);
+
+    private static void AddNewLogEvent(LogEvent logEvent, ObservableCollection<LogEvent> targetCollection)
     {
         Application.Current.Dispatcher.Invoke(() =>
         {
-            if (MasterLogMessages.Contains(logEvent))
+            if (targetCollection.Contains(logEvent))
                 return;
 
-            MasterLogMessages.Add(logEvent);
-        });
-    }
-
-    private void AddNewGlobalLogEvent(LogEvent logEvent)
-    {
-        Application.Current.Dispatcher.Invoke(() =>
-        {
-            AppLogMessages.Add(logEvent);
+            targetCollection.Add(logEvent);
         });
     }
 

@@ -7,13 +7,13 @@
     <!--  Start: CustomButtonStyle  -->
     <Style x:Key="CustomButtonStyle" TargetType="{x:Type Button}">
         <Setter Property="Cursor" Value="Hand" />
-        <Setter Property="Background" Value="{DynamicResource TertiaryBackgroundColor}" /> 
-        <Setter Property="Foreground" Value="{DynamicResource PrimaryTextColor}" /> 
-        <Setter Property="FontWeight" Value="Normal" /> 
+        <Setter Property="Background" Value="{DynamicResource TertiaryBackgroundColor}" />
+        <Setter Property="Foreground" Value="{DynamicResource PrimaryTextColor}" />
+        <Setter Property="FontWeight" Value="Normal" />
         <Setter Property="FontSize" Value="15" />
         <Setter Property="Height" Value="48" />
-        <Setter Property="BorderBrush" Value="{DynamicResource TertiaryBackgroundColor}" /> 
-        <Setter Property="BorderThickness" Value="1" /> 
+        <Setter Property="BorderBrush" Value="{DynamicResource TertiaryBackgroundColor}" />
+        <Setter Property="BorderThickness" Value="1" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">

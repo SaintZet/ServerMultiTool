@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,63 +25,71 @@ public partial class LogMonitoringService : BaseEventAggregator
     private readonly Timer _hourlyTimer;
 
     private CancellationTokenSource? _cancellationToken;
-    private LogMonitoringSettings? _settings;
+
+    private DateTime _lastHour = DateTime.MinValue;
+    private string _cachedFileName = string.Empty;
+
+    private bool _isEnabled;
+    private DirectoryModel _monitoredDirectory = null!;
 
     public LogMonitoringService()
     {
         _logger = new Logger(GetType());
 
         _hourlyTimer = new Timer();
-        _hourlyTimer.Elapsed += async (sender, e) => await OnTimerElapsed(sender, e);
+        _hourlyTimer.Elapsed += (sender, e) =>
+        {
+            _ = Task.Run(async () => await OnTimerElapsed(sender, e));
+        };
         _hourlyTimer.Interval = GetIntervalToNextHour();
         _hourlyTimer.Start();
     }
 
-    public async Task UpdateSettings(LogMonitoringSettings settings)
+    public async Task UpdateSettings(bool enable, DirectoryModel? logDirectory)
     {
-        var newSettings = settings ?? throw new ArgumentNullException(nameof(settings));
-
-        if (_settings is { Enable: true })
+        if (_isEnabled)
             await StopMonitoringAsync();
 
-        if (newSettings.Enable && newSettings.LogDirectory is not null)
-            await StartMonitoringAsync(newSettings.LogDirectory);
+        _isEnabled = enable;
 
-        _settings = newSettings;
+        if (_isEnabled && logDirectory is not null)
+            StartMonitoring(logDirectory);
     }
 
     private async Task OnTimerElapsed(object? sender, ElapsedEventArgs e)
     {
         _hourlyTimer.Interval = GetIntervalToNextHour();
 
-        if (_settings?.LogDirectory is null)
+        if (_isEnabled is false || _monitoredDirectory is null)
             return;
 
         await StopMonitoringAsync();
-        await StartMonitoringAsync(_settings.LogDirectory);
+        StartMonitoring(_monitoredDirectory);
     }
 
     private static double GetIntervalToNextHour()
     {
-        var currentTime = DateTime.Now;
-        var nextHour = currentTime.AddHours(1).Date.AddHours(currentTime.Hour + 1);
-        var millisecondsToNextHour = (nextHour - currentTime).TotalMilliseconds;
-
-        return millisecondsToNextHour;
+        var now = DateTime.Now;
+        var nextHour = now.AddHours(1).Date.AddHours(now.Hour + 1);
+        return (nextHour - now).TotalMilliseconds;
     }
 
-    private async Task StartMonitoringAsync(DirectoryModel directory)
+    private void StartMonitoring(DirectoryModel directory)
     {
-        if (_cancellationToken is not null)
-            return;
-
         if (directory.Path.IsNullOrEmpty())
             return;
 
-        _logger.LogInfo($"Start monitoring {directory.Path}");
+        if (_cancellationToken is not null)
+            return;
 
         _cancellationToken = new CancellationTokenSource();
-        await MonitorLogDirectoryAsync(directory, _cancellationToken.Token);
+        var token = _cancellationToken.Token;
+
+        _monitoredDirectory = directory;
+
+        _logger.LogInfo($"Start monitoring {directory.Name} logs at {directory.Path}");
+
+        _ = Task.Run(async () => await MonitorLogDirectoryAsync(directory, _cancellationToken.Token), _cancellationToken.Token);
     }
 
     private async Task StopMonitoringAsync()
@@ -95,7 +102,7 @@ public partial class LogMonitoringService : BaseEventAggregator
         _cancellationToken.Dispose();
         _cancellationToken = null;
 
-        _logger.LogInfo($"Stop monitoring {_settings?.LogDirectory?.Path ?? "unknown directory"}");
+        _logger.LogInfo($"Stop monitoring {_monitoredDirectory.Name} logs at {_monitoredDirectory?.Path ?? "unknown directory"}");
     }
 
     private async Task MonitorLogDirectoryAsync(DirectoryModel directory, CancellationToken cancellationToken)
@@ -114,6 +121,10 @@ public partial class LogMonitoringService : BaseEventAggregator
             try
             {
                 await ProcessLogFileAsync(path, startTime, cancellationToken);
+            }
+            catch (OperationCanceledException)
+            {
+                return;
             }
             catch (Exception ex)
             {
@@ -137,11 +148,17 @@ public partial class LogMonitoringService : BaseEventAggregator
             Publish(logEvent);
     }
 
-    //todo: optimize this code
-    private static string GetActualLogFileName(DirectoryModel directory)
+    private string GetActualLogFileName(DirectoryModel directory)
     {
-        var fileName = DateTime.Now.ToString(LogFileNameFormat) + LogFileExtension;
-        return Path.Combine(directory.Path, fileName);
+        var now = DateTime.Now;
+
+        if (now.Hour != _lastHour.Hour || now.Day != _lastHour.Day || string.IsNullOrEmpty(_cachedFileName))
+        {
+            _cachedFileName = now.ToString(LogFileNameFormat) + LogFileExtension;
+            _lastHour = now;
+        }
+
+        return Path.Combine(directory.Path, _cachedFileName);
     }
 
     private static async Task SkipToStartTimeAsync(StreamReader reader, DateTime startTime, CancellationToken cancellationToken)
@@ -185,10 +202,19 @@ public partial class LogMonitoringService : BaseEventAggregator
         return lines;
     }
 
-    private static IEnumerable<string> FilterAndShortenLines(IEnumerable<string> lines) =>
-        lines
-            .Where(line => line.Contains("ClusterSettings") is false)
-            .Select(line => line.Length > 300 ? line[..300] + "..." : line);
+    private static IEnumerable<string> FilterAndShortenLines(IEnumerable<string> lines)
+    {
+        const string filterString = "ClusterSettings";
+        const int maxLength = 300;
+
+        foreach (var line in lines)
+        {
+            if (line.Contains(filterString, StringComparison.Ordinal))
+                continue;
+
+            yield return line.Length > maxLength ? line[..maxLength] + "..." : line;
+        }
+    }
 
     [GeneratedRegex(@"\b\d{2}:\d{2}:\d{2}\.\d{3}\b")]
     private static partial Regex GetTimeStampRegex();

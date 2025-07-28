@@ -1,12 +1,12 @@
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using ServerMultiTool.Model.ContinuousDeployment.Delivery;
 using ServerMultiTool.Model.ContinuousDeployment.Integrations;
 using ServerMultiTool.Model.ContinuousIntegration.GameServerLogs;
 using ServerMultiTool.Model.ContinuousIntegration.Git;
 using ServerMultiTool.Model.ContinuousIntegration.MsBuild;
 using ServerMultiTool.Model.Pipeline.Profiles;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace ServerMultiTool.Model.Common.DefaultValues;
 
@@ -19,9 +19,9 @@ public static class DefaultProfiles
             path: @"Server\Service.Master\Service.Master.csproj",
             msBuildEnable: false
         );
-        
+
         var segment = CreateProjectSettings(
-            name:  "Segment",
+            name: "Segment",
             path: @"Server\Service.Segment\Service.Segment.csproj",
             msBuildEnable: false
         );
@@ -30,10 +30,12 @@ public static class DefaultProfiles
             name: "IIS Reset",
             projects: [master, segment],
             webEnable: true,
-            logDirectory: new DirectoryModel { Name = "IIS Profile Profile Master", Path = @"C:\HTTP\Raid\Master\log" }
+            httpMonitorEnable: true,
+            masterLogDirectory: @"C:\HTTP\Raid\Master\log",
+            segmentLogDirectory: @"C:\HTTP\Raid\Segment00\log"
         );
     }
-    
+
     public static PipelineProfile GetStandardProfile()
     {
         var master = CreateProjectSettings(
@@ -43,7 +45,7 @@ public static class DefaultProfiles
             msBuildParameters: ["/p:Configuration=Debug", "/p:PreBuildEvent=", "/t:build"],
             enableDeliveryBin: true
         );
-        
+
         var segment = CreateProjectSettings(
             name: "Segment",
             path: @"Server\Service.Segment\Service.Segment.csproj",
@@ -60,14 +62,11 @@ public static class DefaultProfiles
             sqlEnable: true,
             connectionString: "Server=PLSCHEPETS;Database=raidMaster;User Id=geotopia;Password=super;TrustServerCertificate=True",
             sqlScriptPath: @"C:\ServerDeployTool\RaidDeploy\BatchFiles\script.sql",
+            httpMonitorEnable: true,
             webEnable: true,
             webUrl: "http://localhost/Raid/Segment00/Segment.ashx",
-            logDirectory: new DirectoryModel
-            {
-                Name = "Standard Profile Master",
-                Path = @"C:\HTTP\Raid\Master\log"
-            },
-            httpMonitorEnable: true
+            masterLogDirectory: @"C:\HTTP\Raid\Master\log",
+            segmentLogDirectory: @"C:\HTTP\Raid\Segment00\log"
         );
     }
 
@@ -80,7 +79,7 @@ public static class DefaultProfiles
             msBuildParameters: ["/p:Configuration=Debug", "/t:rebuild"],
             enableDeliveryBin: true
         );
-        
+
         var segment = CreateProjectSettings(
             name: "Segment",
             path: @"Server\Service.Segment\Service.Segment.csproj",
@@ -122,14 +121,11 @@ public static class DefaultProfiles
             connectionString:
             "Server=PLSCHEPETS;Database=raidMaster;User Id=geotopia;Password=super;TrustServerCertificate=True",
             sqlScriptPath: @"C:\ServerDeployTool\RaidDeploy\BatchFiles\script.sql",
+            httpMonitorEnable: true,
             webEnable: true,
             webUrl: "http://localhost/Raid/Segment00/Segment.ashx",
-            logDirectory: new DirectoryModel
-            {
-                Name = "Extended Profile Master",
-                Path = @"C:\HTTP\Raid\Master\log"
-            },
-            httpMonitorEnable: true
+            masterLogDirectory: @"C:\HTTP\Raid\Master\log",
+            segmentLogDirectory: @"C:\HTTP\Raid\Segment00\log"
         );
     }
 
@@ -169,16 +165,16 @@ public static class DefaultProfiles
         bool sqlEnable = false,
         string? connectionString = null,
         string? sqlScriptPath = null,
+        bool httpMonitorEnable = false,
         bool webEnable = true,
         string? webUrl = null,
-        DirectoryModel? logDirectory = null,
-        bool httpMonitorEnable = true
-    )
+        string? masterLogDirectory = null,
+        string? segmentLogDirectory = null)
     {
         return new PipelineProfile
         {
             Name = name,
-            SettingsPerProject = projects.ToList(),
+            SettingsPerProject = [.. projects],
             GitSettings = new GitSettings
             {
                 Enable = gitEnable,
@@ -202,7 +198,16 @@ public static class DefaultProfiles
             MonitorLogFilesSettings = new LogMonitoringSettings
             {
                 Enable = true,
-                LogDirectory = logDirectory
+                MasterLogDirectory = masterLogDirectory is null ? null : new DirectoryModel
+                {
+                    Name = $"{name} Master Log Directory",
+                    Path = masterLogDirectory!,
+                },
+                SegmentLogDirectory = segmentLogDirectory is null ? null : new DirectoryModel
+                {
+                    Name = $"{name} Segment Log Directory",
+                    Path = segmentLogDirectory!,
+                },
             },
             HttpMonitoringSettings = new HttpMonitoringSettings
             {
