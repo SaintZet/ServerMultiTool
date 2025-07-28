@@ -31,6 +31,54 @@
                 To="#2E7D32"
                 Duration="0:0:0.8" />
         </Storyboard>
+
+        <!--  Define a reusable DataTemplate for log messages  -->
+        <DataTemplate x:Key="LogMessageTemplate">
+            <StackPanel Margin="0,2">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock
+                        Margin="0,0,5,0"
+                        Foreground="Gray"
+                        Text="{Binding Timestamp, Converter={StaticResource TimestampConverter}}" />
+                    <TextBlock FontWeight="Bold" Text="{Binding Sender}">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Message.Type}" Value="Info">
+                                        <Setter Property="Foreground" Value="{DynamicResource PrimaryTextColor}" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Message.Type}" Value="Success">
+                                        <Setter Property="Foreground" Value="{DynamicResource PrimaryGreenColor}" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Message.Type}" Value="Warn">
+                                        <Setter Property="Foreground" Value="{DynamicResource PrimaryOrangeColor}" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Message.Type}" Value="Error">
+                                        <Setter Property="Foreground" Value="{DynamicResource PrimaryRedColor}" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Message.Type}" Value="Exception">
+                                        <Setter Property="Foreground" Value="{DynamicResource PrimaryRedColor}" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                    <TextBlock Text=": " />
+                    <TextBlock Text="{Binding Message.BaseMessage}" TextWrapping="Wrap" />
+                </StackPanel>
+                <Expander
+                    Margin="0,5,0,0"
+                    ExpandDirection="Down"
+                    Foreground="{DynamicResource PrimaryTextColor}"
+                    Header="Full message"
+                    Visibility="{Binding Message.ExtendedMessage, Converter={StaticResource StringToVisibilityConverter}}">
+                    <TextBlock
+                        Foreground="{DynamicResource PrimaryTextColor}"
+                        Text="{Binding Message.ExtendedMessage}"
+                        TextWrapping="Wrap" />
+                </Expander>
+            </StackPanel>
+        </DataTemplate>
     </Page.Resources>
 
     <Border Background="{DynamicResource SecondaryBackgroundColor}" CornerRadius="8">
@@ -210,165 +258,38 @@
                         </Setter>
                     </Style>
                 </TabControl.Resources>
+
+                <!--  App Log Tab  -->
                 <TabItem Header="App Log">
                     <behaviours:ScrollingListBox
                         Padding="10"
+                        AutoScrollToEnd="True"
                         Background="{DynamicResource TertiaryBackgroundColor}"
                         Foreground="{DynamicResource PrimaryTextColor}"
-                        ItemsSource="{Binding AppLogMessages}"
-                        AutoScrollToEnd="True">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <StackPanel Margin="0,2">
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock
-                                            Margin="0,0,5,0"
-                                            Foreground="Gray"
-                                            Text="{Binding Timestamp, Converter={StaticResource TimestampConverter}}" />
-                                        <TextBlock FontWeight="Bold" Text="{Binding Sender}">
-                                            <TextBlock.Style>
-                                                <Style TargetType="TextBlock">
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding Message.Type}" Value="Info">
-                                                            <Setter Property="Foreground" Value="{DynamicResource PrimaryTextColor}" />
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding Message.Type}" Value="Success">
-                                                            <Setter Property="Foreground" Value="{DynamicResource PrimaryGreenColor}" />
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding Message.Type}" Value="Warn">
-                                                            <Setter Property="Foreground" Value="{DynamicResource PrimaryOrangeColor}" />
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding Message.Type}" Value="Error">
-                                                            <Setter Property="Foreground" Value="{DynamicResource PrimaryRedColor}" />
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding Message.Type}" Value="Exception">
-                                                            <Setter Property="Foreground" Value="{DynamicResource PrimaryRedColor}" />
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </TextBlock.Style>
-                                        </TextBlock>
-                                        <TextBlock Text=": " />
-                                        <TextBlock Text="{Binding Message.BaseMessage}" TextWrapping="Wrap" />
-                                    </StackPanel>
-                                </StackPanel>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </behaviours:ScrollingListBox>
+                        ItemTemplate="{StaticResource LogMessageTemplate}"
+                        ItemsSource="{Binding AppLogMessages}" />
                 </TabItem>
+
+                <!--  Master Logs Tab  -->
                 <TabItem Header="Master Logs">
                     <behaviours:ScrollingListBox
                         Padding="10"
+                        AutoScrollToEnd="True"
                         Background="{DynamicResource TertiaryBackgroundColor}"
                         Foreground="{DynamicResource PrimaryTextColor}"
-                        ItemsSource="{Binding MasterLogMessages}"
-                        AutoScrollToEnd="True">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <StackPanel Margin="0,2">
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock
-                                            Margin="0,0,5,0"
-                                            Foreground="Gray"
-                                            Text="{Binding Timestamp, Converter={StaticResource TimestampConverter}}" />
-                                        <TextBlock FontWeight="Bold" Text="{Binding Sender}">
-                                            <TextBlock.Style>
-                                                <Style TargetType="TextBlock">
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding Message.Type}" Value="Info">
-                                                            <Setter Property="Foreground" Value="{DynamicResource PrimaryTextColor}" />
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding Message.Type}" Value="Success">
-                                                            <Setter Property="Foreground" Value="{DynamicResource PrimaryGreenColor}" />
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding Message.Type}" Value="Warn">
-                                                            <Setter Property="Foreground" Value="{DynamicResource PrimaryOrangeColor}" />
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding Message.Type}" Value="Error">
-                                                            <Setter Property="Foreground" Value="{DynamicResource PrimaryRedColor}" />
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding Message.Type}" Value="Exception">
-                                                            <Setter Property="Foreground" Value="{DynamicResource PrimaryRedColor}" />
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </TextBlock.Style>
-                                        </TextBlock>
-                                        <TextBlock Text=": " />
-                                        <TextBlock Text="{Binding Message.BaseMessage}" TextWrapping="Wrap" />
-                                    </StackPanel>
-                                    <Expander
-                                        Margin="0,5,0,0"
-                                        ExpandDirection="Down"
-                                        Foreground="{DynamicResource PrimaryTextColor}"
-                                        Header="Full message"
-                                        Visibility="{Binding Message.ExtendedMessage, Converter={StaticResource StringToVisibilityConverter}}">
-                                        <TextBlock
-                                            Foreground="{DynamicResource PrimaryTextColor}"
-                                            Text="{Binding Message.ExtendedMessage}"
-                                            TextWrapping="Wrap" />
-                                    </Expander>
-                                </StackPanel>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </behaviours:ScrollingListBox>
+                        ItemTemplate="{StaticResource LogMessageTemplate}"
+                        ItemsSource="{Binding MasterLogMessages}" />
                 </TabItem>
+
+                <!--  Segment Logs Tab  -->
                 <TabItem Header="Segment Logs">
                     <behaviours:ScrollingListBox
                         Padding="10"
+                        AutoScrollToEnd="True"
                         Background="{DynamicResource TertiaryBackgroundColor}"
                         Foreground="{DynamicResource PrimaryTextColor}"
-                        ItemsSource="{Binding SegmentLogMessages}"
-                        AutoScrollToEnd="True">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <StackPanel Margin="0,2">
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock
-                                            Margin="0,0,5,0"
-                                            Foreground="Gray"
-                                            Text="{Binding Timestamp, Converter={StaticResource TimestampConverter}}" />
-                                        <TextBlock FontWeight="Bold" Text="{Binding Sender}">
-                                            <TextBlock.Style>
-                                                <Style TargetType="TextBlock">
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding Message.Type}" Value="Info">
-                                                            <Setter Property="Foreground" Value="{DynamicResource PrimaryTextColor}" />
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding Message.Type}" Value="Success">
-                                                            <Setter Property="Foreground" Value="{DynamicResource PrimaryGreenColor}" />
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding Message.Type}" Value="Warn">
-                                                            <Setter Property="Foreground" Value="{DynamicResource PrimaryOrangeColor}" />
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding Message.Type}" Value="Error">
-                                                            <Setter Property="Foreground" Value="{DynamicResource PrimaryRedColor}" />
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding Message.Type}" Value="Exception">
-                                                            <Setter Property="Foreground" Value="{DynamicResource PrimaryRedColor}" />
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </TextBlock.Style>
-                                        </TextBlock>
-                                        <TextBlock Text=": " />
-                                        <TextBlock Text="{Binding Message.BaseMessage}" TextWrapping="Wrap" />
-                                    </StackPanel>
-                                    <Expander
-                                        Margin="0,5,0,0"
-                                        ExpandDirection="Down"
-                                        Foreground="{DynamicResource PrimaryTextColor}"
-                                        Header="Full message"
-                                        Visibility="{Binding Message.ExtendedMessage, Converter={StaticResource StringToVisibilityConverter}}">
-                                        <TextBlock
-                                            Foreground="{DynamicResource PrimaryTextColor}"
-                                            Text="{Binding Message.ExtendedMessage}"
-                                            TextWrapping="Wrap" />
-                                    </Expander>
-                                </StackPanel>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </behaviours:ScrollingListBox>
+                        ItemTemplate="{StaticResource LogMessageTemplate}"
+                        ItemsSource="{Binding SegmentLogMessages}" />
                 </TabItem>
             </TabControl>
         </Grid>
