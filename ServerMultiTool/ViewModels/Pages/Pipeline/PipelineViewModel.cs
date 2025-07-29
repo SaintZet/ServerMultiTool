@@ -15,7 +15,6 @@ using ServerMultiTool.ViewModels.Contracts.BaseClasses;
 using ServerMultiTool.ViewModels.Contracts.Interfaces;
 using ServerMultiTool.ViewModels.Controls;
 using ServerMultiTool.ViewModels.Pages.Pipeline.Data;
-using ServerMultiTool.ViewModels.Pages.Pipeline.Enums;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -217,9 +216,7 @@ public partial class PipelineViewModel : BaseViewModel, IPage, IGeneralInfoAware
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
-                    PipelineOperations.Where(op => op.PipelineOperationStatus == PipelineOperationStatus.Wait)
-                        .ToList()
-                        .ForEach(op => op.CancelOperation());
+                    PipelineOperations.CancelWaitingOperations();
                     break;
                 }
 
@@ -237,9 +234,7 @@ public partial class PipelineViewModel : BaseViewModel, IPage, IGeneralInfoAware
 
                     if (result == OperationResult.Cancelled)
                     {
-                        PipelineOperations.Where(op => op.PipelineOperationStatus == PipelineOperationStatus.Wait)
-                            .ToList()
-                            .ForEach(op => op.CancelOperation());
+                        PipelineOperations.CancelWaitingOperations();
                         break;
                     }
                 }
@@ -247,9 +242,7 @@ public partial class PipelineViewModel : BaseViewModel, IPage, IGeneralInfoAware
                 {
                     operation.CancelOperation();
 
-                    PipelineOperations.Where(op => op.PipelineOperationStatus == PipelineOperationStatus.Wait)
-                        .ToList()
-                        .ForEach(op => op.CancelOperation());
+                    PipelineOperations.CancelWaitingOperations();
                     break;
                 }
             }
