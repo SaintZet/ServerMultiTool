@@ -8,7 +8,7 @@
         public const string PipelineProfiles = "PipelineProfiles";
     }
 
-    public class SetiignsPageTabKeys
+    public class SettingsPageTabKeys
     {
         public const string General = "General";
         public const string PipelineProfiles = "PipelineProfiles";

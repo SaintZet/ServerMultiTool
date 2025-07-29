@@ -5,7 +5,7 @@ using ServerMultiTool.ViewModels.Controls;
 
 namespace ServerMultiTool.ViewModels.Pages.JsonParser;
 
-public partial class JsonParserViewModel : BaseViewModel, IPage
+public partial class JsonParserViewModel : BaseViewModel, IPage, IGeneralInfoAware
 {
     #region Observable Properties
 

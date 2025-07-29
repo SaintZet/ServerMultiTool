@@ -20,7 +20,7 @@ using Application = System.Windows.Application;
 
 namespace ServerMultiTool.ViewModels.Pages.Settings;
 
-public partial class SettingsViewModel : BaseViewModel, IPage
+public partial class SettingsViewModel : BaseViewModel, IPage, IGeneralInfoAware
 {
     #region Observable Properties
 
@@ -30,7 +30,7 @@ public partial class SettingsViewModel : BaseViewModel, IPage
     private bool _hasUnsavedChanges;
 
     [ObservableProperty]
-    private string _selectedTabKey = SetiignsPageTabKeys.General;
+    private string _selectedTabKey = SettingsPageTabKeys.General;
 
     [ObservableProperty]
     private DirectoryModelWrapper? _selectedSolutionDirectory;

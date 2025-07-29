@@ -54,7 +54,7 @@ namespace ServerMultiTool.ViewModels.Windows
 
                     settingsViewModel.SelectedTabKey = tabKey;
 
-                    if (tabKey is SetiignsPageTabKeys.PipelineProfiles && string.IsNullOrEmpty(param) is false)
+                    if (tabKey is SettingsPageTabKeys.PipelineProfiles && string.IsNullOrEmpty(param) is false)
                         settingsViewModel.SelectedPipelineProfile = settingsViewModel.PipelineProfiles.First(x => x.Name == param);
 
                     Navigate(PageNames.SettingsPage);

@@ -27,7 +27,7 @@ using static ServerMultiTool.ViewModels.Contracts.Delegates;
 
 namespace ServerMultiTool.ViewModels.Pages.Pipeline;
 
-public partial class PipelineViewModel : BaseViewModel, IPage
+public partial class PipelineViewModel : BaseViewModel, IPage, IGeneralInfoAware
 {
     #region Observable Properties
     public string Title => "Pipeline";
@@ -118,7 +118,7 @@ public partial class PipelineViewModel : BaseViewModel, IPage
             return;
         }
 
-        NavigateToSettingsAction?.Invoke(SetiignsPageTabKeys.PipelineProfiles, SelectedPipelineProfile.Name);
+        NavigateToSettingsAction?.Invoke(SettingsPageTabKeys.PipelineProfiles, SelectedPipelineProfile.Name);
     }
 
     #endregion
