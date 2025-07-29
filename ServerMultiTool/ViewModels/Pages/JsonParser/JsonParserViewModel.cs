@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using ServerMultiTool.ViewModels.Contracts;
 using ServerMultiTool.ViewModels.Contracts.BaseClasses;
 using ServerMultiTool.ViewModels.Contracts.Interfaces;
 using ServerMultiTool.ViewModels.Controls;
@@ -9,7 +10,7 @@ public partial class JsonParserViewModel : BaseViewModel, IPage, IGeneralInfoAwa
 {
     #region Observable Properties
 
-    public string Title => "JsonParser";
+    public string Title => PageNames.JsonParserPage;
 
     [ObservableProperty]
     private GeneralInfoViewModel _generalInfo = null!;

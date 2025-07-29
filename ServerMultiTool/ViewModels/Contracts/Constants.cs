@@ -1,6 +1,6 @@
 ﻿namespace ServerMultiTool.ViewModels.Contracts
 {
-    public class PageNames
+    public static class PageNames
     {
         public const string PipelinePage = "Pipeline";
         public const string JsonParserPage = "JsonParser";
@@ -8,7 +8,7 @@
         public const string PipelineProfiles = "PipelineProfiles";
     }
 
-    public class SettingsPageTabKeys
+    public static class SettingsPageTabKeys
     {
         public const string General = "General";
         public const string PipelineProfiles = "PipelineProfiles";

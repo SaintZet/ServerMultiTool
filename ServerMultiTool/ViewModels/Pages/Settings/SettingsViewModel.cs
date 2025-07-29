@@ -24,7 +24,7 @@ public partial class SettingsViewModel : BaseViewModel, IPage, IGeneralInfoAware
 {
     #region Observable Properties
 
-    public string Title => "Settings";
+    public string Title => PageNames.SettingsPage;
 
     [ObservableProperty]
     private bool _hasUnsavedChanges;

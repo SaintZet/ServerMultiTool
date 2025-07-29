@@ -5,6 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:globalConverters="clr-namespace:ServerMultiTool.ViewModels.Converters"
+    xmlns:constants="clr-namespace:ServerMultiTool.ViewModels.Contracts"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:windows="clr-namespace:ServerMultiTool.ViewModels.Windows"
     Width="1200"
@@ -132,14 +133,14 @@
                 <StackPanel Grid.Row="0" Margin="0,30,0,30">
                     <RadioButton
                         Command="{Binding NavigateCommand}"
-                        CommandParameter="Pipeline"
+                        CommandParameter="{x:Static constants:PageNames.PipelinePage}"
                         Content="CI/CD Pipeline"
                         IsChecked="{Binding SelectedMenu, Converter={StaticResource EqualityConverter}, ConverterParameter=Pipeline, Mode=OneWay}"
                         Style="{DynamicResource MenuRadioButtonStyle}"
                         Tag="{DynamicResource Airplane}" />
                     <RadioButton
                         Command="{Binding NavigateCommand}"
-                        CommandParameter="JsonParser"
+                        CommandParameter="{x:Static constants:PageNames.JsonParserPage}"
                         Content="Json Parser"
                         IsChecked="{Binding SelectedMenu, Converter={StaticResource EqualityConverter}, ConverterParameter=JsonParser, Mode=OneWay}"
                         Style="{DynamicResource MenuRadioButtonStyle}"
@@ -154,7 +155,7 @@
                         Tag="{DynamicResource Notifications}" />-->
                     <RadioButton
                         Command="{Binding NavigateCommand}"
-                        CommandParameter="Settings"
+                        CommandParameter="{x:Static constants:PageNames.SettingsPage}"
                         Content="Settings"
                         IsChecked="{Binding SelectedMenu, Converter={StaticResource EqualityConverter}, ConverterParameter=Settings, Mode=OneWay}"
                         Style="{DynamicResource MenuRadioButtonStyle}"

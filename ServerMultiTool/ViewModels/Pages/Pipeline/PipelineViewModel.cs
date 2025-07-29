@@ -29,7 +29,7 @@ namespace ServerMultiTool.ViewModels.Pages.Pipeline;
 public partial class PipelineViewModel : BaseViewModel, IPage, IGeneralInfoAware
 {
     #region Observable Properties
-    public string Title => "Pipeline";
+    public string Title => PageNames.PipelinePage;
 
     [ObservableProperty]
     private GeneralInfoViewModel _generalInfo = null!;
