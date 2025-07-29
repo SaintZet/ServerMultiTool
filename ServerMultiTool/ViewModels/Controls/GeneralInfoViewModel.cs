@@ -76,6 +76,7 @@ public partial class GeneralInfoViewModel : BaseViewModel
             AppSettingsService.SaveAppSettings(appSettings);
         }).ConfigureAwait(false);
     }
+
     partial void OnSelectedHttpDirectoryChanged(DirectoryModel? value)
     {
         if (value is null)
