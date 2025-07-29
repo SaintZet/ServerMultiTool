@@ -39,7 +39,7 @@ public static class PipelineProfilesService
 
     public static void LoadOrInitialize(string appDirectory)
     {
-        var path = Path.Combine(appDirectory, AppConstants.Folders.AppSettings);
+        var path = Path.Combine(appDirectory, AppConstants.Folders.AppSettings, AppConstants.Folders.Profiles);
         _pathToProfilesDirectory = path;
 
         var profiles = TryLoadSettingsFrom(path);

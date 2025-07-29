@@ -19,6 +19,7 @@
         public static class Folders
         {
             public const string AppSettings = "AppSettings";
+            public const string Profiles = "Profiles";
         }
     }
 }
