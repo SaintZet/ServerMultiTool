@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using ServerMultiTool.Model.ContinuousIntegration.GameServerLogs;
-using ServerMultiTool.ViewModels.Contracts;
+using ServerMultiTool.ViewModels.Contracts.BaseClasses;
 using ServerMultiTool.ViewModels.Pages.Settings.Wrappers;
 
 namespace ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers.OperationsWrappers;

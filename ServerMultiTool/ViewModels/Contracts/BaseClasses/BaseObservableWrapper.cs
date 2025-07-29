@@ -1,5 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace ServerMultiTool.ViewModels.Contracts;
+namespace ServerMultiTool.ViewModels.Contracts.BaseClasses;
 
 public class BaseObservableWrapper : ObservableObject;

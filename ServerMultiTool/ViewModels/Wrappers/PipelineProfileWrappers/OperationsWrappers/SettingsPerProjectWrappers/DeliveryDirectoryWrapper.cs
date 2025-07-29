@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using ServerMultiTool.Model.ContinuousDeployment.Delivery;
-using ServerMultiTool.ViewModels.Contracts;
+using ServerMultiTool.ViewModels.Contracts.BaseClasses;
 
 namespace ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers.OperationsWrappers.SettingsPerProjectWrappers;
 

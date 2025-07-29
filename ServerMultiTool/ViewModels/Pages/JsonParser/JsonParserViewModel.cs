@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
-using ServerMultiTool.ViewModels.Contracts;
+using ServerMultiTool.ViewModels.Contracts.BaseClasses;
+using ServerMultiTool.ViewModels.Contracts.Interfaces;
 using ServerMultiTool.ViewModels.Controls;
 
 namespace ServerMultiTool.ViewModels.Pages.JsonParser;
@@ -7,6 +8,8 @@ namespace ServerMultiTool.ViewModels.Pages.JsonParser;
 public partial class JsonParserViewModel : BaseViewModel, IPage
 {
     #region Observable Properties
+
+    public string Title => "JsonParser";
 
     [ObservableProperty]
     private GeneralInfoViewModel _generalInfo = null!;

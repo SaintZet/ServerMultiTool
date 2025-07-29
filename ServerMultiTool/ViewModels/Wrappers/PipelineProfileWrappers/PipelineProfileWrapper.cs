@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using ServerMultiTool.Model.Common;
 using ServerMultiTool.Model.Pipeline.Profiles;
-using ServerMultiTool.ViewModels.Contracts;
+using ServerMultiTool.ViewModels.Contracts.BaseClasses;
 using ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers.OperationsWrappers;
 using ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers.OperationsWrappers.SettingsPerProjectWrappers;
 using System.Collections.ObjectModel;

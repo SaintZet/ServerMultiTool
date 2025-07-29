@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ServerMultiTool.ViewModels.Contracts;
+using ServerMultiTool.ViewModels.Contracts.BaseClasses;
 using ServerMultiTool.ViewModels.Controls;
 using ServerMultiTool.ViewModels.Pages.JsonParser;
 using ServerMultiTool.ViewModels.Pages.Pipeline;

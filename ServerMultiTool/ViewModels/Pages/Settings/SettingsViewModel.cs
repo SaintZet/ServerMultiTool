@@ -4,6 +4,8 @@ using ServerMultiTool.Model.Common.DefaultValues;
 using ServerMultiTool.Model.Pipeline.Profiles;
 using ServerMultiTool.Model.Settings;
 using ServerMultiTool.ViewModels.Contracts;
+using ServerMultiTool.ViewModels.Contracts.BaseClasses;
+using ServerMultiTool.ViewModels.Contracts.Interfaces;
 using ServerMultiTool.ViewModels.Controls;
 using ServerMultiTool.ViewModels.Controls.EditPipelineProfile;
 using ServerMultiTool.ViewModels.Pages.Settings.Extensions;
@@ -21,6 +23,8 @@ namespace ServerMultiTool.ViewModels.Pages.Settings;
 public partial class SettingsViewModel : BaseViewModel, IPage
 {
     #region Observable Properties
+
+    public string Title => "Settings";
 
     [ObservableProperty]
     private bool _hasUnsavedChanges;

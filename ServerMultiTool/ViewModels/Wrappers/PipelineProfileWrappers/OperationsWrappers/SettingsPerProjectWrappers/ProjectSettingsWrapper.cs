@@ -2,7 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using ServerMultiTool.Model.Common;
 using ServerMultiTool.Model.ContinuousIntegration.MsBuild;
-using ServerMultiTool.ViewModels.Contracts;
+using ServerMultiTool.ViewModels.Contracts.BaseClasses;
 using System.Collections.ObjectModel;
 using System.Linq;
 

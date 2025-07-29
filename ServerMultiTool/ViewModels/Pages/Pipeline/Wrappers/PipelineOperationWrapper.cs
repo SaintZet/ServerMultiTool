@@ -1,6 +1,6 @@
 using ServerMultiTool.Model.Common;
 using ServerMultiTool.Model.Pipeline.Contracts;
-using ServerMultiTool.ViewModels.Contracts;
+using ServerMultiTool.ViewModels.Contracts.BaseClasses;
 using ServerMultiTool.ViewModels.Pages.Pipeline.Enums;
 using System;
 using System.Threading;

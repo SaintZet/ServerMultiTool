@@ -2,7 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using ServerMultiTool.Model.Common;
 using ServerMultiTool.Model.ContinuousIntegration.Git;
 using ServerMultiTool.Model.Settings;
-using ServerMultiTool.ViewModels.Contracts;
+using ServerMultiTool.ViewModels.Contracts.BaseClasses;
 using System.Linq;
 using System.Threading.Tasks;
 

@@ -1,8 +1,8 @@
 ﻿using ServerMultiTool.ViewModels.Controls;
 
-namespace ServerMultiTool.ViewModels.Contracts
+namespace ServerMultiTool.ViewModels.Contracts.Interfaces
 {
-    interface IPage
+    interface IGeneralInfoAware
     {
         public GeneralInfoViewModel GeneralInfo { get; set; }
     }

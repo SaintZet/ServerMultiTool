@@ -11,6 +11,8 @@ using ServerMultiTool.Model.Pipeline.Contracts;
 using ServerMultiTool.Model.Pipeline.Profiles;
 using ServerMultiTool.Model.Settings;
 using ServerMultiTool.ViewModels.Contracts;
+using ServerMultiTool.ViewModels.Contracts.BaseClasses;
+using ServerMultiTool.ViewModels.Contracts.Interfaces;
 using ServerMultiTool.ViewModels.Controls;
 using ServerMultiTool.ViewModels.Pages.Pipeline.Data;
 using ServerMultiTool.ViewModels.Pages.Pipeline.Enums;
@@ -28,6 +30,7 @@ namespace ServerMultiTool.ViewModels.Pages.Pipeline;
 public partial class PipelineViewModel : BaseViewModel, IPage
 {
     #region Observable Properties
+    public string Title => "Pipeline";
 
     [ObservableProperty]
     private GeneralInfoViewModel _generalInfo = null!;

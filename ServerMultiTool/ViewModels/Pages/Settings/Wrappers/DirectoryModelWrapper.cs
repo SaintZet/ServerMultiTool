@@ -1,5 +1,5 @@
 ﻿using ServerMultiTool.Model.Common;
-using ServerMultiTool.ViewModels.Contracts;
+using ServerMultiTool.ViewModels.Contracts.BaseClasses;
 
 namespace ServerMultiTool.ViewModels.Pages.Settings.Wrappers;
 
