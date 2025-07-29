@@ -40,19 +40,17 @@ public partial class SettingsViewModel : BaseViewModel, IPage
     [ObservableProperty]
     private EditPipelineProfileViewModel _editPipelineProfile = new();
 
+    [ObservableProperty]
     private PipelineProfileWrapper? _selectedPipelineProfile;
-    public PipelineProfileWrapper? SelectedPipelineProfile
-    {
-        get => _selectedPipelineProfile;
-        set
-        {
-            if (value is null || !SetProperty(ref _selectedPipelineProfile, value))
-                return;
 
-            _isChangingProfile = true;
-            EditPipelineProfile.UpdateFromProfile(value);
-            _isChangingProfile = false;
-        }
+    partial void OnSelectedPipelineProfileChanged(PipelineProfileWrapper? value)
+    {
+        if (value is null)
+            return;
+
+        _isChangingProfile = true;
+        EditPipelineProfile.UpdateFromProfile(value);
+        _isChangingProfile = false;
     }
 
     #endregion

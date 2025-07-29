@@ -32,37 +32,26 @@ public partial class PipelineViewModel : BaseViewModel, IPage
     [ObservableProperty]
     private GeneralInfoViewModel _generalInfo = null!;
 
+    [ObservableProperty]
     private PipelineProfile? _selectedPipelineProfile;
-    public PipelineProfile? SelectedPipelineProfile
+
+    partial void OnSelectedPipelineProfileChanged(PipelineProfile? value)
     {
-        get => _selectedPipelineProfile;
-        set
-        {
-            if (value is null || value.Equals(_selectedPipelineProfile))
-                return;
+        if (value is null)
+            return;
 
-            _selectedPipelineProfile = value;
-
-            UpdateSettings(value);
-            UpdatePipelineOperations(value);
-            UpdateGameServerLogServices(value);
-
-            OnPropertyChanged();
-        }
+        UpdateSettings(value);
+        UpdatePipelineOperations(value);
+        UpdateGameServerLogServices(value);
     }
 
+    [ObservableProperty]
     private bool _isPipelineRunning;
-    public bool IsPipelineRunning
-    {
-        get => _isPipelineRunning;
-        set
-        {
-            if (!SetProperty(ref _isPipelineRunning, value))
-                return;
 
-            StopPipelineCommand.NotifyCanExecuteChanged();
-            ExecutePipelineCommand.NotifyCanExecuteChanged();
-        }
+    partial void OnIsPipelineRunningChanged(bool value)
+    {
+        StopPipelineCommand.NotifyCanExecuteChanged();
+        ExecutePipelineCommand.NotifyCanExecuteChanged();
     }
 
     #endregion
