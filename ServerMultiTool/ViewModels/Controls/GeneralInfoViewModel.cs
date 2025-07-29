@@ -12,49 +12,15 @@ public partial class GeneralInfoViewModel : BaseViewModel
 {
     #region Observable Properties
 
-    [ObservableProperty]
-    private bool _canChangeStates = true;
+    [ObservableProperty] private bool _canChangeStates = true;
 
-    [ObservableProperty]
-    private string? _currentGitBranch;
+    [ObservableProperty] private string? _currentGitBranch;
 
-    [ObservableProperty]
-    private DirectoryModel[] _solutionDirectories = [];
+    [ObservableProperty] private DirectoryModel[] _solutionDirectories = [];
+    [ObservableProperty] private DirectoryModel? _selectedSolutionDirectory;
 
-    [ObservableProperty]
-    private DirectoryModel[] _httpDirectories = [];
-
-    private DirectoryModel? _selectedSolutionDirectory;
-    public DirectoryModel? SelectedSolutionDirectory
-    {
-        get => _selectedSolutionDirectory;
-        set
-        {
-            if (value is null || value.Equals(_selectedSolutionDirectory))
-                return;
-
-            _selectedSolutionDirectory = value;
-
-            OnUpdateSelectedSolutionDirectory(value).ConfigureAwait(false);
-            OnPropertyChanged();
-        }
-    }
-
-    private DirectoryModel? _selectedHttpDirectory;
-    public DirectoryModel? SelectedHttpDirectory
-    {
-        get => _selectedHttpDirectory;
-        set
-        {
-            if (value is null || value.Equals(_selectedHttpDirectory))
-                return;
-
-            _selectedHttpDirectory = value;
-
-            OnUpdateSelectedHttpDirectory(value);
-            OnPropertyChanged();
-        }
-    }
+    [ObservableProperty] private DirectoryModel[] _httpDirectories = [];
+    [ObservableProperty] private DirectoryModel? _selectedHttpDirectory;
 
     #endregion
 
@@ -95,21 +61,33 @@ public partial class GeneralInfoViewModel : BaseViewModel
         OnPropertyChanged(nameof(HttpDirectories));
     }
 
-    private async Task OnUpdateSelectedSolutionDirectory(DirectoryModel value)
+    partial void OnSelectedSolutionDirectoryChanged(DirectoryModel? value)
     {
-        CurrentGitBranch = await _gitService.GetCurrentBranchName(value.Path);
+        if (value is null)
+            return;
 
-        var appSettings = AppSettingsService.AppSettings;
-        appSettings.CurrentSolutionDirectoryName = value.Name;
+        Task.Run(async () =>
+        {
+            CurrentGitBranch = await _gitService.GetCurrentBranchName(value.Path);
 
-        AppSettingsService.SaveAppSettings(appSettings);
+            var appSettings = AppSettingsService.AppSettings;
+            appSettings.CurrentSolutionDirectoryName = value.Name;
+
+            AppSettingsService.SaveAppSettings(appSettings);
+        }).ConfigureAwait(false);
     }
-    private static void OnUpdateSelectedHttpDirectory(DirectoryModel value)
+    partial void OnSelectedHttpDirectoryChanged(DirectoryModel? value)
     {
-        var appSettings = AppSettingsService.AppSettings;
-        appSettings.CurrentHttpDirectoryName = value.Name;
+        if (value is null)
+            return;
 
-        AppSettingsService.SaveAppSettings(appSettings);
+        Task.Run(() =>
+        {
+            var appSettings = AppSettingsService.AppSettings;
+            appSettings.CurrentHttpDirectoryName = value.Name;
+
+            AppSettingsService.SaveAppSettings(appSettings);
+        }).ConfigureAwait(false);
     }
 
     #endregion
