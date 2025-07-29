@@ -201,51 +201,9 @@ public partial class PipelineViewModel : BaseViewModel, IPage, IGeneralInfoAware
     [RelayCommand(CanExecute = nameof(CanExecutePipeline))]
     private async Task ExecutePipeline()
     {
-        IsPipelineRunning = true;
-        GeneralInfo.CanChangeStates = false;
-
-        AppLogMessages.Clear();
-        PipelineOperations.ClearStatuses();
-
-        _pipelineCancellationTokenSource = new CancellationTokenSource();
-        var cancellationToken = _pipelineCancellationTokenSource.Token;
-
         try
         {
-            foreach (var operation in PipelineOperations)
-            {
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    PipelineOperations.CancelWaitingOperations();
-                    break;
-                }
-
-                operation.OperationStarted();
-
-                if (GeneralInfo.SelectedSolutionDirectory is not null)
-                    operation.UpdateSolutionDirectory(GeneralInfo.SelectedSolutionDirectory);
-
-                if (GeneralInfo.SelectedHttpDirectory is not null)
-                    operation.UpdateHttpDirectory(GeneralInfo.SelectedHttpDirectory);
-
-                try
-                {
-                    var result = await operation.ExecuteAsync(cancellationToken);
-
-                    if (result == OperationResult.Cancelled)
-                    {
-                        PipelineOperations.CancelWaitingOperations();
-                        break;
-                    }
-                }
-                catch (OperationCanceledException)
-                {
-                    operation.CancelOperation();
-
-                    PipelineOperations.CancelWaitingOperations();
-                    break;
-                }
-            }
+            await StartPipelineExecution();
         }
         catch (OperationCanceledException)
         {
@@ -257,9 +215,66 @@ public partial class PipelineViewModel : BaseViewModel, IPage, IGeneralInfoAware
         }
         finally
         {
-            IsPipelineRunning = false;
-            GeneralInfo.CanChangeStates = true;
+            CompletePipelineExecution();
         }
+    }
+
+    private async Task StartPipelineExecution()
+    {
+        IsPipelineRunning = true;
+        GeneralInfo.CanChangeStates = false;
+
+        AppLogMessages.Clear();
+        PipelineOperations.ClearStatuses();
+
+        _pipelineCancellationTokenSource = new CancellationTokenSource();
+        var cancellationToken = _pipelineCancellationTokenSource.Token;
+
+        await ExecuteOperationsSequentially(cancellationToken);
+    }
+
+    private async Task ExecuteOperationsSequentially(CancellationToken cancellationToken)
+    {
+        foreach (var operation in PipelineOperations)
+        {
+            if (cancellationToken.IsCancellationRequested)
+            {
+                PipelineOperations.CancelWaitingOperations();
+                break;
+            }
+
+            operation.OperationStarted();
+
+            if (GeneralInfo.SelectedSolutionDirectory is not null)
+                operation.UpdateSolutionDirectory(GeneralInfo.SelectedSolutionDirectory);
+
+            if (GeneralInfo.SelectedHttpDirectory is not null)
+                operation.UpdateHttpDirectory(GeneralInfo.SelectedHttpDirectory);
+
+            try
+            {
+                var result = await operation.ExecuteAsync(cancellationToken);
+
+                if (result == OperationResult.Cancelled)
+                {
+                    PipelineOperations.CancelWaitingOperations();
+                    break;
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                operation.CancelOperation();
+
+                PipelineOperations.CancelWaitingOperations();
+                break;
+            }
+        }
+    }
+
+    private void CompletePipelineExecution()
+    {
+        IsPipelineRunning = false;
+        GeneralInfo.CanChangeStates = true;
     }
 
     #endregion
