@@ -6,4 +6,5 @@ namespace ServerMultiTool.Model.ContinuousDeployment.Integrations;
 public class InternetInformationSettings
 {
     public bool Enable { get; set; }
+    public int RetryCount { get; set; } = 2;
 }

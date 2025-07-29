@@ -97,23 +97,15 @@ public partial class PipelineProfileWrapper : BaseObservableWrapper
         OnPropertyChanged(string.Empty);
     }
 
-    public PipelineProfile ToPipelineProfile()
+    public PipelineProfile ToPipelineProfile() => new()
     {
-        return new PipelineProfile
-        {
-            Name = Name,
-            SettingsPerProject = Enumerable.Select<ProjectSettingsWrapper, ProjectSettings>(SettingsPerProject, s => s.ToProjectSettings()).ToList(),
-            GitSettings = GitSettings.ToGitSettings(),
-            InternetInformationSettings = InternetInformationSettings.ToInternetInformationSettings(),
-            SqlExecutionSettings = SqlExecutionSettings.ToSqlExecutionSettings(),
-            WebBrowserSettings = WebBrowserSettings.ToWebBrowserSettings(),
-            MonitorLogFilesSettings = MonitorLogFilesSettings.ToLogMonitoringSettings(),
-            HttpMonitoringSettings = HttpMonitoringSettings.ToHttpMonitoringSettings()
-        };
-    }
-
-    partial void OnNameChanged(string value)
-    {
-        OnPropertyChanged(string.Empty);
-    }
+        Name = Name,
+        SettingsPerProject = Enumerable.Select<ProjectSettingsWrapper, ProjectSettings>(SettingsPerProject, s => s.ToProjectSettings()).ToList(),
+        GitSettings = GitSettings.ToGitSettings(),
+        InternetInformationSettings = InternetInformationSettings.ToInternetInformationSettings(),
+        SqlExecutionSettings = SqlExecutionSettings.ToSqlExecutionSettings(),
+        WebBrowserSettings = WebBrowserSettings.ToWebBrowserSettings(),
+        MonitorLogFilesSettings = MonitorLogFilesSettings.ToLogMonitoringSettings(),
+        HttpMonitoringSettings = HttpMonitoringSettings.ToHttpMonitoringSettings()
+    };
 }

@@ -6,23 +6,21 @@ namespace ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers.Operations
 
 public partial class InternetInformationSettingsWrapper : BaseObservableWrapper
 {
-    [ObservableProperty] private bool _enable;
+    [ObservableProperty]
+    private bool _enable;
+
+    [ObservableProperty]
+    private int _retryCount;
 
     public InternetInformationSettingsWrapper(InternetInformationSettings settings)
     {
         Enable = settings.Enable;
+        RetryCount = settings.RetryCount;
     }
 
-    public InternetInformationSettings ToInternetInformationSettings()
+    public InternetInformationSettings ToInternetInformationSettings() => new()
     {
-        return new InternetInformationSettings
-        {
-            Enable = Enable
-        };
-    }
-
-    partial void OnEnableChanged(bool value)
-    {
-        OnPropertyChanged(string.Empty);
-    }
+        Enable = Enable,
+        RetryCount = RetryCount,
+    };
 }

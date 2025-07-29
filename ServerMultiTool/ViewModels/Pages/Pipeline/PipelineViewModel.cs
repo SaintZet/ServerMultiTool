@@ -161,7 +161,7 @@ public partial class PipelineViewModel : BaseViewModel, IPage
             PipelineOperations.Add(new(new MsBuildService(pipeline.SettingsPerProject), "MsBuild"));
 
         if (pipeline.InternetInformationSettings.Enable)
-            PipelineOperations.Add(new(new InternetInformationServices("/stop"), "IIS Stop"));
+            PipelineOperations.Add(new(new InternetInformationServices("/stop", pipeline.InternetInformationSettings), "IIS Stop"));
 
         if (pipeline.SettingsPerProject.Any(x => x.DeliverySettings.EnableCustomDelivery || x.DeliverySettings.EnableDeliveryBin))
             PipelineOperations.Add(new(new DeliveryService(pipeline.SettingsPerProject), "Delivery"));
@@ -170,7 +170,7 @@ public partial class PipelineViewModel : BaseViewModel, IPage
             PipelineOperations.Add(new(new SqlExecutionService(pipeline.SqlExecutionSettings), "SQL"));
 
         if (pipeline.InternetInformationSettings.Enable)
-            PipelineOperations.Add(new(new InternetInformationServices("/start"), "IIS Start"));
+            PipelineOperations.Add(new(new InternetInformationServices("/start", pipeline.InternetInformationSettings), "IIS Start"));
 
         if (pipeline.WebBrowserSettings.Enable)
             PipelineOperations.Add(new(new WebBrowserService(pipeline.WebBrowserSettings), "Web"));

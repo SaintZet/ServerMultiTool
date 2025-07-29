@@ -11,8 +11,7 @@ public partial class LogMonitoringSettingsWrapper : BaseObservableWrapper
     private bool _enable;
 
     [ObservableProperty]
-    private
-    DirectoryModelWrapper _masterLogDirectory;
+    private DirectoryModelWrapper _masterLogDirectory;
 
     [ObservableProperty]
     private DirectoryModelWrapper _segmentLogDirectory;
@@ -21,7 +20,6 @@ public partial class LogMonitoringSettingsWrapper : BaseObservableWrapper
     {
         Enable = settings.Enable;
 
-        // Handle the master log directory
         if (settings.MasterLogDirectory != null)
         {
             MasterLogDirectory = new DirectoryModelWrapper(
@@ -32,9 +30,9 @@ public partial class LogMonitoringSettingsWrapper : BaseObservableWrapper
         {
             MasterLogDirectory = new DirectoryModelWrapper("Master Logs", string.Empty);
         }
+
         MasterLogDirectory.PropertyChanged += (_, _) => OnPropertyChanged(string.Empty);
 
-        // Handle the segment log directory
         if (settings.SegmentLogDirectory != null)
         {
             SegmentLogDirectory = new DirectoryModelWrapper(
@@ -45,21 +43,14 @@ public partial class LogMonitoringSettingsWrapper : BaseObservableWrapper
         {
             SegmentLogDirectory = new DirectoryModelWrapper("Segment Logs", string.Empty);
         }
+
         SegmentLogDirectory.PropertyChanged += (_, _) => OnPropertyChanged(string.Empty);
     }
 
-    public LogMonitoringSettings ToLogMonitoringSettings()
+    public LogMonitoringSettings ToLogMonitoringSettings() => new()
     {
-        return new LogMonitoringSettings
-        {
-            Enable = Enable,
-            MasterLogDirectory = MasterLogDirectory.ToDirectoryModel(),
-            SegmentLogDirectory = SegmentLogDirectory.ToDirectoryModel()
-        };
-    }
-
-    partial void OnEnableChanged(bool value)
-    {
-        OnPropertyChanged(string.Empty);
-    }
+        Enable = Enable,
+        MasterLogDirectory = MasterLogDirectory.ToDirectoryModel(),
+        SegmentLogDirectory = SegmentLogDirectory.ToDirectoryModel()
+    };
 }

@@ -6,8 +6,11 @@ namespace ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers.Operations
 
 public partial class WebBrowserSettingsWrapper : BaseObservableWrapper
 {
-    [ObservableProperty] private bool _enable;
-    [ObservableProperty] private string _url = string.Empty;
+    [ObservableProperty]
+    private bool _enable;
+
+    [ObservableProperty]
+    private string _url = string.Empty;
 
     public WebBrowserSettingsWrapper(WebBrowserSettings settings)
     {
@@ -15,22 +18,9 @@ public partial class WebBrowserSettingsWrapper : BaseObservableWrapper
         Url = settings.Url ?? string.Empty;
     }
 
-    public WebBrowserSettings ToWebBrowserSettings()
+    public WebBrowserSettings ToWebBrowserSettings() => new()
     {
-        return new WebBrowserSettings
-        {
-            Enable = Enable,
-            Url = Url
-        };
-    }
-
-    partial void OnEnableChanged(bool value)
-    {
-        OnPropertyChanged(string.Empty);
-    }
-
-    partial void OnUrlChanged(string value)
-    {
-        OnPropertyChanged(string.Empty);
-    }
+        Enable = Enable,
+        Url = Url
+    };
 }

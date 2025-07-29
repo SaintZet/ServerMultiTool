@@ -6,10 +6,17 @@ namespace ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers.Operations
 
 public partial class HttpMonitoringSettingsWrapper : BaseObservableWrapper
 {
-    [ObservableProperty] private bool _enable;
-    [ObservableProperty] private bool _pingSegment;
-    [ObservableProperty] private bool _pingMaster;
-    [ObservableProperty] private double _timeoutMinutes;
+    [ObservableProperty]
+    private bool _enable;
+
+    [ObservableProperty]
+    private bool _pingSegment;
+
+    [ObservableProperty]
+    private bool _pingMaster;
+
+    [ObservableProperty]
+    private double _timeoutMinutes;
 
     public HttpMonitoringSettingsWrapper(HttpMonitoringSettings settings)
     {
@@ -19,34 +26,11 @@ public partial class HttpMonitoringSettingsWrapper : BaseObservableWrapper
         TimeoutMinutes = settings.TimeoutMinutes;
     }
 
-    public HttpMonitoringSettings ToHttpMonitoringSettings()
+    public HttpMonitoringSettings ToHttpMonitoringSettings() => new()
     {
-        return new HttpMonitoringSettings
-        {
-            Enable = Enable,
-            PingSegment = PingSegment,
-            PingMaster = PingMaster,
-            TimeoutMinutes = TimeoutMinutes
-        };
-    }
-
-    partial void OnEnableChanged(bool value)
-    {
-        OnPropertyChanged(string.Empty);
-    }
-
-    partial void OnPingSegmentChanged(bool value)
-    {
-        OnPropertyChanged(string.Empty);
-    }
-
-    partial void OnPingMasterChanged(bool value)
-    {
-        OnPropertyChanged(string.Empty);
-    }
-
-    partial void OnTimeoutMinutesChanged(double value)
-    {
-        OnPropertyChanged(string.Empty);
-    }
+        Enable = Enable,
+        PingSegment = PingSegment,
+        PingMaster = PingMaster,
+        TimeoutMinutes = TimeoutMinutes
+    };
 }

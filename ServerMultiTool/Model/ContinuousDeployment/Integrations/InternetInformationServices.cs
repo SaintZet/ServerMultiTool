@@ -6,8 +6,11 @@ using System.Threading.Tasks;
 
 namespace ServerMultiTool.Model.ContinuousDeployment.Integrations;
 
-public class InternetInformationServices(string arguments) : PipelineOperation
+public class InternetInformationServices(string arguments, InternetInformationSettings settings) : PipelineOperation
 {
+    private readonly string _arguments = arguments;
+    private readonly InternetInformationSettings _settings = settings ?? new InternetInformationSettings();
+
     protected override async Task<OperationResult> ExecuteOperationsAsync(CancellationToken cancellationToken)
     {
         if (cancellationToken.IsCancellationRequested)
@@ -15,10 +18,8 @@ public class InternetInformationServices(string arguments) : PipelineOperation
 
         try
         {
-            var info = new ProcessStartInfo("iisreset.exe", arguments);
-
-            //todo: add retryCount parameter to settings
-            var response = await ProcessExecutor.StartProcessWithRetriesAsync(info, 2, cancellationToken);
+            var info = new ProcessStartInfo("iisreset.exe", _arguments);
+            var response = await ProcessExecutor.StartProcessWithRetriesAsync(info, _settings.RetryCount, cancellationToken);
 
             return response.Success ? OperationResult.Success : OperationResult.Failure;
         }

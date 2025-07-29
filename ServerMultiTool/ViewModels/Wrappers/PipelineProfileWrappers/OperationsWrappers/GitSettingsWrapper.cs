@@ -6,8 +6,11 @@ namespace ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers.Operations
 
 public partial class GitSettingsWrapper : BaseObservableWrapper
 {
-    [ObservableProperty] private bool _enable;
-    [ObservableProperty] private bool _shouldPull;
+    [ObservableProperty]
+    private bool _enable;
+
+    [ObservableProperty]
+    private bool _shouldPull;
 
     public GitSettingsWrapper(GitSettings settings)
     {
@@ -15,22 +18,9 @@ public partial class GitSettingsWrapper : BaseObservableWrapper
         ShouldPull = settings.ShouldPull;
     }
 
-    public GitSettings ToGitSettings()
+    public GitSettings ToGitSettings() => new()
     {
-        return new GitSettings
-        {
-            Enable = Enable,
-            ShouldPull = ShouldPull
-        };
-    }
-
-    partial void OnEnableChanged(bool value)
-    {
-        OnPropertyChanged(string.Empty);
-    }
-
-    partial void OnShouldPullChanged(bool value)
-    {
-        OnPropertyChanged(string.Empty);
-    }
+        Enable = Enable,
+        ShouldPull = ShouldPull
+    };
 }

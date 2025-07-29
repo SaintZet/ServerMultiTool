@@ -6,9 +6,14 @@ namespace ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers.Operations
 
 public partial class SqlExecutionSettingsWrapper : BaseObservableWrapper
 {
-    [ObservableProperty] private bool _enable;
-    [ObservableProperty] private string _connectionString = string.Empty;
-    [ObservableProperty] private string _pathToSqlScript = string.Empty;
+    [ObservableProperty]
+    private bool _enable;
+
+    [ObservableProperty]
+    private string _connectionString = string.Empty;
+
+    [ObservableProperty]
+    private string _pathToSqlScript = string.Empty;
 
     public SqlExecutionSettingsWrapper(SqlExecutionSettings settings)
     {
@@ -17,28 +22,10 @@ public partial class SqlExecutionSettingsWrapper : BaseObservableWrapper
         PathToSqlScript = settings.PathToSqlScript ?? string.Empty;
     }
 
-    public SqlExecutionSettings ToSqlExecutionSettings()
+    public SqlExecutionSettings ToSqlExecutionSettings() => new()
     {
-        return new SqlExecutionSettings
-        {
-            Enable = Enable,
-            ConnectionString = ConnectionString,
-            PathToSqlScript = PathToSqlScript
-        };
-    }
-
-    partial void OnEnableChanged(bool value)
-    {
-        OnPropertyChanged(string.Empty);
-    }
-
-    partial void OnConnectionStringChanged(string value)
-    {
-        OnPropertyChanged(string.Empty);
-    }
-
-    partial void OnPathToSqlScriptChanged(string value)
-    {
-        OnPropertyChanged(string.Empty);
-    }
+        Enable = Enable,
+        ConnectionString = ConnectionString,
+        PathToSqlScript = PathToSqlScript
+    };
 }
