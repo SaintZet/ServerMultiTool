@@ -2,6 +2,7 @@ using log4net;
 using Microsoft.IdentityModel.Tokens;
 using ServerMultiTool.Model.Common.DefaultValues;
 using ServerMultiTool.Model.Settings;
+using ServerMultiTool.ViewModels.Contracts;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -16,7 +17,6 @@ public static class PipelineProfilesService
 {
     private static readonly ILog Log = LogManager.GetLogger(nameof(PipelineProfilesService));
 
-    private const string SettingsFolderName = @"AppSettings\Profiles";
     private const string ProfileSearchPattern = "*.json";
 
     private static string _pathToProfilesDirectory = null!;
@@ -39,7 +39,7 @@ public static class PipelineProfilesService
 
     public static void LoadOrInitialize(string appDirectory)
     {
-        var path = Path.Combine(appDirectory, SettingsFolderName);
+        var path = Path.Combine(appDirectory, AppConstants.Folders.AppSettings);
         _pathToProfilesDirectory = path;
 
         var profiles = TryLoadSettingsFrom(path);
@@ -170,7 +170,7 @@ public static class PipelineProfilesService
 
     public static void SavePipelineProfiles(IEnumerable<PipelineProfile> profiles)
     {
-        var pathToFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, SettingsFolderName);
+        var pathToFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, AppConstants.Folders.AppSettings);
 
         if (!Directory.Exists(pathToFolder))
             Directory.CreateDirectory(pathToFolder);

@@ -13,4 +13,12 @@
         public const string General = "General";
         public const string PipelineProfiles = "PipelineProfiles";
     }
+
+    public static class AppConstants
+    {
+        public static class Folders
+        {
+            public const string AppSettings = "AppSettings";
+        }
+    }
 }
