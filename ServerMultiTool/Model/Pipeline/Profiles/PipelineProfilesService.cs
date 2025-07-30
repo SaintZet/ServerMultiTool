@@ -170,7 +170,7 @@ public static class PipelineProfilesService
 
     public static void SavePipelineProfiles(IEnumerable<PipelineProfile> profiles)
     {
-        var pathToFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, AppConstants.Folders.AppSettings);
+        var pathToFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, AppConstants.Folders.AppSettings, AppConstants.Folders.Profiles);
 
         if (!Directory.Exists(pathToFolder))
             Directory.CreateDirectory(pathToFolder);

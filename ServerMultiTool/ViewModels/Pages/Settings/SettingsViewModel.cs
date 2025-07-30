@@ -12,7 +12,6 @@ using ServerMultiTool.ViewModels.Pages.Settings.Extensions;
 using ServerMultiTool.ViewModels.Pages.Settings.Wrappers;
 using ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
@@ -26,26 +25,17 @@ public partial class SettingsViewModel : BaseViewModel, IPage, IGeneralInfoAware
 
     public string Title => PageNames.SettingsPage;
 
-    [ObservableProperty]
-    private bool _hasUnsavedChanges;
+    [ObservableProperty] private bool _hasUnsavedChanges;
 
-    [ObservableProperty]
-    private string _selectedTabKey = SettingsPageTabKeys.General;
+    [ObservableProperty] private string _selectedTabKey = SettingsPageTabKeys.General;
 
-    [ObservableProperty]
-    private DirectoryModelWrapper? _selectedSolutionDirectory;
+    [ObservableProperty] private DirectoryModelWrapper? _selectedSolutionDirectory;
+    [ObservableProperty] private DirectoryModelWrapper? _selectedHttpDirectory;
 
-    [ObservableProperty]
-    private DirectoryModelWrapper? _selectedHttpDirectory;
+    [ObservableProperty] private GeneralInfoViewModel _generalInfo = null!;
 
-    [ObservableProperty]
-    private GeneralInfoViewModel _generalInfo = null!;
-
-    [ObservableProperty]
-    private EditPipelineProfileViewModel _editPipelineProfile = new();
-
-    [ObservableProperty]
-    private PipelineProfileWrapper? _selectedPipelineProfile;
+    [ObservableProperty] private PipelineProfileWrapper? _selectedPipelineProfile;
+    [ObservableProperty] private EditPipelineProfileViewModel _editPipelineProfile = new();
 
     partial void OnSelectedPipelineProfileChanged(PipelineProfileWrapper? value)
     {
@@ -53,7 +43,9 @@ public partial class SettingsViewModel : BaseViewModel, IPage, IGeneralInfoAware
             return;
 
         _isChangingProfile = true;
+
         EditPipelineProfile.UpdateFromProfile(value);
+
         _isChangingProfile = false;
     }
 
@@ -73,9 +65,9 @@ public partial class SettingsViewModel : BaseViewModel, IPage, IGeneralInfoAware
 
     #region Collections
 
-    public ObservableCollection<DirectoryModelWrapper> SolutionDirectories { get; private set; } = [];
-    public ObservableCollection<DirectoryModelWrapper> HttpDirectories { get; private set; } = [];
-    public ObservableCollection<PipelineProfileWrapper> PipelineProfiles { get; private set; } = [];
+    [ObservableProperty] private ObservableCollection<DirectoryModelWrapper> _solutionDirectories = [];
+    [ObservableProperty] private ObservableCollection<DirectoryModelWrapper> _httpDirectories = [];
+    [ObservableProperty] private ObservableCollection<PipelineProfileWrapper> _pipelineProfiles = [];
 
     #endregion
 
@@ -129,8 +121,6 @@ public partial class SettingsViewModel : BaseViewModel, IPage, IGeneralInfoAware
             PipelineProfiles.Select(w => new PipelineProfileWrapper(w.ToPipelineProfile()))
         );
 
-        OnPropertyChanged(nameof(PipelineProfiles));
-
         RestoreSelectedPipelineProfile(selectedName);
     }
 
@@ -166,22 +156,6 @@ public partial class SettingsViewModel : BaseViewModel, IPage, IGeneralInfoAware
         HasUnsavedChanges = true;
     }
 
-    private void OnPipelineProfilesCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
-    {
-        if (_isInitializing)
-            return;
-
-        if (e.NewItems != null)
-            foreach (PipelineProfileWrapper wrapper in e.NewItems)
-                wrapper.PropertyChanged += OnProfilePropertyChanged;
-
-        if (e.OldItems != null)
-            foreach (PipelineProfileWrapper wrapper in e.OldItems)
-                wrapper.PropertyChanged -= OnProfilePropertyChanged;
-
-        HasUnsavedChanges = true;
-    }
-
     private void OnProfilePropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
         if (_isInitializing)
@@ -197,8 +171,6 @@ public partial class SettingsViewModel : BaseViewModel, IPage, IGeneralInfoAware
     [RelayCommand]
     private void SaveSettings()
     {
-        HasUnsavedChanges = false;
-
         var appSettings = AppSettingsService.AppSettings;
 
         appSettings.SolutionDirectories = SolutionDirectories.ToStructArray();
@@ -218,19 +190,17 @@ public partial class SettingsViewModel : BaseViewModel, IPage, IGeneralInfoAware
         );
 
         GeneralInfo.UpdateData();
+
+        HasUnsavedChanges = false;
     }
 
     [RelayCommand]
     private void CancelSettings()
     {
         _isInitializing = true;
-        HasUnsavedChanges = false;
 
         SolutionDirectories = _initialSolutionDirectories.CloneWithPropertyChanged(OnDirectoryPropertyChanged);
-        OnPropertyChanged(nameof(SolutionDirectories));
-
         HttpDirectories = _initialHttpDirectories.CloneWithPropertyChanged(OnDirectoryPropertyChanged);
-        OnPropertyChanged(nameof(HttpDirectories));
 
         var selectedName = SelectedPipelineProfile?.Name;
 
@@ -243,11 +213,11 @@ public partial class SettingsViewModel : BaseViewModel, IPage, IGeneralInfoAware
             PipelineProfiles.Add(newWrapper);
         }
 
-        OnPropertyChanged(nameof(PipelineProfiles));
-
         RestoreSelectedPipelineProfile(selectedName);
 
         _isInitializing = false;
+
+        HasUnsavedChanges = false;
     }
 
     [RelayCommand]
@@ -281,10 +251,11 @@ public partial class SettingsViewModel : BaseViewModel, IPage, IGeneralInfoAware
     [RelayCommand]
     private void AddSolutionDirectory()
     {
-        HasUnsavedChanges = true;
         var newDirectory = new DirectoryModelWrapper("New Solution", "");
         newDirectory.PropertyChanged += OnDirectoryPropertyChanged;
         SolutionDirectories.Add(newDirectory);
+
+        HasUnsavedChanges = true;
     }
 
     private bool CanRemoveSolutionDirectory() =>
@@ -293,20 +264,20 @@ public partial class SettingsViewModel : BaseViewModel, IPage, IGeneralInfoAware
     [RelayCommand(CanExecute = nameof(CanRemoveSolutionDirectory))]
     private void RemoveSolutionDirectory(DirectoryModelWrapper directory)
     {
-        HasUnsavedChanges = true;
-
         directory.PropertyChanged -= OnDirectoryPropertyChanged;
         SolutionDirectories.Remove(directory);
+
+        HasUnsavedChanges = true;
     }
 
     [RelayCommand]
     private void AddHttpDirectory()
     {
-        HasUnsavedChanges = true;
-
         var newDirectory = new DirectoryModelWrapper("New HTTP", "");
         newDirectory.PropertyChanged += OnDirectoryPropertyChanged;
         HttpDirectories.Add(newDirectory);
+
+        HasUnsavedChanges = true;
     }
 
     private bool CanRemoveHttpDirectory() =>
@@ -315,10 +286,10 @@ public partial class SettingsViewModel : BaseViewModel, IPage, IGeneralInfoAware
     [RelayCommand(CanExecute = nameof(CanRemoveHttpDirectory))]
     private void RemoveHttpDirectory(DirectoryModelWrapper directory)
     {
-        HasUnsavedChanges = true;
-
         directory.PropertyChanged -= OnDirectoryPropertyChanged;
         HttpDirectories.Remove(directory);
+
+        HasUnsavedChanges = true;
     }
 
     [RelayCommand]

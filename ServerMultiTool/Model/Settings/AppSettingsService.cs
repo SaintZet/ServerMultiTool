@@ -37,13 +37,13 @@ namespace ServerMultiTool.Model.Settings
             _appSettingsDirectory = appSettingsDirectory;
 
             var pathToFolder = Path.Combine(appSettingsDirectory, SettingsFolderName);
+
             if (Directory.Exists(pathToFolder) is false)
                 Directory.CreateDirectory(pathToFolder);
 
-            var pathToFile = Path.Combine(pathToFolder, SettingsFileName);
-            _pathToSettingFile = pathToFile;
+            _pathToSettingFile = Path.Combine(pathToFolder, SettingsFileName);
 
-            AppSettings = File.Exists(pathToFile) ? LoadSettingsFrom(pathToFile) : InitializeDefaultSettings(pathToFile);
+            AppSettings = File.Exists(_pathToSettingFile) ? LoadSettingsFrom(_pathToSettingFile) : InitializeDefaultSettings(_pathToSettingFile);
 
             var logConfig = new FileInfo(AppSettings.Log4NetConfigPath);
             XmlConfigurator.Configure(logConfig);

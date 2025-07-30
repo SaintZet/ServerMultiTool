@@ -3,6 +3,7 @@ using ServerMultiTool.Model.Common;
 using ServerMultiTool.Model.ContinuousIntegration.Git;
 using ServerMultiTool.Model.Settings;
 using ServerMultiTool.ViewModels.Contracts.BaseClasses;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -10,8 +11,6 @@ namespace ServerMultiTool.ViewModels.Controls;
 
 public partial class GeneralInfoViewModel : BaseViewModel
 {
-    #region Observable Properties
-
     [ObservableProperty] private bool _canChangeStates = true;
 
     [ObservableProperty] private string? _currentGitBranch;
@@ -22,30 +21,18 @@ public partial class GeneralInfoViewModel : BaseViewModel
     [ObservableProperty] private DirectoryModel[] _httpDirectories = [];
     [ObservableProperty] private DirectoryModel? _selectedHttpDirectory;
 
-    #endregion
-
-    #region Private Fields
-
     private readonly GitService _gitService = new();
-
-    #endregion
-
-    #region Constructor
 
     public GeneralInfoViewModel()
     {
         var appSettings = AppSettingsService.AppSettings;
 
+        SelectedSolutionDirectory = appSettings.SolutionDirectories.FirstOrDefault(x => x.Name == appSettings.CurrentSolutionDirectoryName);
         SolutionDirectories = appSettings.SolutionDirectories;
+
+        SelectedHttpDirectory = appSettings.HttpDirectories.FirstOrDefault(x => x.Name == appSettings.CurrentHttpDirectoryName);
         HttpDirectories = appSettings.HttpDirectories;
-
-        SelectedSolutionDirectory = SolutionDirectories.FirstOrDefault(x => x.Name == appSettings.CurrentSolutionDirectoryName);
-        SelectedHttpDirectory = HttpDirectories.FirstOrDefault(x => x.Name == appSettings.CurrentHttpDirectoryName);
     }
-
-    #endregion
-
-    #region Methods
 
     public void UpdateData()
     {
@@ -53,43 +40,67 @@ public partial class GeneralInfoViewModel : BaseViewModel
 
         SolutionDirectories = appSettings.SolutionDirectories;
         HttpDirectories = appSettings.HttpDirectories;
+    }
 
-        SelectedSolutionDirectory = SolutionDirectories.FirstOrDefault(x => x.Name == appSettings.CurrentSolutionDirectoryName);
-        SelectedHttpDirectory = HttpDirectories.FirstOrDefault(x => x.Name == appSettings.CurrentHttpDirectoryName);
+    partial void OnSolutionDirectoriesChanged(DirectoryModel[] value)
+    {
+        SelectedSolutionDirectory = EnsureSelectedDirectory(SelectedSolutionDirectory, value);
+    }
 
-        OnPropertyChanged(nameof(SolutionDirectories));
-        OnPropertyChanged(nameof(HttpDirectories));
+    partial void OnHttpDirectoriesChanged(DirectoryModel[] value)
+    {
+        SelectedHttpDirectory = EnsureSelectedDirectory(SelectedHttpDirectory, value);
     }
 
     partial void OnSelectedSolutionDirectoryChanged(DirectoryModel? value)
     {
-        if (value is null)
-            return;
+        UpdateSelectedDirectory(
+            selected: value,
+            available: SolutionDirectories,
+            updateSetting: (ref AppSettings settings, string name) => settings.CurrentSolutionDirectoryName = name
+        );
+
+        if (value is null) return;
 
         Task.Run(async () =>
         {
             CurrentGitBranch = await _gitService.GetCurrentBranchName(value.Path);
-
-            var appSettings = AppSettingsService.AppSettings;
-            appSettings.CurrentSolutionDirectoryName = value.Name;
-
-            AppSettingsService.SaveAppSettings(appSettings);
         }).ConfigureAwait(false);
+
     }
 
     partial void OnSelectedHttpDirectoryChanged(DirectoryModel? value)
     {
-        if (value is null)
-            return;
+        UpdateSelectedDirectory(
+            selected: value,
+            available: HttpDirectories,
+            updateSetting: (ref AppSettings settings, string name) => settings.CurrentHttpDirectoryName = name
+        );
+    }
+
+    public delegate void RefAppSettingsUpdate(ref AppSettings settings, string name);
+
+    private static void UpdateSelectedDirectory(
+    DirectoryModel? selected,
+    DirectoryModel[] available,
+    RefAppSettingsUpdate updateSetting)
+    {
+        selected = EnsureSelectedDirectory(selected, available);
+        if (selected is null) return;
 
         Task.Run(() =>
         {
             var appSettings = AppSettingsService.AppSettings;
-            appSettings.CurrentHttpDirectoryName = value.Name;
-
+            updateSetting(ref appSettings, selected.Name);
             AppSettingsService.SaveAppSettings(appSettings);
         }).ConfigureAwait(false);
     }
 
-    #endregion
+    private static DirectoryModel? EnsureSelectedDirectory(DirectoryModel? selected, DirectoryModel[] available)
+    {
+        if (available is null || available.Length is 0)
+            return null;
+
+        return (selected is null || available.Contains(selected) is false) ? available.First() : selected;
+    }
 }

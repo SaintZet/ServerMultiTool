@@ -29,14 +29,12 @@ namespace ServerMultiTool.ViewModels.Pages.Pipeline;
 public partial class PipelineViewModel : BaseViewModel, IPage, IGeneralInfoAware
 {
     #region Observable Properties
+
     public string Title => PageNames.PipelinePage;
 
-    [ObservableProperty]
-    private GeneralInfoViewModel _generalInfo = null!;
+    [ObservableProperty] private GeneralInfoViewModel _generalInfo = null!;
 
-    [ObservableProperty]
-    private PipelineProfile? _selectedPipelineProfile;
-
+    [ObservableProperty] private PipelineProfile? _selectedPipelineProfile;
     partial void OnSelectedPipelineProfileChanged(PipelineProfile? value)
     {
         if (value is null)
@@ -47,9 +45,7 @@ public partial class PipelineViewModel : BaseViewModel, IPage, IGeneralInfoAware
         UpdateGameServerLogServices(value);
     }
 
-    [ObservableProperty]
-    private bool _isPipelineRunning;
-
+    [ObservableProperty] private bool _isPipelineRunning;
     partial void OnIsPipelineRunningChanged(bool value)
     {
         StopPipelineCommand.NotifyCanExecuteChanged();
@@ -66,6 +62,7 @@ public partial class PipelineViewModel : BaseViewModel, IPage, IGeneralInfoAware
     private readonly Logger _logger;
 
     private CancellationTokenSource? _pipelineCancellationTokenSource;
+
     #endregion
 
     #region Collections
