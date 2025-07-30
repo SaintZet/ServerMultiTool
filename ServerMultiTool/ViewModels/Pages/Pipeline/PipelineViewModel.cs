@@ -31,8 +31,11 @@ public partial class PipelineViewModel : BaseViewModel, IPage, IGeneralInfoAware
         if (value is null)
             return;
 
-        PipelineProfileManager.UpdateProfile(value);
-        _pipelineExecutor.UpdatePipelineOperations(value);
+        _profileManager.UpdateProfile(value);
+
+        _pipelineExecutor.UpdateOperations(value);
+        OnPropertyChanged(nameof(PipelineOperations));
+
         _logManager.UpdateLogServices(value);
     }
 
@@ -48,7 +51,7 @@ public partial class PipelineViewModel : BaseViewModel, IPage, IGeneralInfoAware
     #region Services
 
     private readonly PipelineProfileManager _profileManager;
-    private readonly PipelineExecutionManager _pipelineExecutor;
+    private readonly PipelineExecutor _pipelineExecutor;
     private readonly LogMonitoringManager _logManager;
 
     #endregion
@@ -69,7 +72,7 @@ public partial class PipelineViewModel : BaseViewModel, IPage, IGeneralInfoAware
     {
         _logManager = new LogMonitoringManager();
 
-        _pipelineExecutor = new PipelineExecutionManager(_logManager);
+        _pipelineExecutor = new PipelineExecutor(_logManager);
         _pipelineExecutor.PipelineStateChanged += OnPipelineStateChanged;
 
         _profileManager = new PipelineProfileManager();

@@ -1,64 +1,35 @@
 using ServerMultiTool.Model.Common.Logs;
-using ServerMultiTool.Model.ContinuousDeployment.Delivery;
-using ServerMultiTool.Model.ContinuousDeployment.Integrations;
-using ServerMultiTool.Model.ContinuousIntegration.Git;
-using ServerMultiTool.Model.ContinuousIntegration.MsBuild;
 using ServerMultiTool.Model.Pipeline.Contracts;
 using ServerMultiTool.Model.Pipeline.Profiles;
 using ServerMultiTool.ViewModels.Controls;
 using ServerMultiTool.ViewModels.Pages.Pipeline.Data;
 using ServerMultiTool.ViewModels.Pages.Pipeline.Wrappers;
 using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace ServerMultiTool.ViewModels.Pages.Pipeline.Managers;
 
-public class PipelineExecutionManager
+public class PipelineExecutor
 {
     private readonly Logger _logger;
     private readonly LogMonitoringManager _logManager;
-
     private CancellationTokenSource? _pipelineCancellationTokenSource;
 
-    public PipelineOperationCollection PipelineOperations { get; } = [];
+    public PipelineOperationCollection PipelineOperations { get; private set; } = [];
 
     public event EventHandler<bool>? PipelineStateChanged;
 
-    public PipelineExecutionManager(LogMonitoringManager logManager)
+    public PipelineExecutor(LogMonitoringManager logManager)
     {
         _logger = new Logger(GetType());
         _logManager = logManager;
     }
 
-    public void UpdatePipelineOperations(PipelineProfile pipeline)
+    public void UpdateOperations(PipelineProfile pipelineProfile)
     {
-        PipelineOperations.Clear();
-
-        if (pipeline.GitSettings.Enable)
-            PipelineOperations.Add(new(new GitService(pipeline.GitSettings), "Git"));
-
-        if (pipeline.SettingsPerProject.Any(x => x.MsBuildSettings.Enable))
-            PipelineOperations.Add(new(new MsBuildService(pipeline.SettingsPerProject), "MsBuild"));
-
-        if (pipeline.InternetInformationSettings.Enable)
-            PipelineOperations.Add(new(new InternetInformationServices("/stop", pipeline.InternetInformationSettings), "IIS Stop"));
-
-        if (pipeline.SettingsPerProject.Any(x => x.DeliverySettings.EnableCustomDelivery || x.DeliverySettings.EnableDeliveryBin))
-            PipelineOperations.Add(new(new DeliveryService(pipeline.SettingsPerProject), "Delivery"));
-
-        if (pipeline.SqlExecutionSettings.Enable)
-            PipelineOperations.Add(new(new SqlExecutionService(pipeline.SqlExecutionSettings), "SQL"));
-
-        if (pipeline.InternetInformationSettings.Enable)
-            PipelineOperations.Add(new(new InternetInformationServices("/start", pipeline.InternetInformationSettings), "IIS Start"));
-
-        if (pipeline.WebBrowserSettings.Enable)
-            PipelineOperations.Add(new(new WebBrowserService(pipeline.WebBrowserSettings), "Web"));
-
-        if (pipeline.HttpMonitoringSettings.Enable)
-            PipelineOperations.Add(new(new HttpMonitoringService(pipeline.HttpMonitoringSettings), "Http"));
+        var operations = PipelineOperationFactory.CreatePipelineOperations(pipelineProfile);
+        PipelineOperations = operations;
     }
 
     public void StopPipeline()

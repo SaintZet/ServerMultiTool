@@ -29,7 +29,7 @@ public class PipelineProfileManager
         return PipelineProfiles.FirstOrDefault(x => x.Name == profileName) ?? PipelineProfiles.FirstOrDefault();
     }
 
-    public static void UpdateProfile(PipelineProfile profile)
+    public void UpdateProfile(PipelineProfile profile)
     {
         var appSettings = AppSettingsService.AppSettings;
         appSettings.CurrentPipelineProfileName = profile.Name;

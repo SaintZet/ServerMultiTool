@@ -19,7 +19,7 @@ public class ScrollingListBox : ListBox
     }
 
     public static readonly DependencyProperty AutoScrollToEndProperty =
-        DependencyProperty.Register("AutoScrollToEnd", typeof(bool), typeof(ScrollingListBox),
+        DependencyProperty.Register(nameof(AutoScrollToEnd), typeof(bool), typeof(ScrollingListBox),
                                     new PropertyMetadata(true));
 
     public ScrollingListBox()
