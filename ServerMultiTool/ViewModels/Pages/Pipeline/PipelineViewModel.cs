@@ -188,15 +188,13 @@ public partial class PipelineViewModel : BaseViewModel, IPage, IGeneralInfoAware
 
     #region Commands
 
-    private bool CanStopPipeline => _isPipelineRunning;
-
-    [RelayCommand(CanExecute = nameof(CanStopPipeline))]
+    [RelayCommand(CanExecute = nameof(IsPipelineRunning))]
     private void StopPipeline()
     {
         _pipelineCancellationTokenSource?.Cancel();
     }
 
-    public bool CanExecutePipeline => GeneralInfo?.CanChangeStates is true && _isPipelineRunning is false;
+    public bool CanExecutePipeline => GeneralInfo.CanChangeStates is true && IsPipelineRunning is false;
 
     [RelayCommand(CanExecute = nameof(CanExecutePipeline))]
     private async Task ExecutePipeline()
