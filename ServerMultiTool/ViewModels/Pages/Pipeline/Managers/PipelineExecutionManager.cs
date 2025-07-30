@@ -7,6 +7,7 @@ using ServerMultiTool.Model.Pipeline.Contracts;
 using ServerMultiTool.Model.Pipeline.Profiles;
 using ServerMultiTool.ViewModels.Controls;
 using ServerMultiTool.ViewModels.Pages.Pipeline.Data;
+using ServerMultiTool.ViewModels.Pages.Pipeline.Wrappers;
 using System;
 using System.Linq;
 using System.Threading;
@@ -104,37 +105,55 @@ public class PipelineExecutionManager
     {
         foreach (var operation in PipelineOperations)
         {
-            if (cancellationToken.IsCancellationRequested)
+            if (ShouldCancelExecution(cancellationToken))
+                break;
+
+            PrepareOperation(generalInfo, operation);
+
+            if (!await ExecuteOperationSafely(operation, cancellationToken))
+                break;
+        }
+    }
+
+    private bool ShouldCancelExecution(CancellationToken cancellationToken)
+    {
+        if (!cancellationToken.IsCancellationRequested)
+            return false;
+
+        PipelineOperations.CancelWaitingOperations();
+        return true;
+    }
+
+    private static void PrepareOperation(GeneralInfoViewModel generalInfo, PipelineOperationWrapper operation)
+    {
+        operation.OperationStarted();
+
+        if (generalInfo.SelectedSolutionDirectory is not null)
+            operation.UpdateSolutionDirectory(generalInfo.SelectedSolutionDirectory);
+
+        if (generalInfo.SelectedHttpDirectory is not null)
+            operation.UpdateHttpDirectory(generalInfo.SelectedHttpDirectory);
+    }
+
+    private async Task<bool> ExecuteOperationSafely(PipelineOperationWrapper operation, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var result = await operation.ExecuteAsync(cancellationToken);
+
+            if (result == OperationResult.Cancelled)
             {
                 PipelineOperations.CancelWaitingOperations();
-                break;
+                return false;
             }
 
-            operation.OperationStarted();
-
-            if (generalInfo.SelectedSolutionDirectory is not null)
-                operation.UpdateSolutionDirectory(generalInfo.SelectedSolutionDirectory);
-
-            if (generalInfo.SelectedHttpDirectory is not null)
-                operation.UpdateHttpDirectory(generalInfo.SelectedHttpDirectory);
-
-            try
-            {
-                var result = await operation.ExecuteAsync(cancellationToken);
-
-                if (result == OperationResult.Cancelled)
-                {
-                    PipelineOperations.CancelWaitingOperations();
-                    break;
-                }
-            }
-            catch (OperationCanceledException)
-            {
-                operation.CancelOperation();
-
-                PipelineOperations.CancelWaitingOperations();
-                break;
-            }
+            return true;
+        }
+        catch (OperationCanceledException)
+        {
+            operation.CancelOperation();
+            PipelineOperations.CancelWaitingOperations();
+            return false;
         }
     }
 
