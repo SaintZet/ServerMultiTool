@@ -15,35 +15,35 @@ namespace ServerMultiTool.Model.Settings
         private const string SettingsFolderName = "AppSettings";
         private const string SettingsFileName = "AppSettings.json";
 
-        private static string _pathToSettingFile = null!;
-        private static string _appSettingsDirectory = null!;
+        private static string PathToSettingFile = null!;
+        private static string AppSettingsDirectory = null!;
 
         public static AppSettings AppSettings { get; private set; }
 
         public static void SaveAppSettings(AppSettings settings)
         {
-            if (string.IsNullOrEmpty(_pathToSettingFile))
+            if (string.IsNullOrEmpty(PathToSettingFile))
                 throw new InvalidOperationException("Settings file path is not initialized.");
 
-            SaveSettingsTo(settings, _pathToSettingFile);
+            SaveSettingsTo(settings, PathToSettingFile);
             Log.Info($"{nameof(AppSettings)} have been successfully saved.");
         }
 
         public static AppSettings LoadOrInitialize() =>
-            LoadOrInitialize(_appSettingsDirectory);
+            LoadOrInitialize(AppSettingsDirectory);
 
         public static AppSettings LoadOrInitialize(string appSettingsDirectory)
         {
-            _appSettingsDirectory = appSettingsDirectory;
+            AppSettingsDirectory = appSettingsDirectory;
 
             var pathToFolder = Path.Combine(appSettingsDirectory, SettingsFolderName);
 
             if (Directory.Exists(pathToFolder) is false)
                 Directory.CreateDirectory(pathToFolder);
 
-            _pathToSettingFile = Path.Combine(pathToFolder, SettingsFileName);
+            PathToSettingFile = Path.Combine(pathToFolder, SettingsFileName);
 
-            AppSettings = File.Exists(_pathToSettingFile) ? LoadSettingsFrom(_pathToSettingFile) : InitializeDefaultSettings(_pathToSettingFile);
+            AppSettings = File.Exists(PathToSettingFile) ? LoadSettingsFrom(PathToSettingFile) : InitializeDefaultSettings(PathToSettingFile);
 
             var logConfig = new FileInfo(AppSettings.Log4NetConfigPath);
             XmlConfigurator.Configure(logConfig);

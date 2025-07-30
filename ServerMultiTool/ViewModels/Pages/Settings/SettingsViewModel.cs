@@ -44,7 +44,7 @@ public partial class SettingsViewModel : BaseViewModel, IPage, IGeneralInfoAware
 
         _isChangingProfile = true;
 
-        EditPipelineProfile.UpdateFromProfile(value);
+        EditPipelineProfile.Profile = value;
 
         _isChangingProfile = false;
     }

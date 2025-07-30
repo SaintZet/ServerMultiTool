@@ -11,20 +11,11 @@ namespace ServerMultiTool.ViewModels.Controls.EditPipelineProfile;
 
 public partial class EditPipelineProfileViewModel : BaseViewModel
 {
-    private PipelineProfileWrapper? _profile;
-    public PipelineProfileWrapper? Profile
-    {
-        get => _profile;
-        private set
-        {
-            if (SetProperty(ref _profile, value))
-                UpdateProjectSettings();
-        }
-    }
-
     [ObservableProperty] private ObservableCollection<ProjectSettingsWrapper> _projectSettings = [];
 
-    private void UpdateProjectSettings()
+    [ObservableProperty] private PipelineProfileWrapper? _profile;
+
+    partial void OnProfileChanged(PipelineProfileWrapper? value)
     {
         ProjectSettings.Clear();
 
@@ -42,11 +33,6 @@ public partial class EditPipelineProfileViewModel : BaseViewModel
     {
         OnPropertyChanged(nameof(ProjectSettings));
         OnPropertyChanged(string.Empty);
-    }
-
-    public void UpdateFromProfile(PipelineProfileWrapper profile)
-    {
-        Profile = profile;
     }
 
     [RelayCommand]
