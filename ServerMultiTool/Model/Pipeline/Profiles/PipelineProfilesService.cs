@@ -18,6 +18,8 @@ public static class PipelineProfilesService
     private static readonly ILog Log = LogManager.GetLogger(nameof(PipelineProfilesService));
 
     private const string ProfileSearchPattern = "*.json";
+    private const NotifyFilters WATCHER_NOTIFY_FILTERS =
+       NotifyFilters.LastWrite | NotifyFilters.CreationTime;
 
     private static string _pathToProfilesDirectory = null!;
     private static FileSystemWatcher? _settingsFileWatcher;
@@ -68,7 +70,7 @@ public static class PipelineProfilesService
             _settingsFileWatcher = new FileSystemWatcher(path)
             {
                 Filter = ProfileSearchPattern,
-                NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.CreationTime
+                NotifyFilter = WATCHER_NOTIFY_FILTERS
             };
 
             _settingsFileWatcher.Changed += OnSettingsFileChanged;
