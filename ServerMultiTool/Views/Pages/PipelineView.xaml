@@ -136,7 +136,7 @@
                         Margin="0,5,5,5"
                         DisplayMemberPath="Name"
                         IsEnabled="{Binding GeneralInfo.CanChangeStates}"
-                        ItemsSource="{Binding PipelineProfiles, Mode=TwoWay}"
+                        ItemsSource="{Binding PipelineProfiles, Mode=OneWay}"
                         SelectedItem="{Binding SelectedPipelineProfile, Mode=TwoWay}"
                         Style="{DynamicResource ComboBoxStyle}" />
 
