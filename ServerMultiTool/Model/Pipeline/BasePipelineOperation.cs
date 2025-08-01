@@ -4,7 +4,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ServerMultiTool.Model.Pipeline.Contracts;
+namespace ServerMultiTool.Model.Pipeline;
 
 public abstract class BasePipelineOperation : IPipelineOperation
 {

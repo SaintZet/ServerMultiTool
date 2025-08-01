@@ -1,5 +1,5 @@
 using ServerMultiTool.Model.Common.Logs;
-using ServerMultiTool.Model.Pipeline.Contracts;
+using ServerMultiTool.Model.Pipeline;
 using ServerMultiTool.ViewModels.Controls;
 using ServerMultiTool.ViewModels.Pages.Pipeline.Data;
 using ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers;

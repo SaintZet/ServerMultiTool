@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using ServerMultiTool.Model.Common;
-using ServerMultiTool.Model.Pipeline.Contracts;
-using ServerMultiTool.Model.Pipeline.Profiles;
+using ServerMultiTool.Model.Pipeline;
 using ServerMultiTool.ViewModels.Pages.Pipeline.Data;
 using ServerMultiTool.ViewModels.Pages.Pipeline.Enums;
 using ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers.OperationsWrappers;

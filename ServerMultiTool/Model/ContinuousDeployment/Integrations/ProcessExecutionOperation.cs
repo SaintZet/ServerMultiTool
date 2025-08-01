@@ -1,5 +1,5 @@
 ﻿using ServerMultiTool.Model.Common.ProcessExecutor;
-using ServerMultiTool.Model.Pipeline.Contracts;
+using ServerMultiTool.Model.Pipeline;
 using System;
 using System.Diagnostics;
 using System.Threading;

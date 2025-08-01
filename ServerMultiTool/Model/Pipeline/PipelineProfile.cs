@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace ServerMultiTool.Model.Pipeline.Profiles;
+namespace ServerMultiTool.Model.Pipeline;
 
 [Serializable]
 public class PipelineProfile

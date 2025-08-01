@@ -1,4 +1,4 @@
-using ServerMultiTool.Model.Pipeline.Profiles;
+using ServerMultiTool.Model.Pipeline;
 using ServerMultiTool.Model.Settings;
 using ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers;
 using System;

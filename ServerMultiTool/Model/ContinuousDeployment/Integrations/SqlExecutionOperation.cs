@@ -1,6 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 using ServerMultiTool.Model.Common.Logs;
-using ServerMultiTool.Model.Pipeline.Contracts;
+using ServerMultiTool.Model.Pipeline;
 using System;
 using System.IO;
 using System.Threading;

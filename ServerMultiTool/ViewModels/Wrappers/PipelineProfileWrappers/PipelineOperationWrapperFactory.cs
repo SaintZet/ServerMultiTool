@@ -2,7 +2,7 @@
 using ServerMultiTool.Model.ContinuousDeployment.Integrations;
 using ServerMultiTool.Model.ContinuousIntegration.Git;
 using ServerMultiTool.Model.ContinuousIntegration.MsBuild;
-using ServerMultiTool.Model.Pipeline.Contracts;
+using ServerMultiTool.Model.Pipeline;
 using ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers.OperationsWrappers;
 using System;
 

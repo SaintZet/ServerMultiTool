@@ -1,7 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ServerMultiTool.Model.Common.DefaultValues;
-using ServerMultiTool.Model.Pipeline.Profiles;
+using ServerMultiTool.Model.Pipeline;
 using ServerMultiTool.Model.Settings;
 using ServerMultiTool.ViewModels.Contracts;
 using ServerMultiTool.ViewModels.Contracts.BaseClasses;

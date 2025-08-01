@@ -1,8 +1,7 @@
-﻿using ServerMultiTool.Model.Pipeline.Contracts;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
-namespace ServerMultiTool.Model.Pipeline.Profiles
+namespace ServerMultiTool.Model.Pipeline
 {
     public class PipelineStep(string name, string desctiption, int order = 0)
     {

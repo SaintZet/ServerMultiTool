@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using ServerMultiTool.Model.Common;
 using ServerMultiTool.Model.ContinuousIntegration.Git;
-using ServerMultiTool.Model.Pipeline.Contracts;
+using ServerMultiTool.Model.Pipeline;
 using System.Threading;
 using System.Threading.Tasks;
 

@@ -1,4 +1,4 @@
-namespace ServerMultiTool.Model.Pipeline.Contracts;
+namespace ServerMultiTool.Model.Pipeline;
 
 public enum PipelineOperationResult
 {

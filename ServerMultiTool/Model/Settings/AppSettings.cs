@@ -4,7 +4,7 @@ using System;
 namespace ServerMultiTool.Model.Settings;
 
 [Serializable]
-public struct AppSettings
+public class AppSettings
 {
     public string CurrentSolutionDirectoryName { get; set; }
     public DirectoryModel[] SolutionDirectories { get; set; }

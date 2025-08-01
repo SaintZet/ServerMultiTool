@@ -1,5 +1,5 @@
 ﻿using ServerMultiTool.Model.Common;
-using ServerMultiTool.Model.Pipeline.Contracts;
+using ServerMultiTool.Model.Pipeline;
 using ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers;
 using ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers.OperationsWrappers;
 using System.Collections.Generic;

@@ -1,6 +1,6 @@
 using ServerMultiTool.Model.Common;
 using ServerMultiTool.Model.Common.ProcessExecutor;
-using ServerMultiTool.Model.Pipeline.Contracts;
+using ServerMultiTool.Model.Pipeline;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

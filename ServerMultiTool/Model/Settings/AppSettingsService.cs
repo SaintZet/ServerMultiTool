@@ -1,82 +1,67 @@
 using log4net;
 using log4net.Config;
-using ServerMultiTool.Model.Common.DefaultValues;
 using System;
 using System.IO;
-using System.Text.Json;
 
 namespace ServerMultiTool.Model.Settings
 {
     public static class AppSettingsService
     {
         private static readonly ILog Log = LogManager.GetLogger(nameof(AppSettingsService));
-        private static readonly JsonSerializerOptions JsonSerializerOptions = new() { WriteIndented = true };
+        private static IAppSettingsRepository? _repository;
+        private static string _appSettingsDirectory = null!;
 
-        private const string SettingsFolderName = "AppSettings";
-        private const string SettingsFileName = "AppSettings.json";
+        // Keep a static reference for backward compatibility
+        public static AppSettings AppSettings { get; private set; } = default;
 
-        private static string PathToSettingFile = null!;
-        private static string AppSettingsDirectory = null!;
-
-        public static AppSettings AppSettings { get; private set; }
-
-        public static void SaveAppSettings(AppSettings settings)
+        // Initialize the repository
+        private static IAppSettingsRepository Repository
         {
-            if (string.IsNullOrEmpty(PathToSettingFile))
-                throw new InvalidOperationException("Settings file path is not initialized.");
+            get
+            {
+                if (_repository == null)
+                {
+                    if (string.IsNullOrEmpty(_appSettingsDirectory))
+                        throw new InvalidOperationException("AppSettingsDirectory is not initialized. Call LoadOrInitialize first.");
 
-            SaveSettingsTo(settings, PathToSettingFile);
-            Log.Info($"{nameof(AppSettings)} have been successfully saved.");
+                    _repository = new AppSettingsRepository(_appSettingsDirectory, Log);
+                }
+                return _repository;
+            }
         }
 
-        public static AppSettings LoadOrInitialize() =>
-            LoadOrInitialize(AppSettingsDirectory);
-
-        public static AppSettings LoadOrInitialize(string appSettingsDirectory)
+        public static AppSettings SaveAppSettings(AppSettings settings)
         {
-            AppSettingsDirectory = appSettingsDirectory;
+            Repository.Update(settings);
+            AppSettings = settings; // Update static reference
+            Log.Info($"{nameof(AppSettings)} have been successfully saved.");
+            return settings;
+        }
 
-            var pathToFolder = Path.Combine(appSettingsDirectory, SettingsFolderName);
-
-            if (Directory.Exists(pathToFolder) is false)
-                Directory.CreateDirectory(pathToFolder);
-
-            PathToSettingFile = Path.Combine(pathToFolder, SettingsFileName);
-
-            AppSettings = File.Exists(PathToSettingFile) ? LoadSettingsFrom(PathToSettingFile) : InitializeDefaultSettings(PathToSettingFile);
-
-            var logConfig = new FileInfo(AppSettings.Log4NetConfigPath);
-            XmlConfigurator.Configure(logConfig);
-
-            Log.Info($"{nameof(AppSettings)} have been successfully loaded.");
-
+        public static AppSettings UpdateAppSettingsField<T>(string fieldName, T value)
+        {
+            Repository.UpdateField(fieldName, value);
+            AppSettings = Repository.Get(); // Update static reference
+            Log.Info($"{nameof(AppSettings)} field '{fieldName}' has been successfully updated.");
             return AppSettings;
         }
 
-        private static AppSettings LoadSettingsFrom(string path)
+        public static AppSettings LoadOrInitialize() =>
+            LoadOrInitialize(AppDomain.CurrentDomain.BaseDirectory);
+
+        public static AppSettings LoadOrInitialize(string appSettingsDirectory)
         {
-            var json = File.ReadAllText(path);
-            return JsonSerializer.Deserialize<AppSettings>(json);
-        }
+            _appSettingsDirectory = appSettingsDirectory;
+            var settings = Repository.LoadOrInitialize(appSettingsDirectory);
 
-        private static AppSettings InitializeDefaultSettings(string path)
-        {
-            var defaultSettings = DefaultAppSettings.GetDefaultAppSettings();
+            // Configure log4net
+            var logConfig = new FileInfo(settings.Log4NetConfigPath);
+            XmlConfigurator.Configure(logConfig);
 
-            SaveSettingsTo(defaultSettings, path);
+            Log.Info($"{nameof(AppSettings)} have been successfully loaded.");
+            AppSettings = settings; // Update static reference
 
-            return defaultSettings;
-        }
-
-        private static void SaveSettingsTo(AppSettings settings, string path)
-        {
-            var directoryPath = Path.GetDirectoryName(path)
-                ?? throw new Exception(); // todo: add message
-
-            Directory.CreateDirectory(directoryPath);
-
-            var json = JsonSerializer.Serialize(settings, JsonSerializerOptions);
-            File.WriteAllTextAsync(path, json);
+            return settings;
         }
     }
 }

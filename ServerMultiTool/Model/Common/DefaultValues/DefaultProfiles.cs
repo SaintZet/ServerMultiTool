@@ -3,7 +3,7 @@ using ServerMultiTool.Model.ContinuousDeployment.Integrations;
 using ServerMultiTool.Model.ContinuousIntegration.GameServerLogs;
 using ServerMultiTool.Model.ContinuousIntegration.Git;
 using ServerMultiTool.Model.ContinuousIntegration.MsBuild;
-using ServerMultiTool.Model.Pipeline.Profiles;
+using ServerMultiTool.Model.Pipeline;
 using System.IO;
 
 namespace ServerMultiTool.Model.Common.DefaultValues;
