@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ServerMultiTool.Model.Common.Logs;
-using ServerMultiTool.Model.Pipeline.Profiles;
 using ServerMultiTool.Model.Settings;
 using ServerMultiTool.ViewModels.Contracts;
 using ServerMultiTool.ViewModels.Contracts.BaseClasses;
@@ -9,6 +8,7 @@ using ServerMultiTool.ViewModels.Contracts.Interfaces;
 using ServerMultiTool.ViewModels.Controls;
 using ServerMultiTool.ViewModels.Pages.Pipeline.Data;
 using ServerMultiTool.ViewModels.Pages.Pipeline.Managers;
+using ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
@@ -25,8 +25,8 @@ public partial class PipelineViewModel : BaseViewModel, IPage, IGeneralInfoAware
 
     [ObservableProperty] private GeneralInfoViewModel _generalInfo = null!;
 
-    [ObservableProperty] private PipelineProfile? _selectedPipelineProfile;
-    partial void OnSelectedPipelineProfileChanged(PipelineProfile? value)
+    [ObservableProperty] private PipelineProfileWrapper? _selectedPipelineProfile;
+    partial void OnSelectedPipelineProfileChanged(PipelineProfileWrapper? value)
     {
         if (value is null)
             return;
@@ -34,7 +34,7 @@ public partial class PipelineViewModel : BaseViewModel, IPage, IGeneralInfoAware
         _profileManager.UpdateProfile(value);
 
         _pipelineExecutor.UpdateOperations(value);
-        OnPropertyChanged(nameof(PipelineOperations));
+        OnPropertyChanged(nameof(PipelineSteps));
 
         _logManager.UpdateLogServices(value);
     }
@@ -52,14 +52,14 @@ public partial class PipelineViewModel : BaseViewModel, IPage, IGeneralInfoAware
 
     private readonly PipelineProfileManager _profileManager;
     private readonly PipelineExecutor _pipelineExecutor;
-    private readonly LogMonitoringManager _logManager;
+    private readonly GsLogMonitor _logManager;
 
     #endregion
 
     #region Collections
 
-    [ObservableProperty] private List<PipelineProfile> _pipelineProfiles = [];
-    public PipelineOperationCollection PipelineOperations => _pipelineExecutor.PipelineOperations;
+    [ObservableProperty] List<PipelineProfileWrapper> _pipelineProfiles = [];
+    public PipelineStepsCollection PipelineSteps => _pipelineExecutor.PipelineSteps;
     public ObservableCollection<LogEvent> AppLogMessages => _logManager.AppLogMessages;
     public ObservableCollection<LogEvent> MasterLogMessages => _logManager.MasterLogMessages;
     public ObservableCollection<LogEvent> SegmentLogMessages => _logManager.SegmentLogMessages;
@@ -70,7 +70,7 @@ public partial class PipelineViewModel : BaseViewModel, IPage, IGeneralInfoAware
 
     public PipelineViewModel()
     {
-        _logManager = new LogMonitoringManager();
+        _logManager = new GsLogMonitor();
 
         _pipelineExecutor = new PipelineExecutor(_logManager);
         _pipelineExecutor.PipelineStateChanged += OnPipelineStateChanged;

@@ -14,7 +14,7 @@ using Timer = System.Timers.Timer;
 
 namespace ServerMultiTool.Model.ContinuousIntegration.GameServerLogs;
 
-public partial class LogMonitoringService : BaseEventAggregator
+public partial class GsLogMonitoringService : BaseEventAggregator
 {
     private const string LogFileNameFormat = @"yyyy-MM-dd\\all.HH-00";
     private const string LogFileExtension = ".log";
@@ -32,7 +32,7 @@ public partial class LogMonitoringService : BaseEventAggregator
     private bool _isEnabled;
     private DirectoryModel _monitoredDirectory = null!;
 
-    public LogMonitoringService()
+    public GsLogMonitoringService()
     {
         _logger = new Logger(GetType());
 
@@ -144,7 +144,7 @@ public partial class LogMonitoringService : BaseEventAggregator
         var lines = await ReadRemainingLinesAsync(reader, cancellationToken);
         var filteredLines = FilterAndShortenLines(lines);
 
-        foreach (var logEvent in LogMonitoringUtils.ParseLogLines(filteredLines))
+        foreach (var logEvent in GsLogMonitoringUtils.ParseLogLines(filteredLines))
             Publish(logEvent);
     }
 

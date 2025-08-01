@@ -1,26 +1,29 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using ServerMultiTool.Model.Common;
-using ServerMultiTool.Model.ContinuousIntegration.Git;
+using ServerMultiTool.Model.ContinuousDeployment.Integrations;
 using ServerMultiTool.Model.Pipeline.Contracts;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers.OperationsWrappers;
 
-public partial class GitPullOperationWrapper : ObservableObject, IPipelineOperationWrapper
+public partial class IisResetOperationWrapper : ObservableObject, IPipelineOperationWrapper
 {
     [ObservableProperty] bool _enabled;
 
-    public string Name => "Git Pull";
-    public string Description => "default description";
+    [ObservableProperty] int _retryCount;
 
-    readonly GitPullOperation _operation;
+    public string Name => "IIS Reset";
+    public string Description => "Resets the IIS server to apply changes.";
 
-    public GitPullOperationWrapper(GitPullOperation operation)
+    readonly IisResetOperation _operation;
+
+    public IisResetOperationWrapper(IisResetOperation operation)
     {
         _operation = operation;
 
         Enabled = operation.Enabled;
+        RetryCount = operation.RetryCount;
     }
 
     public async Task<PipelineOperationResult> ExecuteAsync(CancellationToken cancellationToken)
@@ -31,6 +34,7 @@ public partial class GitPullOperationWrapper : ObservableObject, IPipelineOperat
     public IPipelineOperation ToOriginal()
     {
         _operation.EnableOperation(Enabled);
+        _operation.UpdateRetryCount(RetryCount);
 
         return _operation;
     }

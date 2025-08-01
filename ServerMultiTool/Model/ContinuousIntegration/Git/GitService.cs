@@ -1,79 +1,40 @@
+using ServerMultiTool.Model.Common.Logs;
 using ServerMultiTool.Model.Common.ProcessExecutor;
-using ServerMultiTool.Model.Pipeline.Contracts;
-using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace ServerMultiTool.Model.ContinuousIntegration.Git;
 
-public class GitService : PipelineOperation
+public class GitService
 {
-    private readonly GitSettings? _settings;
+    private readonly Logger _logger;
+    private readonly ProcessExecutor _processExecutor;
 
-    public GitService() { }
-
-    public GitService(GitSettings? settings) =>
-        _settings = settings;
-
-    protected override async Task<OperationResult> ExecuteOperationsAsync(CancellationToken cancellationToken)
+    public GitService()
     {
-        if (cancellationToken.IsCancellationRequested)
-            return OperationResult.Cancelled;
-
-        try
-        {
-            ProcessOutput? output = null;
-
-            if (_settings!.ShouldPull is false)
-            {
-                Logger.LogWarnWithPublish("Git features are enabled, but no one is marked.");
-                return OperationResult.PartialSuccess; // git pull is not required and the only one operation right now
-            }
-
-            output = await GitPull(cancellationToken);
-
-            if (output is null)
-            {
-                Logger.LogErrorWithPublish("Git pull operation failed or was cancelled.");
-                return OperationResult.Failure;
-            }
-
-            if (output.Success is false)
-            {
-                if (output.Output is not null)
-                    Logger.LogError(output.Output);
-
-                Logger.LogErrorWithPublish("Something is going wrong. Check log details for more information.");
-                return OperationResult.Failure;
-            }
-
-            return OperationResult.Success;
-        }
-        catch (OperationCanceledException)
-        {
-            return OperationResult.Cancelled;
-        }
+        _logger = new Logger(GetType());
+        _processExecutor = new ProcessExecutor(_logger);
     }
 
-    public async Task<string?> GetCurrentBranchName(string solutionDirectory)
+    public async Task<string?> GetCurrentBranchNameAsync(string workingDirectory, CancellationToken cancellationToken = default)
     {
         const string fileName = "git";
         const string arguments = "rev-parse --abbrev-ref HEAD";
 
-        var info = new ProcessStartInfo(fileName, arguments) { WorkingDirectory = solutionDirectory };
-        var response = await ProcessExecutor.StartProcessOnceAsync(info);
+        var info = new ProcessStartInfo(fileName, arguments) { WorkingDirectory = workingDirectory };
+        var response = await _processExecutor.StartProcessOnceAsync(info, cancellationToken);
 
         return response.Output;
     }
 
-    private async Task<ProcessOutput?> GitPull(CancellationToken cancellationToken)
+    public async Task<ProcessOutput?> GitPullAsync(string workingDirectory, CancellationToken cancellationToken)
     {
         const string fileName = "git";
         const string arguments = "pull";
 
-        var info = new ProcessStartInfo(fileName, arguments) { WorkingDirectory = SolutionDirectory };
-        var response = await ProcessExecutor.StartProcessOnceAsync(info, cancellationToken);
+        var info = new ProcessStartInfo(fileName, arguments) { WorkingDirectory = workingDirectory };
+        var response = await _processExecutor.StartProcessOnceAsync(info, cancellationToken);
 
         return response;
     }

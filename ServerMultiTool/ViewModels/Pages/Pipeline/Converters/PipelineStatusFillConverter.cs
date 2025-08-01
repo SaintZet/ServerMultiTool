@@ -11,16 +11,16 @@ namespace ServerMultiTool.ViewModels.Pages.Pipeline.Converters
     {
         public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
-            if (value is not PipelineOperationStatus milestoneIndicator)
+            if (value is not PipelineStepStatus milestoneIndicator)
                 return DependencyProperty.UnsetValue;
 
             return milestoneIndicator switch
             {
-                PipelineOperationStatus.Wait => GetClone("PrimaryGrayColor"),
-                PipelineOperationStatus.InProgress => GetClone("PrimaryGreenColor"),
-                PipelineOperationStatus.Success => GetClone("PrimaryGreenColor"),
-                PipelineOperationStatus.Warning => GetClone("PrimaryYellowColor"),
-                PipelineOperationStatus.Failure => GetClone("PrimaryRedColor"),
+                PipelineStepStatus.Wait => GetClone("PrimaryGrayColor"),
+                PipelineStepStatus.InProgress => GetClone("PrimaryGreenColor"),
+                PipelineStepStatus.Success => GetClone("PrimaryGreenColor"),
+                PipelineStepStatus.Warning => GetClone("PrimaryYellowColor"),
+                PipelineStepStatus.Failure => GetClone("PrimaryRedColor"),
                 _ => DependencyProperty.UnsetValue
             };
         }

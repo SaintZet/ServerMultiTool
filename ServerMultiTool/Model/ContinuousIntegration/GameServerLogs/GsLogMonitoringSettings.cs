@@ -4,7 +4,7 @@ using System;
 namespace ServerMultiTool.Model.ContinuousIntegration.GameServerLogs;
 
 [Serializable]
-public class LogMonitoringSettings
+public class GsLogMonitoringSettings
 {
     public bool Enable { get; set; }
     public DirectoryModel? MasterLogDirectory { get; set; }

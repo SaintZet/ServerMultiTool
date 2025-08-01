@@ -1,35 +1,35 @@
 using ServerMultiTool.Model.Common.EventAggregator;
 using ServerMultiTool.Model.Common.Logs;
 using ServerMultiTool.Model.ContinuousIntegration.GameServerLogs;
-using ServerMultiTool.Model.Pipeline.Profiles;
+using ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers;
 using System.Collections.ObjectModel;
 using System.Windows;
 
 namespace ServerMultiTool.ViewModels.Pages.Pipeline.Managers;
 
-public class LogMonitoringManager
+public class GsLogMonitor
 {
-    private readonly LogMonitoringService _masterLogService;
-    private readonly LogMonitoringService _segmentLogService;
+    private readonly GsLogMonitoringService _masterLogService;
+    private readonly GsLogMonitoringService _segmentLogService;
 
     public ObservableCollection<LogEvent> AppLogMessages { get; } = [];
     public ObservableCollection<LogEvent> MasterLogMessages { get; } = [];
     public ObservableCollection<LogEvent> SegmentLogMessages { get; } = [];
 
-    public LogMonitoringManager()
+    public GsLogMonitor()
     {
-        _masterLogService = new LogMonitoringService();
+        _masterLogService = new GsLogMonitoringService();
         _masterLogService.Subscribe<LogEvent>(AddNewMasterLogEvent);
 
-        _segmentLogService = new LogMonitoringService();
+        _segmentLogService = new GsLogMonitoringService();
         _segmentLogService.Subscribe<LogEvent>(AddNewSegmentLogEvent);
 
         GlobalEventAggregator.Instance.Subscribe<LogEvent>(AddNewGlobalLogEvent);
     }
 
-    public void UpdateLogServices(PipelineProfile profile)
+    public void UpdateLogServices(PipelineProfileWrapper profile)
     {
-        var settings = profile.MonitorLogFilesSettings;
+        var settings = profile.ToOriginal().GsLogMonitoringSettings;
 
         _ = _masterLogService.UpdateSettings(settings.Enable, settings.MasterLogDirectory);
         _ = _segmentLogService.UpdateSettings(settings.Enable, settings.SegmentLogDirectory);

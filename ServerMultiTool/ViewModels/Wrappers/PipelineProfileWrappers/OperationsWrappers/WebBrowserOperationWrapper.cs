@@ -1,22 +1,22 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using ServerMultiTool.Model.Common;
-using ServerMultiTool.Model.ContinuousIntegration.Git;
+using ServerMultiTool.Model.ContinuousDeployment.Integrations;
 using ServerMultiTool.Model.Pipeline.Contracts;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers.OperationsWrappers;
 
-public partial class GitPullOperationWrapper : ObservableObject, IPipelineOperationWrapper
+public partial class WebBrowserOperationWrapper : ObservableObject, IPipelineOperationWrapper
 {
     [ObservableProperty] bool _enabled;
 
-    public string Name => "Git Pull";
-    public string Description => "default description";
+    public string Name => "Web Browser Operation";
+    public string Description => "This operation opens a web browser to a specified URL.";
 
-    readonly GitPullOperation _operation;
+    readonly WebBrowserOperation _operation;
 
-    public GitPullOperationWrapper(GitPullOperation operation)
+    public WebBrowserOperationWrapper(WebBrowserOperation operation)
     {
         _operation = operation;
 

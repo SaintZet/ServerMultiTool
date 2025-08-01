@@ -64,7 +64,7 @@ public partial class GeneralInfoViewModel : BaseViewModel
 
         Task.Run(async () =>
         {
-            CurrentGitBranch = await _gitService.GetCurrentBranchName(value.Path);
+            CurrentGitBranch = await _gitService.GetCurrentBranchNameAsync(value.Path);
         }).ConfigureAwait(false);
 
     }

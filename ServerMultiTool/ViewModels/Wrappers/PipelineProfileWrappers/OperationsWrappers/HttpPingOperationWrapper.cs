@@ -1,22 +1,22 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using ServerMultiTool.Model.Common;
-using ServerMultiTool.Model.ContinuousIntegration.Git;
+using ServerMultiTool.Model.ContinuousDeployment.Integrations;
 using ServerMultiTool.Model.Pipeline.Contracts;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers.OperationsWrappers;
 
-public partial class GitPullOperationWrapper : ObservableObject, IPipelineOperationWrapper
+public partial class HttpPingOperationWrapper : ObservableObject, IPipelineOperationWrapper
 {
     [ObservableProperty] bool _enabled;
 
-    public string Name => "Git Pull";
-    public string Description => "default description";
+    public string Name => "HTTP Ping";
+    public string Description => "Pings a specified HTTP endpoint to check its availability.";
 
-    readonly GitPullOperation _operation;
+    readonly HttpPingOperation _operation;
 
-    public GitPullOperationWrapper(GitPullOperation operation)
+    public HttpPingOperationWrapper(HttpPingOperation operation)
     {
         _operation = operation;
 
@@ -31,7 +31,6 @@ public partial class GitPullOperationWrapper : ObservableObject, IPipelineOperat
     public IPipelineOperation ToOriginal()
     {
         _operation.EnableOperation(Enabled);
-
         return _operation;
     }
 

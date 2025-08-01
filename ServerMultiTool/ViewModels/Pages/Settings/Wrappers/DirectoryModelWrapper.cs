@@ -39,7 +39,7 @@ public class DirectoryModelWrapper : BaseObservableWrapper
         }
     }
 
-    public DirectoryModel ToDirectoryModel()
+    public DirectoryModel ToOriginal()
     {
         return _directoryModel;
     }

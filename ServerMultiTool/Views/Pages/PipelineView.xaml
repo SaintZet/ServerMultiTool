@@ -172,7 +172,7 @@
                         Grid.Column="4"
                         HorizontalAlignment="Right"
                         VerticalAlignment="Center"
-                        ItemsSource="{Binding PipelineOperations}">
+                        ItemsSource="{Binding PipelineSteps}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <UniformGrid
@@ -190,7 +190,7 @@
                                         Height="16"
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
-                                        Fill="{Binding PipelineOperationStatus, Mode=OneWay, Converter={StaticResource PipelineStatusFillConverter}}"
+                                        Fill="{Binding PipelineStepStatus, Mode=OneWay, Converter={StaticResource PipelineStatusFillConverter}}"
                                         Stroke="{DynamicResource PrimaryWhiteColor}"
                                         StrokeThickness="2">
                                         <Ellipse.Effect>
@@ -199,7 +199,7 @@
                                         <Ellipse.Style>
                                             <Style TargetType="Ellipse">
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding PipelineOperationStatus}" Value="InProgress">
+                                                    <DataTrigger Binding="{Binding PipelineStepStatus}" Value="InProgress">
                                                         <DataTrigger.EnterActions>
                                                             <BeginStoryboard Name="FlashingStoryboard" Storyboard="{StaticResource GreenFlashingAnimation}" />
                                                         </DataTrigger.EnterActions>

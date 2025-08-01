@@ -1,9 +1,8 @@
 using ServerMultiTool.Model.Common.Logs;
 using ServerMultiTool.Model.Pipeline.Contracts;
-using ServerMultiTool.Model.Pipeline.Profiles;
 using ServerMultiTool.ViewModels.Controls;
 using ServerMultiTool.ViewModels.Pages.Pipeline.Data;
-using ServerMultiTool.ViewModels.Pages.Pipeline.Wrappers;
+using ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,23 +12,23 @@ namespace ServerMultiTool.ViewModels.Pages.Pipeline.Managers;
 public class PipelineExecutor
 {
     private readonly Logger _logger;
-    private readonly LogMonitoringManager _logManager;
+    private readonly GsLogMonitor _logManager;
+
     private CancellationTokenSource? _pipelineCancellationTokenSource;
 
-    public PipelineOperationCollection PipelineOperations { get; private set; } = [];
+    public PipelineStepsCollection PipelineSteps { get; private set; } = [];
 
     public event EventHandler<bool>? PipelineStateChanged;
 
-    public PipelineExecutor(LogMonitoringManager logManager)
+    public PipelineExecutor(GsLogMonitor logManager)
     {
         _logger = new Logger(GetType());
         _logManager = logManager;
     }
 
-    public void UpdateOperations(PipelineProfile pipelineProfile)
+    public void UpdateOperations(PipelineProfileWrapper pipelineProfile)
     {
-        var operations = PipelineOperationFactory.CreatePipelineOperations(pipelineProfile);
-        PipelineOperations = operations;
+        PipelineSteps = pipelineProfile.Steps;
     }
 
     public void StopPipeline()
@@ -64,24 +63,24 @@ public class PipelineExecutor
         generalInfo.CanChangeStates = false;
 
         _logManager.ClearAppLogs();
-        PipelineOperations.ClearStatuses();
+        PipelineSteps.ClearStatuses();
 
         _pipelineCancellationTokenSource = new CancellationTokenSource();
         var cancellationToken = _pipelineCancellationTokenSource.Token;
 
-        await ExecuteOperationsSequentially(generalInfo, cancellationToken);
+        await ExecuteSequentially(generalInfo, cancellationToken);
     }
 
-    private async Task ExecuteOperationsSequentially(GeneralInfoViewModel generalInfo, CancellationToken cancellationToken)
+    private async Task ExecuteSequentially(GeneralInfoViewModel generalInfo, CancellationToken cancellationToken)
     {
-        foreach (var operation in PipelineOperations)
+        foreach (var step in PipelineSteps)
         {
             if (ShouldCancelExecution(cancellationToken))
                 break;
 
-            PrepareOperation(generalInfo, operation);
+            PrepareOperation(generalInfo, step);
 
-            if (!await ExecuteOperationSafely(operation, cancellationToken))
+            if (!await ExecuteOperationSafely(step, cancellationToken))
                 break;
         }
     }
@@ -91,30 +90,30 @@ public class PipelineExecutor
         if (!cancellationToken.IsCancellationRequested)
             return false;
 
-        PipelineOperations.CancelWaitingOperations();
+        PipelineSteps.CancelWaiting();
         return true;
     }
 
-    private static void PrepareOperation(GeneralInfoViewModel generalInfo, PipelineOperationWrapper operation)
+    private static void PrepareOperation(GeneralInfoViewModel generalInfo, PipelineStepWrapper step)
     {
-        operation.OperationStarted();
+        step.Started();
 
-        if (generalInfo.SelectedSolutionDirectory is not null)
-            operation.UpdateSolutionDirectory(generalInfo.SelectedSolutionDirectory);
+        if (generalInfo.SelectedSolutionDirectory is not null) // todo: check if this is necessary
+            step.UpdateSolutionDirectory(generalInfo.SelectedSolutionDirectory);
 
         if (generalInfo.SelectedHttpDirectory is not null)
-            operation.UpdateHttpDirectory(generalInfo.SelectedHttpDirectory);
+            step.UpdateHttpDirectory(generalInfo.SelectedHttpDirectory);
     }
 
-    private async Task<bool> ExecuteOperationSafely(PipelineOperationWrapper operation, CancellationToken cancellationToken)
+    private async Task<bool> ExecuteOperationSafely(PipelineStepWrapper step, CancellationToken cancellationToken)
     {
         try
         {
-            var result = await operation.ExecuteAsync(cancellationToken);
+            var result = await step.ExecuteAsync(cancellationToken);
 
-            if (result == OperationResult.Cancelled)
+            if (result == PipelineOperationResult.Cancelled)
             {
-                PipelineOperations.CancelWaitingOperations();
+                PipelineSteps.CancelWaiting();
                 return false;
             }
 
@@ -122,8 +121,8 @@ public class PipelineExecutor
         }
         catch (OperationCanceledException)
         {
-            operation.CancelOperation();
-            PipelineOperations.CancelWaitingOperations();
+            step.Cancel();
+            PipelineSteps.CancelWaiting();
             return false;
         }
     }

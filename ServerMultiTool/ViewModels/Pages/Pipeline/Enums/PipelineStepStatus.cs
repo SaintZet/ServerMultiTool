@@ -1,6 +1,6 @@
 namespace ServerMultiTool.ViewModels.Pages.Pipeline.Enums;
 
-public enum PipelineOperationStatus
+public enum PipelineStepStatus
 {
     Wait,
     InProgress,

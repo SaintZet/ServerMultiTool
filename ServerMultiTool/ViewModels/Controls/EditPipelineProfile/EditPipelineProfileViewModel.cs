@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using ServerMultiTool.Model.Common;
 using ServerMultiTool.ViewModels.Contracts.BaseClasses;
 using ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers;
 using ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers.OperationsWrappers.SettingsPerProjectWrappers;
@@ -19,14 +18,14 @@ public partial class EditPipelineProfileViewModel : BaseViewModel
     {
         ProjectSettings.Clear();
 
-        if (Profile?.SettingsPerProject is null)
-            return;
+        //if (Profile?.SettingsPerProject is null)
+        //    return;
 
-        foreach (var setting in Profile.SettingsPerProject)
-        {
-            setting.PropertyChanged += OnProjectSettingPropertyChanged;
-            ProjectSettings.Add(setting);
-        }
+        //foreach (var setting in Profile.SettingsPerProject)
+        //{
+        //    setting.PropertyChanged += OnProjectSettingPropertyChanged;
+        //    ProjectSettings.Add(setting);
+        //}
     }
 
     private void OnProjectSettingPropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -41,13 +40,13 @@ public partial class EditPipelineProfileViewModel : BaseViewModel
         if (Profile is null)
             return;
 
-        var newProjectSettings = new ProjectSettings();
-        var newProjectSettingsWrapper = new ProjectSettingsWrapper(newProjectSettings);
-        Profile.SettingsPerProject.Add(newProjectSettingsWrapper);
-        ProjectSettings.Add(newProjectSettingsWrapper);
+        //var newProjectSettings = new ProjectSettings();
+        //var newProjectSettingsWrapper = new ProjectSettingsWrapper(newProjectSettings);
+        ////Profile.SettingsPerProject.Add(newProjectSettingsWrapper);
+        //ProjectSettings.Add(newProjectSettingsWrapper);
 
-        OnPropertyChanged(nameof(ProjectSettings));
-        OnPropertyChanged(string.Empty);
+        //OnPropertyChanged(nameof(ProjectSettings));
+        //OnPropertyChanged(string.Empty);
     }
 
     [RelayCommand]
@@ -56,7 +55,7 @@ public partial class EditPipelineProfileViewModel : BaseViewModel
         if (Profile is null)
             return;
 
-        Profile.SettingsPerProject.Remove(project);
+        //Profile.SettingsPerProject.Remove(project);
         ProjectSettings.Remove(project);
 
         if (ProjectSettings.Count is 0)

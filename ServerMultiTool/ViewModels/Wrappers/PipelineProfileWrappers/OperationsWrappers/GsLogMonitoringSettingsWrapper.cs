@@ -1,23 +1,24 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using ServerMultiTool.Model.ContinuousIntegration.GameServerLogs;
-using ServerMultiTool.ViewModels.Contracts.BaseClasses;
 using ServerMultiTool.ViewModels.Pages.Settings.Wrappers;
+using System;
 
 namespace ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers.OperationsWrappers;
 
-public partial class LogMonitoringSettingsWrapper : BaseObservableWrapper
+public partial class GsLogMonitoringSettingsWrapper : ObservableObject
 {
-    [ObservableProperty]
-    private bool _enable;
+    [ObservableProperty] private bool _enable;
 
-    [ObservableProperty]
-    private DirectoryModelWrapper _masterLogDirectory;
+    [ObservableProperty] DirectoryModelWrapper _masterLogDirectory;
 
-    [ObservableProperty]
-    private DirectoryModelWrapper _segmentLogDirectory;
+    [ObservableProperty] DirectoryModelWrapper _segmentLogDirectory;
 
-    public LogMonitoringSettingsWrapper(LogMonitoringSettings settings)
+    readonly GsLogMonitoringSettings _settings;
+
+    public GsLogMonitoringSettingsWrapper(GsLogMonitoringSettings settings)
     {
+        _settings = settings ?? throw new ArgumentNullException(nameof(settings), "Game Server Log Monitoring Settings cannot be null.");
+
         Enable = settings.Enable;
 
         if (settings.MasterLogDirectory != null)
@@ -47,10 +48,12 @@ public partial class LogMonitoringSettingsWrapper : BaseObservableWrapper
         SegmentLogDirectory.PropertyChanged += (_, _) => OnPropertyChanged(string.Empty);
     }
 
-    public LogMonitoringSettings ToLogMonitoringSettings() => new()
+    public GsLogMonitoringSettings ToOriginal()
     {
-        Enable = Enable,
-        MasterLogDirectory = MasterLogDirectory.ToDirectoryModel(),
-        SegmentLogDirectory = SegmentLogDirectory.ToDirectoryModel()
-    };
+        _settings.Enable = Enable;
+        _settings.MasterLogDirectory = MasterLogDirectory.ToOriginal();
+        _settings.SegmentLogDirectory = SegmentLogDirectory.ToOriginal();
+
+        return _settings;
+    }
 }

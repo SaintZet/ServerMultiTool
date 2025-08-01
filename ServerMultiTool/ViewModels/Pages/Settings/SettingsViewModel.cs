@@ -117,9 +117,9 @@ public partial class SettingsViewModel : BaseViewModel, IPage, IGeneralInfoAware
             PipelineProfiles.Add(wrapper);
         }
 
-        _initialPipelineProfiles = new ObservableCollection<PipelineProfileWrapper>(
-            PipelineProfiles.Select(w => new PipelineProfileWrapper(w.ToPipelineProfile()))
-        );
+        //_initialPipelineProfiles = new ObservableCollection<PipelineProfileWrapper>(
+        //    PipelineProfiles.Select(w => new PipelineProfileWrapper(w.ToPipelineProfile()))
+        //);
 
         RestoreSelectedPipelineProfile(selectedName);
     }
@@ -181,13 +181,13 @@ public partial class SettingsViewModel : BaseViewModel, IPage, IGeneralInfoAware
         _initialSolutionDirectories = SolutionDirectories.Clone();
         _initialHttpDirectories = HttpDirectories.Clone();
 
-        PipelineProfilesService.SavePipelineProfiles(
-            [.. PipelineProfiles.Select(w => w.ToPipelineProfile())]
-        );
+        //PipelineProfilesService.SavePipelineProfiles(
+        //    [.. PipelineProfiles.Select(w => w.ToPipelineProfile())]
+        //);
 
-        _initialPipelineProfiles = new ObservableCollection<PipelineProfileWrapper>(
-            PipelineProfiles.Select(w => new PipelineProfileWrapper(w.ToPipelineProfile()))
-        );
+        //_initialPipelineProfiles = new ObservableCollection<PipelineProfileWrapper>(
+        //    PipelineProfiles.Select(w => new PipelineProfileWrapper(w.ToPipelineProfile()))
+        //);
 
         GeneralInfo.UpdateData();
 
@@ -206,12 +206,12 @@ public partial class SettingsViewModel : BaseViewModel, IPage, IGeneralInfoAware
 
         PipelineProfiles.Clear();
 
-        foreach (var wrapper in _initialPipelineProfiles)
-        {
-            var newWrapper = new PipelineProfileWrapper(wrapper.ToPipelineProfile());
-            newWrapper.PropertyChanged += OnProfilePropertyChanged;
-            PipelineProfiles.Add(newWrapper);
-        }
+        //foreach (var wrapper in _initialPipelineProfiles)
+        //{
+        //    var newWrapper = new PipelineProfileWrapper(wrapper.ToPipelineProfile());
+        //    newWrapper.PropertyChanged += OnProfilePropertyChanged;
+        //    PipelineProfiles.Add(newWrapper);
+        //}
 
         RestoreSelectedPipelineProfile(selectedName);
 
@@ -224,7 +224,7 @@ public partial class SettingsViewModel : BaseViewModel, IPage, IGeneralInfoAware
     private void AddPipelineProfile()
     {
         var newProfile = DefaultProfiles.GetIisResetProfile();
-        newProfile.Name = "New Profile";
+        //newProfile.Name = "New Profile";
 
         var wrapper = new PipelineProfileWrapper(newProfile);
         wrapper.PropertyChanged += OnProfilePropertyChanged;

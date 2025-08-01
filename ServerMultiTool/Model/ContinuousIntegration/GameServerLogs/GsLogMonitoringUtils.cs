@@ -6,7 +6,7 @@ using ServerMultiTool.Model.Common.Logs;
 
 namespace ServerMultiTool.Model.ContinuousIntegration.GameServerLogs;
 
-public static class LogMonitoringUtils
+public static class GsLogMonitoringUtils
 {
     private static readonly Regex LogLineRegex = new(@"^(\d{2}:\d{2}:\d{2}\.\d{3})\s+(\w+)\s+\[(\d+)\]\s+(.+?)\s+-\s+(.*)$");
 

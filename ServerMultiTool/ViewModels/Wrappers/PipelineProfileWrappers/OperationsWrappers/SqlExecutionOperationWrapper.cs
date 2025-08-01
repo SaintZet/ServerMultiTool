@@ -1,26 +1,31 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using ServerMultiTool.Model.Common;
-using ServerMultiTool.Model.ContinuousIntegration.Git;
+using ServerMultiTool.Model.ContinuousDeployment.Integrations;
 using ServerMultiTool.Model.Pipeline.Contracts;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers.OperationsWrappers;
 
-public partial class GitPullOperationWrapper : ObservableObject, IPipelineOperationWrapper
+public partial class SqlExecutionOperationWrapper : ObservableObject, IPipelineOperationWrapper
 {
     [ObservableProperty] bool _enabled;
 
-    public string Name => "Git Pull";
-    public string Description => "default description";
+    [ObservableProperty] string _connectionString = string.Empty;
 
-    readonly GitPullOperation _operation;
+    [ObservableProperty] string _pathToSqlScript = string.Empty;
 
-    public GitPullOperationWrapper(GitPullOperation operation)
+    public string Name => "SQL Execution";
+    public string Description => "Executes a SQL script against a specified database using the provided connection string.";
+
+    readonly SqlExecutionOperation _operation;
+
+    public SqlExecutionOperationWrapper(SqlExecutionOperation operation)
     {
         _operation = operation;
 
-        Enabled = operation.Enabled;
+        ConnectionString = operation.ConnectionString;
+        PathToSqlScript = operation.PathToSqlScript ?? string.Empty;
     }
 
     public async Task<PipelineOperationResult> ExecuteAsync(CancellationToken cancellationToken)
@@ -31,6 +36,8 @@ public partial class GitPullOperationWrapper : ObservableObject, IPipelineOperat
     public IPipelineOperation ToOriginal()
     {
         _operation.EnableOperation(Enabled);
+        _operation.UpdateConnectionString(ConnectionString);
+        _operation.UpdatePathToSqlScript(PathToSqlScript);
 
         return _operation;
     }

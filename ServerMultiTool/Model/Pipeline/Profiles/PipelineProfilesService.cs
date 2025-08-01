@@ -18,6 +18,7 @@ public static class PipelineProfilesService
     private static readonly ILog Log = LogManager.GetLogger(nameof(PipelineProfilesService));
 
     private const string ProfileSearchPattern = "*.json";
+
     private const NotifyFilters WATCHER_NOTIFY_FILTERS =
        NotifyFilters.LastWrite | NotifyFilters.CreationTime;
 

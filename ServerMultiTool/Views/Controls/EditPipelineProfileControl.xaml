@@ -60,7 +60,7 @@
                 <Expander Header="IIS Settings">
                     <StackPanel Margin="18,6,5,2">
                         <CheckBox Content="Enable IIS Restart" IsChecked="{Binding Profile.InternetInformationSettings.Enable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                        
+
                         <Grid Margin="0,8,0,5" IsEnabled="{Binding Profile.InternetInformationSettings.Enable}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />

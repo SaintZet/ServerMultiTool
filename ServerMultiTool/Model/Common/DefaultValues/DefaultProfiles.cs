@@ -4,9 +4,7 @@ using ServerMultiTool.Model.ContinuousIntegration.GameServerLogs;
 using ServerMultiTool.Model.ContinuousIntegration.Git;
 using ServerMultiTool.Model.ContinuousIntegration.MsBuild;
 using ServerMultiTool.Model.Pipeline.Profiles;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 namespace ServerMultiTool.Model.Common.DefaultValues;
 
@@ -14,208 +12,226 @@ public static class DefaultProfiles
 {
     public static PipelineProfile GetIisResetProfile()
     {
-        var master = CreateProjectSettings(
-            name: "Master",
-            path: @"Server\Service.Master\Service.Master.csproj",
-            msBuildEnable: false
-        );
+        var pipelineProfile = new PipelineProfile("IIS Restart", "Profile for fast IIS reset with ping and open web page")
+            .AddStep(new PipelineStep("IIS Stop", "This step resets the IIS server to apply changes.")
+                .AddOperation(new IisResetOperation("IIS Stop", "/stop"))
+                )
 
-        var segment = CreateProjectSettings(
-            name: "Segment",
-            path: @"Server\Service.Segment\Service.Segment.csproj",
-            msBuildEnable: false
-        );
+            .AddStep(new PipelineStep("IIS Start", "This step starts the IIS server after reset.")
+                .AddOperation(new IisResetOperation("IIS Start", "/start"))
+                )
 
-        return CreateProfile(
-            name: "IIS Reset",
-            projects: [master, segment],
-            webEnable: true,
-            httpMonitorEnable: true,
-            masterLogDirectory: @"C:\HTTP\Raid\Master\log",
-            segmentLogDirectory: @"C:\HTTP\Raid\Segment00\log"
-        );
+            .AddStep(new PipelineStep("Http", "This step ping urls via http.")
+                .AddOperation(new HttpPingOperation("Ping master", "http://localhost/Raid/Master/Master.ashx"))
+                .AddOperation(new HttpPingOperation("Ping segment", "http://localhost/Raid/Segment00/Segment.ashx"))
+                )
+
+            .AddStep(new PipelineStep("Web Browser", "This step opens the web browser to the specified URL.")
+                //.AddOperation(new WebBrowserOperation("Open Segment", "http://localhost/Raid/Segment00/Segment.ashx"))
+                .AddOperation(new WebBrowserOperation("Open GBO Console", "https://raid-gbo.x-plarium.com/#/console?serverId=746"))
+                )
+
+            .UpdateGsLogMonitoringSettings(new GsLogMonitoringSettings
+            {
+                Enable = true,
+                MasterLogDirectory = new DirectoryModel
+                {
+                    Name = "Master",
+                    Path = @"C:\HTTP\Raid\Master\log"
+                },
+                SegmentLogDirectory = new DirectoryModel
+                {
+                    Name = "Segment",
+                    Path = @"C:\HTTP\Raid\Segment00\log"
+                }
+            })
+            ;
+
+        return pipelineProfile;
     }
 
     public static PipelineProfile GetStandardProfile()
     {
-        var master = CreateProjectSettings(
-            name: "Master",
-            path: @"Server\Service.Master\Service.Master.csproj",
-            msBuildEnable: true,
-            msBuildParameters: ["/p:Configuration=Debug", "/p:PreBuildEvent=", "/t:build"],
-            enableDeliveryBin: true
-        );
+        var pipelineProfile = new PipelineProfile("Standart Profile", "")
+            .AddStep(new PipelineStep("Git", "This step execute operations releated to Git.")
+                .AddOperation(new GitPullOperation("Git Pull"))
+            )
 
-        var segment = CreateProjectSettings(
-            name: "Segment",
-            path: @"Server\Service.Segment\Service.Segment.csproj",
-            msBuildEnable: true,
-            msBuildParameters: ["/p:Configuration=Debug", "/p:PreBuildEvent=", "/t:build"],
-            enableDeliveryBin: true
-        );
+            .AddStep(new PipelineStep("MsBuild", "This step builds the projects using MSBuild.")
 
-        return CreateProfile(
-            name: "Standard Profile",
-            projects: [master, segment],
-            gitEnable: true,
-            gitPull: true,
-            sqlEnable: true,
-            connectionString: "Server=PLSCHEPETS;Database=raidMaster;User Id=geotopia;Password=super;TrustServerCertificate=True",
-            sqlScriptPath: @"C:\ServerDeployTool\RaidDeploy\BatchFiles\script.sql",
-            httpMonitorEnable: true,
-            webEnable: true,
-            webUrl: "http://localhost/Raid/Segment00/Segment.ashx",
-            masterLogDirectory: @"C:\HTTP\Raid\Master\log",
-            segmentLogDirectory: @"C:\HTTP\Raid\Segment00\log"
-        );
+                .AddOperation(new MsBuildOperation("Build Master", GetMasterProjectDirectory())
+                    .AddParameter("/t:build").AddParameter("/p:Configuration=Debug").AddParameter("/p:PreBuildEvent="))
+
+                .AddOperation(new MsBuildOperation("Build Segment", GetSegmentProjectDirectory())
+                    .AddParameter("/t:build").AddParameter("/p:Configuration=Debug").AddParameter("/p:PreBuildEvent="))
+            )
+
+            .AddStep(new PipelineStep("IIS Stop", "This step resets the IIS server to apply changes.")
+                .AddOperation(new IisResetOperation("IIS Stop", "/stop"))
+            )
+
+            .AddStep(new PipelineStep("Delivery", "This step delivers the built projects to the specified directories.")
+                .AddOperation(new DeliveryBinOperation("Delivery Master", GetMasterProjectDirectory()))
+                .AddOperation(new DeliveryBinOperation("Delivery Segment", GetSegmentProjectDirectory()))
+            )
+
+            .AddStep(new PipelineStep("Sql", "This step start Sql operations.")
+                .AddOperation(new SqlExecutionOperation("Execute SQL Script")
+                    .UpdateConnectionString("Server=PLSCHEPETS;Database=raidMaster;User Id=geotopia;Password=super;TrustServerCertificate=True")
+                    .UpdatePathToSqlScript(@"C:\ServerDeployTool\RaidDeploy\BatchFiles\script.sql"))
+            )
+
+            .AddStep(new PipelineStep("IIS Start", "This step starts the IIS server after reset.")
+                .AddOperation(new IisResetOperation("IIS Start", "/start"))
+            )
+
+            .AddStep(new PipelineStep("Http", "This step ping urls via http.")
+                .AddOperation(new HttpPingOperation("Ping master", "http://localhost/Raid/Master/Master.ashx"))
+                .AddOperation(new HttpPingOperation("Ping segment", "http://localhost/Raid/Segment00/Segment.ashx"))
+            )
+
+            .AddStep(new PipelineStep("Web Browser", "This step opens the web browser to the specified URL.")
+                //.AddOperation(new WebBrowserOperation("Open Segment", "http://localhost/Raid/Segment00/Segment.ashx"))
+                .AddOperation(new WebBrowserOperation("Open GBO Console", "https://raid-gbo.x-plarium.com/#/console?serverId=746"))
+            )
+
+            .UpdateGsLogMonitoringSettings(new GsLogMonitoringSettings
+            {
+                Enable = true,
+                MasterLogDirectory = new DirectoryModel
+                {
+                    Name = "Master",
+                    Path = @"C:\HTTP\Raid\Master\log"
+                },
+                SegmentLogDirectory = new DirectoryModel
+                {
+                    Name = "Segment",
+                    Path = @"C:\HTTP\Raid\Segment00\log"
+                }
+            })
+            ;
+
+        return pipelineProfile;
     }
 
     public static PipelineProfile GetExtendedProfile(DirectoryModel solutionDirectory, DirectoryModel httpDirectory)
     {
-        var master = CreateProjectSettings(
-            name: "Master",
-            path: @"Server\Service.Master\Service.Master.csproj",
-            msBuildEnable: true,
-            msBuildParameters: ["/p:Configuration=Debug", "/t:rebuild"],
-            enableDeliveryBin: true
-        );
+        return new PipelineProfile("Extended Profile", "")
+            .AddStep(new PipelineStep("Git", "This step execute operations releated to Git.")
+                .AddOperation(new GitPullOperation("Git Pull"))
+            )
 
-        var segment = CreateProjectSettings(
-            name: "Segment",
-            path: @"Server\Service.Segment\Service.Segment.csproj",
-            msBuildEnable: true,
-            msBuildParameters: ["/p:Configuration=Debug", "/t:rebuild"],
-            enableDeliveryBin: true
-        );
-        var dataBlender = CreateProjectSettings(
-            name: "DataBlender",
-            path: @"Utils\DataBlender\DataBlender.csproj",
-            msBuildEnable: true,
-            msBuildParameters: ["/p:Configuration=Debug", "/t:rebuild"],
-            enableCustomDelivery: true,
-            enableDeliveryBin: false,
-            customDeliveryDirectories:
-            [
-                new DeliveryDirectory
-                {
-                    Source = Path.Combine(solutionDirectory.Path, @"Server\Service.Master\App_Data\Storage"),
-                    Destination = Path.Combine(httpDirectory.Path, @"Master\App_Data\Storage\")
-                }
-            ],
-            postBuildEvents:
-            [
-                new ProcessEvent
-                {
-                    Path = @"C:\Raid\Utils\DataBlender\bin\Debug\DataBlender.exe",
-                    Arguments = ""
-                }
-            ]
-        );
+            .AddStep(new PipelineStep("MsBuild", "This step builds the projects using MSBuild.")
+                .AddOperation(new MsBuildOperation("Build Master", GetMasterProjectDirectory())
+                    .AddParameter("/t:rebuild").AddParameter("/p:Configuration=Debug").AddParameter("/p:PreBuildEvent="))
 
-        return CreateProfile(
-            name: "Extended Profile",
-            projects: [master, segment, dataBlender],
-            gitEnable: true,
-            gitPull: true,
-            sqlEnable: true,
-            connectionString:
-            "Server=PLSCHEPETS;Database=raidMaster;User Id=geotopia;Password=super;TrustServerCertificate=True",
-            sqlScriptPath: @"C:\ServerDeployTool\RaidDeploy\BatchFiles\script.sql",
-            httpMonitorEnable: true,
-            webEnable: true,
-            webUrl: "http://localhost/Raid/Segment00/Segment.ashx",
-            masterLogDirectory: @"C:\HTTP\Raid\Master\log",
-            segmentLogDirectory: @"C:\HTTP\Raid\Segment00\log"
-        );
+                .AddOperation(new MsBuildOperation("Build Segment", GetSegmentProjectDirectory())
+                    .AddParameter("/t:rebuild").AddParameter("/p:Configuration=Debug").AddParameter("/p:PreBuildEvent="))
+            )
+
+            .AddStep(new PipelineStep("StaticData", "This step runs the Data Blender tool to process data.")
+
+                .AddOperation(new MsBuildOperation("Build DataBlender", GetDataBlenderProjectDirectory())
+                    .AddParameter("/t:build").AddParameter("/p:Configuration=Debug")
+                    .AddPostBuildEvent(ExecuteDataBlender(solutionDirectory))
+                )
+
+                .AddOperation(new DeliverySpecifiedFilesOperation("Delivery StaticData")
+                    .AddDeliveryDirectories(
+                        source: Path.Combine(solutionDirectory.Path, @"Server\Service.Master\App_Data\Storage"),
+                        destination: Path.Combine(httpDirectory.Path, @"Master\App_Data\Storage\")
+                    )
+                )
+            )
+
+            .AddStep(new PipelineStep("IIS Stop", "This step resets the IIS server to apply changes.")
+                .AddOperation(new IisResetOperation("IIS Stop", "/stop"))
+            )
+
+            .AddStep(new PipelineStep("Delivery", "This step delivers the built projects to the specified directories.")
+                .AddOperation(new DeliveryBinOperation("Delivery Master", GetMasterProjectDirectory()))
+                .AddOperation(new DeliveryBinOperation("Delivery Segment", GetSegmentProjectDirectory()))
+            )
+
+            .AddStep(new PipelineStep("Sql", "This step start Sql operations.")
+                .AddOperation(new SqlExecutionOperation("Execute SQL Script")
+                    .UpdateConnectionString("Server=PLSCHEPETS;Database=raidMaster;User Id=geotopia;Password=super;TrustServerCertificate=True")
+                    .UpdatePathToSqlScript(@"C:\ServerDeployTool\RaidDeploy\BatchFiles\script.sql"))
+            )
+
+            .AddStep(new PipelineStep("IIS Start", "This step starts the IIS server after reset.")
+                .AddOperation(new IisResetOperation("IIS Start", "/start"))
+            )
+
+            .AddStep(new PipelineStep("Http", "This step ping urls via http.")
+                .AddOperation(new HttpPingOperation("Ping master", "http://localhost/Raid/Master/Master.ashx"))
+                .AddOperation(new HttpPingOperation("Ping segment", "http://localhost/Raid/Segment00/Segment.ashx"))
+            )
+
+            .AddStep(new PipelineStep("Web Browser", "This step opens the web browser to the specified URL.")
+                //.AddOperation(new WebBrowserOperation("Open Segment", "http://localhost/Raid/Segment00/Segment.ashx"))
+                .AddOperation(new WebBrowserOperation("Open GBO Console", "https://raid-gbo.x-plarium.com/#/console?serverId=746"))
+            )
+
+            .UpdateGsLogMonitoringSettings(new GsLogMonitoringSettings
+            {
+                Enable = true,
+                MasterLogDirectory = new DirectoryModel
+                {
+                    Name = "Master",
+                    Path = @"C:\HTTP\Raid\Master\log"
+                },
+                SegmentLogDirectory = new DirectoryModel
+                {
+                    Name = "Segment",
+                    Path = @"C:\HTTP\Raid\Segment00\log"
+                }
+            })
+            ;
     }
 
-    private static ProjectSettings CreateProjectSettings(
-        string name,
-        string path,
-        bool msBuildEnable,
-        IEnumerable<string>? msBuildParameters = null,
-        bool enableCustomDelivery = false,
-        bool enableDeliveryBin = false,
-        List<DeliveryDirectory>? customDeliveryDirectories = null,
-        List<ProcessEvent>? postBuildEvents = null)
+    public static ProcessEvent ExecuteDataBlender(DirectoryModel solutionDirectory)
     {
-        return new ProjectSettings
+        return new ProcessEvent
         {
-            Project = new DirectoryModel { Name = name, Path = path },
-            MsBuildSettings = new MsBuildSettings
-            {
-                Enable = msBuildEnable,
-                Parameters = msBuildParameters?.ToList() ?? ["/p:Configuration=Debug", "/t:build"],
-                PostBuildEvents = postBuildEvents ?? []
-            },
-            DeliverySettings = new DeliverySettings
-            {
-                EnableCustomDelivery = enableCustomDelivery,
-                EnableDeliveryBin = enableDeliveryBin,
-                CustomDeliveryDirectories = customDeliveryDirectories
-            }
+            Path = Path.Combine(solutionDirectory.Path, @"Utils\DataBlender\bin\Debug\DataBlender.exe"),
+            Arguments = string.Empty
         };
     }
 
-    private static PipelineProfile CreateProfile(
-        string name,
-        IEnumerable<ProjectSettings> projects,
-        bool gitEnable = false,
-        bool gitPull = false,
-        bool sqlEnable = false,
-        string? connectionString = null,
-        string? sqlScriptPath = null,
-        bool httpMonitorEnable = false,
-        bool webEnable = true,
-        string? webUrl = null,
-        string? masterLogDirectory = null,
-        string? segmentLogDirectory = null)
+    //private static ProcessEvent ExecuteBuildInfoUtil()
+    //{
+    //    return new ProcessEvent
+    //    {
+    //        Path = Path.Combine(solutionDirectory.Path, @"Utils\DataBlender\bin\Debug\DataBlender.exe"),
+    //        Arguments = @"C:\ServerDeployTool\RaidDeploy\BatchFiles\BuildInfoUtil.exe"
+    //    };
+    //}
+
+    private static DirectoryModel GetMasterProjectDirectory()
     {
-        return new PipelineProfile
+        return new DirectoryModel
         {
-            Name = name,
-            SettingsPerProject = [.. projects],
-            GitSettings = new GitSettings
-            {
-                Enable = gitEnable,
-                ShouldPull = gitPull
-            },
-            SqlExecutionSettings = new SqlExecutionSettings
-            {
-                Enable = sqlEnable,
-                ConnectionString = connectionString,
-                PathToSqlScript = sqlScriptPath
-            },
-            WebBrowserSettings = new WebBrowserSettings
-            {
-                Enable = webEnable,
-                Url = webUrl ?? "http://localhost/Raid/Segment00/Segment.ashx"
-            },
-            InternetInformationSettings = new InternetInformationSettings
-            {
-                Enable = true
-            },
-            MonitorLogFilesSettings = new LogMonitoringSettings
-            {
-                Enable = true,
-                MasterLogDirectory = masterLogDirectory is null ? null : new DirectoryModel
-                {
-                    Name = $"{name} Master Log Directory",
-                    Path = masterLogDirectory!,
-                },
-                SegmentLogDirectory = segmentLogDirectory is null ? null : new DirectoryModel
-                {
-                    Name = $"{name} Segment Log Directory",
-                    Path = segmentLogDirectory!,
-                },
-            },
-            HttpMonitoringSettings = new HttpMonitoringSettings
-            {
-                Enable = httpMonitorEnable,
-                PingMaster = true,
-                PingSegment = true,
-                TimeoutMinutes = 5
-            }
+            Name = "Master",
+            Path = @"Server\Service.Master\Service.Master.csproj"
+        };
+    }
+
+    private static DirectoryModel GetSegmentProjectDirectory()
+    {
+        return new DirectoryModel
+        {
+            Name = "Segment",
+            Path = @"Server\Service.Segment\Service.Segment.csproj"
+        };
+    }
+
+    private static DirectoryModel GetDataBlenderProjectDirectory()
+    {
+        return new DirectoryModel
+        {
+            Name = "DataBlender Project",
+            Path = @"Utils\DataBlender\DataBlender.csproj"
         };
     }
 }
