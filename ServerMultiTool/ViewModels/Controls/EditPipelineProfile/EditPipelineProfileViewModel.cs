@@ -2,7 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using ServerMultiTool.ViewModels.Contracts.BaseClasses;
 using ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers;
-using ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers.OperationsWrappers.SettingsPerProjectWrappers;
+using ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers.OperationsWrappers;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 

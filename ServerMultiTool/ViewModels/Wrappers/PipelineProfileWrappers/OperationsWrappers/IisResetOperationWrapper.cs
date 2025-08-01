@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers.OperationsWrappers;
 
-public partial class IisResetOperationWrapper : ObservableObject, IPipelineOperationWrapper
+public partial class ProcessExecutionOperationWrapper : ObservableObject, IPipelineOperationWrapper
 {
     [ObservableProperty] bool _enabled;
 
@@ -16,9 +16,9 @@ public partial class IisResetOperationWrapper : ObservableObject, IPipelineOpera
     public string Name => "IIS Reset";
     public string Description => "Resets the IIS server to apply changes.";
 
-    readonly IisResetOperation _operation;
+    readonly ProcessExecutionOperation _operation;
 
-    public IisResetOperationWrapper(IisResetOperation operation)
+    public ProcessExecutionOperationWrapper(ProcessExecutionOperation operation)
     {
         _operation = operation;
 

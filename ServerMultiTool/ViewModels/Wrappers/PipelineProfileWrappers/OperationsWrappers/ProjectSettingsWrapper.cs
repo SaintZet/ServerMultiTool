@@ -1,6 +1,6 @@
 ﻿using ServerMultiTool.ViewModels.Contracts.BaseClasses;
 
-namespace ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers.OperationsWrappers.SettingsPerProjectWrappers;
+namespace ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers.OperationsWrappers;
 
 public partial class ProjectSettingsWrapper : BaseObservableWrapper
 {

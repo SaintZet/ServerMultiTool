@@ -11,7 +11,7 @@
     mc:Ignorable="d">
 
     <UserControl.Resources>
-        <converters1:ProcessEventConverter x:Key="ProcessEventConverter" />
+        <!--<converters1:ProcessEventConverter x:Key="ProcessEventConverter" />-->
         <converters1:DeliveryDirectoryConverter x:Key="DeliveryDirectoryConverter" />
 
         <!--  Styles to match PipelineView.xaml  -->

@@ -1,4 +1,3 @@
-using Microsoft.IdentityModel.Tokens;
 using ServerMultiTool.Model.Common;
 using ServerMultiTool.Model.Common.ProcessExecutor;
 using ServerMultiTool.Model.Pipeline.Contracts;
@@ -16,9 +15,8 @@ public class MsBuildOperation : BasePipelineOperation
 {
     public DirectoryModel Project { get; private set; }
 
-    public List<string>? Parameters { get; set; }
-    public List<ProcessEvent>? PreBuildEvents { get; set; }
-    public List<ProcessEvent>? PostBuildEvents { get; set; }
+    public int RetryCount { get; private set; } = 1;
+    public List<string>? Parameters { get; private set; }
 
     private readonly ProcessExecutor _processExecutor;
 
@@ -41,25 +39,12 @@ public class MsBuildOperation : BasePipelineOperation
         return this;
     }
 
-    public MsBuildOperation AddPreBuildEvent(ProcessEvent processEvent)
+    public MsBuildOperation UpdateRetryCount(int retryCount)
     {
-        if (processEvent is null)
-            throw new ArgumentNullException(nameof(processEvent), "Process event cannot be null.");
+        if (retryCount < 0)
+            throw new ArgumentException("Retry count cannot be negative.", nameof(retryCount));
 
-        PreBuildEvents ??= [];
-        PreBuildEvents.Add(processEvent);
-
-        return this;
-    }
-
-    public MsBuildOperation AddPostBuildEvent(ProcessEvent processEvent)
-    {
-        if (processEvent is null)
-            throw new ArgumentNullException(nameof(processEvent), "Process event cannot be null.");
-
-        PostBuildEvents ??= [];
-        PostBuildEvents.Add(processEvent);
-
+        RetryCount = retryCount;
         return this;
     }
 
@@ -73,53 +58,10 @@ public class MsBuildOperation : BasePipelineOperation
         var arguments = GetMsBuildArguments(projectPath, buildParameters);
         var workingDirectory = Path.GetDirectoryName(projectPath);
 
-        await ExecutePreBuildEventsAsync(cancellationToken);
-
         var startInfo = new ProcessStartInfo(fileName, arguments) { WorkingDirectory = workingDirectory };
-        // todo: add retryCount parameter to settings
         var response = await _processExecutor.StartProcessWithRetriesAsync(startInfo, 1, cancellationToken);
 
-        if (response.Success)
-            await ExecutePostBuildEventsAsync(cancellationToken);
-
         return PipelineOperationResult.Success;
-    }
-
-    private async Task ExecutePreBuildEventsAsync(CancellationToken cancellationToken)
-    {
-        if (PreBuildEvents.IsNullOrEmpty())
-            return;
-
-        Logger.LogInfoWithPublish($"Start execute pre processes for {Project.Name}.");
-
-        foreach (var processEvent in PreBuildEvents!)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            await ExecuteProcessEventAsync(processEvent, cancellationToken);
-        }
-    }
-
-    private async Task ExecutePostBuildEventsAsync(CancellationToken cancellationToken)
-    {
-        if (PostBuildEvents.IsNullOrEmpty())
-            return;
-
-        Logger.LogInfoWithPublish($"Start execute post processes for {Project.Name}.");
-
-        foreach (var processEvent in PostBuildEvents!)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            await ExecuteProcessEventAsync(processEvent, cancellationToken);
-        }
-    }
-
-    private async Task ExecuteProcessEventAsync(ProcessEvent processEvent, CancellationToken cancellationToken)
-    {
-        if (processEvent.Arguments is null)
-            return;
-
-        var startInfo = new ProcessStartInfo(processEvent.Path, processEvent.Arguments);
-        await _processExecutor.StartProcessOnceAsync(startInfo, cancellationToken);
     }
 
     private string GetMsBuildArguments(string projectPath, IEnumerable<string>? parameters)

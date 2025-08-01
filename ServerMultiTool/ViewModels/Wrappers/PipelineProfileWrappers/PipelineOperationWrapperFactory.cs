@@ -22,7 +22,7 @@ namespace ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers
                 DeliveryBinOperation deliveryBinOperation => new DeliveryBinOperationWrapper(deliveryBinOperation),
                 DeliverySpecifiedFilesOperation deliverySpecifiedFilesOperation => new DeliverySpecifiedFilesOperationWrapper(deliverySpecifiedFilesOperation),
                 HttpPingOperation httpPingOperation => new HttpPingOperationWrapper(httpPingOperation),
-                IisResetOperation iisResetOperation => new IisResetOperationWrapper(iisResetOperation),
+                ProcessExecutionOperation iisResetOperation => new ProcessExecutionOperationWrapper(iisResetOperation),
                 SqlExecutionOperation sqlExecutionOperation => new SqlExecutionOperationWrapper(sqlExecutionOperation),
                 WebBrowserOperation webBrowserOperation => new WebBrowserOperationWrapper(webBrowserOperation),
                 _ => throw new ArgumentNullException(nameof(operation), "Can`t find operation."),

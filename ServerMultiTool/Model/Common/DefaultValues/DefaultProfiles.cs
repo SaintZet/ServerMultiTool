@@ -13,12 +13,13 @@ public static class DefaultProfiles
     public static PipelineProfile GetIisResetProfile()
     {
         var pipelineProfile = new PipelineProfile("IIS Restart", "Profile for fast IIS reset with ping and open web page")
+            .UpdateGsLogMonitoringSettings(GetDefaultGsLogMonitoringSettings())
             .AddStep(new PipelineStep("IIS Stop", "This step resets the IIS server to apply changes.")
-                .AddOperation(new IisResetOperation("IIS Stop", "/stop"))
+                .AddOperation(new ProcessExecutionOperation("IIS Stop", "iisreset.exe", "/stop"))
                 )
 
             .AddStep(new PipelineStep("IIS Start", "This step starts the IIS server after reset.")
-                .AddOperation(new IisResetOperation("IIS Start", "/start"))
+                .AddOperation(new ProcessExecutionOperation("IIS Start", "iisreset.exe", "/start"))
                 )
 
             .AddStep(new PipelineStep("Http", "This step ping urls via http.")
@@ -30,21 +31,6 @@ public static class DefaultProfiles
                 //.AddOperation(new WebBrowserOperation("Open Segment", "http://localhost/Raid/Segment00/Segment.ashx"))
                 .AddOperation(new WebBrowserOperation("Open GBO Console", "https://raid-gbo.x-plarium.com/#/console?serverId=746"))
                 )
-
-            .UpdateGsLogMonitoringSettings(new GsLogMonitoringSettings
-            {
-                Enable = true,
-                MasterLogDirectory = new DirectoryModel
-                {
-                    Name = "Master",
-                    Path = @"C:\HTTP\Raid\Master\log"
-                },
-                SegmentLogDirectory = new DirectoryModel
-                {
-                    Name = "Segment",
-                    Path = @"C:\HTTP\Raid\Segment00\log"
-                }
-            })
             ;
 
         return pipelineProfile;
@@ -53,6 +39,8 @@ public static class DefaultProfiles
     public static PipelineProfile GetStandardProfile()
     {
         var pipelineProfile = new PipelineProfile("Standart Profile", "")
+            .UpdateGsLogMonitoringSettings(GetDefaultGsLogMonitoringSettings())
+
             .AddStep(new PipelineStep("Git", "This step execute operations releated to Git.")
                 .AddOperation(new GitPullOperation("Git Pull"))
             )
@@ -67,7 +55,7 @@ public static class DefaultProfiles
             )
 
             .AddStep(new PipelineStep("IIS Stop", "This step resets the IIS server to apply changes.")
-                .AddOperation(new IisResetOperation("IIS Stop", "/stop"))
+                .AddOperation(new ProcessExecutionOperation("IIS Stop", "iisreset.exe", "/stop"))
             )
 
             .AddStep(new PipelineStep("Delivery", "This step delivers the built projects to the specified directories.")
@@ -82,7 +70,7 @@ public static class DefaultProfiles
             )
 
             .AddStep(new PipelineStep("IIS Start", "This step starts the IIS server after reset.")
-                .AddOperation(new IisResetOperation("IIS Start", "/start"))
+                .AddOperation(new ProcessExecutionOperation("IIS Start", "iisreset.exe", "/start"))
             )
 
             .AddStep(new PipelineStep("Http", "This step ping urls via http.")
@@ -94,21 +82,6 @@ public static class DefaultProfiles
                 //.AddOperation(new WebBrowserOperation("Open Segment", "http://localhost/Raid/Segment00/Segment.ashx"))
                 .AddOperation(new WebBrowserOperation("Open GBO Console", "https://raid-gbo.x-plarium.com/#/console?serverId=746"))
             )
-
-            .UpdateGsLogMonitoringSettings(new GsLogMonitoringSettings
-            {
-                Enable = true,
-                MasterLogDirectory = new DirectoryModel
-                {
-                    Name = "Master",
-                    Path = @"C:\HTTP\Raid\Master\log"
-                },
-                SegmentLogDirectory = new DirectoryModel
-                {
-                    Name = "Segment",
-                    Path = @"C:\HTTP\Raid\Segment00\log"
-                }
-            })
             ;
 
         return pipelineProfile;
@@ -117,6 +90,8 @@ public static class DefaultProfiles
     public static PipelineProfile GetExtendedProfile(DirectoryModel solutionDirectory, DirectoryModel httpDirectory)
     {
         return new PipelineProfile("Extended Profile", "")
+            .UpdateGsLogMonitoringSettings(GetDefaultGsLogMonitoringSettings())
+
             .AddStep(new PipelineStep("Git", "This step execute operations releated to Git.")
                 .AddOperation(new GitPullOperation("Git Pull"))
             )
@@ -133,7 +108,10 @@ public static class DefaultProfiles
 
                 .AddOperation(new MsBuildOperation("Build DataBlender", GetDataBlenderProjectDirectory())
                     .AddParameter("/t:build").AddParameter("/p:Configuration=Debug")
-                    .AddPostBuildEvent(ExecuteDataBlender(solutionDirectory))
+                )
+
+                .AddOperation(new ProcessExecutionOperation("Execute DataBlender", fileName: Path.Combine(solutionDirectory.Path, @"Utils\DataBlender\bin\Debug\DataBlender.exe"))
+                    .UpdateArguments(string.Empty).UpdateRetryCount(0)
                 )
 
                 .AddOperation(new DeliverySpecifiedFilesOperation("Delivery StaticData")
@@ -145,7 +123,7 @@ public static class DefaultProfiles
             )
 
             .AddStep(new PipelineStep("IIS Stop", "This step resets the IIS server to apply changes.")
-                .AddOperation(new IisResetOperation("IIS Stop", "/stop"))
+                .AddOperation(new ProcessExecutionOperation("IIS Stop", "iisreset.exe", "/stop"))
             )
 
             .AddStep(new PipelineStep("Delivery", "This step delivers the built projects to the specified directories.")
@@ -160,7 +138,7 @@ public static class DefaultProfiles
             )
 
             .AddStep(new PipelineStep("IIS Start", "This step starts the IIS server after reset.")
-                .AddOperation(new IisResetOperation("IIS Start", "/start"))
+                .AddOperation(new ProcessExecutionOperation("IIS Start", "iisreset.exe", "/start"))
             )
 
             .AddStep(new PipelineStep("Http", "This step ping urls via http.")
@@ -172,41 +150,8 @@ public static class DefaultProfiles
                 //.AddOperation(new WebBrowserOperation("Open Segment", "http://localhost/Raid/Segment00/Segment.ashx"))
                 .AddOperation(new WebBrowserOperation("Open GBO Console", "https://raid-gbo.x-plarium.com/#/console?serverId=746"))
             )
-
-            .UpdateGsLogMonitoringSettings(new GsLogMonitoringSettings
-            {
-                Enable = true,
-                MasterLogDirectory = new DirectoryModel
-                {
-                    Name = "Master",
-                    Path = @"C:\HTTP\Raid\Master\log"
-                },
-                SegmentLogDirectory = new DirectoryModel
-                {
-                    Name = "Segment",
-                    Path = @"C:\HTTP\Raid\Segment00\log"
-                }
-            })
             ;
     }
-
-    public static ProcessEvent ExecuteDataBlender(DirectoryModel solutionDirectory)
-    {
-        return new ProcessEvent
-        {
-            Path = Path.Combine(solutionDirectory.Path, @"Utils\DataBlender\bin\Debug\DataBlender.exe"),
-            Arguments = string.Empty
-        };
-    }
-
-    //private static ProcessEvent ExecuteBuildInfoUtil()
-    //{
-    //    return new ProcessEvent
-    //    {
-    //        Path = Path.Combine(solutionDirectory.Path, @"Utils\DataBlender\bin\Debug\DataBlender.exe"),
-    //        Arguments = @"C:\ServerDeployTool\RaidDeploy\BatchFiles\BuildInfoUtil.exe"
-    //    };
-    //}
 
     private static DirectoryModel GetMasterProjectDirectory()
     {
@@ -232,6 +177,24 @@ public static class DefaultProfiles
         {
             Name = "DataBlender Project",
             Path = @"Utils\DataBlender\DataBlender.csproj"
+        };
+    }
+
+    private static GsLogMonitoringSettings GetDefaultGsLogMonitoringSettings()
+    {
+        return new GsLogMonitoringSettings
+        {
+            Enable = true,
+            MasterLogDirectory = new DirectoryModel
+            {
+                Name = "Master",
+                Path = @"C:\HTTP\Raid\Master\log"
+            },
+            SegmentLogDirectory = new DirectoryModel
+            {
+                Name = "Segment",
+                Path = @"C:\HTTP\Raid\Segment00\log"
+            }
         };
     }
 }
