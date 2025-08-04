@@ -1,12 +1,12 @@
 ﻿using log4net;
-using ServerMultiTool.Model.Infrastructure;
+using ServerMultiTool.Model.Infrastructure.Interfaces;
 using System;
 using System.IO;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 
-namespace ServerMultiTool.Model.Common.Repository;
+namespace ServerMultiTool.Model.Infrastructure;
 
 public abstract class JsonRepository<T> : IRepository<T> where T : class
 {
@@ -67,8 +67,7 @@ public abstract class JsonRepository<T> : IRepository<T> where T : class
     {
         try
         {
-            if (entity == null)
-                throw new ArgumentNullException(nameof(entity));
+            ArgumentNullException.ThrowIfNull(entity);
 
             // Create a temporary file path
             var tempFilePath = Path.GetTempFileName();
@@ -161,8 +160,7 @@ public abstract class JsonRepository<T> : IRepository<T> where T : class
     {
         try
         {
-            if (entity == null)
-                throw new ArgumentNullException(nameof(entity));
+            ArgumentNullException.ThrowIfNull(entity);
 
             // Create a temporary file path
             var tempFilePath = Path.GetTempFileName();

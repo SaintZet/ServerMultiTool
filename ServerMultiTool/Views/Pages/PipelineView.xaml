@@ -8,7 +8,7 @@
     xmlns:globalConverters="clr-namespace:ServerMultiTool.ViewModels.Converters"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:pipeline="clr-namespace:ServerMultiTool.ViewModels.Pages.Pipeline"
-    xmlns:pipelineConverters="clr-namespace:ServerMultiTool.ViewModels.Pages.Pipeline.Converters"
+    xmlns:pipelineConverters="clr-namespace:ServerMultiTool.ViewModels.Features.Pipeline.Converters"
     Title="{Binding Title}"
     d:DataContext="{d:DesignInstance Type=pipeline:PipelineViewModel,
                                      IsDesignTimeCreatable=True}"
@@ -23,7 +23,7 @@
         <pipelineConverters:TimestampConverter x:Key="TimestampConverter" />
         <globalConverters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
         <globalConverters:NumericValueConverter x:Key="NumericValueConverter" />
-        
+
         <Storyboard x:Key="GreenFlashingAnimation">
             <ColorAnimation
                 AutoReverse="True"
@@ -75,9 +75,10 @@
                     Header="Full message"
                     Visibility="{Binding Message.ExtendedMessage, Converter={StaticResource StringToVisibilityConverter}}">
                     <Border MaxWidth="{Binding RelativeSource={RelativeSource AncestorType=behaviours:ScrollingListBox}, Path=ActualWidth, Converter={StaticResource NumericValueConverter}, ConverterParameter=1}">
-                        <ScrollViewer MaxHeight="350" 
-                                      VerticalScrollBarVisibility="Auto" 
-                                      HorizontalScrollBarVisibility="Auto">
+                        <ScrollViewer
+                            MaxHeight="350"
+                            HorizontalScrollBarVisibility="Auto"
+                            VerticalScrollBarVisibility="Auto">
                             <TextBlock
                                 Margin="5"
                                 Foreground="{DynamicResource PrimaryTextColor}"

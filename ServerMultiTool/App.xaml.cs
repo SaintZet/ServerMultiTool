@@ -1,6 +1,6 @@
-﻿using ServerMultiTool.Model.Common.Logs;
-using ServerMultiTool.Model.Pipeline;
-using ServerMultiTool.Model.Settings;
+﻿using ServerMultiTool.Model.Domain.Common.Logs;
+using ServerMultiTool.Model.Services.Pipeline;
+using ServerMultiTool.Model.Services.Settings;
 using ServerMultiTool.Views.Windows;
 using System;
 using System.Windows;
