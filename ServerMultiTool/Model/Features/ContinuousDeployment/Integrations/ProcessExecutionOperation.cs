@@ -2,16 +2,19 @@
 using ServerMultiTool.Model.Domain.Pipeline;
 using System;
 using System.Diagnostics;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace ServerMultiTool.Model.Features.ContinuousDeployment.Integrations
 {
-    public class ProcessExecutionOperation : BasePipelineOperation
+    public class ProcessExecutionOperation : PipelineOperation
     {
         public string FileName { get; private set; } = string.Empty;
         public string Arguments { get; private set; } = string.Empty;
         public int RetryCount { get; private set; } = 2;
+
+        public override OperationType OperationType => OperationType.ProcessExecutionOperation;
 
         private readonly ProcessExecutor _processExecutor;
 
@@ -23,6 +26,7 @@ namespace ServerMultiTool.Model.Features.ContinuousDeployment.Integrations
             _processExecutor = new ProcessExecutor(Logger);
         }
 
+        [JsonConstructor]
         public ProcessExecutionOperation(string name, string fileName, string arguments)
             : base(name)
         {

@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using ServerMultiTool.Model.Domain.Common;
 using ServerMultiTool.Model.Domain.Pipeline;
-using ServerMultiTool.Model.Domain.Pipeline.Interfaces;
 using ServerMultiTool.Model.Features.ContinuousDeployment.Integrations;
 using ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Base;
 using System.Threading;
@@ -33,7 +32,7 @@ public partial class ProcessExecutionOperationWrapper : ObservableObject, IPipel
         return await _operation.ExecuteAsync(cancellationToken);
     }
 
-    public IPipelineOperation ToOriginal()
+    public PipelineOperation ToOriginal()
     {
         _operation.EnableOperation(Enabled);
         _operation.UpdateRetryCount(RetryCount);

@@ -3,6 +3,7 @@ using Microsoft.IdentityModel.Tokens;
 using ServerMultiTool.Model.Domain.Pipeline;
 using ServerMultiTool.Model.Domain.Pipeline.Interfaces;
 using ServerMultiTool.Model.Infrastructure.DefaultValues;
+using ServerMultiTool.Model.Infrastructure.Json;
 using ServerMultiTool.Model.Services.Settings;
 using ServerMultiTool.ViewModels.Common;
 using System;
@@ -23,16 +24,9 @@ public class PipelineProfilesRepository : IPipelineProfilesRepository
 {
     private readonly ILog _log;
     private readonly string _profilesDirectoryPath;
-    private readonly JsonSerializerOptions _readOptions = new()
-    {
-        PropertyNameCaseInsensitive = true,
-        IncludeFields = true,
-    };
 
-    private readonly JsonSerializerOptions _writeOptions = new()
-    {
-        WriteIndented = true,
-    };
+    private readonly JsonSerializerOptions _readOptions;
+    private readonly JsonSerializerOptions _writeOptions;
 
     private const string ProfileSearchPattern = "*.json";
     private const NotifyFilters WATCHER_NOTIFY_FILTERS =
@@ -43,6 +37,9 @@ public class PipelineProfilesRepository : IPipelineProfilesRepository
 
     // Cache of profiles
     private List<PipelineProfile> _profiles = [];
+
+    private bool _isInternalSave = false;
+    private readonly object _fileLock = new object();
 
     /// <summary>
     /// Event that triggers when pipeline profiles are changed
@@ -56,6 +53,9 @@ public class PipelineProfilesRepository : IPipelineProfilesRepository
     {
         _log = log ?? throw new ArgumentNullException(nameof(log));
         _profilesDirectoryPath = Path.Combine(appDirectory, AppConstants.Folders.AppSettings, AppConstants.Folders.Profiles);
+
+        _readOptions = GetSerializerOptions();
+        _writeOptions = GetSerializerOptions();
 
         // Ensure directory exists
         if (!Directory.Exists(_profilesDirectoryPath))
@@ -268,30 +268,39 @@ public class PipelineProfilesRepository : IPipelineProfilesRepository
     {
         ArgumentNullException.ThrowIfNull(profiles);
 
-        if (!Directory.Exists(_profilesDirectoryPath))
-            Directory.CreateDirectory(_profilesDirectoryPath);
-
-        var profilesList = profiles.ToList();
-        var profileNames = profilesList.Select(p => $"{p.Name}.json").ToHashSet();
-
-        var existingFiles = Directory.GetFiles(_profilesDirectoryPath, ProfileSearchPattern);
-        foreach (var file in existingFiles)
+        try
         {
-            if (!profileNames.Contains(Path.GetFileName(file)))
+            _isInternalSave = true;
+
+            if (!Directory.Exists(_profilesDirectoryPath))
+                Directory.CreateDirectory(_profilesDirectoryPath);
+
+            var profilesList = profiles.ToList();
+            var profileNames = profilesList.Select(p => $"{p.Name}.json").ToHashSet();
+
+            var existingFiles = Directory.GetFiles(_profilesDirectoryPath, ProfileSearchPattern);
+            foreach (var file in existingFiles)
             {
-                File.Delete(file);
-                _log.Info($"Obsolete profile file {Path.GetFileName(file)} has been deleted.");
+                if (!profileNames.Contains(Path.GetFileName(file)))
+                {
+                    File.Delete(file);
+                    _log.Info($"Obsolete profile file {Path.GetFileName(file)} has been deleted.");
+                }
             }
-        }
 
-        foreach (var profile in profilesList)
+            foreach (var profile in profilesList)
+            {
+                var path = Path.Combine(_profilesDirectoryPath, $"{profile.Name}.json");
+                SaveProfileToFile(profile, path);
+            }
+
+            _profiles = profilesList;
+            _log.Info("All pipeline profiles have been successfully saved.");
+        }
+        finally
         {
-            var path = Path.Combine(_profilesDirectoryPath, $"{profile.Name}.json");
-            SaveProfileToFile(profile, path);
+            _isInternalSave = false;
         }
-
-        _profiles = profilesList;
-        _log.Info("All pipeline profiles have been successfully saved.");
     }
 
     /// <summary>
@@ -344,16 +353,29 @@ public class PipelineProfilesRepository : IPipelineProfilesRepository
     /// <summary>
     /// Handle file change events
     /// </summary>
+    private volatile bool _isProcessingFileChange = false;
+
     private void OnSettingsFileChanged(object sender, FileSystemEventArgs e)
     {
+        if (_isProcessingFileChange) return;
+
         _fileChangeDebounceCts?.Cancel();
         _fileChangeDebounceCts = new CancellationTokenSource();
         var token = _fileChangeDebounceCts.Token;
 
-        Task.Delay(700, token).ContinueWith(t =>
+        Task.Delay(1000, token).ContinueWith(t =>
         {
-            if (!t.IsCanceled)
+            if (t.IsCanceled) return;
+
+            try
+            {
+                _isProcessingFileChange = true;
                 ReloadProfiles();
+            }
+            finally
+            {
+                _isProcessingFileChange = false;
+            }
         }, TaskScheduler.Default);
     }
 
@@ -362,19 +384,22 @@ public class PipelineProfilesRepository : IPipelineProfilesRepository
     /// </summary>
     private void ReloadProfiles()
     {
-        _profiles = TryLoadProfilesFrom(_profilesDirectoryPath);
-
-        if (_profiles.IsNullOrEmpty())
+        lock (_fileLock)
         {
-            _profiles = InitializeDefaultProfiles(_profilesDirectoryPath);
-            _log.Info($"Pipeline profiles have been successfully re-initialized.");
-        }
-        else
-        {
-            _log.Info($"Pipeline profiles have been successfully reloaded.");
-        }
+            _profiles = TryLoadProfilesFrom(_profilesDirectoryPath);
 
-        PipelineProfilesChanged?.Invoke(this, EventArgs.Empty);
+            if (_profiles.IsNullOrEmpty())
+            {
+                _profiles = InitializeDefaultProfiles(_profilesDirectoryPath);
+                _log.Info($"Pipeline profiles have been successfully re-initialized.");
+            }
+            else
+            {
+                _log.Info($"Pipeline profiles have been successfully reloaded.");
+            }
+
+            PipelineProfilesChanged?.Invoke(this, EventArgs.Empty);
+        }
     }
 
     /// <summary>
@@ -443,6 +468,7 @@ public class PipelineProfilesRepository : IPipelineProfilesRepository
             catch (Exception ex)
             {
                 _log.Error($"Failed to load profile from {Path.GetFileName(filePath)}: {ex.Message}");
+                throw;
             }
         }
 
@@ -479,5 +505,17 @@ public class PipelineProfilesRepository : IPipelineProfilesRepository
             _log.Error($"Failed to save profile '{profile.Name}' to {Path.GetFileName(path)}: {ex.Message}");
             throw;
         }
+    }
+
+    private static JsonSerializerOptions GetSerializerOptions()
+    {
+        var options = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true,
+            IncludeFields = true,
+            WriteIndented = true
+        };
+        options.Converters.Add(new PipelineOperationJsonConverter());
+        return options;
     }
 }

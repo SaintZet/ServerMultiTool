@@ -11,6 +11,8 @@ namespace ServerMultiTool.Model.Features.ContinuousDeployment.Delivery;
 
 public class DeliveryBinOperation : BaseDeliveryOperation
 {
+    public override OperationType OperationType => OperationType.DeliveryBinOperation;
+
     public DeliveryBinOperation(string name, DirectoryModel project)
         : base(name, project)
     {

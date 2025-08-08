@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using ServerMultiTool.Model.Domain.Common;
 using ServerMultiTool.Model.Domain.Pipeline;
-using ServerMultiTool.Model.Domain.Pipeline.Interfaces;
 using ServerMultiTool.Model.Features.ContinuousIntegration.Git;
 using ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Base;
 using System.Threading;
@@ -30,7 +29,7 @@ public partial class GitPullOperationWrapper : ObservableObject, IPipelineOperat
         return await _operation.ExecuteAsync(cancellationToken);
     }
 
-    public IPipelineOperation ToOriginal()
+    public PipelineOperation ToOriginal()
     {
         _operation.EnableOperation(Enabled);
 

@@ -1,23 +1,26 @@
 using ServerMultiTool.Model.Domain.Common;
 using ServerMultiTool.Model.Domain.Common.Logs;
-using ServerMultiTool.Model.Domain.Pipeline.Interfaces;
 using System;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace ServerMultiTool.Model.Domain.Pipeline;
 
-public abstract class BasePipelineOperation : IPipelineOperation
+[Serializable]
+public abstract class PipelineOperation
 {
-    public Guid Guid { get; } = Guid.NewGuid();
-    public bool Enabled { get; private set; } = true;
-    public string Name { get; private set; }
-    public string SolutionDirectory { get; private set; } = null!;
-    public string HttpDirectory { get; private set; } = null!;
+    [JsonInclude] public abstract OperationType OperationType { get; }
+    [JsonInclude] public Guid Guid { get; } = Guid.NewGuid();
+    [JsonInclude] public bool Enabled { get; private set; } = true;
+    [JsonInclude] public string Name { get; private set; }
+
+    [JsonIgnore] public string SolutionDirectory { get; private set; } = null!;
+    [JsonIgnore] public string HttpDirectory { get; private set; } = null!;
 
     protected Logger Logger { get; }
 
-    protected BasePipelineOperation(string name)
+    protected PipelineOperation(string name)
     {
         Name = name ?? throw new ArgumentNullException(nameof(name), "Operation name cannot be null.");
         Logger = new Logger(Name);

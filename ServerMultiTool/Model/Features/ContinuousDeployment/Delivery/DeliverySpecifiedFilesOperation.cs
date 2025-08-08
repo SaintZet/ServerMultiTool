@@ -11,6 +11,8 @@ namespace ServerMultiTool.Model.Features.ContinuousDeployment.Delivery
     {
         public List<DeliveryDirectory> CustomDeliveryDirectories { get; set; } = [];
 
+        public override OperationType OperationType => OperationType.DeliverySpecifiedFilesOperation;
+
         public DeliverySpecifiedFilesOperation(string name)
             : base(name)
         {

@@ -175,9 +175,9 @@ public partial class SettingsViewModel : BaseViewModel, IPage
         _initialSolutionDirectories = SolutionDirectories.Clone();
         _initialHttpDirectories = HttpDirectories.Clone();
 
-        //PipelineProfilesService.SavePipelineProfiles(
-        //    [.. PipelineProfiles.Select(w => w.ToPipelineProfile())]
-        //);
+        PipelineProfilesService.SavePipelineProfiles(
+            [.. PipelineProfiles.Select(w => w.ToOriginal())]
+        );
 
         _initialPipelineProfiles = PipelineProfiles.Clone();
 

@@ -1,6 +1,5 @@
 ﻿using ServerMultiTool.Model.Domain.Common;
 using ServerMultiTool.Model.Domain.Pipeline;
-using ServerMultiTool.Model.Domain.Pipeline.Interfaces;
 using ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Base;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -12,7 +11,7 @@ namespace ServerMultiTool.ViewModels.Features.Pipeline.Collections
 {
     public class PipelineOperationsCollection : ObservableCollection<IPipelineOperationWrapper>
     {
-        public PipelineOperationsCollection(IEnumerable<IPipelineOperation> operations)
+        public PipelineOperationsCollection(IEnumerable<PipelineOperation> operations)
             : base(operations.Select(PipelineOperationWrapperFactory.Create))
         {
 

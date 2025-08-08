@@ -35,6 +35,8 @@ public partial class PipelineStepWrapper : ObservableObject
     public PipelineStep ToOriginal()
     {
         _pipelineStep.UpdateOrder(Order);
+        _pipelineStep.UpdateName(Name);
+        _pipelineStep.UpdateDescription(Description);
         return _pipelineStep;
     }
 

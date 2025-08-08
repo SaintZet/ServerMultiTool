@@ -1,6 +1,4 @@
-﻿using ServerMultiTool.Model.Domain.Common;
-using ServerMultiTool.Model.Domain.Pipeline;
-using ServerMultiTool.Model.Features.ContinuousIntegration.GameServerLogs;
+﻿using ServerMultiTool.Model.Domain.Pipeline;
 using ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -37,23 +35,25 @@ namespace ServerMultiTool.ViewModels.Features.Pipeline.Collections
                     }).ToList();
 
                 var clonedProfile = new PipelineProfile(
+                    originalProfile.Id,
                     originalProfile.Name,
                     originalProfile.Description,
+                    originalProfile.GsLogMonitoringSettings,
                     clonedSteps);
 
-                if (originalProfile.GsLogMonitoringSettings != null)
-                {
-                    var originalSettings = originalProfile.GsLogMonitoringSettings;
-                    var clonedSettings = new GsLogMonitoringSettings
-                    {
-                        Enable = originalSettings.Enable,
-                        MasterLogDirectory = originalSettings.MasterLogDirectory != null ?
-                            new DirectoryModel(originalSettings.MasterLogDirectory.Path) : null,
-                        SegmentLogDirectory = originalSettings.SegmentLogDirectory != null ?
-                            new DirectoryModel(originalSettings.SegmentLogDirectory.Path) : null
-                    };
-                    clonedProfile.UpdateGsLogMonitoringSettings(clonedSettings);
-                }
+                //if (originalProfile.GsLogMonitoringSettings != null)
+                //{
+                //    var originalSettings = originalProfile.GsLogMonitoringSettings;
+                //    var clonedSettings = new GsLogMonitoringSettings
+                //    {
+                //        Enable = originalSettings.Enable,
+                //        MasterLogDirectory = originalSettings.MasterLogDirectory != null ?
+                //            new DirectoryModel(originalSettings.MasterLogDirectory.Path) : null,
+                //        SegmentLogDirectory = originalSettings.SegmentLogDirectory != null ?
+                //            new DirectoryModel(originalSettings.SegmentLogDirectory.Path) : null
+                //    };
+                //    clonedProfile.UpdateGsLogMonitoringSettings(clonedSettings);
+                //}
 
                 var clonedWrapper = new PipelineProfileWrapper(clonedProfile);
                 clonedCollection.Add(clonedWrapper);

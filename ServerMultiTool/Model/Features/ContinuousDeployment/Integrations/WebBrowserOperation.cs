@@ -3,14 +3,17 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace ServerMultiTool.Model.Features.ContinuousDeployment.Integrations
 {
-    public class WebBrowserOperation : BasePipelineOperation
+    public class WebBrowserOperation : PipelineOperation
     {
         public List<string> Urls { get; private set; } = [];
+
+        public override OperationType OperationType => OperationType.WebBrowserOperation;
 
         public WebBrowserOperation(string name, string url)
             : base(name)
@@ -18,6 +21,7 @@ namespace ServerMultiTool.Model.Features.ContinuousDeployment.Integrations
             AddUrl(url);
         }
 
+        [JsonConstructor]
         public WebBrowserOperation(string name, List<string> urls)
                 : base(name)
         {

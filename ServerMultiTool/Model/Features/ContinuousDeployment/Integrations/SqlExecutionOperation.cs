@@ -7,10 +7,12 @@ using System.Threading.Tasks;
 
 namespace ServerMultiTool.Model.Features.ContinuousDeployment.Integrations
 {
-    public class SqlExecutionOperation(string name) : BasePipelineOperation(name)
+    public class SqlExecutionOperation(string name) : PipelineOperation(name)
     {
         public string PathToSqlScript { get; private set; } = string.Empty;
         public string ConnectionString { get; private set; } = string.Empty;
+
+        public override OperationType OperationType => OperationType.SqlExecutionOperation;
 
         public SqlExecutionOperation UpdatePathToSqlScript(string path)
         {

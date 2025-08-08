@@ -4,15 +4,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace ServerMultiTool.Model.Features.ContinuousDeployment.Integrations;
 
-public class HttpPingOperation : BasePipelineOperation
+public class HttpPingOperation : PipelineOperation
 {
     public List<string> Urls { get; private set; } = [];
     public double TimeoutInMinutes { get; set; } = 5;
+
+    public override OperationType OperationType => OperationType.HttpPingOperation;
 
     public HttpPingOperation(string name, string url)
             : base(name)
@@ -20,6 +23,7 @@ public class HttpPingOperation : BasePipelineOperation
         AddUrl(url);
     }
 
+    [JsonConstructor]
     public HttpPingOperation(string name, List<string> urls)
             : base(name)
     {

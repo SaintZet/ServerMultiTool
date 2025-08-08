@@ -34,6 +34,7 @@ public partial class PipelineProfileWrapper : ObservableObject
         _profile.UpdateName(Name);
         _profile.UpdateDescription(Description);
         _profile.UpdateGsLogMonitoringSettings(GsLogMonitoringSettings.ToOriginal());
+        _profile.UpdateSteps([.. _steps.Select(step => step.ToOriginal())]);
 
         return _profile;
     }

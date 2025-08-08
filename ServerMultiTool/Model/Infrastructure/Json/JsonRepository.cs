@@ -6,10 +6,12 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 
-namespace ServerMultiTool.Model.Infrastructure;
+namespace ServerMultiTool.Model.Infrastructure.Json;
 
 public abstract class JsonRepository<T> : IRepository<T> where T : class
 {
+    private static readonly object FileLock = new();
+
     protected readonly ILog Log;
     protected readonly string FilePath;
     protected readonly JsonSerializerOptions ReadOptions;
@@ -69,16 +71,15 @@ public abstract class JsonRepository<T> : IRepository<T> where T : class
         {
             ArgumentNullException.ThrowIfNull(entity);
 
-            // Create a temporary file path
             var tempFilePath = Path.GetTempFileName();
-
-            // Write to temporary file first
             var json = JsonSerializer.Serialize(entity, WriteOptions);
             File.WriteAllText(tempFilePath, json);
 
-            // Atomically replace the original file
-            File.Copy(tempFilePath, FilePath, true);
-            File.Delete(tempFilePath);
+            lock (FileLock)
+            {
+                File.Copy(tempFilePath, FilePath, true);
+                File.Delete(tempFilePath);
+            }
 
             Log.Info($"Entity successfully updated in {FilePath}");
         }
@@ -96,7 +97,6 @@ public abstract class JsonRepository<T> : IRepository<T> where T : class
     {
         try
         {
-            // Get the current JSON document
             JsonNode jsonDocument;
             if (File.Exists(FilePath))
             {
@@ -106,22 +106,19 @@ public abstract class JsonRepository<T> : IRepository<T> where T : class
             }
             else
             {
-                // If file doesn't exist, create a new JSON document
                 jsonDocument = new JsonObject();
             }
 
-            // Update the field using the provided path (e.g., "Property1.NestedProperty")
             UpdateJsonNodeField(jsonDocument, fieldPath.Split('.'), value);
 
-            // Create a temporary file path
             var tempFilePath = Path.GetTempFileName();
-
-            // Write to temporary file first
             File.WriteAllText(tempFilePath, jsonDocument.ToJsonString(WriteOptions));
 
-            // Atomically replace the original file
-            File.Copy(tempFilePath, FilePath, true);
-            File.Delete(tempFilePath);
+            lock (FileLock)
+            {
+                File.Copy(tempFilePath, FilePath, true);
+                File.Delete(tempFilePath);
+            }
 
             Log.Info($"Field '{fieldPath}' successfully updated in {FilePath}");
         }
@@ -162,16 +159,15 @@ public abstract class JsonRepository<T> : IRepository<T> where T : class
         {
             ArgumentNullException.ThrowIfNull(entity);
 
-            // Create a temporary file path
             var tempFilePath = Path.GetTempFileName();
-
-            // Write to temporary file first
             var json = JsonSerializer.Serialize(entity, WriteOptions);
             await File.WriteAllTextAsync(tempFilePath, json);
 
-            // Atomically replace the original file
-            File.Copy(tempFilePath, FilePath, true);
-            File.Delete(tempFilePath);
+            lock (FileLock)
+            {
+                File.Copy(tempFilePath, FilePath, true);
+                File.Delete(tempFilePath);
+            }
 
             Log.Info($"Entity successfully updated in {FilePath}");
         }
@@ -189,7 +185,6 @@ public abstract class JsonRepository<T> : IRepository<T> where T : class
     {
         try
         {
-            // Get the current JSON document
             JsonNode jsonDocument;
             if (File.Exists(FilePath))
             {
@@ -199,22 +194,19 @@ public abstract class JsonRepository<T> : IRepository<T> where T : class
             }
             else
             {
-                // If file doesn't exist, create a new JSON document
                 jsonDocument = new JsonObject();
             }
 
-            // Update the field using the provided path (e.g., "Property1.NestedProperty")
             UpdateJsonNodeField(jsonDocument, fieldPath.Split('.'), value);
 
-            // Create a temporary file path
             var tempFilePath = Path.GetTempFileName();
-
-            // Write to temporary file first
             await File.WriteAllTextAsync(tempFilePath, jsonDocument.ToJsonString(WriteOptions));
 
-            // Atomically replace the original file
-            File.Copy(tempFilePath, FilePath, true);
-            File.Delete(tempFilePath);
+            lock (FileLock)
+            {
+                File.Copy(tempFilePath, FilePath, true);
+                File.Delete(tempFilePath);
+            }
 
             Log.Info($"Field '{fieldPath}' successfully updated in {FilePath}");
         }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ServerMultiTool.Model.Features.ContinuousDeployment.Delivery
 {
-    public class BaseDeliveryOperation : BasePipelineOperation
+    public abstract class BaseDeliveryOperation : PipelineOperation
     {
         public DirectoryModel? Project { get; private set; }
 

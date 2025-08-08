@@ -11,6 +11,7 @@ using ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.PipelineSteps;
 using ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers;
 using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 
 namespace ServerMultiTool.ViewModels.Components.EditPipelineProfile;
@@ -47,9 +48,22 @@ public partial class EditPipelineProfileViewModel : BaseViewModel
         SelectedStep = value.Steps.FirstOrDefault();
     }
 
-    partial void OnSelectedStepChanged(PipelineStepWrapper? value)
+    partial void OnSelectedStepChanging(PipelineStepWrapper? value)
     {
+        if (_selectedStep is not null)
+        {
+            _selectedStep.PropertyChanged -= SelectedStep_PropertyChanged;
+        }
 
+        if (value is not null)
+        {
+            value.PropertyChanged += SelectedStep_PropertyChanged;
+        }
+    }
+
+    private void SelectedStep_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        OnPropertyChanged();
     }
 
     [RelayCommand]
@@ -92,7 +106,7 @@ public partial class EditPipelineProfileViewModel : BaseViewModel
         Type operationType = SelectedOperationType.OperationType;
 
         // Create a new instance of the selected operation type
-        var operation = Activator.CreateInstance(operationType, SelectedOperationType.Name) as BasePipelineOperation;
+        var operation = Activator.CreateInstance(operationType, SelectedOperationType.Name) as PipelineOperation;
         if (operation is null)
             return;
 

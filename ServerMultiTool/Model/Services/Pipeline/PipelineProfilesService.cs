@@ -50,7 +50,7 @@ public static class PipelineProfilesService
         return profiles;
     }
 
-    public static void SavePipelineProfiles(IEnumerable<PipelineProfile> profiles)
+    public static void SavePipelineProfiles(List<PipelineProfile> profiles)
     {
         Repository.SaveAll(profiles);
         PipelineProfiles = Repository.GetAll();

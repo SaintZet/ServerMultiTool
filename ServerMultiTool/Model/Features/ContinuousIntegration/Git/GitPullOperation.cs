@@ -5,10 +5,12 @@ using System.Threading.Tasks;
 
 namespace ServerMultiTool.Model.Features.ContinuousIntegration.Git
 {
-    public class GitPullOperation : BasePipelineOperation
+    public class GitPullOperation : PipelineOperation
     {
         private readonly Logger _logger;
         private readonly GitService _gitService = new();
+
+        public override OperationType OperationType => OperationType.GitPull;
 
         public GitPullOperation(string name)
             : base(name)

@@ -16,36 +16,40 @@ public class PipelineProfile
 
     public GsLogMonitoringSettings GsLogMonitoringSettings { get; private set; } = new GsLogMonitoringSettings();
 
-    public IReadOnlyList<PipelineStep> Steps => _steps;
+    public List<PipelineStep> Steps { get; private set; }
 
-    private readonly List<PipelineStep> _steps;
-
-    public PipelineProfile(string name, string desctiption)
+    public PipelineProfile(string name, string description)
     {
         Name = name;
-        Description = desctiption;
-
-        _steps = [];
+        Description = description;
+        Steps = [];
     }
 
     [JsonConstructor]
-    public PipelineProfile(string name, string desctiption, List<PipelineStep> steps)
+    public PipelineProfile(Guid id, string name, string description, GsLogMonitoringSettings gsLogMonitoringSettings, List<PipelineStep> steps)
     {
+        Id = id;
         Name = name;
-        Description = desctiption;
-
-        _steps = steps ?? [];
+        Description = description;
+        GsLogMonitoringSettings = gsLogMonitoringSettings ?? new GsLogMonitoringSettings();
+        Steps = steps ?? [];
     }
 
     public PipelineProfile AddStep(PipelineStep step)
     {
-        _steps.Add(step);
+        Steps.Add(step);
         return this;
     }
 
     public PipelineProfile RemoveStep(PipelineStep step)
     {
-        _steps.Remove(step);
+        Steps.Remove(step);
+        return this;
+    }
+
+    public PipelineProfile UpdateSteps(List<PipelineStep> steps)
+    {
+        Steps = steps ?? [];
         return this;
     }
 
