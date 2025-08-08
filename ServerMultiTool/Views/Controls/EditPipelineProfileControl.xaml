@@ -96,7 +96,12 @@
                         BorderThickness="0"
                         ItemContainerStyle="{StaticResource StretchStyle}"
                         ItemsSource="{Binding Profile.Steps}"
-                        SelectedItem="{Binding SelectedStep}">
+                        SelectedItem="{Binding SelectedStep}"
+                        AllowDrop="True"
+                        PreviewMouseLeftButtonDown="ListView_PreviewMouseLeftButtonDown"
+                        PreviewMouseMove="ListView_PreviewMouseMove"
+                        DragOver="ListView_DragOver"
+                        Drop="ListView_Drop">
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <DataTemplate.Resources>
@@ -194,21 +199,6 @@
                                 Margin="0,10,0,0"
                                 VerticalAlignment="Center"
                                 Text="{Binding SelectedStep.Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-
-                            <TextBlock
-                                Grid.Row="2"
-                                Grid.Column="0"
-                                Margin="0,10,10,0"
-                                VerticalAlignment="Center"
-                                Text="Order:" />
-                            <TextBox
-                                Grid.Row="2"
-                                Grid.Column="1"
-                                Width="40"
-                                Margin="0,10,0,0"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Center"
-                                Text="{Binding SelectedStep.Order, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </Grid>
                     </GroupBox>
 

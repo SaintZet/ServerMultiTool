@@ -115,6 +115,24 @@ public partial class EditPipelineProfileViewModel : BaseViewModel
 
         OnPropertyChanged();
     }
+
+    public void ReorderSteps(PipelineStepWrapper draggedItem, PipelineStepWrapper targetItem)
+    {
+        if (Profile == null || draggedItem == null || targetItem == null)
+            return;
+
+        var draggedIndex = Profile.Steps.IndexOf(draggedItem);
+        var targetIndex = Profile.Steps.IndexOf(targetItem);
+
+        if (draggedIndex < 0 || targetIndex < 0)
+            return;
+
+        Profile.Steps.ReorderItem(draggedItem, targetItem);
+
+        SelectedStep = draggedItem;
+
+        OnPropertyChanged();
+    }
 }
 
 public class OperationTypeViewModel

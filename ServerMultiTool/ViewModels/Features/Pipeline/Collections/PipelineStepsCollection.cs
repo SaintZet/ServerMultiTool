@@ -49,4 +49,18 @@ public class PipelineStepsCollection : ObservableCollection<PipelineStepWrapper>
             step.UpdateHttpDirectory(directory);
         }
     }
+
+    public void ReorderItem(PipelineStepWrapper draggedItem, PipelineStepWrapper targetItem)
+    {
+        this.Remove(draggedItem);
+
+        int targetIndex = this.IndexOf(targetItem);
+
+        this.Insert(targetIndex, draggedItem);
+
+        for (int i = 0; i < this.Count; i++)
+        {
+            this[i].Order = i;
+        }
+    }
 }

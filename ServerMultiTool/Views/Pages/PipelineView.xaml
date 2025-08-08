@@ -10,8 +10,6 @@
     xmlns:pipeline="clr-namespace:ServerMultiTool.ViewModels.Pages.Pipeline"
     xmlns:pipelineConverters="clr-namespace:ServerMultiTool.ViewModels.Features.Pipeline.Converters"
     Title="{Binding Title}"
-    d:DataContext="{d:DesignInstance Type=pipeline:PipelineViewModel,
-                                     IsDesignTimeCreatable=True}"
     d:DesignHeight="600"
     d:DesignWidth="700"
     FontFamily="Poppins"
