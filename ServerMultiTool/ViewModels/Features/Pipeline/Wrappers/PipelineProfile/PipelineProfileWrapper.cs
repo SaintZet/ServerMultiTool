@@ -12,9 +12,8 @@ public partial class PipelineProfileWrapper : ObservableObject
 {
     [ObservableProperty] string _name = string.Empty;
     [ObservableProperty] string _description = string.Empty;
-
-    public readonly PipelineStepsCollection Steps;
-    public readonly GsLogMonitoringSettingsWrapper GsLogMonitoringSettings;
+    [ObservableProperty] public PipelineStepsCollection _steps;
+    [ObservableProperty] public GsLogMonitoringSettingsWrapper _gsLogMonitoringSettings;
 
     readonly PipelineProfile _profile;
 
@@ -37,5 +36,15 @@ public partial class PipelineProfileWrapper : ObservableObject
         _profile.UpdateGsLogMonitoringSettings(GsLogMonitoringSettings.ToOriginal());
 
         return _profile;
+    }
+
+    public void AddStep(PipelineStep newStep)
+    {
+
+    }
+
+    public void RemoveStep(PipelineStep pipelineStep)
+    {
+
     }
 }

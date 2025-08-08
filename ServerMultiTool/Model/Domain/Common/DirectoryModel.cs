@@ -5,26 +5,51 @@ namespace ServerMultiTool.Model.Domain.Common;
 [Serializable]
 public class DirectoryModel
 {
+    private string _path = string.Empty;
+
     public string Name { get; set; } = string.Empty;
-    public string Path { get; set; } = string.Empty;
 
-    //if (string.IsNullOrEmpty(directory.Path))
-    //    throw new ArgumentException("Http directory path cannot be null or empty.");
+    public string Path
+    {
+        get => _path;
+        set
+        {
+            ValidatePath(value);
+            _path = NormalizePath(value);
+        }
+    }
 
-    //if (directory.Path.Equals(SolutionDirectory, StringComparison.OrdinalIgnoreCase))
-    //    throw new ArgumentException("Http directory path cannot be the same as the solution directory path.");
+    public DirectoryModel()
+    {
+    }
 
-    //if (directory.Path.Contains(" "))
-    //    throw new ArgumentException("Http directory path cannot contain spaces.");
+    public DirectoryModel(string path)
+    {
+        Path = path;
+    }
 
-    //if (directory.Path.Contains(".."))
-    //    throw new ArgumentException("Http directory path cannot contain relative paths (..) for security reasons.");
+    private static void ValidatePath(string path)
+    {
+        if (string.IsNullOrEmpty(path))
+            throw new ArgumentException("Directory path cannot be null or empty.");
 
-    //if (directory.Path.EndsWith("/"))
-    //    directory.Path = directory.Path.TrimEnd('/');
+        if (path.Contains(".."))
+            throw new ArgumentException("Directory path cannot contain relative paths (..) for security reasons.");
+    }
 
-    //if (directory.Path.EndsWith("\\"))
-    //    directory.Path = directory.Path.TrimEnd('\\');
+    private static string NormalizePath(string path)
+    {
+        if (string.IsNullOrEmpty(path))
+            return path;
+
+        if (path.EndsWith("/"))
+            path = path.TrimEnd('/');
+
+        if (path.EndsWith("\\"))
+            path = path.TrimEnd('\\');
+
+        return path;
+    }
 
     public bool IsSameDirectory(DirectoryModel directory) =>
         string.Equals(Path, directory.Path, StringComparison.OrdinalIgnoreCase);

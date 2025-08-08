@@ -14,10 +14,8 @@ public partial class PipelineStepWrapper : ObservableObject
 {
     readonly PipelineStep _pipelineStep;
 
-    public string DisplayName => _pipelineStep.Name;
-
-    public string Description => _pipelineStep.Description;
-
+    [ObservableProperty] public string _name;
+    [ObservableProperty] public string _description;
     [ObservableProperty] int _order;
 
     [ObservableProperty] PipelineStepStatus _pipelineStepStatus = PipelineStepStatus.Wait;
@@ -28,9 +26,10 @@ public partial class PipelineStepWrapper : ObservableObject
     {
         _pipelineStep = pipelineStep ?? throw new ArgumentNullException(nameof(pipelineStep), "Pipeline step cannot be null.");
 
-        Operations = new PipelineOperationsCollection(pipelineStep.Operations);
-
+        Name = pipelineStep.Name;
+        Description = pipelineStep.Description;
         Order = pipelineStep.Order;
+        Operations = new PipelineOperationsCollection(pipelineStep.Operations);
     }
 
     public PipelineStep ToOriginal()

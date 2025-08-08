@@ -216,7 +216,7 @@
                                         Margin="0,3,0,0"
                                         FontSize="10"
                                         Style="{DynamicResource CustomTextBlockStyle}"
-                                        Text="{Binding DisplayName}"
+                                        Text="{Binding Name}"
                                         TextAlignment="Center" />
                                 </StackPanel>
                             </DataTemplate>

@@ -28,7 +28,7 @@ public static class DefaultProfiles
                 .AddOperation(new HttpPingOperation("Ping segment", "http://localhost/Raid/Segment00/Segment.ashx"))
                 )
 
-            .AddStep(new PipelineStep("Web Browser", "This step opens the web browser to the specified URL.")
+            .AddStep(new PipelineStep("Browser", "This step opens the web browser to the specified URL.")
                 //.AddOperation(new WebBrowserOperation("Open Segment", "http://localhost/Raid/Segment00/Segment.ashx"))
                 .AddOperation(new WebBrowserOperation("Open GBO Console", "https://raid-gbo.x-plarium.com/#/console?serverId=746"))
                 )
@@ -79,7 +79,7 @@ public static class DefaultProfiles
                 .AddOperation(new HttpPingOperation("Ping segment", "http://localhost/Raid/Segment00/Segment.ashx"))
             )
 
-            .AddStep(new PipelineStep("Web Browser", "This step opens the web browser to the specified URL.")
+            .AddStep(new PipelineStep("Browser", "This step opens the web browser to the specified URL.")
                 //.AddOperation(new WebBrowserOperation("Open Segment", "http://localhost/Raid/Segment00/Segment.ashx"))
                 .AddOperation(new WebBrowserOperation("Open GBO Console", "https://raid-gbo.x-plarium.com/#/console?serverId=746"))
             )
@@ -147,7 +147,7 @@ public static class DefaultProfiles
                 .AddOperation(new HttpPingOperation("Ping segment", "http://localhost/Raid/Segment00/Segment.ashx"))
             )
 
-            .AddStep(new PipelineStep("Web Browser", "This step opens the web browser to the specified URL.")
+            .AddStep(new PipelineStep("Browser", "This step opens the web browser to the specified URL.")
                 //.AddOperation(new WebBrowserOperation("Open Segment", "http://localhost/Raid/Segment00/Segment.ashx"))
                 .AddOperation(new WebBrowserOperation("Open GBO Console", "https://raid-gbo.x-plarium.com/#/console?serverId=746"))
             )

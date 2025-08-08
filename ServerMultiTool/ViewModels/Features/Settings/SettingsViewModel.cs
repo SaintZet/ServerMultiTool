@@ -8,6 +8,7 @@ using ServerMultiTool.ViewModels.Common.BaseClasses;
 using ServerMultiTool.ViewModels.Common.Interfaces;
 using ServerMultiTool.ViewModels.Components.EditPipelineProfile;
 using ServerMultiTool.ViewModels.Components.GeneralInfo;
+using ServerMultiTool.ViewModels.Features.Pipeline.Collections;
 using ServerMultiTool.ViewModels.Features.Settings.Extensions;
 using ServerMultiTool.ViewModels.Features.Settings.Wrappers;
 using ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers;
@@ -42,11 +43,7 @@ public partial class SettingsViewModel : BaseViewModel, IPage
         if (value is null)
             return;
 
-        _isChangingProfile = true;
-
         EditPipelineProfile.Profile = value;
-
-        _isChangingProfile = false;
     }
 
     #endregion
@@ -54,12 +51,11 @@ public partial class SettingsViewModel : BaseViewModel, IPage
     #region Private Fields
 
     private bool _isInitializing;
-    private bool _isChangingProfile;
 
     // Initial state for cancel
     private ObservableCollection<DirectoryModelWrapper> _initialSolutionDirectories = [];
     private ObservableCollection<DirectoryModelWrapper> _initialHttpDirectories = [];
-    private ObservableCollection<PipelineProfileWrapper> _initialPipelineProfiles = [];
+    private PipelineProfilesCollection _initialPipelineProfiles = [];
 
     #endregion
 
@@ -67,7 +63,7 @@ public partial class SettingsViewModel : BaseViewModel, IPage
 
     [ObservableProperty] private ObservableCollection<DirectoryModelWrapper> _solutionDirectories = [];
     [ObservableProperty] private ObservableCollection<DirectoryModelWrapper> _httpDirectories = [];
-    [ObservableProperty] private ObservableCollection<PipelineProfileWrapper> _pipelineProfiles = [];
+    [ObservableProperty] private PipelineProfilesCollection _pipelineProfiles = [];
 
     #endregion
 
@@ -117,9 +113,7 @@ public partial class SettingsViewModel : BaseViewModel, IPage
             PipelineProfiles.Add(wrapper);
         }
 
-        //_initialPipelineProfiles = new ObservableCollection<PipelineProfileWrapper>(
-        //    PipelineProfiles.Select(w => new PipelineProfileWrapper(w.ToPipelineProfile()))
-        //);
+        _initialPipelineProfiles = PipelineProfiles.Clone();
 
         RestoreSelectedPipelineProfile(selectedName);
     }
@@ -142,7 +136,7 @@ public partial class SettingsViewModel : BaseViewModel, IPage
 
     private void OnEditPipelineProfilePropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        if (_isInitializing || _isChangingProfile)
+        if (_isInitializing || e.PropertyName == nameof(EditPipelineProfile.Profile) || e.PropertyName == nameof(EditPipelineProfile.SelectedStep))
             return;
 
         HasUnsavedChanges = true;
@@ -185,9 +179,7 @@ public partial class SettingsViewModel : BaseViewModel, IPage
         //    [.. PipelineProfiles.Select(w => w.ToPipelineProfile())]
         //);
 
-        //_initialPipelineProfiles = new ObservableCollection<PipelineProfileWrapper>(
-        //    PipelineProfiles.Select(w => new PipelineProfileWrapper(w.ToPipelineProfile()))
-        //);
+        _initialPipelineProfiles = PipelineProfiles.Clone();
 
         GeneralInfo.UpdateData();
 
@@ -206,12 +198,7 @@ public partial class SettingsViewModel : BaseViewModel, IPage
 
         PipelineProfiles.Clear();
 
-        //foreach (var wrapper in _initialPipelineProfiles)
-        //{
-        //    var newWrapper = new PipelineProfileWrapper(wrapper.ToPipelineProfile());
-        //    newWrapper.PropertyChanged += OnProfilePropertyChanged;
-        //    PipelineProfiles.Add(newWrapper);
-        //}
+        PipelineProfiles = _initialPipelineProfiles.Clone();
 
         RestoreSelectedPipelineProfile(selectedName);
 
@@ -224,7 +211,7 @@ public partial class SettingsViewModel : BaseViewModel, IPage
     private void AddPipelineProfile()
     {
         var newProfile = DefaultProfiles.GetIisResetProfile();
-        //newProfile.Name = "New Profile";
+        newProfile.UpdateName("New Profile");
 
         var wrapper = new PipelineProfileWrapper(newProfile);
         wrapper.PropertyChanged += OnProfilePropertyChanged;
