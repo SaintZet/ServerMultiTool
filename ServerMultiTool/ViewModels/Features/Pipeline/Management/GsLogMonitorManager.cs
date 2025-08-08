@@ -7,7 +7,7 @@ using System.Windows;
 
 namespace ServerMultiTool.ViewModels.Features.Pipeline.Management;
 
-public class GsLogMonitor
+public class GsLogMonitorManager
 {
     private readonly GsLogMonitoringService _masterLogService;
     private readonly GsLogMonitoringService _segmentLogService;
@@ -16,7 +16,7 @@ public class GsLogMonitor
     public ObservableCollection<LogEvent> MasterLogMessages { get; } = [];
     public ObservableCollection<LogEvent> SegmentLogMessages { get; } = [];
 
-    public GsLogMonitor()
+    public GsLogMonitorManager()
     {
         _masterLogService = new GsLogMonitoringService();
         _masterLogService.Subscribe<LogEvent>(AddNewMasterLogEvent);

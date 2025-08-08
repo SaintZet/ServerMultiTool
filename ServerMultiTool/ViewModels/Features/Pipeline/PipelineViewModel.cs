@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ServerMultiTool.Model.Domain.Common.Logs;
+using ServerMultiTool.Model.Services.Pipeline;
 using ServerMultiTool.Model.Services.Settings;
 using ServerMultiTool.ViewModels.Common;
 using ServerMultiTool.ViewModels.Common.BaseClasses;
@@ -9,8 +10,8 @@ using ServerMultiTool.ViewModels.Components.GeneralInfo;
 using ServerMultiTool.ViewModels.Features.Pipeline.Collections;
 using ServerMultiTool.ViewModels.Features.Pipeline.Management;
 using ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using static ServerMultiTool.ViewModels.Common.Delegates;
@@ -26,12 +27,15 @@ public partial class PipelineViewModel : BaseViewModel, IPage
     [ObservableProperty] private GeneralInfoViewModel _generalInfo = null!;
 
     [ObservableProperty] private PipelineProfileWrapper? _selectedPipelineProfile;
+
     partial void OnSelectedPipelineProfileChanged(PipelineProfileWrapper? value)
     {
         if (value is null)
             return;
 
-        _profileManager.UpdateProfile(value);
+        var appSettings = AppSettingsService.AppSettings;
+        appSettings.CurrentPipelineProfileName = value.Name;
+        AppSettingsService.SaveAppSettings(appSettings);
 
         _pipelineExecutor.UpdateOperations(value);
         OnPropertyChanged(nameof(PipelineSteps));
@@ -48,17 +52,16 @@ public partial class PipelineViewModel : BaseViewModel, IPage
 
     #endregion
 
-    #region Services
+    #region Managers
 
-    private readonly PipelineProfileManager _profileManager;
     private readonly PipelineExecuteManager _pipelineExecutor;
-    private readonly GsLogMonitor _logManager;
+    private readonly GsLogMonitorManager _logManager;
 
     #endregion
 
     #region Collections
 
-    [ObservableProperty] List<PipelineProfileWrapper> _pipelineProfiles = [];
+    [ObservableProperty] ObservableCollection<PipelineProfileWrapper> _pipelineProfiles = [];
     public PipelineStepsCollection PipelineSteps => _pipelineExecutor.PipelineSteps;
     public ObservableCollection<LogEvent> AppLogMessages => _logManager.AppLogMessages;
     public ObservableCollection<LogEvent> MasterLogMessages => _logManager.MasterLogMessages;
@@ -70,33 +73,40 @@ public partial class PipelineViewModel : BaseViewModel, IPage
 
     public PipelineViewModel()
     {
-        _logManager = new GsLogMonitor();
+        _logManager = new GsLogMonitorManager();
 
         _pipelineExecutor = new PipelineExecuteManager(_logManager);
-        _pipelineExecutor.PipelineStateChanged += OnPipelineStateChanged;
+        _pipelineExecutor.PipelineStateChanged += (sender, isRunning) => { IsPipelineRunning = isRunning; };
 
-        _profileManager = new PipelineProfileManager();
-        _profileManager.ProfilesChanged += OnProfilesChanged;
-
-        _profileManager.LoadProfiles(AppSettingsService.AppSettings.CurrentPipelineProfileName);
-
-        PipelineProfiles = _profileManager.PipelineProfiles;
-        SelectedPipelineProfile = _profileManager.SelectedProfile;
+        LoadProfiles();
+        PipelineProfilesService.PipelineProfilesChanged += (_, _) => Application.Current.Dispatcher.Invoke(LoadProfiles);
     }
 
-    private void OnProfilesChanged(object? sender, System.EventArgs e)
+    private void LoadProfiles()
     {
-        Application.Current.Dispatcher.Invoke(() =>
+        var selectedName = AppSettingsService.AppSettings.CurrentPipelineProfileName;
+
+        PipelineProfiles.Clear();
+
+        foreach (var profile in PipelineProfilesService.PipelineProfiles)
         {
-            _profileManager.LoadProfiles(SelectedPipelineProfile?.Name ?? string.Empty);
-            OnPropertyChanged(nameof(PipelineProfiles));
-            OnPropertyChanged(nameof(SelectedPipelineProfile));
-        });
+            var wrapper = new PipelineProfileWrapper(profile);
+            PipelineProfiles.Add(wrapper);
+        }
+
+        RestoreSelectedPipelineProfile(selectedName);
     }
 
-    private void OnPipelineStateChanged(object? sender, bool isRunning)
+    private void RestoreSelectedPipelineProfile(string? selectedName)
     {
-        IsPipelineRunning = isRunning;
+        if (!string.IsNullOrEmpty(selectedName))
+        {
+            SelectedPipelineProfile = PipelineProfiles.FirstOrDefault(p => p.Name == selectedName) ?? PipelineProfiles.FirstOrDefault();
+        }
+        else if (PipelineProfiles.Any())
+        {
+            SelectedPipelineProfile = PipelineProfiles.First();
+        }
     }
 
     #endregion

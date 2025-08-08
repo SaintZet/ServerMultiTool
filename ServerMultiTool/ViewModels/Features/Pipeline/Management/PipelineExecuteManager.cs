@@ -13,7 +13,7 @@ namespace ServerMultiTool.ViewModels.Features.Pipeline.Management;
 public class PipelineExecuteManager
 {
     private readonly Logger _logger;
-    private readonly GsLogMonitor _logManager;
+    private readonly GsLogMonitorManager _logManager;
 
     private CancellationTokenSource? _pipelineCancellationTokenSource;
 
@@ -21,7 +21,7 @@ public class PipelineExecuteManager
 
     public event EventHandler<bool>? PipelineStateChanged;
 
-    public PipelineExecuteManager(GsLogMonitor logManager)
+    public PipelineExecuteManager(GsLogMonitorManager logManager)
     {
         _logger = new Logger(GetType());
         _logManager = logManager;
