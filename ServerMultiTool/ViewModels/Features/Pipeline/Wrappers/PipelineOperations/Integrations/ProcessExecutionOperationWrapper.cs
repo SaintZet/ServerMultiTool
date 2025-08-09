@@ -7,8 +7,7 @@ namespace ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Operations.Integ
 
 public partial class ProcessExecutionOperationWrapper : PipelineOperationWrapper
 {
-    public override string Name { get; set; } = "IIS Reset";
-    public override string Description { get; set; } = "Resets the IIS server to apply changes.";
+    public override string DefaultName => "Process Execution";
 
     [ObservableProperty] string _fileName;
     [ObservableProperty] string _arguments;

@@ -7,8 +7,7 @@ namespace ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Operations.Integ
 
 public partial class HttpPingOperationWrapper : PipelineOperationWrapper
 {
-    public override string Name { get; set; } = "HTTP Ping";
-    public override string Description { get; set; } = "Pings a specified HTTP endpoint to check its availability.";
+    public override string DefaultName => "HTTP Ping";
 
     [ObservableProperty] double _timeoutInMinutes;
     [ObservableProperty] ObservableCollection<string> _urls = [];

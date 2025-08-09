@@ -7,8 +7,7 @@ namespace ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Operations.Deliv
 
 public partial class DeliveryBinOperationWrapper : PipelineOperationWrapper
 {
-    public override string Name { get; set; } = "default name";
-    public override string Description { get; set; } = "default description";
+    public override string DefaultName => "Delivery Bin";
 
     [ObservableProperty] DirectoryModelWrapper _directory;
 

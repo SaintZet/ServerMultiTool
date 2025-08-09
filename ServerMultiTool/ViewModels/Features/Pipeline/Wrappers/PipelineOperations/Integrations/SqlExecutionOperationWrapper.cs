@@ -7,8 +7,7 @@ namespace ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Operations.Integ
 
 public partial class SqlExecutionOperationWrapper : PipelineOperationWrapper
 {
-    public override string Name { get; set; } = "SQL Execution";
-    public override string Description { get; set; } = "Executes a SQL script against a specified database using the provided connection string.";
+    public override string DefaultName => "SQL Execution";
 
     [ObservableProperty] string _connectionString;
     [ObservableProperty] string _pathToSqlScript;

@@ -7,9 +7,7 @@ namespace ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Operations.Integ
 
 public partial class WebBrowserOperationWrapper : PipelineOperationWrapper
 {
-    public override string Name { get; set; } = "Web Browser Operation";
-    public override string Description { get; set; } = "This operation opens a web browser to a specified URL.";
-
+    public override string DefaultName => "Web Browser Operation";
     [ObservableProperty] ObservableCollection<string> _urls = [];
 
     public WebBrowserOperationWrapper(WebBrowserOperation operation) : base(operation)
