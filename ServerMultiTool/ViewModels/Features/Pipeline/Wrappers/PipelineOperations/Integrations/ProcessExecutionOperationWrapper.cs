@@ -9,8 +9,8 @@ public partial class ProcessExecutionOperationWrapper : PipelineOperationWrapper
 {
     [ObservableProperty] int _retryCount;
 
-    public override string Name => "IIS Reset";
-    public override string Description => "Resets the IIS server to apply changes.";
+    public override string Name { get; set; } = "IIS Reset";
+    public override string Description { get; set; } = "Resets the IIS server to apply changes.";
 
     readonly ProcessExecutionOperation _operation;
 

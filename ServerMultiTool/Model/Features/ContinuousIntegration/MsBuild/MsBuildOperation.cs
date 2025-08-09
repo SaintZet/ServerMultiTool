@@ -18,7 +18,7 @@ public class MsBuildOperation : PipelineOperation
     public int RetryCount { get; private set; } = 1;
     public List<string>? Parameters { get; private set; }
 
-    public override OperationType OperationType => OperationType.MsBuild;
+    public override OperationType OperationType => OperationType.MsBuildOperation;
 
     private readonly ProcessExecutor _processExecutor;
 

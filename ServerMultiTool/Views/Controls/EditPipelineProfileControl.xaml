@@ -12,7 +12,7 @@
 
     <UserControl.Resources>
         <!--<converters1:ProcessEventConverter x:Key="ProcessEventConverter" />-->
-        <converters:DeliveryDirectoryConverter x:Key="DeliveryDirectoryConverter" />
+        <!--<converters:DeliveryDirectoryConverter x:Key="DeliveryDirectoryConverter" />-->
 
         <!--  Styles to match PipelineView.xaml  -->
         <Style TargetType="Expander">
@@ -44,257 +44,579 @@
             <Setter Property="Foreground" Value="{DynamicResource PrimaryTextColor}" />
             <Setter Property="Margin" Value="0,8,0,2" />
         </Style>
+        <converters:BoolToEnableDisableTextConverter x:Key="BoolToEnableDisableTextConverter" />
+        <converters:OperationTemplateSelector x:Key="OperationTemplateSelector">
+            <converters:OperationTemplateSelector.DeliveryBinOperationTemplate>
+                <DataTemplate>
+                    <Grid Margin="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <CheckBox
+                            Margin="0,0,5,0"
+                            VerticalAlignment="Center"
+                            IsChecked="{Binding Enabled, Mode=TwoWay}" />
+
+                        <TextBlock
+                            Grid.Column="1"
+                            VerticalAlignment="Center"
+                            Text="{Binding Name}"
+                            ToolTip="{Binding Description}" />
+
+                        <Button
+                            Grid.Column="2"
+                            Width="70"
+                            Height="25"
+                            Margin="10,0,0,0"
+                            Command="{Binding DataContext.RemoveOperationCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                            CommandParameter="{Binding}"
+                            Content="Remove"
+                            Style="{StaticResource CustomButtonStyle}" />
+                    </Grid>
+                </DataTemplate>
+            </converters:OperationTemplateSelector.DeliveryBinOperationTemplate>
+
+            <converters:OperationTemplateSelector.DeliverySpecifiedFilesOperationTemplate>
+                <DataTemplate>
+                    <Grid Margin="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <CheckBox
+                            Margin="0,0,5,0"
+                            VerticalAlignment="Center"
+                            IsChecked="{Binding Enabled, Mode=TwoWay}" />
+
+                        <TextBlock
+                            Grid.Column="1"
+                            VerticalAlignment="Center"
+                            Text="{Binding Name}"
+                            ToolTip="{Binding Description}" />
+
+                        <Button
+                            Grid.Column="2"
+                            Width="70"
+                            Height="25"
+                            Margin="10,0,0,0"
+                            Command="{Binding DataContext.RemoveOperationCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                            CommandParameter="{Binding}"
+                            Content="Remove"
+                            Style="{StaticResource CustomButtonStyle}" />
+                    </Grid>
+                </DataTemplate>
+            </converters:OperationTemplateSelector.DeliverySpecifiedFilesOperationTemplate>
+
+            <converters:OperationTemplateSelector.HttpPingOperationTemplate>
+                <DataTemplate>
+                    <Grid Margin="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <CheckBox
+                            Margin="0,0,5,0"
+                            VerticalAlignment="Center"
+                            IsChecked="{Binding Enabled, Mode=TwoWay}" />
+
+                        <TextBlock
+                            Grid.Column="1"
+                            VerticalAlignment="Center"
+                            Text="{Binding Name}"
+                            ToolTip="{Binding Description}" />
+
+                        <Button
+                            Grid.Column="2"
+                            Width="70"
+                            Height="25"
+                            Margin="10,0,0,0"
+                            Command="{Binding DataContext.RemoveOperationCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                            CommandParameter="{Binding}"
+                            Content="Remove"
+                            Style="{StaticResource CustomButtonStyle}" />
+                    </Grid>
+                </DataTemplate>
+            </converters:OperationTemplateSelector.HttpPingOperationTemplate>
+
+            <converters:OperationTemplateSelector.ProcessExecutionOperationTemplate>
+                <DataTemplate>
+                    <Grid Margin="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <CheckBox
+                            Margin="0,0,5,0"
+                            VerticalAlignment="Center"
+                            IsChecked="{Binding Enabled, Mode=TwoWay}" />
+
+                        <TextBlock
+                            Grid.Column="1"
+                            VerticalAlignment="Center"
+                            Text="{Binding Name}"
+                            ToolTip="{Binding Description}" />
+
+                        <Button
+                            Grid.Column="2"
+                            Width="70"
+                            Height="25"
+                            Margin="10,0,0,0"
+                            Command="{Binding DataContext.RemoveOperationCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                            CommandParameter="{Binding}"
+                            Content="Remove"
+                            Style="{StaticResource CustomButtonStyle}" />
+                    </Grid>
+                </DataTemplate>
+            </converters:OperationTemplateSelector.ProcessExecutionOperationTemplate>
+
+            <converters:OperationTemplateSelector.SqlExecutionOperationTemplate>
+                <DataTemplate>
+                    <Grid Margin="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <CheckBox
+                            Margin="0,0,5,0"
+                            VerticalAlignment="Center"
+                            IsChecked="{Binding Enabled, Mode=TwoWay}" />
+
+                        <TextBlock
+                            Grid.Column="1"
+                            VerticalAlignment="Center"
+                            Text="{Binding Name}"
+                            ToolTip="{Binding Description}" />
+
+                        <Button
+                            Grid.Column="2"
+                            Width="70"
+                            Height="25"
+                            Margin="10,0,0,0"
+                            Command="{Binding DataContext.RemoveOperationCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                            CommandParameter="{Binding}"
+                            Content="Remove"
+                            Style="{StaticResource CustomButtonStyle}" />
+                    </Grid>
+                </DataTemplate>
+            </converters:OperationTemplateSelector.SqlExecutionOperationTemplate>
+
+            <converters:OperationTemplateSelector.WebBrowserOperationTemplate>
+                <DataTemplate>
+                    <Grid Margin="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <CheckBox
+                            Margin="0,0,5,0"
+                            VerticalAlignment="Center"
+                            IsChecked="{Binding Enabled, Mode=TwoWay}" />
+
+                        <TextBlock
+                            Grid.Column="1"
+                            VerticalAlignment="Center"
+                            Text="{Binding Name}"
+                            ToolTip="{Binding Description}" />
+
+                        <Button
+                            Grid.Column="2"
+                            Width="70"
+                            Height="25"
+                            Margin="10,0,0,0"
+                            Command="{Binding DataContext.RemoveOperationCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                            CommandParameter="{Binding}"
+                            Content="Remove"
+                            Style="{StaticResource CustomButtonStyle}" />
+                    </Grid>
+                </DataTemplate>
+            </converters:OperationTemplateSelector.WebBrowserOperationTemplate>
+
+            <converters:OperationTemplateSelector.MsBuildOperationTemplate>
+                <DataTemplate>
+                    <Grid Margin="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <CheckBox
+                            Margin="0,0,5,0"
+                            VerticalAlignment="Center"
+                            IsChecked="{Binding Enabled, Mode=TwoWay}" />
+
+                        <TextBlock
+                            Grid.Column="1"
+                            VerticalAlignment="Center"
+                            Text="{Binding Name}"
+                            ToolTip="{Binding Description}" />
+
+                        <Button
+                            Grid.Column="2"
+                            Width="70"
+                            Height="25"
+                            Margin="10,0,0,0"
+                            Command="{Binding DataContext.RemoveOperationCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                            CommandParameter="{Binding}"
+                            Content="Remove"
+                            Style="{StaticResource CustomButtonStyle}" />
+                    </Grid>
+                </DataTemplate>
+            </converters:OperationTemplateSelector.MsBuildOperationTemplate>
+
+            <converters:OperationTemplateSelector.GitPullOperationTemplate>
+                <DataTemplate>
+                    <Grid Margin="0,5,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <TextBox
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Width="100"
+                            Height="25"
+                            Margin="0,1,0,0"
+                            VerticalAlignment="Stretch"
+                            BorderBrush="Black"
+                            BorderThickness="0.5"
+                            IsEnabled="{Binding Enabled}"
+                            Text="{Binding Name, Mode=TwoWay}"
+                            ToolTip="{Binding Description}" />
+
+                        <Button
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            Width="70"
+                            Height="25"
+                            Margin="10,0,0,0"
+                            BorderBrush="Black"
+                            BorderThickness="0.5"
+                            Command="{Binding DataContext.ToggleOperationEnabledCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                            CommandParameter="{Binding}"
+                            Style="{StaticResource CustomButtonStyle}"
+                            Content="{Binding Enabled, Converter={StaticResource BoolToEnableDisableTextConverter}}" />
+
+
+                        <Button
+                            Grid.Row="0"
+                            Grid.Column="2"
+                            Width="70"
+                            Height="25"
+                            Margin="10,0,0,0"
+                            BorderBrush="Black"
+                            BorderThickness="0.5"
+                            Command="{Binding DataContext.RemoveOperationCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                            CommandParameter="{Binding}"
+                            Style="{StaticResource CustomButtonStyle}"
+                            Content ="Remove" />
+
+                        <Expander
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="3"
+                            Margin="0,5,0,0"
+                            Padding="0,0,0,0"
+                            Header="Options"
+                            IsEnabled="{Binding Enabled}">
+                            <Grid Margin="10,0,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+
+                                <TextBlock
+                                    Margin="0,0,10,0"
+                                    VerticalAlignment="Center"
+                                    Text="Description:" />
+
+                                <TextBox
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                    Margin="2"
+                                    BorderBrush="Black"
+                                    BorderThickness="0.5"
+                                    Text="{Binding Description}"
+                                    ToolTip="{Binding Description}" />
+                            </Grid>
+                        </Expander>
+                    </Grid>
+                </DataTemplate>
+            </converters:OperationTemplateSelector.GitPullOperationTemplate>
+            <!--  Add more templates for other operation types as needed  -->
+        </converters:OperationTemplateSelector>
     </UserControl.Resources>
 
     <Border Background="{DynamicResource SecondaryBackgroundColor}" CornerRadius="8">
-        <!--  Pipeline Steps Section  -->
-        <Expander
-            Margin="10"
-            FontSize="14"
-            Header="Pipeline Steps">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
+        <StackPanel>
+            <Grid Margin="5">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="250" />
+                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
 
-                <!--  Steps List with Add/Remove buttons  -->
-                <Grid
+                <TextBlock
                     Grid.Row="0"
                     Grid.Column="0"
-                    Margin="0,0,10,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
+                    Margin="0,0,10,0"
+                    VerticalAlignment="Center"
+                    Text="Name:" />
+                <TextBox
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Margin="0,0,0,0"
+                    VerticalAlignment="Center"
+                    Text="{Binding Profile.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-                    <Button
-                        Grid.Column="1"
-                        Width="70"
-                        Height="25"
-                        Margin="0,0,5,0"
-                        Command="{Binding AddStepCommand}"
-                        Content="Add Step"
-                        FontSize="13"
-                        Style="{StaticResource CustomButtonStyle}" />
-                </Grid>
-
-                <!--  Steps List  -->
-                <Border
+                <TextBlock
                     Grid.Row="1"
                     Grid.Column="0"
-                    Margin="0,5,10,0"
-                    Background="{DynamicResource TertiaryBackgroundColor}"
-                    BorderBrush="{DynamicResource ControlBorderBrush}"
-                    BorderThickness="1">
-                    <ListView
-                        Background="Transparent"
-                        BorderThickness="0"
-                        ItemContainerStyle="{StaticResource StretchStyle}"
-                        ItemsSource="{Binding Profile.Steps}"
-                        SelectedItem="{Binding SelectedStep}"
-                        AllowDrop="True"
-                        PreviewMouseLeftButtonDown="ListView_PreviewMouseLeftButtonDown"
-                        PreviewMouseMove="ListView_PreviewMouseMove"
-                        DragOver="ListView_DragOver"
-                        Drop="ListView_Drop">
-                        <ListView.ItemTemplate>
-                            <DataTemplate>
-                                <DataTemplate.Resources>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="FontSize" Value="13" />
-                                        <Setter Property="Foreground" Value="{DynamicResource PrimaryTextColor}" />
-                                        <Setter Property="Margin" Value="10" />
-                                        <Setter Property="VerticalAlignment" Value="Center" />
-                                    </Style>
-                                </DataTemplate.Resources>
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="Auto" />
-                                    </Grid.ColumnDefinitions>
-
-                                    <TextBlock
-                                        Grid.Column="0"
-                                        Margin="10"
-                                        Padding="0"
-                                        HorizontalAlignment="Left"
-                                        VerticalAlignment="Center"
-                                        Text="{Binding Name}" />
-
-                                    <Button
-                                        Grid.Column="1"
-                                        Width="70"
-                                        Height="25"
-                                        VerticalAlignment="Center"
-                                        BorderBrush="Black"
-                                        BorderThickness="0.3"
-                                        Command="{Binding DataContext.RemoveStepCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                        CommandParameter="{Binding}"
-                                        Content="Remove"
-                                        FontSize="13"
-                                        Style="{StaticResource CustomButtonStyle}" />
-                                </Grid>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
-                </Border>
-
-                <!--  Operations for Selected Step  -->
-                <Grid
-                    Grid.Row="0"
-                    Grid.RowSpan="2"
+                    Margin="0,10,10,0"
+                    VerticalAlignment="Center"
+                    Text="Description:" />
+                <TextBox
+                    Grid.Row="1"
                     Grid.Column="1"
-                    Margin="0,0,0,0">
-                    <!--  Visibility="{Binding SelectedStep, Converter={StaticResource BoolToVisibilityConverter}}">  -->
+                    Margin="0,10,0,0"
+                    VerticalAlignment="Center"
+                    Text="{Binding Profile.Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            </Grid>
+
+            <!--  Pipeline Steps Section  -->
+            <Expander
+                Margin="10"
+                FontSize="14"
+                Header="Pipeline Steps">
+                <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="250" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
 
-                    <!--  Step Details  -->
-                    <GroupBox
+                    <!--  Steps List with Add/Remove buttons  -->
+                    <Grid
                         Grid.Row="0"
-                        Margin="0,0,0,0"
-                        Padding="10"
-                        Header="Step Details">
-                        <Grid Margin="5">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
+                        Grid.Column="0"
+                        Margin="0,0,10,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
 
-                            <TextBlock
-                                Grid.Row="0"
-                                Grid.Column="0"
-                                Margin="0,0,10,0"
-                                VerticalAlignment="Center"
-                                Text="Name:" />
-                            <TextBox
-                                Grid.Row="0"
-                                Grid.Column="1"
-                                Margin="0,0,0,0"
-                                VerticalAlignment="Center"
-                                Text="{Binding SelectedStep.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <Button
+                            Grid.Column="1"
+                            Width="70"
+                            Height="25"
+                            Margin="0,0,5,0"
+                            Command="{Binding AddStepCommand}"
+                            Content="Add Step"
+                            FontSize="13"
+                            Style="{StaticResource CustomButtonStyle}" />
+                    </Grid>
 
-                            <TextBlock
-                                Grid.Row="1"
-                                Grid.Column="0"
-                                Margin="0,10,10,0"
-                                VerticalAlignment="Center"
-                                Text="Description:" />
-                            <TextBox
-                                Grid.Row="1"
-                                Grid.Column="1"
-                                Margin="0,10,0,0"
-                                VerticalAlignment="Center"
-                                Text="{Binding SelectedStep.Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                        </Grid>
-                    </GroupBox>
-
-                    <!--  Operations  -->
-                    <GroupBox
+                    <!--  Steps List  -->
+                    <Border
                         Grid.Row="1"
+                        Grid.Column="0"
+                        Margin="0,5,10,0"
+                        Background="{DynamicResource TertiaryBackgroundColor}"
+                        BorderBrush="{DynamicResource ControlBorderBrush}"
+                        BorderThickness="1">
+                        <ListView
+                            AllowDrop="True"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            DragOver="ListView_DragOver"
+                            Drop="ListView_Drop"
+                            ItemContainerStyle="{StaticResource StretchStyle}"
+                            ItemsSource="{Binding Profile.Steps}"
+                            PreviewMouseLeftButtonDown="ListView_PreviewMouseLeftButtonDown"
+                            PreviewMouseMove="ListView_PreviewMouseMove"
+                            SelectedItem="{Binding SelectedStep}">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <DataTemplate.Resources>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="FontSize" Value="13" />
+                                            <Setter Property="Foreground" Value="{DynamicResource PrimaryTextColor}" />
+                                            <Setter Property="Margin" Value="10" />
+                                            <Setter Property="VerticalAlignment" Value="Center" />
+                                        </Style>
+                                    </DataTemplate.Resources>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <TextBlock
+                                            Grid.Column="0"
+                                            Margin="10"
+                                            Padding="0"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Center"
+                                            Text="{Binding Name}" />
+
+                                        <Button
+                                            Grid.Column="1"
+                                            Width="70"
+                                            Height="25"
+                                            VerticalAlignment="Center"
+                                            BorderBrush="Black"
+                                            BorderThickness="0.3"
+                                            Command="{Binding DataContext.RemoveStepCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                            CommandParameter="{Binding}"
+                                            Content="Remove"
+                                            FontSize="13"
+                                            Style="{StaticResource CustomButtonStyle}" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </Border>
+
+                    <!--  Operations for Selected Step  -->
+                    <Grid
+                        Grid.Row="0"
                         Grid.RowSpan="2"
-                        Header="Operations">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="*" />
-                            </Grid.RowDefinitions>
+                        Grid.Column="1"
+                        Margin="0,0,0,0">
+                        <!--  Visibility="{Binding SelectedStep, Converter={StaticResource BoolToVisibilityConverter}}">  -->
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
 
-                            <StackPanel
-                                Grid.Row="0"
-                                Margin="10"
-                                HorizontalAlignment="Left"
-                                Orientation="Horizontal">
+                        <!--  Step Details  -->
+                        <GroupBox
+                            Grid.Row="0"
+                            Margin="0,0,0,0"
+                            Padding="10"
+                            Header="Step Details">
+                            <Grid Margin="5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
 
-                                <ComboBox
-                                    Width="150"
-                                    Height="25"
+                                <TextBlock
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    Margin="0,0,10,0"
+                                    VerticalAlignment="Center"
+                                    Text="Name:" />
+                                <TextBox
+                                    Grid.Row="0"
+                                    Grid.Column="1"
                                     Margin="0,0,0,0"
-                                    DisplayMemberPath="Name"
-                                    ItemsSource="{Binding AvailableOperationTypes}"
-                                    SelectedItem="{Binding SelectedOperationType, Mode=TwoWay}"
-                                    Style="{DynamicResource ComboBoxStyle}" />
+                                    VerticalAlignment="Center"
+                                    Text="{Binding SelectedStep.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-                                <Button
-                                    Width="100"
-                                    Height="25"
-                                    Margin="10,0,0,0"
-                                    Command="{Binding AddOperationCommand}"
-                                    Content="Add"
-                                    Style="{StaticResource CustomButtonStyle}" />
-                            </StackPanel>
+                                <TextBlock
+                                    Grid.Row="1"
+                                    Grid.Column="0"
+                                    Margin="0,10,10,0"
+                                    VerticalAlignment="Center"
+                                    Text="Description:" />
+                                <TextBox
+                                    Grid.Row="1"
+                                    Grid.Column="1"
+                                    Margin="0,10,0,0"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding SelectedStep.Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            </Grid>
+                        </GroupBox>
 
-                            <!--  Operations List  -->
-                            <ListView
-                                Grid.Row="1"
-                                VerticalAlignment="Stretch"
-                                VerticalContentAlignment="Stretch"
-                                Background="{DynamicResource TertiaryBackgroundColor}"
-                                BorderBrush="{DynamicResource ControlBorderBrush}"
-                                BorderThickness="1"
-                                ItemsSource="{Binding SelectedStep.Operations}"
-                                ScrollViewer.VerticalScrollBarVisibility="Auto">
-                                <ListView.ItemTemplate>
-                                    <DataTemplate>
-                                        <DataTemplate.Resources>
-                                            <Style TargetType="TextBlock">
-                                                <Setter Property="FontSize" Value="13" />
-                                                <Setter Property="Foreground" Value="{DynamicResource PrimaryTextColor}" />
-                                                <Setter Property="Margin" Value="10" />
-                                                <Setter Property="VerticalAlignment" Value="Center" />
-                                            </Style>
-                                        </DataTemplate.Resources>
-                                        <Grid Margin="2">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto" />
-                                                <ColumnDefinition Width="*" />
-                                                <ColumnDefinition Width="Auto" />
-                                            </Grid.ColumnDefinitions>
+                        <!--  Operations  -->
+                        <GroupBox
+                            Grid.Row="1"
+                            Grid.RowSpan="2"
+                            Header="Operations">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
 
-                                            <CheckBox
-                                                Margin="0,0,5,0"
-                                                VerticalAlignment="Center"
-                                                IsChecked="{Binding Enabled, Mode=TwoWay}" />
+                                <StackPanel
+                                    Grid.Row="0"
+                                    Margin="10"
+                                    HorizontalAlignment="Left"
+                                    Orientation="Horizontal">
 
-                                            <TextBlock
-                                                Grid.Column="1"
-                                                VerticalAlignment="Center"
-                                                Text="{Binding Name}"
-                                                ToolTip="{Binding Description}" />
+                                    <ComboBox
+                                        Width="150"
+                                        Height="25"
+                                        Margin="0,0,0,0"
+                                        DisplayMemberPath="Name"
+                                        ItemsSource="{Binding AvailableOperationTypes}"
+                                        SelectedItem="{Binding SelectedOperationType, Mode=TwoWay}"
+                                        Style="{DynamicResource ComboBoxStyle}" />
 
-                                            <Button
-                                                Grid.Column="2"
-                                                Width="70"
-                                                Height="25"
-                                                Margin="10,0,0,0"
-                                                Command="{Binding DataContext.RemoveOperationCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                CommandParameter="{Binding}"
-                                                Content="Remove"
-                                                Style="{StaticResource CustomButtonStyle}" />
-                                        </Grid>
-                                    </DataTemplate>
-                                </ListView.ItemTemplate>
-                            </ListView>
-                        </Grid>
-                    </GroupBox>
+                                    <Button
+                                        Width="100"
+                                        Height="25"
+                                        Margin="10,0,0,0"
+                                        Command="{Binding AddOperationCommand}"
+                                        Content="Add"
+                                        Style="{StaticResource CustomButtonStyle}" />
+                                </StackPanel>
 
-
+                                <!--  Operations List  -->
+                                <ListView
+                                    Grid.Row="1"
+                                    VerticalAlignment="Stretch"
+                                    VerticalContentAlignment="Stretch"
+                                    Background="{DynamicResource TertiaryBackgroundColor}"
+                                    BorderBrush="{DynamicResource ControlBorderBrush}"
+                                    BorderThickness="1"
+                                    ItemTemplateSelector="{StaticResource OperationTemplateSelector}"
+                                    ItemsSource="{Binding SelectedStep.Operations}"
+                                    ScrollViewer.VerticalScrollBarVisibility="Auto" />
+                            </Grid>
+                        </GroupBox>
+                    </Grid>
                 </Grid>
-            </Grid>
-        </Expander>
+            </Expander>
+
+        </StackPanel>
 
         <!--<ScrollViewer VerticalScrollBarVisibility="Auto">
             <StackPanel Margin="0" HorizontalAlignment="Left">

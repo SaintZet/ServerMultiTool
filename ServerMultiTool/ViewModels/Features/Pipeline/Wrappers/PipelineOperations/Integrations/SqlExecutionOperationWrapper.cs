@@ -10,8 +10,8 @@ public partial class SqlExecutionOperationWrapper : PipelineOperationWrapper
     [ObservableProperty] string _connectionString = string.Empty;
     [ObservableProperty] string _pathToSqlScript = string.Empty;
 
-    public override string Name => "SQL Execution";
-    public override string Description => "Executes a SQL script against a specified database using the provided connection string.";
+    public override string Name { get; set; } = "SQL Execution";
+    public override string Description { get; set; } = "Executes a SQL script against a specified database using the provided connection string.";
 
     readonly SqlExecutionOperation _operation;
 

@@ -10,7 +10,7 @@ namespace ServerMultiTool.Model.Features.ContinuousIntegration.Git
         private readonly Logger _logger;
         private readonly GitService _gitService = new();
 
-        public override OperationType OperationType => OperationType.GitPull;
+        public override OperationType OperationType => OperationType.GitPullOperation;
 
         public GitPullOperation(string name)
             : base(name)

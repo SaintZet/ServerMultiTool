@@ -5,6 +5,6 @@ namespace ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Operations.Deliv
 
 public partial class DeliverySpecifiedFilesOperationWrapper(DeliverySpecifiedFilesOperation operation) : PipelineOperationWrapper(operation)
 {
-    public override string Name => "default name";
-    public override string Description => "default description";
+    public override string Name { get; set; } = "default name";
+    public override string Description { get; set; } = "default description";
 }

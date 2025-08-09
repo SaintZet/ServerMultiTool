@@ -40,8 +40,8 @@ namespace ServerMultiTool.Model.Infrastructure.Json
             {
                 OperationType.DeliverySpecifiedFilesOperation => JsonSerializer.Deserialize<DeliverySpecifiedFilesOperation>(root.GetRawText(), options),
                 OperationType.DeliveryBinOperation => JsonSerializer.Deserialize<DeliveryBinOperation>(root.GetRawText(), options),
-                OperationType.MsBuild => JsonSerializer.Deserialize<MsBuildOperation>(root.GetRawText(), options),
-                OperationType.GitPull => JsonSerializer.Deserialize<GitPullOperation>(root.GetRawText(), options),
+                OperationType.MsBuildOperation => JsonSerializer.Deserialize<MsBuildOperation>(root.GetRawText(), options),
+                OperationType.GitPullOperation => JsonSerializer.Deserialize<GitPullOperation>(root.GetRawText(), options),
                 OperationType.HttpPingOperation => JsonSerializer.Deserialize<HttpPingOperation>(root.GetRawText(), options),
                 OperationType.ProcessExecutionOperation => JsonSerializer.Deserialize<ProcessExecutionOperation>(root.GetRawText(), options),
                 OperationType.SqlExecutionOperation => JsonSerializer.Deserialize<SqlExecutionOperation>(root.GetRawText(), options),

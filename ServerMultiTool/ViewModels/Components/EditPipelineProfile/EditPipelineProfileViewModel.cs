@@ -105,18 +105,25 @@ public partial class EditPipelineProfileViewModel : BaseViewModel
 
         Type operationType = SelectedOperationType.OperationType;
 
-        // Create a new instance of the selected operation type
-        var operation = Activator.CreateInstance(operationType, SelectedOperationType.Name) as PipelineOperation;
-        if (operation is null)
+        // todo: delete after develop
+        try
+        {
+            var operation = Activator.CreateInstance(operationType, SelectedOperationType.Name) as PipelineOperation;
+            if (operation is null)
+                return;
+
+            // Create a wrapper for the operation
+            var wrapper = PipelineOperationWrapperFactory.Create(operation);
+
+            // Add the operation to the selected step
+            SelectedStep.AddOperation(wrapper);
+
+            OnPropertyChanged();
+        }
+        catch (Exception)
+        {
             return;
-
-        // Create a wrapper for the operation
-        var wrapper = PipelineOperationWrapperFactory.Create(operation);
-
-        // Add the operation to the selected step
-        SelectedStep.AddOperation(wrapper);
-
-        OnPropertyChanged();
+        }
     }
 
     [RelayCommand]
@@ -126,6 +133,17 @@ public partial class EditPipelineProfileViewModel : BaseViewModel
             return;
 
         SelectedStep.RemoveOperation(operation);
+
+        OnPropertyChanged();
+    }
+
+    [RelayCommand]
+    private void ToggleOperationEnabled(PipelineOperationWrapper operation)
+    {
+        if (Profile is null || SelectedStep is null || operation is null)
+            return;
+
+        operation.Enabled = !operation.Enabled;
 
         OnPropertyChanged();
     }

@@ -5,6 +5,6 @@ namespace ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Operations.MsBui
 
 public partial class MsBuildOperationWrapper(MsBuildOperation operation) : PipelineOperationWrapper(operation)
 {
-    public override string Name => "HTTP Ping";
-    public override string Description => "Pings a specified HTTP endpoint to check its availability.";
+    public override string Name { get; set; } = "HTTP Ping";
+    public override string Description { get; set; } = "Pings a specified HTTP endpoint to check its availability.";
 }

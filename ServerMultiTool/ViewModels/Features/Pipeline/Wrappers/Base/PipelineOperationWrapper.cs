@@ -10,7 +10,7 @@ namespace ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Base
     {
         [ObservableProperty] bool _enabled;
 
-        protected PipelineOperation Operation { get; }
+        public PipelineOperation Operation { get; }
 
         protected PipelineOperationWrapper(PipelineOperation operation)
         {
@@ -18,8 +18,8 @@ namespace ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Base
             Enabled = operation.Enabled;
         }
 
-        public abstract string Name { get; }
-        public abstract string Description { get; }
+        public abstract string Name { get; set; }
+        public abstract string Description { get; set; }
 
         public virtual void UpdateSolutionDirectory(DirectoryModel directory)
         {
