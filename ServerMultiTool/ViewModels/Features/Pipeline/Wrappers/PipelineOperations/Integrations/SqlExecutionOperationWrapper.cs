@@ -7,11 +7,11 @@ namespace ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Operations.Integ
 
 public partial class SqlExecutionOperationWrapper : PipelineOperationWrapper
 {
-    [ObservableProperty] string _connectionString = string.Empty;
-    [ObservableProperty] string _pathToSqlScript = string.Empty;
-
     public override string Name { get; set; } = "SQL Execution";
     public override string Description { get; set; } = "Executes a SQL script against a specified database using the provided connection string.";
+
+    [ObservableProperty] string _connectionString;
+    [ObservableProperty] string _pathToSqlScript;
 
     readonly SqlExecutionOperation _operation;
 

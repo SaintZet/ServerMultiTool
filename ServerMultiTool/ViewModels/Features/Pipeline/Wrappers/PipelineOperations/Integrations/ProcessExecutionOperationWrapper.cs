@@ -7,10 +7,12 @@ namespace ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Operations.Integ
 
 public partial class ProcessExecutionOperationWrapper : PipelineOperationWrapper
 {
-    [ObservableProperty] int _retryCount;
-
     public override string Name { get; set; } = "IIS Reset";
     public override string Description { get; set; } = "Resets the IIS server to apply changes.";
+
+    [ObservableProperty] string _fileName;
+    [ObservableProperty] string _arguments;
+    [ObservableProperty] int _retryCount;
 
     readonly ProcessExecutionOperation _operation;
 
@@ -20,6 +22,8 @@ public partial class ProcessExecutionOperationWrapper : PipelineOperationWrapper
         _operation = operation;
 
         RetryCount = operation.RetryCount;
+        FileName = operation.FileName;
+        Arguments = operation.Arguments;
     }
 
     public override PipelineOperation ToOriginal()
