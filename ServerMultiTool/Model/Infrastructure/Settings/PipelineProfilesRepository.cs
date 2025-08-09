@@ -347,6 +347,7 @@ public class PipelineProfilesRepository : IPipelineProfilesRepository
         catch (Exception ex)
         {
             _log.Error($"Failed to set up file watcher for {path}: {ex.Message}");
+            throw;
         }
     }
 

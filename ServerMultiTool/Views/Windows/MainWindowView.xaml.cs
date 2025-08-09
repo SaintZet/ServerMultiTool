@@ -83,6 +83,7 @@ namespace ServerMultiTool.Views.Windows
                 catch (Exception ex)
                 {
                     Debug.WriteLine($"DragMove error: {ex.Message}");
+                    throw;
                 }
             }
         }
