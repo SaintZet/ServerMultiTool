@@ -13,7 +13,7 @@ namespace ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Base
 {
     public class PipelineOperationWrapperFactory
     {
-        public static IPipelineOperationWrapper Create(PipelineOperation operation)
+        public static PipelineOperationWrapper Create(PipelineOperation operation)
         {
             if (operation is null)
                 throw new ArgumentNullException(nameof(operation), "Operation cannot be null.");

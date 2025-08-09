@@ -40,13 +40,13 @@ public partial class PipelineStepWrapper : ObservableObject
         return _pipelineStep;
     }
 
-    public void AddOperation(IPipelineOperationWrapper operation)
+    public void AddOperation(PipelineOperationWrapper operation)
     {
         _pipelineStep.AddOperation(operation.ToOriginal());
         Operations.Add(operation);
     }
 
-    public void RemoveOperation(IPipelineOperationWrapper operation)
+    public void RemoveOperation(PipelineOperationWrapper operation)
     {
         _pipelineStep.RemoveOperation(operation.ToOriginal());
         Operations.Remove(operation);

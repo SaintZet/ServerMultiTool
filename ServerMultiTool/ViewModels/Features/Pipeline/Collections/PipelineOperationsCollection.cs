@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ServerMultiTool.ViewModels.Features.Pipeline.Collections
 {
-    public class PipelineOperationsCollection : ObservableCollection<IPipelineOperationWrapper>
+    public class PipelineOperationsCollection : ObservableCollection<PipelineOperationWrapper>
     {
         public PipelineOperationsCollection(IEnumerable<PipelineOperation> operations)
             : base(operations.Select(PipelineOperationWrapperFactory.Create))

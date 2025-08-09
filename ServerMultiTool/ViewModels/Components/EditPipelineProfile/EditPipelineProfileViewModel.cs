@@ -120,7 +120,7 @@ public partial class EditPipelineProfileViewModel : BaseViewModel
     }
 
     [RelayCommand]
-    private void RemoveOperation(IPipelineOperationWrapper operation)
+    private void RemoveOperation(PipelineOperationWrapper operation)
     {
         if (Profile is null || SelectedStep is null || operation is null)
             return;
