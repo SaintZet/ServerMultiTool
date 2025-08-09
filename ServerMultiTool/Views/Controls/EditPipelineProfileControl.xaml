@@ -279,90 +279,75 @@
 
             <converters:OperationTemplateSelector.GitPullOperationTemplate>
                 <DataTemplate>
-                    <Grid Margin="0,5,0,0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
+                    <Expander
+                        Margin="0,5,0,0"
+                        >
 
-                        <TextBox
-                            Grid.Row="0"
-                            Grid.Column="0"
-                            Width="100"
-                            Height="25"
-                            Margin="0,1,0,0"
-                            VerticalAlignment="Stretch"
-                            BorderBrush="Black"
-                            BorderThickness="0.5"
-                            IsEnabled="{Binding Enabled}"
-                            Text="{Binding Name, Mode=TwoWay}"
-                            ToolTip="{Binding Description}" />
-
-                        <Button
-                            Grid.Row="0"
-                            Grid.Column="1"
-                            Width="70"
-                            Height="25"
-                            Margin="10,0,0,0"
-                            BorderBrush="Black"
-                            BorderThickness="0.5"
-                            Command="{Binding DataContext.ToggleOperationEnabledCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                            CommandParameter="{Binding}"
-                            Style="{StaticResource CustomButtonStyle}"
-                            Content="{Binding Enabled, Converter={StaticResource BoolToEnableDisableTextConverter}}" />
-
-
-                        <Button
-                            Grid.Row="0"
-                            Grid.Column="2"
-                            Width="70"
-                            Height="25"
-                            Margin="10,0,0,0"
-                            BorderBrush="Black"
-                            BorderThickness="0.5"
-                            Command="{Binding DataContext.RemoveOperationCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                            CommandParameter="{Binding}"
-                            Style="{StaticResource CustomButtonStyle}"
-                            Content ="Remove" />
-
-                        <Expander
-                            Grid.Row="1"
-                            Grid.Column="0"
-                            Grid.ColumnSpan="3"
-                            Margin="0,5,0,0"
-                            Padding="0,0,0,0"
-                            Header="Options"
-                            IsEnabled="{Binding Enabled}">
-                            <Grid Margin="10,0,0,0">
+                        <!-- Fixed HeaderTemplate -->
+                        <Expander.Header>
+                            <Grid>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="100" />
+                                    <ColumnDefinition Width="70" />
+                                    <ColumnDefinition Width="70" />
                                 </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
-
-                                <TextBlock
-                                    Margin="0,0,10,0"
-                                    VerticalAlignment="Center"
-                                    Text="Description:" />
 
                                 <TextBox
-                                    Grid.Row="0"
-                                    Grid.Column="1"
-                                    Margin="2"
+                                    Grid.Column="0"
+                                    Height="25"
+                                    Margin="0,1,0,0"
+                                    VerticalAlignment="Stretch"
                                     BorderBrush="Black"
                                     BorderThickness="0.5"
-                                    Text="{Binding Description}"
+                                    IsEnabled="{Binding Enabled}"
+                                    Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                     ToolTip="{Binding Description}" />
+
+                                <Button
+                                    Grid.Column="1"
+                                    Height="25"
+                                    Margin="10,0,0,0"
+                                    BorderBrush="Black"
+                                    BorderThickness="0.5"
+                                    Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.ToggleOperationEnabledCommand}"
+                                    CommandParameter="{Binding}"
+                                    Content="{Binding Enabled, Converter={StaticResource BoolToEnableDisableTextConverter}}"
+                                    Style="{StaticResource CustomButtonStyle}" />
+
+                                <Button
+                                    Grid.Column="2"
+                                    Height="25"
+                                    Margin="10,0,0,0"
+                                    BorderBrush="Black"
+                                    BorderThickness="0.5"
+                                    Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.RemoveOperationCommand}"
+                                    CommandParameter="{Binding}"
+                                    Content="Remove"
+                                    Style="{StaticResource CustomButtonStyle}" />
                             </Grid>
-                        </Expander>
-                    </Grid>
+                        </Expander.Header>
+
+                        <!-- Content section -->
+                        <Grid Margin="10,10,0,0" IsEnabled="{Binding Enabled}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock
+                                Margin="0,0,10,0"
+                                VerticalAlignment="Center"
+                                Text="Description:" />
+
+                            <TextBox
+                                Grid.Column="1"
+                                Margin="2"
+                                BorderBrush="Black"
+                                BorderThickness="0.5"
+                                Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}"
+                                ToolTip="{Binding Description}" />
+                        </Grid>
+                    </Expander>
                 </DataTemplate>
             </converters:OperationTemplateSelector.GitPullOperationTemplate>
             <!--  Add more templates for other operation types as needed  -->
