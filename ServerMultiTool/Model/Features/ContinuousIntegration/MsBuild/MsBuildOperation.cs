@@ -14,7 +14,6 @@ namespace ServerMultiTool.Model.Features.ContinuousIntegration.MsBuild;
 public class MsBuildOperation : PipelineOperation
 {
     public DirectoryModel Project { get; private set; }
-
     public int RetryCount { get; private set; } = 1;
     public List<string>? Parameters { get; private set; }
 

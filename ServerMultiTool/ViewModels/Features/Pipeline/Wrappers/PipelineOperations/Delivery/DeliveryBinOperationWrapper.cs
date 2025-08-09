@@ -14,6 +14,6 @@ public partial class DeliveryBinOperationWrapper : PipelineOperationWrapper
     public DeliveryBinOperationWrapper(DeliveryBinOperation operation) : base(operation)
     {
         if (operation.Project is not null)
-            _directory = new DirectoryModelWrapper(operation.Project);
+            Directory = new DirectoryModelWrapper(operation.Project);
     }
 }

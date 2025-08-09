@@ -808,33 +808,176 @@
 
             <converters:OperationTemplateSelector.MsBuildOperationTemplate>
                 <DataTemplate>
-                    <Grid Margin="2">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
+                    <Expander Margin="0,5,0,0">
 
-                        <CheckBox
-                            Margin="0,0,5,0"
-                            VerticalAlignment="Center"
-                            IsChecked="{Binding Enabled, Mode=TwoWay}" />
+                        <!--  Fixed HeaderTemplate  -->
+                        <Expander.Header>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="200" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
 
-                        <TextBlock
-                            Grid.Column="1"
-                            VerticalAlignment="Center"
-                            Text="{Binding Name}" />
+                                <TextBox
+                                    Grid.Column="0"
+                                    Height="25"
+                                    Margin="0,1,0,0"
+                                    VerticalAlignment="Stretch"
+                                    BorderBrush="Black"
+                                    BorderThickness="0.5"
+                                    IsEnabled="{Binding Enabled}"
+                                    Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-                        <Button
-                            Grid.Column="2"
-                            Width="70"
-                            Height="25"
-                            Margin="10,0,0,0"
-                            Command="{Binding DataContext.RemoveOperationCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                            CommandParameter="{Binding}"
-                            Content="Remove"
-                            Style="{StaticResource CustomButtonStyle}" />
-                    </Grid>
+                                <Button
+                                    Grid.Column="1"
+                                    Width="70"
+                                    Height="25"
+                                    Margin="10,0,0,0"
+                                    BorderBrush="Black"
+                                    BorderThickness="0.5"
+                                    Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.ToggleOperationEnabledCommand}"
+                                    CommandParameter="{Binding}"
+                                    Content="{Binding Enabled, Converter={StaticResource BoolToEnableDisableTextConverter}}"
+                                    Style="{StaticResource CustomButtonStyle}" />
+
+                                <Button
+                                    Grid.Column="2"
+                                    Width="70"
+                                    Height="25"
+                                    Margin="10,0,0,0"
+                                    BorderBrush="Black"
+                                    BorderThickness="0.5"
+                                    Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.RemoveOperationCommand}"
+                                    CommandParameter="{Binding}"
+                                    Content="Remove"
+                                    Style="{StaticResource CustomButtonStyle}" />
+                            </Grid>
+                        </Expander.Header>
+
+                        <!--  Content section  -->
+                        <Grid Margin="10,10,0,0" IsEnabled="{Binding Enabled}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <TextBlock
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Margin="0,0,10,0"
+                                VerticalAlignment="Center"
+                                Text="Name:" />
+                            <TextBox
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                Margin="2"
+                                BorderBrush="Black"
+                                BorderThickness="0.5"
+                                Text="{Binding Directory.Name, UpdateSourceTrigger=PropertyChanged}" />
+
+                            <TextBlock
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                Margin="0,0,10,0"
+                                VerticalAlignment="Center"
+                                Text="Releative Path:" />
+                            <TextBox
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                Margin="2"
+                                BorderBrush="Black"
+                                BorderThickness="0.5"
+                                Text="{Binding Directory.Path, UpdateSourceTrigger=PropertyChanged}" />
+
+                            <TextBlock
+                                Grid.Row="2"
+                                Grid.Column="0"
+                                Margin="0,0,10,0"
+                                VerticalAlignment="Center"
+                                Text="Retry Count:" />
+                            <TextBox
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                Margin="2"
+                                BorderBrush="Black"
+                                BorderThickness="0.5"
+                                Text="{Binding RetryCount, UpdateSourceTrigger=PropertyChanged}" />
+
+                            <!--  Parameters Collection Management  -->
+                            <Grid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+
+                                <!--  Add URL input  -->
+                                <Grid Grid.Row="0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBox
+                                        x:Name="NewUrlTextBox"
+                                        Grid.Column="0"
+                                        Margin="2,2,5,2"
+                                        BorderBrush="Black"
+                                        BorderThickness="0.5" />
+
+                                    <Button
+                                        Grid.Column="1"
+                                        Width="60"
+                                        Height="25"
+                                        Command="{Binding AddParameterCommand}"
+                                        CommandParameter="{Binding ElementName=NewUrlTextBox, Path=Text}"
+                                        Content="Add"
+                                        Style="{StaticResource CustomButtonStyle}" />
+                                </Grid>
+
+                                <!--  Parametes List  -->
+                                <ListView
+                                    Grid.Row="4"
+                                    Height="120"
+                                    Margin="2,5,2,2"
+                                    BorderBrush="Black"
+                                    BorderThickness="0.5"
+                                    ItemsSource="{Binding Parameters}">
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid Margin="0,2">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                </Grid.ColumnDefinitions>
+
+                                                <TextBlock
+                                                    Grid.Column="0"
+                                                    VerticalAlignment="Center"
+                                                    Text="{Binding}" />
+
+                                                <Button
+                                                    Grid.Column="1"
+                                                    Width="60"
+                                                    Height="22"
+                                                    Margin="5,0,0,0"
+                                                    Command="{Binding DataContext.RemoveParameterCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
+                                                    CommandParameter="{Binding}"
+                                                    Content="Remove"
+                                                    Style="{StaticResource CustomButtonStyle}" />
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                            </Grid>
+                        </Grid>
+                    </Expander>
                 </DataTemplate>
             </converters:OperationTemplateSelector.MsBuildOperationTemplate>
 
@@ -901,7 +1044,6 @@
                     </Expander>
                 </DataTemplate>
             </converters:OperationTemplateSelector.GitPullOperationTemplate>
-            <!--  Add more templates for other operation types as needed  -->
         </converters:OperationTemplateSelector>
     </UserControl.Resources>
 
