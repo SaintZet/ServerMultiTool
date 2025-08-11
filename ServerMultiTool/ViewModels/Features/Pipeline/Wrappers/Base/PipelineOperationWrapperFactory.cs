@@ -1,8 +1,7 @@
-﻿using ServerMultiTool.Model.Domain.Pipeline;
-using ServerMultiTool.Model.Features.ContinuousDeployment.Delivery;
-using ServerMultiTool.Model.Features.ContinuousDeployment.Integrations;
-using ServerMultiTool.Model.Features.ContinuousIntegration.Git;
-using ServerMultiTool.Model.Features.ContinuousIntegration.MsBuild;
+﻿using ServerMultiTool.Model.Features.Pipeline.Operations.Base;
+using ServerMultiTool.Model.Features.Pipeline.Operations.Execution;
+using ServerMultiTool.Model.Features.Pipeline.Operations.FileDelivery;
+using ServerMultiTool.Model.Features.Pipeline.Operations.Network;
 using ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Operations.Delivery;
 using ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Operations.Git;
 using ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Operations.Integrations;
@@ -13,7 +12,7 @@ namespace ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Base
 {
     public class PipelineOperationWrapperFactory
     {
-        public static PipelineOperationWrapper Create(PipelineOperation operation)
+        public static PipelineOperationWrapper Create(PipelineOperationBase operation)
         {
             if (operation is null)
                 throw new ArgumentNullException(nameof(operation), "Operation cannot be null.");

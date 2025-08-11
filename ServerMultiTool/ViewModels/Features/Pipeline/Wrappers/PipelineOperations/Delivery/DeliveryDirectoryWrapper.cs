@@ -1,5 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using ServerMultiTool.Model.Features.ContinuousDeployment.Delivery;
+using ServerMultiTool.Model.Common;
 
 namespace ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Operations.Delivery;
 

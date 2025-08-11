@@ -1,5 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using ServerMultiTool.Model.Features.ContinuousIntegration.GameServerLogs;
+using ServerMultiTool.Model.Features.Services.GameServerLogs;
 using ServerMultiTool.ViewModels.Features.Settings.Wrappers;
 using System;
 

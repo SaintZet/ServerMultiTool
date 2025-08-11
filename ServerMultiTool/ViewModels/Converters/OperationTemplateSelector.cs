@@ -1,4 +1,4 @@
-﻿using ServerMultiTool.Model.Domain.Pipeline;
+﻿using ServerMultiTool.Model.Features.Pipeline.Operations.Base.Enums;
 using ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Base;
 using System;
 using System.Windows;

@@ -1,5 +1,5 @@
-using ServerMultiTool.Model.Domain.Common.Logs;
-using ServerMultiTool.Model.Domain.Pipeline;
+using ServerMultiTool.Model.Common.Logs;
+using ServerMultiTool.Model.Features.Pipeline.Operations.Base.Enums;
 using ServerMultiTool.ViewModels.Components.GeneralInfo;
 using ServerMultiTool.ViewModels.Features.Pipeline.Collections;
 using ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.PipelineSteps;

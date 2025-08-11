@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using ServerMultiTool.Model.Domain.Common;
-using ServerMultiTool.Model.Domain.Pipeline;
+using ServerMultiTool.Model.Common;
+using ServerMultiTool.Model.Features.Pipeline.Operations.Base.Enums;
+using ServerMultiTool.Model.Features.Pipeline.Step;
 using ServerMultiTool.ViewModels.Features.Pipeline.Collections;
 using ServerMultiTool.ViewModels.Features.Pipeline.Enums;
 using ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Base;

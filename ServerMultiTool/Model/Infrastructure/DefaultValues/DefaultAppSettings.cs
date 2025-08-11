@@ -1,4 +1,4 @@
-using ServerMultiTool.Model.Domain.Common;
+using ServerMultiTool.Model.Common;
 using ServerMultiTool.Model.Infrastructure.Settings;
 
 namespace ServerMultiTool.Model.Infrastructure.DefaultValues;

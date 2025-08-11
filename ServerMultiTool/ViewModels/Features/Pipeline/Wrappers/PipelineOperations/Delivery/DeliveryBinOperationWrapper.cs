@@ -1,5 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using ServerMultiTool.Model.Features.ContinuousDeployment.Delivery;
+using ServerMultiTool.Model.Features.Pipeline.Operations.FileDelivery;
 using ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Base;
 using ServerMultiTool.ViewModels.Features.Settings.Wrappers;
 

@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using ServerMultiTool.Model.Domain.Pipeline;
-using ServerMultiTool.Model.Features.ContinuousDeployment.Integrations;
+using ServerMultiTool.Model.Features.Pipeline.Operations.Base;
+using ServerMultiTool.Model.Features.Pipeline.Operations.Execution;
 using ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Base;
 
 namespace ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Operations.Integrations;
@@ -23,7 +23,7 @@ public partial class SqlExecutionOperationWrapper : PipelineOperationWrapper
         PathToSqlScript = operation.PathToSqlScript ?? string.Empty;
     }
 
-    public override PipelineOperation ToOriginal()
+    public override PipelineOperationBase ToOriginal()
     {
         _operation.EnableOperation(Enabled);
         _operation.UpdateConnectionString(ConnectionString);

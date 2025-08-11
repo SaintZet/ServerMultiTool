@@ -1,4 +1,4 @@
-﻿using ServerMultiTool.Model.Features.ContinuousDeployment.Delivery;
+﻿using ServerMultiTool.Model.Common;
 using ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Operations.Delivery;
 using System;
 using System.Globalization;

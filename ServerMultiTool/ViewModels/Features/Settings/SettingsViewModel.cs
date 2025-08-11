@@ -1,8 +1,8 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ServerMultiTool.Model.Infrastructure.DefaultValues;
-using ServerMultiTool.Model.Services.Pipeline;
-using ServerMultiTool.Model.Services.Settings;
+using ServerMultiTool.Model.Infrastructure.Services.Pipeline;
+using ServerMultiTool.Model.Infrastructure.Services.Settings;
 using ServerMultiTool.ViewModels.Common;
 using ServerMultiTool.ViewModels.Common.BaseClasses;
 using ServerMultiTool.ViewModels.Common.Interfaces;

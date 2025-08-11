@@ -1,4 +1,4 @@
-using ServerMultiTool.Model.Domain.Common.Logs;
+using ServerMultiTool.Model.Common.Logs;
 using System;
 using System.Globalization;
 using System.Windows;

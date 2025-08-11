@@ -1,6 +1,6 @@
-using ServerMultiTool.Model.Domain.Common.EventAggregator;
-using ServerMultiTool.Model.Domain.Common.Logs;
-using ServerMultiTool.Model.Features.ContinuousIntegration.GameServerLogs;
+using ServerMultiTool.Model.Common.EventAggregator;
+using ServerMultiTool.Model.Common.Logs;
+using ServerMultiTool.Model.Features.Services.GameServerLogs;
 using ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers;
 using System.Collections.ObjectModel;
 using System.Windows;

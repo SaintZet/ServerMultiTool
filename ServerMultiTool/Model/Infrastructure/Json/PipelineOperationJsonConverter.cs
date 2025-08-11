@@ -1,17 +1,17 @@
-﻿using ServerMultiTool.Model.Domain.Pipeline;
-using ServerMultiTool.Model.Features.ContinuousDeployment.Delivery;
-using ServerMultiTool.Model.Features.ContinuousDeployment.Integrations;
-using ServerMultiTool.Model.Features.ContinuousIntegration.Git;
-using ServerMultiTool.Model.Features.ContinuousIntegration.MsBuild;
+﻿using ServerMultiTool.Model.Features.Pipeline.Operations.Base;
+using ServerMultiTool.Model.Features.Pipeline.Operations.Base.Enums;
+using ServerMultiTool.Model.Features.Pipeline.Operations.Execution;
+using ServerMultiTool.Model.Features.Pipeline.Operations.FileDelivery;
+using ServerMultiTool.Model.Features.Pipeline.Operations.Network;
 using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace ServerMultiTool.Model.Infrastructure.Json
 {
-    public class PipelineOperationJsonConverter : JsonConverter<PipelineOperation>
+    public class PipelineOperationJsonConverter : JsonConverter<PipelineOperationBase>
     {
-        public override PipelineOperation? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override PipelineOperationBase? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             using var jsonDoc = JsonDocument.ParseValue(ref reader);
             var root = jsonDoc.RootElement;
@@ -50,7 +50,7 @@ namespace ServerMultiTool.Model.Infrastructure.Json
             };
         }
 
-        public override void Write(Utf8JsonWriter writer, PipelineOperation value, JsonSerializerOptions options)
+        public override void Write(Utf8JsonWriter writer, PipelineOperationBase value, JsonSerializerOptions options)
         {
             JsonSerializer.Serialize(writer, (object)value, value.GetType(), options);
         }

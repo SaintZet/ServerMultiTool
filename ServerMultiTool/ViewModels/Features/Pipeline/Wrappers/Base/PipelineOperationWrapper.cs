@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using ServerMultiTool.Model.Domain.Common;
-using ServerMultiTool.Model.Domain.Pipeline;
+using ServerMultiTool.Model.Common;
+using ServerMultiTool.Model.Features.Pipeline.Operations.Base;
+using ServerMultiTool.Model.Features.Pipeline.Operations.Base.Enums;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -11,9 +12,9 @@ namespace ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Base
         [ObservableProperty] bool _enabled;
         [ObservableProperty] string _name;
 
-        public PipelineOperation Operation { get; }
+        public PipelineOperationBase Operation { get; }
 
-        protected PipelineOperationWrapper(PipelineOperation operation)
+        protected PipelineOperationWrapper(PipelineOperationBase operation)
         {
             Operation = operation;
             Enabled = operation.Enabled;
@@ -37,7 +38,7 @@ namespace ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Base
             return await Operation.ExecuteAsync(cancellationToken);
         }
 
-        public virtual PipelineOperation ToOriginal()
+        public virtual PipelineOperationBase ToOriginal()
         {
             Operation.EnableOperation(Enabled);
             return Operation;

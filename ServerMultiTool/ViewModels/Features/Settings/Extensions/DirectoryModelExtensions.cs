@@ -1,4 +1,4 @@
-using ServerMultiTool.Model.Domain.Common;
+using ServerMultiTool.Model.Common;
 using ServerMultiTool.ViewModels.Features.Settings.Wrappers;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

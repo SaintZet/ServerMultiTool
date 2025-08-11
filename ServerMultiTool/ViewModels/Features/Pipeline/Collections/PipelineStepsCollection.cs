@@ -1,4 +1,4 @@
-using ServerMultiTool.Model.Domain.Common;
+using ServerMultiTool.Model.Common;
 using ServerMultiTool.ViewModels.Features.Pipeline.Enums;
 using ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.PipelineSteps;
 using System.Collections.Generic;

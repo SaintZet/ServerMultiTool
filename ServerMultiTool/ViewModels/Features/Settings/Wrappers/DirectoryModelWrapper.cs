@@ -1,5 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using ServerMultiTool.Model.Domain.Common;
+using ServerMultiTool.Model.Common;
 
 namespace ServerMultiTool.ViewModels.Features.Settings.Wrappers;
 

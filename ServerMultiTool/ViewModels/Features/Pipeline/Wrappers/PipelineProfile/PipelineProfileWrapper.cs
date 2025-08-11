@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using ServerMultiTool.Features.Pipeline.Wrappers.Services.GameServerLogs;
-using ServerMultiTool.Model.Domain.Pipeline;
+using ServerMultiTool.Model.Features.Pipeline.Profile;
+using ServerMultiTool.Model.Features.Pipeline.Step;
 using ServerMultiTool.ViewModels.Features.Pipeline.Collections;
 using ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.PipelineSteps;
 using System;

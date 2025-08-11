@@ -1,10 +1,10 @@
 ﻿using log4net;
 using Microsoft.IdentityModel.Tokens;
-using ServerMultiTool.Model.Domain.Pipeline;
-using ServerMultiTool.Model.Domain.Pipeline.Interfaces;
+using ServerMultiTool.Model.Features.Pipeline.Profile;
 using ServerMultiTool.Model.Infrastructure.DefaultValues;
+using ServerMultiTool.Model.Infrastructure.Interfaces;
 using ServerMultiTool.Model.Infrastructure.Json;
-using ServerMultiTool.Model.Services.Settings;
+using ServerMultiTool.Model.Infrastructure.Services.Settings;
 using ServerMultiTool.ViewModels.Common;
 using System;
 using System.Collections.Generic;

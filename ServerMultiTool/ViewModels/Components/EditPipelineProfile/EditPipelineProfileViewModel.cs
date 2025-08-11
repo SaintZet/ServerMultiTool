@@ -1,10 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using ServerMultiTool.Model.Domain.Pipeline;
-using ServerMultiTool.Model.Features.ContinuousDeployment.Delivery;
-using ServerMultiTool.Model.Features.ContinuousDeployment.Integrations;
-using ServerMultiTool.Model.Features.ContinuousIntegration.Git;
-using ServerMultiTool.Model.Features.ContinuousIntegration.MsBuild;
+using ServerMultiTool.Model.Features.Pipeline.Operations.Base;
+using ServerMultiTool.Model.Features.Pipeline.Operations.Execution;
+using ServerMultiTool.Model.Features.Pipeline.Operations.FileDelivery;
+using ServerMultiTool.Model.Features.Pipeline.Operations.Network;
+using ServerMultiTool.Model.Features.Pipeline.Step;
 using ServerMultiTool.ViewModels.Common.BaseClasses;
 using ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Base;
 using ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.PipelineSteps;
@@ -108,7 +108,7 @@ public partial class EditPipelineProfileViewModel : BaseViewModel
         // todo: delete after develop
         try
         {
-            var operation = Activator.CreateInstance(operationType, SelectedOperationType.Name) as PipelineOperation;
+            var operation = Activator.CreateInstance(operationType, SelectedOperationType.Name) as PipelineOperationBase;
             if (operation is null)
                 return;
 

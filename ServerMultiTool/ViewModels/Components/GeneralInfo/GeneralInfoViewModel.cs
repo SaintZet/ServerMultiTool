@@ -1,8 +1,8 @@
 using CommunityToolkit.Mvvm.ComponentModel;
-using ServerMultiTool.Model.Domain.Common;
-using ServerMultiTool.Model.Features.ContinuousIntegration.Git;
+using ServerMultiTool.Model.Common;
+using ServerMultiTool.Model.Features.Services.Git;
+using ServerMultiTool.Model.Infrastructure.Services.Settings;
 using ServerMultiTool.Model.Infrastructure.Settings;
-using ServerMultiTool.Model.Services.Settings;
 using ServerMultiTool.ViewModels.Common.BaseClasses;
 using System;
 using System.Linq;

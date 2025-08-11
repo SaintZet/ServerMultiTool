@@ -1,5 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using ServerMultiTool.Model.Features.ContinuousIntegration.MsBuild;
+using ServerMultiTool.Model.Features.Pipeline.Operations.Execution;
 using ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Base;
 using ServerMultiTool.ViewModels.Features.Settings.Wrappers;
 using System.Collections.ObjectModel;
