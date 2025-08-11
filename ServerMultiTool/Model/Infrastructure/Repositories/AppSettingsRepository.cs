@@ -1,4 +1,5 @@
 ﻿using log4net;
+using ServerMultiTool.Model.Common;
 using ServerMultiTool.Model.Infrastructure.DefaultValues;
 using ServerMultiTool.Model.Infrastructure.Interfaces;
 using ServerMultiTool.Model.Infrastructure.Json;
@@ -6,7 +7,7 @@ using System;
 using System.IO;
 using System.Text.Json;
 
-namespace ServerMultiTool.Model.Infrastructure.Settings;
+namespace ServerMultiTool.Model.Infrastructure.Repositories;
 
 public class AppSettingsRepository : JsonRepository<AppSettings>, IAppSettingsRepository
 {

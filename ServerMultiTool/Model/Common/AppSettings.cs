@@ -1,7 +1,6 @@
-using ServerMultiTool.Model.Common;
 using System;
 
-namespace ServerMultiTool.Model.Infrastructure.Settings;
+namespace ServerMultiTool.Model.Common;
 
 [Serializable]
 public class AppSettings

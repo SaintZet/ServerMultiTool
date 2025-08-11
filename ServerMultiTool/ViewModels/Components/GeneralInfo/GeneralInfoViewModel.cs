@@ -2,7 +2,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using ServerMultiTool.Model.Common;
 using ServerMultiTool.Model.Features.Services.Git;
 using ServerMultiTool.Model.Infrastructure.Services.Settings;
-using ServerMultiTool.Model.Infrastructure.Settings;
 using ServerMultiTool.ViewModels.Common.BaseClasses;
 using System;
 using System.Linq;

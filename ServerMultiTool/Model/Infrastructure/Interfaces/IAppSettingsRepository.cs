@@ -1,4 +1,4 @@
-﻿using ServerMultiTool.Model.Infrastructure.Settings;
+﻿using ServerMultiTool.Model.Common;
 
 namespace ServerMultiTool.Model.Infrastructure.Interfaces;
 

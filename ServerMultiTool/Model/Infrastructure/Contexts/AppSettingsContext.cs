@@ -1,7 +1,8 @@
 using log4net;
 using log4net.Config;
+using ServerMultiTool.Model.Common;
 using ServerMultiTool.Model.Infrastructure.Interfaces;
-using ServerMultiTool.Model.Infrastructure.Settings;
+using ServerMultiTool.Model.Infrastructure.Repositories;
 using System;
 using System.IO;
 

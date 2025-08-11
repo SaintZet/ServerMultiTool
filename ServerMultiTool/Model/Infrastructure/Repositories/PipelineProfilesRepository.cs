@@ -15,7 +15,7 @@ using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ServerMultiTool.Model.Infrastructure.Settings;
+namespace ServerMultiTool.Model.Infrastructure.Repositories;
 
 /// <summary>
 /// Repository implementation for PipelineProfiles
