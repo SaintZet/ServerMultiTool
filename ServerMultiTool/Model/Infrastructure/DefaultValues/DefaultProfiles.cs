@@ -39,7 +39,7 @@ public static class DefaultProfiles
 
     public static PipelineProfile GetStandardProfile()
     {
-        var pipelineProfile = new PipelineProfile("Standart Profile", "")
+        var pipelineProfile = new PipelineProfile("Standart Profile", "Standard deployment profile for regular working days")
             .UpdateGsLogMonitoringSettings(GetDefaultGsLogMonitoringSettings())
 
             .AddStep(new PipelineStep("Git", "This step execute operations releated to Git.")
@@ -90,7 +90,7 @@ public static class DefaultProfiles
 
     public static PipelineProfile GetExtendedProfile(DirectoryModel solutionDirectory, DirectoryModel httpDirectory)
     {
-        return new PipelineProfile("Extended Profile", "")
+        return new PipelineProfile("Extended Profile", "Advanced deployment profile with additional StaticData processing using DataBlender")
             .UpdateGsLogMonitoringSettings(GetDefaultGsLogMonitoringSettings())
 
             .AddStep(new PipelineStep("Git", "This step execute operations releated to Git.")
