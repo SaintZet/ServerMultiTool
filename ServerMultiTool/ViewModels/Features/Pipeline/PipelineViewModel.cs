@@ -33,9 +33,8 @@ public partial class PipelineViewModel : BaseViewModel, IPage
         if (value is null)
             return;
 
-        var appSettings = AppSettingsService.AppSettings;
-        appSettings.CurrentPipelineProfileName = value.Name;
-        AppSettingsService.SaveAppSettings(appSettings);
+        AppSettingsContext.Instance.AppSettings.CurrentPipelineProfileName = value.Name;
+        AppSettingsContext.Instance.SaveChanges();
 
         _pipelineExecutor.UpdateOperations(value);
         OnPropertyChanged(nameof(PipelineSteps));
@@ -84,7 +83,7 @@ public partial class PipelineViewModel : BaseViewModel, IPage
 
     private void LoadProfiles()
     {
-        var selectedName = AppSettingsService.AppSettings.CurrentPipelineProfileName;
+        var selectedName = AppSettingsContext.Instance.AppSettings.CurrentPipelineProfileName;
 
         PipelineProfiles.Clear();
 

@@ -410,9 +410,8 @@ public class PipelineProfilesRepository : IPipelineProfilesRepository
     {
         try
         {
-            var appSettings = AppSettingsService.AppSettings;
-            var solutionDir = appSettings.SolutionDirectories.FirstOrDefault();
-            var httpDir = appSettings.HttpDirectories.FirstOrDefault();
+            var solutionDir = AppSettingsContext.Instance.AppSettings.SolutionDirectories.FirstOrDefault();
+            var httpDir = AppSettingsContext.Instance.AppSettings.HttpDirectories.FirstOrDefault();
 
             var devProfile = DefaultProfiles.GetIisResetProfile();
             SaveProfileToFile(devProfile, Path.Combine(pathToFolder, $"{devProfile.Name}.json"));

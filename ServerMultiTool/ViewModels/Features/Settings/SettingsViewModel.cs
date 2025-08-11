@@ -91,7 +91,7 @@ public partial class SettingsViewModel : BaseViewModel, IPage
 
     private void LoadSettings()
     {
-        var appSettings = AppSettingsService.AppSettings;
+        var appSettings = AppSettingsContext.Instance.AppSettings;
 
         _initialSolutionDirectories = appSettings.SolutionDirectories.ToWrapperCollection();
         SolutionDirectories = _initialSolutionDirectories.CloneWithPropertyChanged(OnDirectoryPropertyChanged);
@@ -165,12 +165,12 @@ public partial class SettingsViewModel : BaseViewModel, IPage
     [RelayCommand]
     private void SaveSettings()
     {
-        var appSettings = AppSettingsService.AppSettings;
+        var appSettings = AppSettingsContext.Instance.AppSettings;
 
         appSettings.SolutionDirectories = SolutionDirectories.ToStructArray();
         appSettings.HttpDirectories = HttpDirectories.ToStructArray();
 
-        AppSettingsService.SaveAppSettings(appSettings);
+        AppSettingsContext.Instance.SaveChanges();
 
         _initialSolutionDirectories = SolutionDirectories.Clone();
         _initialHttpDirectories = HttpDirectories.Clone();

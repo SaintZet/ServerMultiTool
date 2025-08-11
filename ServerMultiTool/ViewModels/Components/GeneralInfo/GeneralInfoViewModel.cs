@@ -26,7 +26,7 @@ public partial class GeneralInfoViewModel : BaseViewModel
 
     public GeneralInfoViewModel()
     {
-        var appSettings = AppSettingsService.AppSettings;
+        var appSettings = AppSettingsContext.Instance.AppSettings;
 
         SelectedSolutionDirectory = appSettings.SolutionDirectories.FirstOrDefault(x => x.Name == appSettings.CurrentSolutionDirectoryName);
         SolutionDirectories = appSettings.SolutionDirectories;
@@ -37,7 +37,7 @@ public partial class GeneralInfoViewModel : BaseViewModel
 
     public void UpdateData()
     {
-        var appSettings = AppSettingsService.LoadOrInitialize();
+        var appSettings = AppSettingsContext.Instance.LoadOrInitialize().AppSettings;
 
         SolutionDirectories = appSettings.SolutionDirectories;
         HttpDirectories = appSettings.HttpDirectories;
@@ -91,9 +91,9 @@ public partial class GeneralInfoViewModel : BaseViewModel
 
         Task.Run(() =>
         {
-            var appSettings = AppSettingsService.AppSettings;
+            var appSettings = AppSettingsContext.Instance.AppSettings;
             updateSetting(ref appSettings, selected.Name);
-            AppSettingsService.SaveAppSettings(appSettings);
+            AppSettingsContext.Instance.Update(appSettings).SaveChanges();
         }).ConfigureAwait(false);
     }
 

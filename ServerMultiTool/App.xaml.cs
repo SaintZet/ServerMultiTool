@@ -22,7 +22,7 @@ public partial class App
         {
             base.OnStartup(e);
 
-            AppSettingsService.LoadOrInitialize(Environment.CurrentDirectory);
+            AppSettingsContext.Instance.LoadOrInitialize(Environment.CurrentDirectory);
             PipelineProfilesContext.Instance.LoadOrInitialize(Environment.CurrentDirectory);
 
             var mainWindow = new MainWindowView();
