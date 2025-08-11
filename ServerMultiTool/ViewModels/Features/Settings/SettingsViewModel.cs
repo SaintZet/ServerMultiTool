@@ -75,7 +75,7 @@ public partial class SettingsViewModel : BaseViewModel, IPage
 
         LoadSettings();
         LoadProfiles();
-        PipelineProfilesService.PipelineProfilesChanged += (_, _) => Application.Current.Dispatcher.Invoke(LoadProfiles);
+        PipelineProfilesContext.Instance.PipelineProfilesChanged += (_, _) => Application.Current.Dispatcher.Invoke(LoadProfiles);
 
         EditPipelineProfile.PropertyChanged += OnEditPipelineProfilePropertyChanged;
 
@@ -106,7 +106,7 @@ public partial class SettingsViewModel : BaseViewModel, IPage
 
         PipelineProfiles.Clear();
 
-        foreach (var profile in PipelineProfilesService.PipelineProfiles)
+        foreach (var profile in PipelineProfilesContext.Instance.PipelineProfiles)
         {
             var wrapper = new PipelineProfileWrapper(profile);
             wrapper.PropertyChanged += OnProfilePropertyChanged;
@@ -175,7 +175,7 @@ public partial class SettingsViewModel : BaseViewModel, IPage
         _initialSolutionDirectories = SolutionDirectories.Clone();
         _initialHttpDirectories = HttpDirectories.Clone();
 
-        PipelineProfilesService.SavePipelineProfiles(
+        PipelineProfilesContext.Instance.SavePipelineProfiles(
             [.. PipelineProfiles.Select(w => w.ToOriginal())]
         );
 

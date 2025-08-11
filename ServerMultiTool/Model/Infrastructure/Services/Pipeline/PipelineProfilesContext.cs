@@ -7,20 +7,37 @@ using System.Collections.Generic;
 
 namespace ServerMultiTool.Model.Infrastructure.Services.Pipeline;
 
-public static class PipelineProfilesService
+public class PipelineProfilesContext
 {
-    private static readonly ILog Log = LogManager.GetLogger(nameof(PipelineProfilesService));
-    private static IPipelineProfilesRepository? _repository;
-    private static string _pathToProfilesDirectory = null!;
+    private static readonly ILog Log = LogManager.GetLogger(nameof(PipelineProfilesContext));
+    private static readonly object _lockObject = new();
+    private static PipelineProfilesContext? _instance;
 
-    // Keep static list for backward compatibility
-    public static List<PipelineProfile> PipelineProfiles { get; private set; } = [];
+    private IPipelineProfilesRepository? _repository;
+    private string _pathToProfilesDirectory = null!;
 
-    // Keep static event for backward compatibility
-    public static event EventHandler? PipelineProfilesChanged;
+    private PipelineProfilesContext() { }
 
-    // Initialize the repository
-    private static IPipelineProfilesRepository Repository
+    public static PipelineProfilesContext Instance
+    {
+        get
+        {
+            if (_instance == null)
+            {
+                lock (_lockObject)
+                {
+                    _instance ??= new PipelineProfilesContext();
+                }
+            }
+            return _instance;
+        }
+    }
+
+    public List<PipelineProfile> PipelineProfiles { get; private set; } = [];
+
+    public event EventHandler? PipelineProfilesChanged;
+
+    private IPipelineProfilesRepository Repository
     {
         get
         {
@@ -36,13 +53,13 @@ public static class PipelineProfilesService
         }
     }
 
-    private static void OnRepositoryProfilesChanged(object? sender, EventArgs e)
+    private void OnRepositoryProfilesChanged(object? sender, EventArgs e)
     {
         PipelineProfiles = Repository.GetAll();
-        PipelineProfilesChanged?.Invoke(null, EventArgs.Empty);
+        PipelineProfilesChanged?.Invoke(this, EventArgs.Empty);
     }
 
-    public static List<PipelineProfile> LoadOrInitialize(string appDirectory)
+    public List<PipelineProfile> LoadOrInitialize(string appDirectory)
     {
         _pathToProfilesDirectory = appDirectory;
         var profiles = Repository.LoadOrInitialize(appDirectory);
@@ -50,42 +67,42 @@ public static class PipelineProfilesService
         return profiles;
     }
 
-    public static void SavePipelineProfiles(List<PipelineProfile> profiles)
+    public void SavePipelineProfiles(List<PipelineProfile> profiles)
     {
         Repository.SaveAll(profiles);
         PipelineProfiles = Repository.GetAll();
         Log.Info($"{nameof(PipelineProfiles)} have been successfully saved.");
     }
 
-    public static PipelineProfile GetProfileById(Guid id)
+    public PipelineProfile GetProfileById(Guid id)
     {
         return Repository.GetById(id);
     }
 
-    public static PipelineProfile GetProfileByName(string name)
+    public PipelineProfile GetProfileByName(string name)
     {
         return Repository.GetByName(name);
     }
 
-    public static void UpdateProfile(PipelineProfile profile)
+    public void UpdateProfile(PipelineProfile profile)
     {
         Repository.Update(profile);
         PipelineProfiles = Repository.GetAll();
     }
 
-    public static void UpdateProfileField<TValue>(Guid profileId, string fieldPath, TValue value)
+    public void UpdateProfileField<TValue>(Guid profileId, string fieldPath, TValue value)
     {
         Repository.UpdateField(profileId, fieldPath, value);
         PipelineProfiles = Repository.GetAll();
     }
 
-    public static void AddProfile(PipelineProfile profile)
+    public void AddProfile(PipelineProfile profile)
     {
         Repository.Add(profile);
         PipelineProfiles = Repository.GetAll();
     }
 
-    public static void DeleteProfile(Guid profileId)
+    public void DeleteProfile(Guid profileId)
     {
         Repository.Delete(profileId);
         PipelineProfiles = Repository.GetAll();

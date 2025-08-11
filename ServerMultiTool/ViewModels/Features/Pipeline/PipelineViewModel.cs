@@ -79,7 +79,7 @@ public partial class PipelineViewModel : BaseViewModel, IPage
         _pipelineExecutor.PipelineStateChanged += (sender, isRunning) => { IsPipelineRunning = isRunning; };
 
         LoadProfiles();
-        PipelineProfilesService.PipelineProfilesChanged += (_, _) => Application.Current.Dispatcher.Invoke(LoadProfiles);
+        PipelineProfilesContext.Instance.PipelineProfilesChanged += (_, _) => Application.Current.Dispatcher.Invoke(LoadProfiles);
     }
 
     private void LoadProfiles()
@@ -88,7 +88,7 @@ public partial class PipelineViewModel : BaseViewModel, IPage
 
         PipelineProfiles.Clear();
 
-        foreach (var profile in PipelineProfilesService.PipelineProfiles)
+        foreach (var profile in PipelineProfilesContext.Instance.PipelineProfiles)
         {
             var wrapper = new PipelineProfileWrapper(profile);
             PipelineProfiles.Add(wrapper);
