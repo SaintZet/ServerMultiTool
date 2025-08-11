@@ -5,18 +5,11 @@ using System.Threading.Tasks;
 
 namespace ServerMultiTool.Model.Features.ContinuousIntegration.Git
 {
-    public class GitPullOperation : PipelineOperation
+    public class GitPullOperation(string name) : PipelineOperation(name)
     {
-        private readonly Logger _logger;
-        private readonly GitService _gitService = new();
-
         public override OperationType OperationType => OperationType.GitPullOperation;
 
-        public GitPullOperation(string name)
-            : base(name)
-        {
-            _logger = new Logger(name);
-        }
+        private readonly GitService _gitService = new();
 
         protected override async Task<PipelineOperationResult> ExecuteOperationsAsync(CancellationToken cancellationToken)
         {
@@ -24,7 +17,7 @@ namespace ServerMultiTool.Model.Features.ContinuousIntegration.Git
 
             if (output is null)
             {
-                _logger.LogErrorWithPublish("Git pull operation failed or was cancelled.");
+                Logger.LogErrorWithPublish("Git pull operation failed or was cancelled.");
                 return PipelineOperationResult.Failure;
             }
 
@@ -32,9 +25,9 @@ namespace ServerMultiTool.Model.Features.ContinuousIntegration.Git
                 return PipelineOperationResult.Success;
 
             if (output.Output is not null)
-                _logger.LogError(output.Output);
+                Logger.LogError(output.Output);
 
-            _logger.LogErrorWithPublish("Something is going wrong. Check log details for more information.");
+            Logger.LogErrorWithPublish("Something is going wrong. Check log details for more information.");
             return PipelineOperationResult.Failure;
         }
     }

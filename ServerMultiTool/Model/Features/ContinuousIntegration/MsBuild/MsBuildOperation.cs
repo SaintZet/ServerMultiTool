@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -13,19 +14,17 @@ namespace ServerMultiTool.Model.Features.ContinuousIntegration.MsBuild;
 
 public class MsBuildOperation : PipelineOperation
 {
-    public DirectoryModel Project { get; private set; }
-    public int RetryCount { get; private set; } = 1;
-    public List<string>? Parameters { get; private set; }
-
     public override OperationType OperationType => OperationType.MsBuildOperation;
+
+    [JsonInclude] public DirectoryModel Project { get; private set; } = new DirectoryModel();
+    [JsonInclude] public int RetryCount { get; private set; } = 1;
+    [JsonInclude] public List<string>? Parameters { get; private set; }
 
     private readonly ProcessExecutor _processExecutor;
 
-    public MsBuildOperation(string name, DirectoryModel project)
-        : base(name)
+    public MsBuildOperation(string name)
+            : base(name)
     {
-        Project = project;
-
         _processExecutor = new ProcessExecutor(Logger);
     }
 
@@ -46,6 +45,15 @@ public class MsBuildOperation : PipelineOperation
             throw new ArgumentException("Retry count cannot be negative.", nameof(retryCount));
 
         RetryCount = retryCount;
+        return this;
+    }
+
+    public MsBuildOperation UpdateProject(DirectoryModel project)
+    {
+        if (project is null || string.IsNullOrWhiteSpace(project.Path))
+            throw new ArgumentException("Project cannot be null or empty.", nameof(project));
+
+        Project = project;
         return this;
     }
 

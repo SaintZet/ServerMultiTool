@@ -10,33 +10,21 @@ namespace ServerMultiTool.Model.Features.ContinuousDeployment.Integrations
 {
     public class ProcessExecutionOperation : PipelineOperation
     {
-        public string FileName { get; private set; } = string.Empty;
-        public string Arguments { get; private set; } = string.Empty;
-        public int RetryCount { get; private set; } = 2;
-
         public override OperationType OperationType => OperationType.ProcessExecutionOperation;
+
+        [JsonInclude] public string FileName { get; private set; } = string.Empty;
+        [JsonInclude] public string Arguments { get; private set; } = string.Empty;
+        [JsonInclude] public int RetryCount { get; private set; } = 2;
 
         private readonly ProcessExecutor _processExecutor;
 
-        public ProcessExecutionOperation(string name, string fileName)
+        public ProcessExecutionOperation(string name)
             : base(name)
         {
-            UpdateFileName(fileName);
-
             _processExecutor = new ProcessExecutor(Logger);
         }
 
-        [JsonConstructor]
-        public ProcessExecutionOperation(string name, string fileName, string arguments)
-            : base(name)
-        {
-            UpdateFileName(fileName);
-            UpdateArguments(arguments);
-
-            _processExecutor = new ProcessExecutor(Logger);
-        }
-
-        private ProcessExecutionOperation UpdateFileName(string fileName)
+        public ProcessExecutionOperation UpdateFileName(string fileName)
         {
             if (string.IsNullOrEmpty(fileName))
                 throw new ArgumentException("File name cannot be null or empty.", nameof(fileName));

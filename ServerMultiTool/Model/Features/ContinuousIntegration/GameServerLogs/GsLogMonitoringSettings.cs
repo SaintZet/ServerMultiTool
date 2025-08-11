@@ -1,12 +1,13 @@
 using ServerMultiTool.Model.Domain.Common;
 using System;
+using System.Text.Json.Serialization;
 
 namespace ServerMultiTool.Model.Features.ContinuousIntegration.GameServerLogs;
 
 [Serializable]
 public class GsLogMonitoringSettings
 {
-    public bool Enable { get; set; }
-    public DirectoryModel? MasterLogDirectory { get; set; }
-    public DirectoryModel? SegmentLogDirectory { get; set; }
+    [JsonInclude] public bool Enable { get; set; }
+    [JsonInclude] public DirectoryModel? MasterLogDirectory { get; set; }
+    [JsonInclude] public DirectoryModel? SegmentLogDirectory { get; set; }
 }

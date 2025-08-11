@@ -1,22 +1,29 @@
 using ServerMultiTool.Model.Domain.Common;
 using ServerMultiTool.Model.Domain.Pipeline;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace ServerMultiTool.Model.Features.ContinuousDeployment.Delivery;
 
-public class DeliveryBinOperation : BaseDeliveryOperation
+public class DeliveryBinOperation(string name) : BaseDeliveryOperation(name)
 {
     public override OperationType OperationType => OperationType.DeliveryBinOperation;
 
-    public DeliveryBinOperation(string name, DirectoryModel project)
-        : base(name, project)
-    {
+    [JsonInclude] public DirectoryModel? Project { get; private set; }
 
+    public DeliveryBinOperation UpdateProject(DirectoryModel project)
+    {
+        if (project is null || string.IsNullOrWhiteSpace(project.Path))
+            throw new ArgumentException("Project cannot be null or empty.", nameof(project));
+
+        Project = project;
+        return this;
     }
 
     protected override async Task<PipelineOperationResult> ExecuteOperationsAsync(CancellationToken cancellationToken)
@@ -40,7 +47,7 @@ public class DeliveryBinOperation : BaseDeliveryOperation
 
         var httpProjectDirectories = GetHttpProjectDirectories(Project.Name);
 
-        if (httpProjectDirectories.Count() is 0)
+        if (!httpProjectDirectories.Any())
         {
             Logger.LogWarnWithPublish($"{Project.Name}: not found http directories");
             return PipelineOperationResult.PartialSuccess;

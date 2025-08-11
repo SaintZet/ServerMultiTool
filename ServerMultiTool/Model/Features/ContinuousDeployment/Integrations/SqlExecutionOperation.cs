@@ -2,6 +2,7 @@
 using ServerMultiTool.Model.Domain.Pipeline;
 using System;
 using System.IO;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -9,10 +10,10 @@ namespace ServerMultiTool.Model.Features.ContinuousDeployment.Integrations
 {
     public class SqlExecutionOperation(string name) : PipelineOperation(name)
     {
-        public string PathToSqlScript { get; private set; } = string.Empty;
-        public string ConnectionString { get; private set; } = string.Empty;
-
         public override OperationType OperationType => OperationType.SqlExecutionOperation;
+
+        [JsonInclude] public string PathToSqlScript { get; private set; } = string.Empty;
+        [JsonInclude] public string ConnectionString { get; private set; } = string.Empty;
 
         public SqlExecutionOperation UpdatePathToSqlScript(string path)
         {

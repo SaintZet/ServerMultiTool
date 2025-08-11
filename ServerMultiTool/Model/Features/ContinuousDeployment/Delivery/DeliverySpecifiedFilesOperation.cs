@@ -2,22 +2,17 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace ServerMultiTool.Model.Features.ContinuousDeployment.Delivery
 {
-    public class DeliverySpecifiedFilesOperation : BaseDeliveryOperation
+    public class DeliverySpecifiedFilesOperation(string name) : BaseDeliveryOperation(name)
     {
-        public List<DeliveryDirectory> CustomDeliveryDirectories { get; set; } = [];
-
         public override OperationType OperationType => OperationType.DeliverySpecifiedFilesOperation;
 
-        public DeliverySpecifiedFilesOperation(string name)
-            : base(name)
-        {
-
-        }
+        [JsonInclude] public List<DeliveryDirectory> CustomDeliveryDirectories { get; set; } = [];
 
         public DeliverySpecifiedFilesOperation AddDeliveryDirectories(string source, string destination)
         {

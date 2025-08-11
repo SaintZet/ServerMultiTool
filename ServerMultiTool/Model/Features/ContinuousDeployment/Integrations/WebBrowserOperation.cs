@@ -9,47 +9,37 @@ using System.Threading.Tasks;
 
 namespace ServerMultiTool.Model.Features.ContinuousDeployment.Integrations
 {
-    public class WebBrowserOperation : PipelineOperation
+    public class WebBrowserOperation(string name) : PipelineOperation(name)
     {
-        public List<string> Urls { get; private set; } = [];
-
         public override OperationType OperationType => OperationType.WebBrowserOperation;
 
-        public WebBrowserOperation(string name, string url)
-            : base(name)
-        {
-            AddUrl(url);
-        }
+        [JsonInclude] public List<string> Urls { get; private set; } = [];
 
-        [JsonConstructor]
-        public WebBrowserOperation(string name, List<string> urls)
-                : base(name)
-        {
-            UpdateUrls(urls);
-        }
-
-        public void UpdateUrls(List<string> urls)
+        public WebBrowserOperation UpdateUrls(List<string> urls)
         {
             if (urls == null || urls.Count == 0)
                 throw new ArgumentException("URLs cannot be null or empty.", nameof(urls));
 
             Urls = urls;
+            return this;
         }
 
-        public void AddUrl(string url)
+        public WebBrowserOperation AddUrl(string url)
         {
             if (string.IsNullOrWhiteSpace(url))
                 throw new ArgumentException("URL cannot be null or empty.", nameof(url));
 
             Urls.Add(url);
+            return this;
         }
 
-        public void RemoveUrl(string url)
+        public WebBrowserOperation RemoveUrl(string url)
         {
             if (string.IsNullOrWhiteSpace(url))
                 throw new ArgumentException("URL cannot be null or empty.", nameof(url));
 
             Urls.Remove(url);
+            return this;
         }
 
         protected override async Task<PipelineOperationResult> ExecuteOperationsAsync(CancellationToken cancellationToken)

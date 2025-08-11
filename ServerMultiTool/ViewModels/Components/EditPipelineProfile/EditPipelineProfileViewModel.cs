@@ -120,7 +120,7 @@ public partial class EditPipelineProfileViewModel : BaseViewModel
 
             OnPropertyChanged();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             return;
         }

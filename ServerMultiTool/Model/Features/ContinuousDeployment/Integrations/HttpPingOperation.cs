@@ -12,54 +12,51 @@ namespace ServerMultiTool.Model.Features.ContinuousDeployment.Integrations;
 
 public class HttpPingOperation : PipelineOperation
 {
-    public List<string> Urls { get; private set; } = [];
-    public double TimeoutInMinutes { get; set; } = 5;
-
     public override OperationType OperationType => OperationType.HttpPingOperation;
 
-    public HttpPingOperation(string name, string url)
+    [JsonInclude] public List<string> Urls { get; private set; } = [];
+    [JsonInclude] public double TimeoutInMinutes { get; set; } = 5;
+
+    public HttpPingOperation(string name)
             : base(name)
     {
-        AddUrl(url);
+
     }
 
-    [JsonConstructor]
-    public HttpPingOperation(string name, List<string> urls)
-            : base(name)
-    {
-        UpdateUrls(urls);
-    }
-
-    public void UpdateUrls(List<string> urls)
+    public HttpPingOperation UpdateUrls(List<string> urls)
     {
         if (urls == null || urls.Count == 0)
             throw new ArgumentException("URLs cannot be null or empty.", nameof(urls));
 
         Urls = urls;
+        return this;
     }
 
-    public void AddUrl(string url)
+    public HttpPingOperation AddUrl(string url)
     {
         if (string.IsNullOrWhiteSpace(url))
             throw new ArgumentException("URL cannot be null or empty.", nameof(url));
 
         Urls.Add(url);
+        return this;
     }
 
-    public void RemoveUrl(string url)
+    public HttpPingOperation RemoveUrl(string url)
     {
         if (string.IsNullOrWhiteSpace(url))
             throw new ArgumentException("URL cannot be null or empty.", nameof(url));
 
         Urls.Remove(url);
+        return this;
     }
 
-    public void UpdateTimeoutInMinutes(double timeoutInMinutes)
+    public HttpPingOperation UpdateTimeoutInMinutes(double timeoutInMinutes)
     {
         if (timeoutInMinutes <= 0)
             throw new ArgumentException("Timeout must be greater than zero.", nameof(timeoutInMinutes));
 
         TimeoutInMinutes = timeoutInMinutes;
+        return this;
     }
 
     protected override async Task<PipelineOperationResult> ExecuteOperationsAsync(CancellationToken cancellationToken)
