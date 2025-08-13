@@ -1,8 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ServerMultiTool.Model.Infrastructure.DefaultValues;
-using ServerMultiTool.Model.Infrastructure.Services.Pipeline;
-using ServerMultiTool.Model.Infrastructure.Services.Settings;
 using ServerMultiTool.ViewModels.Common;
 using ServerMultiTool.ViewModels.Common.BaseClasses;
 using ServerMultiTool.ViewModels.Common.Interfaces;
@@ -75,7 +73,7 @@ public partial class SettingsViewModel : BaseViewModel, IPage
 
         LoadSettings();
         LoadProfiles();
-        PipelineProfilesContext.Instance.PipelineProfilesChanged += (_, _) => Application.Current.Dispatcher.Invoke(LoadProfiles);
+        App.FilePipelineProfilesService.ProfilesChanged += (_, _) => Application.Current.Dispatcher.Invoke(LoadProfiles);
 
         EditPipelineProfile.PropertyChanged += OnEditPipelineProfilePropertyChanged;
 
@@ -91,7 +89,7 @@ public partial class SettingsViewModel : BaseViewModel, IPage
 
     private void LoadSettings()
     {
-        var appSettings = AppSettingsContext.Instance.AppSettings;
+        var appSettings = App.FileAppSettingsService.Get();
 
         _initialSolutionDirectories = appSettings.SolutionDirectories.ToWrapperCollection();
         SolutionDirectories = _initialSolutionDirectories.CloneWithPropertyChanged(OnDirectoryPropertyChanged);
@@ -106,7 +104,7 @@ public partial class SettingsViewModel : BaseViewModel, IPage
 
         PipelineProfiles.Clear();
 
-        foreach (var profile in PipelineProfilesContext.Instance.PipelineProfiles)
+        foreach (var profile in App.FilePipelineProfilesService.GetAll())
         {
             var wrapper = new PipelineProfileWrapper(profile);
             wrapper.PropertyChanged += OnProfilePropertyChanged;
@@ -165,17 +163,17 @@ public partial class SettingsViewModel : BaseViewModel, IPage
     [RelayCommand]
     private void SaveSettings()
     {
-        var appSettings = AppSettingsContext.Instance.AppSettings;
+        var appSettings = App.FileAppSettingsService.Get();
 
         appSettings.SolutionDirectories = SolutionDirectories.ToStructArray();
         appSettings.HttpDirectories = HttpDirectories.ToStructArray();
 
-        AppSettingsContext.Instance.SaveChanges();
+        App.FileAppSettingsService.Save(appSettings);
 
         _initialSolutionDirectories = SolutionDirectories.Clone();
         _initialHttpDirectories = HttpDirectories.Clone();
 
-        PipelineProfilesContext.Instance.SavePipelineProfiles(
+        App.FilePipelineProfilesService.SaveAll(
             [.. PipelineProfiles.Select(w => w.ToOriginal())]
         );
 

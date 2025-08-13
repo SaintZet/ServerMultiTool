@@ -1,8 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ServerMultiTool.Model.Common.Logs;
-using ServerMultiTool.Model.Infrastructure.Services.Pipeline;
-using ServerMultiTool.Model.Infrastructure.Services.Settings;
 using ServerMultiTool.ViewModels.Common;
 using ServerMultiTool.ViewModels.Common.BaseClasses;
 using ServerMultiTool.ViewModels.Common.Interfaces;
@@ -33,8 +31,9 @@ public partial class PipelineViewModel : BaseViewModel, IPage
         if (value is null)
             return;
 
-        AppSettingsContext.Instance.AppSettings.CurrentPipelineProfileName = value.Name;
-        AppSettingsContext.Instance.SaveChanges();
+        var settings = App.FileAppSettingsService.Get();
+        settings.CurrentPipelineProfileName = value.Name;
+        App.FileAppSettingsService.Save(settings);
 
         _pipelineExecutor.UpdateOperations(value);
         OnPropertyChanged(nameof(PipelineSteps));
@@ -78,16 +77,18 @@ public partial class PipelineViewModel : BaseViewModel, IPage
         _pipelineExecutor.PipelineStateChanged += (sender, isRunning) => { IsPipelineRunning = isRunning; };
 
         LoadProfiles();
-        PipelineProfilesContext.Instance.PipelineProfilesChanged += (_, _) => Application.Current.Dispatcher.Invoke(LoadProfiles);
+
+        App.FilePipelineProfilesService.ProfilesChanged += (_, _) => Application.Current.Dispatcher.Invoke(LoadProfiles);
     }
 
     private void LoadProfiles()
     {
-        var selectedName = AppSettingsContext.Instance.AppSettings.CurrentPipelineProfileName;
+        var settings = App.FileAppSettingsService.Get();
+        var selectedName = settings.CurrentPipelineProfileName;
 
         PipelineProfiles.Clear();
 
-        foreach (var profile in PipelineProfilesContext.Instance.PipelineProfiles)
+        foreach (var profile in App.FilePipelineProfilesService.GetAll())
         {
             var wrapper = new PipelineProfileWrapper(profile);
             PipelineProfiles.Add(wrapper);

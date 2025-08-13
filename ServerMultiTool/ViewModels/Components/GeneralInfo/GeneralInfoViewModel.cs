@@ -1,7 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using ServerMultiTool.Model.Common;
 using ServerMultiTool.Model.Features.Services.Git;
-using ServerMultiTool.Model.Infrastructure.Services.Settings;
 using ServerMultiTool.ViewModels.Common.BaseClasses;
 using System;
 using System.Linq;
@@ -25,7 +24,7 @@ public partial class GeneralInfoViewModel : BaseViewModel
 
     public GeneralInfoViewModel()
     {
-        var appSettings = AppSettingsContext.Instance.AppSettings;
+        var appSettings = App.FileAppSettingsService.Get();
 
         SelectedSolutionDirectory = appSettings.SolutionDirectories.FirstOrDefault(x => x.Name == appSettings.CurrentSolutionDirectoryName);
         SolutionDirectories = appSettings.SolutionDirectories;
@@ -36,7 +35,7 @@ public partial class GeneralInfoViewModel : BaseViewModel
 
     public void UpdateData()
     {
-        var appSettings = AppSettingsContext.Instance.LoadOrInitialize().AppSettings;
+        var appSettings = App.FileAppSettingsService.Get();
 
         SolutionDirectories = appSettings.SolutionDirectories;
         HttpDirectories = appSettings.HttpDirectories;
@@ -90,9 +89,9 @@ public partial class GeneralInfoViewModel : BaseViewModel
 
         Task.Run(() =>
         {
-            var appSettings = AppSettingsContext.Instance.AppSettings;
+            var appSettings = App.FileAppSettingsService.Get();
             updateSetting(ref appSettings, selected.Name);
-            AppSettingsContext.Instance.Update(appSettings).SaveChanges();
+            App.FileAppSettingsService.Save(appSettings);
         }).ConfigureAwait(false);
     }
 

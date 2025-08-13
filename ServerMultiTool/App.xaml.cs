@@ -1,8 +1,9 @@
 ﻿using ServerMultiTool.Model.Common.Logs;
-using ServerMultiTool.Model.Infrastructure.Services.Pipeline;
-using ServerMultiTool.Model.Infrastructure.Services.Settings;
+using ServerMultiTool.Model.Infrastructure.Services;
+using ServerMultiTool.ViewModels.Common;
 using ServerMultiTool.Views.Windows;
 using System;
+using System.IO;
 using System.Windows;
 
 namespace ServerMultiTool;
@@ -10,6 +11,9 @@ namespace ServerMultiTool;
 public partial class App
 {
     private readonly Logger _logger;
+
+    public static FileAppSettingsService FileAppSettingsService { get; private set; }
+    public static FilePipelineProfilesService FilePipelineProfilesService { get; private set; }
 
     public App()
     {
@@ -22,8 +26,11 @@ public partial class App
         {
             base.OnStartup(e);
 
-            AppSettingsContext.Instance.LoadOrInitialize(Environment.CurrentDirectory);
-            PipelineProfilesContext.Instance.LoadOrInitialize(Environment.CurrentDirectory);
+            var path = Path.Combine(Environment.CurrentDirectory, AppConstants.Folders.AppSettings, "AppSettings.json");
+            FileAppSettingsService = new FileAppSettingsService(path);
+
+            var path2 = Path.Combine(Environment.CurrentDirectory, AppConstants.Folders.AppSettings, AppConstants.Folders.Profiles);
+            FilePipelineProfilesService = new FilePipelineProfilesService(path2);
 
             var mainWindow = new MainWindowView();
             mainWindow.Show();
