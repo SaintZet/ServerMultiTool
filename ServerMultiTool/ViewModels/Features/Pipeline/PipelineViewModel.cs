@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ServerMultiTool.Model.Common.Logs;
+using ServerMultiTool.Model.Infrastructure.Interfaces;
 using ServerMultiTool.ViewModels.Common;
 using ServerMultiTool.ViewModels.Common.BaseClasses;
 using ServerMultiTool.ViewModels.Common.Interfaces;
@@ -22,7 +23,7 @@ public partial class PipelineViewModel : BaseViewModel, IPage
 
     public string Title => PageNames.PipelinePage;
 
-    [ObservableProperty] private GeneralInfoViewModel _generalInfo = null!;
+    [ObservableProperty] private GeneralInfoViewModel _generalInfo;
 
     [ObservableProperty] private PipelineProfileWrapper? _selectedPipelineProfile;
 
@@ -31,9 +32,9 @@ public partial class PipelineViewModel : BaseViewModel, IPage
         if (value is null)
             return;
 
-        var settings = App.FileAppSettingsService.Get();
+        var settings = _appSettingsService.Get();
         settings.CurrentPipelineProfileName = value.Name;
-        App.FileAppSettingsService.Save(settings);
+        _appSettingsService.Save(settings);
 
         _pipelineExecutor.UpdateOperations(value);
         OnPropertyChanged(nameof(PipelineSteps));
@@ -57,6 +58,13 @@ public partial class PipelineViewModel : BaseViewModel, IPage
 
     #endregion
 
+    #region Services
+
+    private readonly IAppSettingsService _appSettingsService;
+    private readonly IPipelineProfilesService _pipelineProfilesService;
+
+    #endregion
+
     #region Collections
 
     [ObservableProperty] ObservableCollection<PipelineProfileWrapper> _pipelineProfiles = [];
@@ -69,8 +77,15 @@ public partial class PipelineViewModel : BaseViewModel, IPage
 
     #region Constructor
 
-    public PipelineViewModel()
+    public PipelineViewModel(
+        IAppSettingsService appSettingsService,
+        IPipelineProfilesService pipelineProfilesService,
+        GeneralInfoViewModel generalInfo)
     {
+        _appSettingsService = appSettingsService;
+        _pipelineProfilesService = pipelineProfilesService;
+        _generalInfo = generalInfo;
+
         _logManager = new GsLogMonitorManager();
 
         _pipelineExecutor = new PipelineExecuteManager(_logManager);
@@ -78,17 +93,17 @@ public partial class PipelineViewModel : BaseViewModel, IPage
 
         LoadProfiles();
 
-        App.FilePipelineProfilesService.ProfilesChanged += (_, _) => Application.Current.Dispatcher.Invoke(LoadProfiles);
+        _pipelineProfilesService.ProfilesChanged += (_, _) => Application.Current.Dispatcher.Invoke(LoadProfiles);
     }
 
     private void LoadProfiles()
     {
-        var settings = App.FileAppSettingsService.Get();
+        var settings = _appSettingsService.Get();
         var selectedName = settings.CurrentPipelineProfileName;
 
         PipelineProfiles.Clear();
 
-        foreach (var profile in App.FilePipelineProfilesService.GetAll())
+        foreach (var profile in _pipelineProfilesService.GetAll())
         {
             var wrapper = new PipelineProfileWrapper(profile);
             PipelineProfiles.Add(wrapper);

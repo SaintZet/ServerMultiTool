@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ServerMultiTool.Model.Infrastructure.DefaultValues;
+using ServerMultiTool.Model.Infrastructure.Interfaces;
 using ServerMultiTool.ViewModels.Common;
 using ServerMultiTool.ViewModels.Common.BaseClasses;
 using ServerMultiTool.ViewModels.Common.Interfaces;
@@ -31,7 +32,7 @@ public partial class SettingsViewModel : BaseViewModel, IPage
     [ObservableProperty] private DirectoryModelWrapper? _selectedSolutionDirectory;
     [ObservableProperty] private DirectoryModelWrapper? _selectedHttpDirectory;
 
-    [ObservableProperty] private GeneralInfoViewModel _generalInfo = null!;
+    [ObservableProperty] private GeneralInfoViewModel _generalInfo;
 
     [ObservableProperty] private PipelineProfileWrapper? _selectedPipelineProfile;
     [ObservableProperty] private EditPipelineProfileViewModel _editPipelineProfile = new();
@@ -65,15 +66,29 @@ public partial class SettingsViewModel : BaseViewModel, IPage
 
     #endregion
 
+    #region Services
+
+    private readonly IAppSettingsService _appSettingsService;
+    private readonly IPipelineProfilesService _pipelineProfilesService;
+
+    #endregion
+
     #region Constructor
 
-    public SettingsViewModel()
+    public SettingsViewModel(
+        IAppSettingsService appSettingsService,
+        IPipelineProfilesService pipelineProfilesService,
+        GeneralInfoViewModel generalInfo)
     {
+        _appSettingsService = appSettingsService;
+        _pipelineProfilesService = pipelineProfilesService;
+        _generalInfo = generalInfo;
+
         _isInitializing = true;
 
         LoadSettings();
         LoadProfiles();
-        App.FilePipelineProfilesService.ProfilesChanged += (_, _) => Application.Current.Dispatcher.Invoke(LoadProfiles);
+        _pipelineProfilesService.ProfilesChanged += (_, _) => Application.Current.Dispatcher.Invoke(LoadProfiles);
 
         EditPipelineProfile.PropertyChanged += OnEditPipelineProfilePropertyChanged;
 
@@ -89,7 +104,7 @@ public partial class SettingsViewModel : BaseViewModel, IPage
 
     private void LoadSettings()
     {
-        var appSettings = App.FileAppSettingsService.Get();
+        var appSettings = _appSettingsService.Get();
 
         _initialSolutionDirectories = appSettings.SolutionDirectories.ToWrapperCollection();
         SolutionDirectories = _initialSolutionDirectories.CloneWithPropertyChanged(OnDirectoryPropertyChanged);
@@ -104,7 +119,7 @@ public partial class SettingsViewModel : BaseViewModel, IPage
 
         PipelineProfiles.Clear();
 
-        foreach (var profile in App.FilePipelineProfilesService.GetAll())
+        foreach (var profile in _pipelineProfilesService.GetAll())
         {
             var wrapper = new PipelineProfileWrapper(profile);
             wrapper.PropertyChanged += OnProfilePropertyChanged;
@@ -163,17 +178,17 @@ public partial class SettingsViewModel : BaseViewModel, IPage
     [RelayCommand]
     private void SaveSettings()
     {
-        var appSettings = App.FileAppSettingsService.Get();
+        var appSettings = _appSettingsService.Get();
 
         appSettings.SolutionDirectories = SolutionDirectories.ToStructArray();
         appSettings.HttpDirectories = HttpDirectories.ToStructArray();
 
-        App.FileAppSettingsService.Save(appSettings);
+        _appSettingsService.Save(appSettings);
 
         _initialSolutionDirectories = SolutionDirectories.Clone();
         _initialHttpDirectories = HttpDirectories.Clone();
 
-        App.FilePipelineProfilesService.SaveAll(
+        _pipelineProfilesService.SaveAll(
             [.. PipelineProfiles.Select(w => w.ToOriginal())]
         );
 

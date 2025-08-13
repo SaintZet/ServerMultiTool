@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using ServerMultiTool.Model.Common;
 using ServerMultiTool.Model.Features.Services.Git;
+using ServerMultiTool.Model.Infrastructure.Interfaces;
 using ServerMultiTool.ViewModels.Common.BaseClasses;
 using System;
 using System.Linq;
@@ -22,9 +23,17 @@ public partial class GeneralInfoViewModel : BaseViewModel
 
     private readonly GitService _gitService = new();
 
-    public GeneralInfoViewModel()
+    #region Services
+
+    private readonly IAppSettingsService _appSettingsService;
+
+    #endregion
+
+    public GeneralInfoViewModel(IAppSettingsService appSettingsService)
     {
-        var appSettings = App.FileAppSettingsService.Get();
+        _appSettingsService = appSettingsService;
+
+        var appSettings = _appSettingsService.Get();
 
         SelectedSolutionDirectory = appSettings.SolutionDirectories.FirstOrDefault(x => x.Name == appSettings.CurrentSolutionDirectoryName);
         SolutionDirectories = appSettings.SolutionDirectories;
@@ -35,7 +44,7 @@ public partial class GeneralInfoViewModel : BaseViewModel
 
     public void UpdateData()
     {
-        var appSettings = App.FileAppSettingsService.Get();
+        var appSettings = _appSettingsService.Get();
 
         SolutionDirectories = appSettings.SolutionDirectories;
         HttpDirectories = appSettings.HttpDirectories;
@@ -79,7 +88,7 @@ public partial class GeneralInfoViewModel : BaseViewModel
 
     public delegate void RefAppSettingsUpdate(ref AppSettings settings, string name);
 
-    private static void UpdateSelectedDirectory(
+    private void UpdateSelectedDirectory(
     DirectoryModel? selected,
     DirectoryModel[] available,
     RefAppSettingsUpdate updateSetting)
@@ -89,9 +98,9 @@ public partial class GeneralInfoViewModel : BaseViewModel
 
         Task.Run(() =>
         {
-            var appSettings = App.FileAppSettingsService.Get();
+            var appSettings = _appSettingsService.Get();
             updateSetting(ref appSettings, selected.Name);
-            App.FileAppSettingsService.Save(appSettings);
+            _appSettingsService.Save(appSettings);
         }).ConfigureAwait(false);
     }
 

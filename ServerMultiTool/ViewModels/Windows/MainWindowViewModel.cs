@@ -2,13 +2,8 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ServerMultiTool.ViewModels.Common;
 using ServerMultiTool.ViewModels.Common.BaseClasses;
-using ServerMultiTool.ViewModels.Components.GeneralInfo;
-using ServerMultiTool.ViewModels.Features.JsonParser;
-using ServerMultiTool.ViewModels.Pages.Pipeline;
-using ServerMultiTool.ViewModels.Pages.Settings;
 using ServerMultiTool.Views.Pages;
 using ServerMultiTool.Views.Themes;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -36,32 +31,11 @@ namespace ServerMultiTool.ViewModels.Windows
 
         #region Constructors
 
-        public MainWindowViewModel()
+        public MainWindowViewModel(SettingsView settingsView, PipelineView pipelineView, JsonParserView jsonView)
         {
-            var generalInfo = new GeneralInfoViewModel();
-
-            var settingsViewModel = new SettingsViewModel { GeneralInfo = generalInfo };
-            _settingsPage = new SettingsView(settingsViewModel);
-
-            _pipelinePage = new PipelineView(new PipelineViewModel
-            {
-                GeneralInfo = generalInfo,
-                NavigateToSettingsAction = (tabKey, param) =>
-                {
-                    if (string.IsNullOrEmpty(tabKey))
-                        return;
-
-
-                    settingsViewModel.SelectedTabKey = tabKey;
-
-                    if (tabKey is SettingsPageTabKeys.PipelineProfiles && string.IsNullOrEmpty(param) is false)
-                        settingsViewModel.SelectedPipelineProfile = settingsViewModel.PipelineProfiles.First(x => x.Name == param);
-
-                    Navigate(PageNames.SettingsPage);
-                },
-            });
-
-            _jsonParserPage = new JsonParserView(new JsonParserViewModel { GeneralInfo = generalInfo });
+            _settingsPage = settingsView;
+            _pipelinePage = pipelineView;
+            _jsonParserPage = jsonView;
 
             _currentPage = _pipelinePage;
         }

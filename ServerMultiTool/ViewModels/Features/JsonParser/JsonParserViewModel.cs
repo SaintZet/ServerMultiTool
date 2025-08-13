@@ -12,7 +12,7 @@ public partial class JsonParserViewModel : BaseViewModel, IPage
 
     public string Title => PageNames.JsonParserPage;
 
-    [ObservableProperty] private GeneralInfoViewModel _generalInfo = null!;
+    [ObservableProperty] private GeneralInfoViewModel _generalInfo;
 
     #endregion
 
@@ -26,8 +26,9 @@ public partial class JsonParserViewModel : BaseViewModel, IPage
 
     #region Constructors
 
-    public JsonParserViewModel()
+    public JsonParserViewModel(GeneralInfoViewModel generalInfo)
     {
+        _generalInfo = generalInfo;
         // Initialize any necessary properties or services here
     }
 
