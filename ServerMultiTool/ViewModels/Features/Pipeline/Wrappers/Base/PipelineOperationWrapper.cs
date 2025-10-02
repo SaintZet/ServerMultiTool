@@ -21,6 +21,11 @@ namespace ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Base
             Name = operation.Name ?? DefaultName;
         }
 
+        partial void OnEnabledChanged(bool value)
+        {
+            Operation.EnableOperation(value);
+        }
+
         public abstract string DefaultName { get; }
 
         public virtual void UpdateSolutionDirectory(DirectoryModel directory)
