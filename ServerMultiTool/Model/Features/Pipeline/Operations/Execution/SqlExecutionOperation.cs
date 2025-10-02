@@ -1,7 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 using ServerMultiTool.Model.Features.Pipeline.Operations.Base;
 using ServerMultiTool.Model.Features.Pipeline.Operations.Base.Enums;
-using System;
 using System.IO;
 using System.Text.Json.Serialization;
 using System.Threading;
@@ -18,18 +17,12 @@ namespace ServerMultiTool.Model.Features.Pipeline.Operations.Execution
 
         public SqlExecutionOperation UpdatePathToSqlScript(string path)
         {
-            if (string.IsNullOrEmpty(path))
-                throw new ArgumentException("Path to SQL script cannot be null or empty.", nameof(path));
-
             PathToSqlScript = path;
             return this;
         }
 
         public SqlExecutionOperation UpdateConnectionString(string connectionString)
         {
-            if (string.IsNullOrEmpty(connectionString))
-                throw new ArgumentException("Connection string cannot be null or empty.", nameof(connectionString));
-
             ConnectionString = connectionString;
             return this;
         }
