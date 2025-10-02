@@ -1,6 +1,5 @@
 ﻿using ServerMultiTool.Model.Features.Pipeline.Operations.Base;
 using ServerMultiTool.Model.Features.Pipeline.Operations.Base.Enums;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -18,27 +17,18 @@ namespace ServerMultiTool.Model.Features.Pipeline.Operations.Network
 
         public WebBrowserOperation UpdateUrls(List<string> urls)
         {
-            if (urls == null || urls.Count == 0)
-                throw new ArgumentException("URLs cannot be null or empty.", nameof(urls));
-
             Urls = urls;
             return this;
         }
 
         public WebBrowserOperation AddUrl(string url)
         {
-            if (string.IsNullOrWhiteSpace(url))
-                throw new ArgumentException("URL cannot be null or empty.", nameof(url));
-
             Urls.Add(url);
             return this;
         }
 
         public WebBrowserOperation RemoveUrl(string url)
         {
-            if (string.IsNullOrWhiteSpace(url))
-                throw new ArgumentException("URL cannot be null or empty.", nameof(url));
-
             Urls.Remove(url);
             return this;
         }
