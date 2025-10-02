@@ -30,9 +30,6 @@ public class DirectoryModel
 
     private static void ValidatePath(string path)
     {
-        if (string.IsNullOrEmpty(path))
-            throw new ArgumentException("Directory path cannot be null or empty.");
-
         if (path.Contains(".."))
             throw new ArgumentException("Directory path cannot contain relative paths (..) for security reasons.");
     }

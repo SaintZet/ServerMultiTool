@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading;
@@ -37,6 +38,12 @@ public class MsBuildOperation : PipelineOperationBase
         Parameters ??= [];
         Parameters.Add(parameter);
 
+        return this;
+    }
+
+    public MsBuildOperation UpdateParameters(IEnumerable<string>? parameters)
+    {
+        Parameters = parameters?.ToList();
         return this;
     }
 

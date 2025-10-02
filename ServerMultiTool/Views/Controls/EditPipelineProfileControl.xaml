@@ -856,9 +856,12 @@
                         </Expander.Header>
 
                         <!--  Content section  -->
-                        <Grid Margin="10,10,0,0" IsEnabled="{Binding Enabled}">
+                        <Grid
+                            Margin="10,10,0,0"
+                            Grid.IsSharedSizeScope="True"
+                            IsEnabled="{Binding Enabled}">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="Labels" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
@@ -911,39 +914,48 @@
                                 Text="{Binding RetryCount, UpdateSourceTrigger=PropertyChanged}" />
 
                             <!--  Parameters Collection Management  -->
-                            <Grid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2">
+                            <Grid
+                                Grid.Row="3"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="2">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="*" />
                                 </Grid.RowDefinitions>
 
-                                <!--  Add URL input  -->
+                                <!--  Add Parameter input  -->
                                 <Grid Grid.Row="0">
                                     <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" SharedSizeGroup="Labels" />
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
+                                    <TextBlock
+                                        Grid.Column="0"
+                                        Margin="0,0,10,0"
+                                        VerticalAlignment="Center"
+                                        Text="Parameter:" />
 
                                     <TextBox
-                                        x:Name="NewUrlTextBox"
-                                        Grid.Column="0"
+                                        x:Name="NewParameterTextBox"
+                                        Grid.Column="1"
                                         Margin="2,2,5,2"
                                         BorderBrush="Black"
                                         BorderThickness="0.5" />
 
                                     <Button
-                                        Grid.Column="1"
+                                        Grid.Column="2"
                                         Width="60"
                                         Height="25"
                                         Command="{Binding AddParameterCommand}"
-                                        CommandParameter="{Binding ElementName=NewUrlTextBox, Path=Text}"
+                                        CommandParameter="{Binding ElementName=NewParameterTextBox, Path=Text}"
                                         Content="Add"
                                         Style="{StaticResource CustomButtonStyle}" />
                                 </Grid>
 
                                 <!--  Parametes List  -->
                                 <ListView
-                                    Grid.Row="4"
+                                    Grid.Row="1"
                                     Height="120"
                                     Margin="2,5,2,2"
                                     BorderBrush="Black"

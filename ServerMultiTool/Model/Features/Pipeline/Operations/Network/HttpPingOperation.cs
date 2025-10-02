@@ -26,27 +26,18 @@ public class HttpPingOperation : PipelineOperationBase
 
     public HttpPingOperation UpdateUrls(List<string> urls)
     {
-        if (urls == null || urls.Count == 0)
-            throw new ArgumentException("URLs cannot be null or empty.", nameof(urls));
-
         Urls = urls;
         return this;
     }
 
     public HttpPingOperation AddUrl(string url)
     {
-        if (string.IsNullOrWhiteSpace(url))
-            throw new ArgumentException("URL cannot be null or empty.", nameof(url));
-
         Urls.Add(url);
         return this;
     }
 
     public HttpPingOperation RemoveUrl(string url)
     {
-        if (string.IsNullOrWhiteSpace(url))
-            throw new ArgumentException("URL cannot be null or empty.", nameof(url));
-
         Urls.Remove(url);
         return this;
     }
