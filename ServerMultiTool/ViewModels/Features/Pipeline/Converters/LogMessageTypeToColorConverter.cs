@@ -17,6 +17,7 @@ namespace ServerMultiTool.ViewModels.Features.Pipeline.Converters
             return messageType switch
             {
                 LogMessageType.Info => SystemColors.ControlTextBrush,
+                LogMessageType.Success => Brushes.Green,
                 LogMessageType.Warn => Brushes.Orange,
                 LogMessageType.Error => Brushes.Red,
                 LogMessageType.Exception => Brushes.Red,

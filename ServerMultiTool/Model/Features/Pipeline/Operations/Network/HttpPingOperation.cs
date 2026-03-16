@@ -93,7 +93,7 @@ public class HttpPingOperation : PipelineOperationBase
 
         if (response.StatusCode is HttpStatusCode.NotFound)
         {
-            Logger.LogInfoWithPublish(message);
+            Logger.LogSuccessWithPublish(message);
             return PipelineOperationResult.Success;
         }
 

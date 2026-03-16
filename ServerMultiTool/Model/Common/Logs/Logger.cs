@@ -33,6 +33,15 @@ public class Logger
         PublishLogEvent(LogMessageType.Info, message, details);
     }
 
+    public void LogSuccess(string message, string? details = null) =>
+        _log4NetLogger.Info(GetDefaultFormattedLogInfo(message, details));
+
+    public void LogSuccessWithPublish(string message, string? details = null)
+    {
+        LogSuccess(message, details);
+        PublishLogEvent(LogMessageType.Success, message, details);
+    }
+
     public void LogWarn(string message, string? details = null) =>
         _log4NetLogger.Warn(GetDefaultFormattedLogInfo(message, details));
 

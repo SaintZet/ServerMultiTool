@@ -59,7 +59,7 @@ namespace ServerMultiTool.Model.Features.Pipeline.Operations.Network
                 });
             }, cancellationToken);
 
-            Logger.LogInfoWithPublish("The web page has been successfully opened.");
+            Logger.LogSuccessWithPublish("The web page has been successfully opened.");
         }
     }
 }
