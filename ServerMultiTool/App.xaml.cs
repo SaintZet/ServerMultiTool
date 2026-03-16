@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using log4net;
+using log4net.Config;
+using Microsoft.Extensions.DependencyInjection;
 using ServerMultiTool.Model.Infrastructure.Interfaces;
 using ServerMultiTool.Model.Infrastructure.Services;
 using ServerMultiTool.ViewModels.Common;
@@ -23,6 +25,9 @@ namespace ServerMultiTool
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+
+            var logRepository = LogManager.GetRepository(typeof(App).Assembly);
+            XmlConfigurator.Configure(logRepository, new FileInfo("log4net.config"));
 
             var services = new ServiceCollection();
             ConfigureServices(services);
