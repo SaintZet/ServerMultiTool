@@ -12,9 +12,11 @@ using ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers;
 using System;
 using System.Collections;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Data;
 using static ServerMultiTool.ViewModels.Common.Delegates;
 
 namespace ServerMultiTool.ViewModels.Pages.Pipeline;
@@ -51,6 +53,28 @@ public partial class PipelineViewModel : BaseViewModel, IPage
         ExecutePipelineCommand.NotifyCanExecuteChanged();
     }
 
+    [ObservableProperty] private bool _isInfoEnabled = true;
+    partial void OnIsInfoEnabledChanged(bool value) => RefreshLogs();
+
+    [ObservableProperty] private bool _isSuccessEnabled = true;
+    partial void OnIsSuccessEnabledChanged(bool value) => RefreshLogs();
+
+    [ObservableProperty] private bool _isWarnEnabled = true;
+    partial void OnIsWarnEnabledChanged(bool value) => RefreshLogs();
+
+    [ObservableProperty] private bool _isErrorEnabled = true;
+    partial void OnIsErrorEnabledChanged(bool value) => RefreshLogs();
+
+    [ObservableProperty] private bool _isExceptionEnabled = true;
+    partial void OnIsExceptionEnabledChanged(bool value) => RefreshLogs();
+
+    private void RefreshLogs()
+    {
+        AppLogView.Refresh();
+        MasterLogView.Refresh();
+        SegmentLogView.Refresh();
+    }
+
     #endregion
 
     #region Managers
@@ -71,6 +95,11 @@ public partial class PipelineViewModel : BaseViewModel, IPage
 
     [ObservableProperty] ObservableCollection<PipelineProfileWrapper> _pipelineProfiles = [];
     public PipelineStepsCollection PipelineSteps => _pipelineExecutor.PipelineSteps;
+
+    public ICollectionView AppLogView { get; }
+    public ICollectionView MasterLogView { get; }
+    public ICollectionView SegmentLogView { get; }
+
     public ObservableCollection<LogEvent> AppLogMessages => _logManager.AppLogMessages;
     public ObservableCollection<LogEvent> MasterLogMessages => _logManager.MasterLogMessages;
     public ObservableCollection<LogEvent> SegmentLogMessages => _logManager.SegmentLogMessages;
@@ -92,6 +121,15 @@ public partial class PipelineViewModel : BaseViewModel, IPage
 
         _pipelineExecutor = new PipelineExecuteManager(_logManager);
         _pipelineExecutor.PipelineStateChanged += (sender, isRunning) => { IsPipelineRunning = isRunning; };
+
+        AppLogView = CollectionViewSource.GetDefaultView(AppLogMessages);
+        AppLogView.Filter = LogFilter;
+
+        MasterLogView = CollectionViewSource.GetDefaultView(MasterLogMessages);
+        MasterLogView.Filter = LogFilter;
+
+        SegmentLogView = CollectionViewSource.GetDefaultView(SegmentLogMessages);
+        SegmentLogView.Filter = LogFilter;
 
         LoadProfiles();
 
@@ -213,6 +251,22 @@ public partial class PipelineViewModel : BaseViewModel, IPage
     private async Task ExecutePipeline()
     {
         await _pipelineExecutor.ExecutePipeline(GeneralInfo);
+    }
+
+    private bool LogFilter(object obj)
+    {
+        if (obj is not LogEvent logEvent)
+            return false;
+
+        return logEvent.Message.Type switch
+        {
+            LogMessageType.Info => IsInfoEnabled,
+            LogMessageType.Success => IsSuccessEnabled,
+            LogMessageType.Warn => IsWarnEnabled,
+            LogMessageType.Error => IsErrorEnabled,
+            LogMessageType.Exception => IsExceptionEnabled,
+            _ => true
+        };
     }
 
     #endregion

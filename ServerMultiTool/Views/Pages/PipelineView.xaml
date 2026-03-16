@@ -239,14 +239,56 @@
                 </Grid>
             </Grid>
 
-            <TabControl
-                Grid.Row="2"
-                Margin="10"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch"
-                Background="Transparent"
-                BorderBrush="Transparent"
-                BorderThickness="0">
+            <Grid Grid.Row="2" Margin="10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <!--  Log Filters  -->
+                <StackPanel
+                    Grid.Row="0"
+                    Margin="0,0,0,10"
+                    Orientation="Horizontal">
+                    <ToggleButton
+                        Margin="0,0,5,0"
+                        Content="Info"
+                        Foreground="{DynamicResource PrimaryTextColor}"
+                        IsChecked="{Binding IsInfoEnabled}"
+                        Style="{DynamicResource LogFilterToggleButtonStyle}" />
+                    <ToggleButton
+                        Margin="5,0"
+                        Content="Success"
+                        Foreground="{DynamicResource PrimaryGreenColor}"
+                        IsChecked="{Binding IsSuccessEnabled}"
+                        Style="{DynamicResource LogFilterToggleButtonStyle}" />
+                    <ToggleButton
+                        Margin="5,0"
+                        Content="Warn"
+                        Foreground="{DynamicResource PrimaryOrangeColor}"
+                        IsChecked="{Binding IsWarnEnabled}"
+                        Style="{DynamicResource LogFilterToggleButtonStyle}" />
+                    <ToggleButton
+                        Margin="5,0"
+                        Content="Error"
+                        Foreground="{DynamicResource PrimaryRedColor}"
+                        IsChecked="{Binding IsErrorEnabled}"
+                        Style="{DynamicResource LogFilterToggleButtonStyle}" />
+                    <ToggleButton
+                        Margin="5,0"
+                        Content="Exception"
+                        Foreground="{DynamicResource PrimaryRedColor}"
+                        IsChecked="{Binding IsExceptionEnabled}"
+                        Style="{DynamicResource LogFilterToggleButtonStyle}" />
+                </StackPanel>
+
+                <TabControl
+                    Grid.Row="1"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    Background="Transparent"
+                    BorderBrush="Transparent"
+                    BorderThickness="0">
                 <TabControl.Resources>
                     <Style BasedOn="{StaticResource {x:Type TabItem}}" TargetType="TabItem">
                         <Setter Property="Template">
@@ -291,7 +333,7 @@
                         Background="{DynamicResource TertiaryBackgroundColor}"
                         Foreground="{DynamicResource PrimaryTextColor}"
                         ItemTemplate="{StaticResource LogMessageTemplate}"
-                        ItemsSource="{Binding AppLogMessages}"
+                        ItemsSource="{Binding AppLogView}"
                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                         SelectionMode="Extended" />
                 </TabItem>
@@ -304,7 +346,7 @@
                         Background="{DynamicResource TertiaryBackgroundColor}"
                         Foreground="{DynamicResource PrimaryTextColor}"
                         ItemTemplate="{StaticResource LogMessageTemplate}"
-                        ItemsSource="{Binding MasterLogMessages}"
+                        ItemsSource="{Binding MasterLogView}"
                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                         SelectionMode="Extended" />
                 </TabItem>
@@ -317,11 +359,12 @@
                         Background="{DynamicResource TertiaryBackgroundColor}"
                         Foreground="{DynamicResource PrimaryTextColor}"
                         ItemTemplate="{StaticResource LogMessageTemplate}"
-                        ItemsSource="{Binding SegmentLogMessages}"
+                        ItemsSource="{Binding SegmentLogView}"
                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                         SelectionMode="Extended" />
                 </TabItem>
             </TabControl>
+            </Grid>
         </Grid>
     </Border>
 </Page>
