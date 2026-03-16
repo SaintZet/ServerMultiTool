@@ -35,6 +35,21 @@
         <!--  Define a reusable DataTemplate for log messages  -->
         <DataTemplate x:Key="LogMessageTemplate">
             <StackPanel Margin="0,2">
+                <StackPanel.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem
+                            Command="{Binding Path=PlacementTarget.Tag.DataContext.CopyLogMessageCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                            CommandParameter="{Binding Path=PlacementTarget.DataContext, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                            Header="Copy Message" />
+                        <MenuItem
+                            Command="{Binding Path=PlacementTarget.Tag.DataContext.CopySelectedLogMessagesCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                            CommandParameter="{Binding Path=PlacementTarget.Tag.SelectedItems, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                            Header="Copy Selected Messages" />
+                    </ContextMenu>
+                </StackPanel.ContextMenu>
+                <StackPanel.Tag>
+                    <Binding RelativeSource="{RelativeSource AncestorType=ListBox}" />
+                </StackPanel.Tag>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock
                         Margin="0,0,5,0"
@@ -64,7 +79,7 @@
                         </TextBlock.Style>
                     </TextBlock>
                     <TextBlock Text=": " />
-                    <TextBlock Text="{Binding Message.BaseMessage}" TextWrapping="Wrap" />
+                    <TextBlock Focusable="True" Text="{Binding Message.BaseMessage}" TextWrapping="Wrap" />
                 </StackPanel>
                 <Expander
                     Margin="0,5,0,0"
@@ -79,6 +94,7 @@
                             VerticalScrollBarVisibility="Auto">
                             <TextBlock
                                 Margin="5"
+                                Focusable="True"
                                 Foreground="{DynamicResource PrimaryTextColor}"
                                 Text="{Binding Message.ExtendedMessage}"
                                 TextWrapping="Wrap" />
@@ -276,7 +292,8 @@
                         Foreground="{DynamicResource PrimaryTextColor}"
                         ItemTemplate="{StaticResource LogMessageTemplate}"
                         ItemsSource="{Binding AppLogMessages}"
-                        ScrollViewer.HorizontalScrollBarVisibility="Disabled" />
+                        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                        SelectionMode="Extended" />
                 </TabItem>
 
                 <!--  Master Logs Tab  -->
@@ -288,7 +305,8 @@
                         Foreground="{DynamicResource PrimaryTextColor}"
                         ItemTemplate="{StaticResource LogMessageTemplate}"
                         ItemsSource="{Binding MasterLogMessages}"
-                        ScrollViewer.HorizontalScrollBarVisibility="Disabled" />
+                        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                        SelectionMode="Extended" />
                 </TabItem>
 
                 <!--  Segment Logs Tab  -->
@@ -300,7 +318,8 @@
                         Foreground="{DynamicResource PrimaryTextColor}"
                         ItemTemplate="{StaticResource LogMessageTemplate}"
                         ItemsSource="{Binding SegmentLogMessages}"
-                        ScrollViewer.HorizontalScrollBarVisibility="Disabled" />
+                        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                        SelectionMode="Extended" />
                 </TabItem>
             </TabControl>
         </Grid>

@@ -9,6 +9,8 @@ using ServerMultiTool.ViewModels.Components.GeneralInfo;
 using ServerMultiTool.ViewModels.Features.Pipeline.Collections;
 using ServerMultiTool.ViewModels.Features.Pipeline.Management;
 using ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers;
+using System;
+using System.Collections;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -145,6 +147,59 @@ public partial class PipelineViewModel : BaseViewModel, IPage
     #endregion
 
     #region Commands
+
+    [RelayCommand]
+    private static void CopyLogMessage(LogEvent? logEvent)
+    {
+        if (logEvent is null)
+            return;
+
+        var fullMessage = $"[{logEvent.Timestamp:yyyy-MM-dd HH:mm:ss}] {logEvent.Sender}: {logEvent.Message.BaseMessage}";
+        
+        if (!string.IsNullOrEmpty(logEvent.Message.ExtendedMessage)) 
+            fullMessage += $"{Environment.NewLine}{logEvent.Message.ExtendedMessage}";
+        
+        SafeSetClipboardText(fullMessage);
+    }
+
+    [RelayCommand]
+    private static void CopySelectedLogMessages(IList? selectedItems)
+    {
+        if (selectedItems is null || selectedItems.Count == 0)
+            return;
+
+        var logEvents = selectedItems.Cast<LogEvent>().OrderBy(l => l.Timestamp);
+        var sb = new System.Text.StringBuilder();
+
+        foreach (var logEvent in logEvents)
+        {
+            sb.Append($"[{logEvent.Timestamp:yyyy-MM-dd HH:mm:ss}] {logEvent.Sender}: {logEvent.Message.BaseMessage}");
+            
+            if (!string.IsNullOrEmpty(logEvent.Message.ExtendedMessage)) 
+                sb.Append($"{Environment.NewLine}{logEvent.Message.ExtendedMessage}");
+            
+            sb.AppendLine();
+        }
+
+        SafeSetClipboardText(sb.ToString());
+    }
+    
+    private static void SafeSetClipboardText(string text)
+    {
+        for (var i = 0; i < 10; i++)
+        {
+            try
+            {
+                Clipboard.SetText(text);
+                return;
+            }
+            catch (System.Runtime.InteropServices.COMException ex) when ((uint)ex.ErrorCode == 0x800401D0)
+            {
+                if (i == 9) throw;
+                System.Threading.Thread.Sleep(50);
+            }
+        }
+    }
 
     [RelayCommand(CanExecute = nameof(IsPipelineRunning))]
     private void StopPipeline()
