@@ -54,6 +54,8 @@ namespace ServerMultiTool.Model.Features.Pipeline.Operations.FileDelivery
                     Logger.LogWarnWithPublish($"Cannot delivery {directory.Source} - directory not exist!");
                 }));
 
+            Logger.LogSuccessWithPublish($"{Name} has completed successfully.");
+
             return PipelineOperationResult.Success;
         }
     }

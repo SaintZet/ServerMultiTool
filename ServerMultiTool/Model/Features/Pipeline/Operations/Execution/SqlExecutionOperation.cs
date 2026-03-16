@@ -35,10 +35,12 @@ namespace ServerMultiTool.Model.Features.Pipeline.Operations.Execution
                 return PipelineOperationResult.Failure;
             }
 
+            Logger.LogInfoWithPublish($"Attempting to execute SQL script from {PathToSqlScript}");
+
             var sqlScript = await File.ReadAllTextAsync(PathToSqlScript, cancellationToken);
             var count = await ExecuteSqlScript(sqlScript, ConnectionString, cancellationToken);
 
-            Logger.LogInfoWithPublish($"Affected row count {count}");
+            Logger.LogSuccessWithPublish($"{Name} has completed successfully. Affected row count {count}");
 
             return PipelineOperationResult.Success;
         }

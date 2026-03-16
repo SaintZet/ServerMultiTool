@@ -70,6 +70,8 @@ public class HttpPingOperation : PipelineOperationBase
         if (cancellationToken.IsCancellationRequested)
             return PipelineOperationResult.Cancelled;
 
+        Logger.LogInfoWithPublish($"Attempting to ping {url}");
+
         using var client = new HttpClient();
         client.Timeout = TimeSpan.FromMinutes(timeout);
 

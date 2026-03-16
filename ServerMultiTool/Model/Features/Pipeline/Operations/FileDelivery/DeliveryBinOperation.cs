@@ -69,6 +69,8 @@ public class DeliveryBinOperation(string name) : DeliveryOperationBase(name)
 
         await Task.WhenAll(copyTasks);
 
+        Logger.LogSuccessWithPublish($"{Name} has completed successfully.");
+
         return PipelineOperationResult.Success;
     }
 
