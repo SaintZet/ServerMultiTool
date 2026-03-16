@@ -20,13 +20,23 @@ namespace ServerMultiTool.ViewModels.Features.Pipeline.Collections
 
         internal async Task<PipelineOperationResult> ExecuteAsync(CancellationToken cancellationToken)
         {
+            var finalResult = PipelineOperationResult.Success;
+
             foreach (var operation in this)
             {
-                // check if the operation failed or was cancelled
-                await operation.ExecuteAsync(cancellationToken);
+                if (!operation.Enabled)
+                    continue;
+
+                var result = await operation.ExecuteAsync(cancellationToken);
+                
+                if (result == PipelineOperationResult.Failure || result == PipelineOperationResult.Cancelled)
+                    return result;
+
+                if (result == PipelineOperationResult.PartialSuccess)
+                    finalResult = PipelineOperationResult.PartialSuccess;
             }
 
-            return PipelineOperationResult.Success;
+            return finalResult;
         }
 
         internal void UpdateHttpDirectory(DirectoryModel directory)
