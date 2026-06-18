@@ -1,37 +1,94 @@
-﻿using System;
-using System.Windows;
-using ServerMultiTool.Model.Common.Logs;
-using ServerMultiTool.Model.Pipeline.Profiles;
-using ServerMultiTool.Model.Settings;
+﻿using log4net;
+using log4net.Config;
+using Microsoft.Extensions.DependencyInjection;
+using ServerMultiTool.Model.Infrastructure.Interfaces;
+using ServerMultiTool.Model.Infrastructure.Services;
+using ServerMultiTool.ViewModels.Common;
+using ServerMultiTool.ViewModels.Components.GeneralInfo;
+using ServerMultiTool.ViewModels.Features.JsonParser;
+using ServerMultiTool.ViewModels.Pages.Pipeline;
+using ServerMultiTool.ViewModels.Pages.Settings;
+using ServerMultiTool.ViewModels.Windows;
+using ServerMultiTool.Views.Pages;
 using ServerMultiTool.Views.Windows;
+using System;
+using System.IO;
+using System.Linq;
+using System.Windows;
 
-namespace ServerMultiTool;
-
-public partial class App
+namespace ServerMultiTool
 {
-    private readonly Logger _logger;
-
-    public App()
+    public partial class App : Application
     {
-        _logger = new Logger(GetType());
-    }
+        private ServiceProvider _serviceProvider = null!;
 
-    protected override void OnStartup(StartupEventArgs e)
-    {
-        try
+        protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-            
-            AppSettingsService.LoadOrInitialize(Environment.CurrentDirectory);
-            PipelineProfilesService.LoadOrInitialize(Environment.CurrentDirectory);
-        
-            var mainWindow = new MainWindowView();
+
+            var logRepository = LogManager.GetRepository(typeof(App).Assembly);
+            XmlConfigurator.Configure(logRepository, new FileInfo("log4net.config"));
+
+            var services = new ServiceCollection();
+            ConfigureServices(services);
+
+            _serviceProvider = services.BuildServiceProvider();
+
+            var mainWindow = _serviceProvider.GetRequiredService<MainWindowView>();
             mainWindow.Show();
         }
-        catch (Exception ex)
+
+        private static void ConfigureServices(ServiceCollection services)
         {
-            _logger.LogException(ex);
-            throw;
+            // Register services
+            var appSettingsPath = Path.Combine(AppContext.BaseDirectory, AppConstants.Folders.AppSettings, "AppSettings.json");
+            services.AddSingleton<IAppSettingsService>(sp =>
+            {
+                return new FileAppSettingsService(appSettingsPath);
+            });
+
+            var pipelineProfilesPath = Path.Combine(AppContext.BaseDirectory, AppConstants.Folders.AppSettings, AppConstants.Folders.Profiles);
+            services.AddSingleton<IPipelineProfilesService>(sp =>
+            {
+                return new FilePipelineProfilesService(pipelineProfilesPath);
+            });
+
+            // Register view models
+            services.AddSingleton<MainWindowViewModel>();
+            services.AddSingleton<GeneralInfoViewModel>();
+            services.AddSingleton<SettingsViewModel>();
+            services.AddSingleton<JsonParserViewModel>();
+            services.AddSingleton(sp =>
+            {
+                var appSettingsService = sp.GetRequiredService<IAppSettingsService>();
+                var profilesService = sp.GetRequiredService<IPipelineProfilesService>();
+                var generalInfo = sp.GetRequiredService<GeneralInfoViewModel>();
+                var settingsViewModel = sp.GetRequiredService<SettingsViewModel>();
+
+                return new PipelineViewModel(appSettingsService, profilesService, generalInfo)
+                {
+                    // todo: change to services.AddSingleton<ISettingsNavigationService, SettingsNavigationService>();
+                    NavigateToSettingsAction = (tabKey, param) =>
+                    {
+                        if (string.IsNullOrEmpty(tabKey))
+                            return;
+
+                        settingsViewModel.SelectedTabKey = tabKey;
+
+                        if (tabKey is SettingsPageTabKeys.PipelineProfiles && string.IsNullOrEmpty(param) is false)
+                            settingsViewModel.SelectedPipelineProfile = settingsViewModel.PipelineProfiles.First(x => x.Name == param);
+
+                        // You'll need to handle navigation differently with DI
+                        // Consider using a navigation service
+                    }
+                };
+            });
+
+            // View
+            services.AddSingleton<MainWindowView>();
+            services.AddSingleton<PipelineView>();
+            services.AddSingleton<SettingsView>();
+            services.AddSingleton<JsonParserView>();
         }
     }
 }

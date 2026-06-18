@@ -12,7 +12,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ToggleButton}">
-                    <Grid>
+                    <Grid x:Name="TemplateRoot">
                         <Border
                             x:Name="Border"
                             Width="35"
@@ -20,12 +20,7 @@
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             Background="{TemplateBinding Background}"
-                            CornerRadius="7">
-                            <!--  Optional  -->
-                            <!--<Border.Effect>
-                                <DropShadowEffect ShadowDepth="0.5" Opacity=".2"/>
-                            </Border.Effect>-->
-                        </Border>
+                            CornerRadius="7" />
                         <Ellipse
                             x:Name="Ellipse"
                             Width="20"
@@ -34,52 +29,19 @@
                             VerticalAlignment="Center"
                             Fill="{DynamicResource TertiaryWhiteColor}"
                             Stroke="{TemplateBinding BorderBrush}"
-                            StrokeThickness="3">
-                            <!--  Optional  -->
-                            <!--<Ellipse.Effect>
-                                <DropShadowEffect ShadowDepth="0.5" Opacity=".2"/>
-                            </Ellipse.Effect>-->
-                        </Ellipse>
+                            StrokeThickness="3" />
                     </Grid>
                     <ControlTemplate.Triggers>
-                        <!--  EventTrigger Checked  -->
-                        <EventTrigger RoutedEvent="Checked">
-                            <BeginStoryboard>
-                                <Storyboard>
-                                    <ColorAnimation
-                                        Storyboard.TargetName="Border"
-                                        Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
-                                        To="#C2D1FC"
-                                        Duration="0:0:0.2" />
-                                    <ThicknessAnimation
-                                        Storyboard.TargetName="Ellipse"
-                                        Storyboard.TargetProperty="Margin"
-                                        To="15 0 0 0"
-                                        Duration="0:0:0.2" />
-                                </Storyboard>
-                            </BeginStoryboard>
-                        </EventTrigger>
-                        <!--  EventTrigger UnChecked  -->
-                        <EventTrigger RoutedEvent="Unchecked">
-                            <BeginStoryboard>
-                                <Storyboard>
-                                    <ColorAnimation
-                                        Storyboard.TargetName="Border"
-                                        Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
-                                        To="#CECECE"
-                                        Duration="0:0:0.2" />
-                                    <ThicknessAnimation
-                                        Storyboard.TargetName="Ellipse"
-                                        Storyboard.TargetProperty="Margin"
-                                        To="0 0 0 0"
-                                        Duration="0:0:0.2" />
-                                </Storyboard>
-                            </BeginStoryboard>
-                        </EventTrigger>
-
+                        <!--  Checked state via Trigger instead of EventTrigger to avoid NameScope issues in some contexts  -->
                         <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="Border" Property="Background" Value="#C2D1FC" />
+                            <Setter TargetName="Ellipse" Property="Margin" Value="15 0 0 0" />
                             <Setter TargetName="Ellipse" Property="Fill" Value="{DynamicResource SecondaryBlueColor}" />
                             <Setter TargetName="Ellipse" Property="Stroke" Value="{DynamicResource PrimaryTextColor}" />
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="False">
+                            <Setter TargetName="Border" Property="Background" Value="#CECECE" />
+                            <Setter TargetName="Ellipse" Property="Margin" Value="0 0 0 0" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -87,5 +49,41 @@
         </Setter>
     </Style>
     <!--  End: ToggleButtonStyle  -->
+
+    <Style x:Key="LogFilterToggleButtonStyle" TargetType="{x:Type ToggleButton}">
+        <Setter Property="Height" Value="25" />
+        <Setter Property="Padding" Value="8,2" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ToggleButton}">
+                    <Border
+                        x:Name="border"
+                        Padding="{TemplateBinding Padding}"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="4">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="{DynamicResource SecondaryBackgroundColor}" />
+                            <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource PrimaryWhiteColor}" />
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="False">
+                            <Setter Property="Opacity" Value="0.5" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="{DynamicResource TertiaryBackgroundColor}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 
 </ResourceDictionary>

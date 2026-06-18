@@ -10,9 +10,9 @@ namespace ServerMultiTool.Views.Windows
     {
         private bool _restoreForDragMove = false;
 
-        public MainWindowView()
+        public MainWindowView(MainWindowViewModel vm)
         {
-            DataContext = new MainWindowViewModel();
+            DataContext = vm;
             InitializeComponent();
         }
 
@@ -83,6 +83,7 @@ namespace ServerMultiTool.Views.Windows
                 catch (Exception ex)
                 {
                     Debug.WriteLine($"DragMove error: {ex.Message}");
+                    throw;
                 }
             }
         }

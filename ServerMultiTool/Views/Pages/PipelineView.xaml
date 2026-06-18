@@ -8,10 +8,8 @@
     xmlns:globalConverters="clr-namespace:ServerMultiTool.ViewModels.Converters"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:pipeline="clr-namespace:ServerMultiTool.ViewModels.Pages.Pipeline"
-    xmlns:pipelineConverters="clr-namespace:ServerMultiTool.ViewModels.Pages.Pipeline.Converters"
+    xmlns:pipelineConverters="clr-namespace:ServerMultiTool.ViewModels.Features.Pipeline.Converters"
     Title="{Binding Title}"
-    d:DataContext="{d:DesignInstance Type=pipeline:PipelineViewModel,
-                                     IsDesignTimeCreatable=True}"
     d:DesignHeight="600"
     d:DesignWidth="700"
     FontFamily="Poppins"
@@ -23,7 +21,7 @@
         <pipelineConverters:TimestampConverter x:Key="TimestampConverter" />
         <globalConverters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
         <globalConverters:NumericValueConverter x:Key="NumericValueConverter" />
-        
+
         <Storyboard x:Key="GreenFlashingAnimation">
             <ColorAnimation
                 AutoReverse="True"
@@ -37,6 +35,21 @@
         <!--  Define a reusable DataTemplate for log messages  -->
         <DataTemplate x:Key="LogMessageTemplate">
             <StackPanel Margin="0,2">
+                <StackPanel.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem
+                            Command="{Binding Path=PlacementTarget.Tag.DataContext.CopyLogMessageCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                            CommandParameter="{Binding Path=PlacementTarget.DataContext, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                            Header="Copy Message" />
+                        <MenuItem
+                            Command="{Binding Path=PlacementTarget.Tag.DataContext.CopySelectedLogMessagesCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                            CommandParameter="{Binding Path=PlacementTarget.Tag.SelectedItems, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                            Header="Copy Selected Messages" />
+                    </ContextMenu>
+                </StackPanel.ContextMenu>
+                <StackPanel.Tag>
+                    <Binding RelativeSource="{RelativeSource AncestorType=ListBox}" />
+                </StackPanel.Tag>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock
                         Margin="0,0,5,0"
@@ -66,7 +79,7 @@
                         </TextBlock.Style>
                     </TextBlock>
                     <TextBlock Text=": " />
-                    <TextBlock Text="{Binding Message.BaseMessage}" TextWrapping="Wrap" />
+                    <TextBlock Focusable="True" Text="{Binding Message.BaseMessage}" TextWrapping="Wrap" />
                 </StackPanel>
                 <Expander
                     Margin="0,5,0,0"
@@ -75,11 +88,13 @@
                     Header="Full message"
                     Visibility="{Binding Message.ExtendedMessage, Converter={StaticResource StringToVisibilityConverter}}">
                     <Border MaxWidth="{Binding RelativeSource={RelativeSource AncestorType=behaviours:ScrollingListBox}, Path=ActualWidth, Converter={StaticResource NumericValueConverter}, ConverterParameter=1}">
-                        <ScrollViewer MaxHeight="350" 
-                                      VerticalScrollBarVisibility="Auto" 
-                                      HorizontalScrollBarVisibility="Auto">
+                        <ScrollViewer
+                            MaxHeight="350"
+                            HorizontalScrollBarVisibility="Auto"
+                            VerticalScrollBarVisibility="Auto">
                             <TextBlock
                                 Margin="5"
+                                Focusable="True"
                                 Foreground="{DynamicResource PrimaryTextColor}"
                                 Text="{Binding Message.ExtendedMessage}"
                                 TextWrapping="Wrap" />
@@ -172,7 +187,7 @@
                         Grid.Column="4"
                         HorizontalAlignment="Right"
                         VerticalAlignment="Center"
-                        ItemsSource="{Binding PipelineOperations}">
+                        ItemsSource="{Binding PipelineSteps}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <UniformGrid
@@ -190,7 +205,7 @@
                                         Height="16"
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
-                                        Fill="{Binding PipelineOperationStatus, Mode=OneWay, Converter={StaticResource PipelineStatusFillConverter}}"
+                                        Fill="{Binding PipelineStepStatus, Mode=OneWay, Converter={StaticResource PipelineStatusFillConverter}}"
                                         Stroke="{DynamicResource PrimaryWhiteColor}"
                                         StrokeThickness="2">
                                         <Ellipse.Effect>
@@ -199,7 +214,7 @@
                                         <Ellipse.Style>
                                             <Style TargetType="Ellipse">
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding PipelineOperationStatus}" Value="InProgress">
+                                                    <DataTrigger Binding="{Binding PipelineStepStatus}" Value="InProgress">
                                                         <DataTrigger.EnterActions>
                                                             <BeginStoryboard Name="FlashingStoryboard" Storyboard="{StaticResource GreenFlashingAnimation}" />
                                                         </DataTrigger.EnterActions>
@@ -215,7 +230,7 @@
                                         Margin="0,3,0,0"
                                         FontSize="10"
                                         Style="{DynamicResource CustomTextBlockStyle}"
-                                        Text="{Binding DisplayName}"
+                                        Text="{Binding Name}"
                                         TextAlignment="Center" />
                                 </StackPanel>
                             </DataTemplate>
@@ -224,14 +239,56 @@
                 </Grid>
             </Grid>
 
-            <TabControl
-                Grid.Row="2"
-                Margin="10"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch"
-                Background="Transparent"
-                BorderBrush="Transparent"
-                BorderThickness="0">
+            <Grid Grid.Row="2" Margin="10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <!--  Log Filters  -->
+                <StackPanel
+                    Grid.Row="0"
+                    Margin="0,0,0,10"
+                    Orientation="Horizontal">
+                    <ToggleButton
+                        Margin="0,0,5,0"
+                        Content="Info"
+                        Foreground="{DynamicResource PrimaryTextColor}"
+                        IsChecked="{Binding IsInfoEnabled}"
+                        Style="{DynamicResource LogFilterToggleButtonStyle}" />
+                    <ToggleButton
+                        Margin="5,0"
+                        Content="Success"
+                        Foreground="{DynamicResource PrimaryGreenColor}"
+                        IsChecked="{Binding IsSuccessEnabled}"
+                        Style="{DynamicResource LogFilterToggleButtonStyle}" />
+                    <ToggleButton
+                        Margin="5,0"
+                        Content="Warn"
+                        Foreground="{DynamicResource PrimaryOrangeColor}"
+                        IsChecked="{Binding IsWarnEnabled}"
+                        Style="{DynamicResource LogFilterToggleButtonStyle}" />
+                    <ToggleButton
+                        Margin="5,0"
+                        Content="Error"
+                        Foreground="{DynamicResource PrimaryRedColor}"
+                        IsChecked="{Binding IsErrorEnabled}"
+                        Style="{DynamicResource LogFilterToggleButtonStyle}" />
+                    <ToggleButton
+                        Margin="5,0"
+                        Content="Exception"
+                        Foreground="{DynamicResource PrimaryRedColor}"
+                        IsChecked="{Binding IsExceptionEnabled}"
+                        Style="{DynamicResource LogFilterToggleButtonStyle}" />
+                </StackPanel>
+
+                <TabControl
+                    Grid.Row="1"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    Background="Transparent"
+                    BorderBrush="Transparent"
+                    BorderThickness="0">
                 <TabControl.Resources>
                     <Style BasedOn="{StaticResource {x:Type TabItem}}" TargetType="TabItem">
                         <Setter Property="Template">
@@ -276,8 +333,9 @@
                         Background="{DynamicResource TertiaryBackgroundColor}"
                         Foreground="{DynamicResource PrimaryTextColor}"
                         ItemTemplate="{StaticResource LogMessageTemplate}"
-                        ItemsSource="{Binding AppLogMessages}"
-                        ScrollViewer.HorizontalScrollBarVisibility="Disabled" />
+                        ItemsSource="{Binding AppLogView}"
+                        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                        SelectionMode="Extended" />
                 </TabItem>
 
                 <!--  Master Logs Tab  -->
@@ -288,8 +346,9 @@
                         Background="{DynamicResource TertiaryBackgroundColor}"
                         Foreground="{DynamicResource PrimaryTextColor}"
                         ItemTemplate="{StaticResource LogMessageTemplate}"
-                        ItemsSource="{Binding MasterLogMessages}"
-                        ScrollViewer.HorizontalScrollBarVisibility="Disabled" />
+                        ItemsSource="{Binding MasterLogView}"
+                        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                        SelectionMode="Extended" />
                 </TabItem>
 
                 <!--  Segment Logs Tab  -->
@@ -300,10 +359,12 @@
                         Background="{DynamicResource TertiaryBackgroundColor}"
                         Foreground="{DynamicResource PrimaryTextColor}"
                         ItemTemplate="{StaticResource LogMessageTemplate}"
-                        ItemsSource="{Binding SegmentLogMessages}"
-                        ScrollViewer.HorizontalScrollBarVisibility="Disabled" />
+                        ItemsSource="{Binding SegmentLogView}"
+                        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                        SelectionMode="Extended" />
                 </TabItem>
             </TabControl>
+            </Grid>
         </Grid>
     </Border>
 </Page>

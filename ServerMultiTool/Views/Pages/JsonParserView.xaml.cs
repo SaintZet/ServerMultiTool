@@ -1,4 +1,4 @@
-﻿using ServerMultiTool.ViewModels.Pages.JsonParser;
+﻿using ServerMultiTool.ViewModels.Features.JsonParser;
 using System.Windows.Controls;
 
 namespace ServerMultiTool.Views.Pages

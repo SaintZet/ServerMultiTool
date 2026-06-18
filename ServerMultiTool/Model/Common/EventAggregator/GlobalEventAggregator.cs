@@ -9,7 +9,7 @@ public class GlobalEventAggregator : BaseEventAggregator
     public static GlobalEventAggregator Instance => LazyInstance.Value;
 
     private GlobalEventAggregator() { }
-    
-    public new void Publish<TEvent>(TEvent @event) => 
+
+    public new void Publish<TEvent>(TEvent @event) =>
         base.Publish(@event);
 }

@@ -62,7 +62,7 @@ public class ProcessExecutor(Logger logger)
                     continue;
                 }
 
-                logger.LogInfoWithPublish(successMessage, messageDetails);
+                logger.LogSuccessWithPublish(successMessage, messageDetails);
                 return response;
             }
             catch (OperationCanceledException)

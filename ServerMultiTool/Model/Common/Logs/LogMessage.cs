@@ -8,7 +8,7 @@ public class LogMessage(LogMessageType type, string message)
     public string BaseMessage { get; } = message;
     public string ExtendedMessage { get; private set; } = string.Empty;
 
-    public void AddDetails(string currentLine) => 
+    public void AddDetails(string currentLine) =>
         ExtendedMessage += currentLine + Environment.NewLine;
 
     public override bool Equals(object? obj)
@@ -17,12 +17,12 @@ public class LogMessage(LogMessageType type, string message)
             return false;
 
         var other = (LogMessage)obj;
-        
+
         return BaseMessage == other.BaseMessage &&
                ExtendedMessage == other.ExtendedMessage &&
                Type == other.Type;
     }
 
-    public override int GetHashCode() => 
+    public override int GetHashCode() =>
         HashCode.Combine(BaseMessage, Type);
 }

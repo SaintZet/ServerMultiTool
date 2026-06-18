@@ -1,5 +1,5 @@
+using ServerMultiTool.ViewModels.Pages.Settings;
 using System.Windows.Controls;
-using SettingsViewModel = ServerMultiTool.ViewModels.Pages.Settings.SettingsViewModel;
 
 namespace ServerMultiTool.Views.Pages;
 
