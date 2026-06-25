@@ -1,0 +1,119 @@
+name: release-auto-update
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag (example: v1.2.3)"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  publish-and-update-appcast:
+    runs-on: windows-latest
+
+    env:
+      APP_NAME: ServerMultiTool
+      RUNTIME_ID: win-x64
+      APPCAST_BRANCH: gh-pages
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Resolve release tag
+        id: meta
+        shell: pwsh
+        run: |
+          $tag = "${{ github.event.release.tag_name }}"
+          if ([string]::IsNullOrWhiteSpace($tag)) {
+            $tag = "${{ inputs.tag }}"
+          }
+          if ([string]::IsNullOrWhiteSpace($tag)) {
+            throw "Unable to resolve release tag"
+          }
+          "tag=$tag" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          "base_url=https://github.com/${{ github.repository }}/releases/download/$tag" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
+      - name: Restore
+        run: dotnet restore ServerMultiTool.sln
+
+      - name: Publish app
+        shell: pwsh
+        run: |
+          $publishDir = "artifacts/publish"
+          dotnet publish ServerMultiTool/ServerMultiTool.csproj -c Release -r $env:RUNTIME_ID --self-contained false -o $publishDir
+
+      - name: Pack release zip
+        shell: pwsh
+        run: |
+          $zipPath = "artifacts/$($env:APP_NAME)-$($env:RUNTIME_ID).zip"
+          if (Test-Path $zipPath) { Remove-Item $zipPath -Force }
+          Compress-Archive -Path "artifacts/publish/*" -DestinationPath $zipPath
+
+      - name: Install NetSparkle appcast tool
+        shell: pwsh
+        run: dotnet tool install --tool-path ./.tools NetSparkleUpdater.Tools.AppCastGenerator --version 2.9.0
+
+      - name: Download existing appcast (if exists)
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Path artifacts/appcast -Force | Out-Null
+          git fetch origin $env:APPCAST_BRANCH --depth 1 2>$null
+          if ($LASTEXITCODE -eq 0) {
+            git show origin/$env:APPCAST_BRANCH:appcast.xml > artifacts/appcast/appcast.xml 2>$null
+            git show origin/$env:APPCAST_BRANCH:appcast.xml.signature > artifacts/appcast/appcast.xml.signature 2>$null
+          }
+
+      - name: Generate appcast.xml
+        shell: pwsh
+        env:
+          NETSPARKLE_PRIVATE_KEY: ${{ secrets.NETSPARKLE_PRIVATE_KEY }}
+          NETSPARKLE_PUBLIC_KEY: ${{ secrets.NETSPARKLE_PUBLIC_KEY }}
+        run: |
+          if ([string]::IsNullOrWhiteSpace($env:NETSPARKLE_PRIVATE_KEY)) {
+            throw "GitHub secret NETSPARKLE_PRIVATE_KEY is not set"
+          }
+          if ([string]::IsNullOrWhiteSpace($env:NETSPARKLE_PUBLIC_KEY)) {
+            throw "GitHub secret NETSPARKLE_PUBLIC_KEY is not set"
+          }
+
+          ./.tools/netsparkle-generate-appcast `
+            -a artifacts/appcast `
+            -b artifacts `
+            -e zip `
+            -n $env:APP_NAME `
+            -o windows `
+            -u "${{ steps.meta.outputs.base_url }}" `
+            --private-key-override "$env:NETSPARKLE_PRIVATE_KEY" `
+            --public-key-override "$env:NETSPARKLE_PUBLIC_KEY" `
+            --reparse-existing `
+            --human-readable
+
+      - name: Upload release zip asset
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.meta.outputs.tag }}
+          files: artifacts/${{ env.APP_NAME }}-${{ env.RUNTIME_ID }}.zip
+          fail_on_unmatched_files: true
+
+      - name: Deploy appcast to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: ${{ env.APPCAST_BRANCH }}
+          publish_dir: artifacts/appcast
+          keep_files: true
+

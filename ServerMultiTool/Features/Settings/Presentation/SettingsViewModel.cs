@@ -18,6 +18,7 @@ using ServerMultiTool.ViewModels.Features.Settings.Extensions;
 using ServerMultiTool.ViewModels.Features.Settings.Wrappers;
 using ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers;
 using Application = System.Windows.Application;
+using System.Threading.Tasks;
 
 namespace ServerMultiTool.Features.Settings.Presentation;
 
@@ -35,6 +36,29 @@ public partial class SettingsViewModel : BaseViewModel, IPage, INavigationAware
     [ObservableProperty] private DirectoryModelWrapper? _selectedHttpDirectory;
 
     [ObservableProperty] private GeneralInfoViewModel _generalInfo;
+
+    // Auto-update settings
+    [ObservableProperty] private string _updateFeedUrl = string.Empty;
+    [ObservableProperty] private string _updatePublicKey = string.Empty;
+    [ObservableProperty] private bool _checkForUpdatesOnStartup;
+
+    partial void OnUpdateFeedUrlChanged(string value)
+    {
+        if (_isInitializing) return;
+        HasUnsavedChanges = true;
+    }
+
+    partial void OnCheckForUpdatesOnStartupChanged(bool value)
+    {
+        if (_isInitializing) return;
+        HasUnsavedChanges = true;
+    }
+
+    partial void OnUpdatePublicKeyChanged(string value)
+    {
+        if (_isInitializing) return;
+        HasUnsavedChanges = true;
+    }
 
     [ObservableProperty] private PipelineProfileWrapper? _selectedPipelineProfile;
     [ObservableProperty] private EditPipelineProfileViewModel _editPipelineProfile = new();
@@ -72,6 +96,7 @@ public partial class SettingsViewModel : BaseViewModel, IPage, INavigationAware
 
     private readonly IAppSettingsService _appSettingsService;
     private readonly IPipelineProfilesService _pipelineProfilesService;
+    private readonly IAutoUpdateService _autoUpdateService;
 
     #endregion
 
@@ -80,10 +105,12 @@ public partial class SettingsViewModel : BaseViewModel, IPage, INavigationAware
     public SettingsViewModel(
         IAppSettingsService appSettingsService,
         IPipelineProfilesService pipelineProfilesService,
+        IAutoUpdateService autoUpdateService,
         GeneralInfoViewModel generalInfo)
     {
         _appSettingsService = appSettingsService;
         _pipelineProfilesService = pipelineProfilesService;
+        _autoUpdateService = autoUpdateService;
         _generalInfo = generalInfo;
 
         _isInitializing = true;
@@ -113,6 +140,10 @@ public partial class SettingsViewModel : BaseViewModel, IPage, INavigationAware
 
         _initialHttpDirectories = appSettings.HttpDirectories.ToWrapperCollection();
         HttpDirectories = _initialHttpDirectories.CloneWithPropertyChanged(OnDirectoryPropertyChanged);
+
+        UpdateFeedUrl = appSettings.UpdateFeedUrl ?? string.Empty;
+        UpdatePublicKey = appSettings.UpdatePublicKey ?? string.Empty;
+        CheckForUpdatesOnStartup = appSettings.CheckForUpdatesOnStartup;
     }
 
     private void LoadProfiles()
@@ -199,6 +230,9 @@ public partial class SettingsViewModel : BaseViewModel, IPage, INavigationAware
 
         appSettings.SolutionDirectories = SolutionDirectories.ToStructArray();
         appSettings.HttpDirectories = HttpDirectories.ToStructArray();
+        appSettings.UpdateFeedUrl = UpdateFeedUrl;
+        appSettings.UpdatePublicKey = UpdatePublicKey;
+        appSettings.CheckForUpdatesOnStartup = CheckForUpdatesOnStartup;
 
         _appSettingsService.Save(appSettings);
 
@@ -210,6 +244,9 @@ public partial class SettingsViewModel : BaseViewModel, IPage, INavigationAware
         );
 
         _initialPipelineProfiles = PipelineProfiles.Clone();
+
+        // Re-configure the auto-updater with the new settings
+        _autoUpdateService.Configure(UpdateFeedUrl, UpdatePublicKey, CheckForUpdatesOnStartup);
 
         GeneralInfo.UpdateData();
 
@@ -223,6 +260,12 @@ public partial class SettingsViewModel : BaseViewModel, IPage, INavigationAware
 
         SolutionDirectories = _initialSolutionDirectories.CloneWithPropertyChanged(OnDirectoryPropertyChanged);
         HttpDirectories = _initialHttpDirectories.CloneWithPropertyChanged(OnDirectoryPropertyChanged);
+
+        // Reload update settings from last saved state
+        var appSettings = _appSettingsService.Get();
+        UpdateFeedUrl = appSettings.UpdateFeedUrl ?? string.Empty;
+        UpdatePublicKey = appSettings.UpdatePublicKey ?? string.Empty;
+        CheckForUpdatesOnStartup = appSettings.CheckForUpdatesOnStartup;
 
         var selectedName = SelectedPipelineProfile?.Name;
 
@@ -324,8 +367,12 @@ public partial class SettingsViewModel : BaseViewModel, IPage, INavigationAware
         HasUnsavedChanges = true;
     }
 
+    [RelayCommand]
+    private async Task CheckForUpdates()
+    {
+        await _autoUpdateService.CheckForUpdatesAsync();
+    }
+
     #endregion
 }
-
-
 

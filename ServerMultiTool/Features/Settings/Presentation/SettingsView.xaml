@@ -7,12 +7,17 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:settings="clr-namespace:ServerMultiTool.Features.Settings.Presentation"
+    xmlns:converters="clr-namespace:ServerMultiTool.ViewModels.Converters"
     Title="{Binding Title}"
     d:DesignHeight="750"
     d:DesignWidth="700"
     FontFamily="Poppins"
     mc:Ignorable="d">
     <!--  d:DataContext="{d:DesignInstance Type=settings:SettingsViewModel, IsDesignTimeCreatable=True}"  -->
+
+    <Page.Resources>
+        <converters:StringNotNullOrEmptyToBoolConverter x:Key="StringNotNullOrEmptyToBoolConverter" />
+    </Page.Resources>
 
     <Border Background="{DynamicResource SecondaryBackgroundColor}" CornerRadius="8">
         <Grid>
@@ -81,10 +86,12 @@
                         Padding="10"
                         BorderBrush="Gainsboro"
                         BorderThickness="0.8">
+                        <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*" />
                                 <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
 
                             <!--  Solution Directories  -->
@@ -282,7 +289,95 @@
                                         Style="{StaticResource CustomButtonStyle}" />
                                 </StackPanel>
                             </Grid>
+
+                            <!--  Auto-Update Settings  -->
+                            <Grid Grid.Row="2" Margin="0,10,0,0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+
+                                <Label
+                                    Grid.Row="0"
+                                    Content="Auto Update:"
+                                    FontSize="14"
+                                    FontWeight="SemiBold"
+                                    Foreground="{DynamicResource PrimaryTextColor}" />
+
+                                <!--  Feed URL  -->
+                                <DockPanel Grid.Row="1" Margin="0,4,0,8" LastChildFill="True">
+                                    <TextBlock
+                                        Width="170"
+                                        VerticalAlignment="Center"
+                                        FontSize="13"
+                                        FontWeight="SemiBold"
+                                        Foreground="{DynamicResource SecondaryTextColor}"
+                                        Text="Appcast URL:" />
+                                    <TextBox
+                                        Height="28"
+                                        Padding="4,2"
+                                        Background="{DynamicResource TertiaryBackgroundColor}"
+                                        BorderBrush="Gray"
+                                        BorderThickness="0.8"
+                                        FontSize="13"
+                                        Foreground="{DynamicResource PrimaryTextColor}"
+                                        Text="{Binding UpdateFeedUrl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        ToolTip="URL to the appcast XML file (e.g. https://example.com/appcast.xml)" />
+                                </DockPanel>
+
+                                <!--  Ed25519 public key  -->
+                                <DockPanel Grid.Row="2" Margin="0,0,0,8" LastChildFill="True">
+                                    <TextBlock
+                                        Width="170"
+                                        VerticalAlignment="Center"
+                                        FontSize="13"
+                                        FontWeight="SemiBold"
+                                        Foreground="{DynamicResource SecondaryTextColor}"
+                                        Text="Ed25519 Public Key:" />
+                                    <TextBox
+                                        Height="28"
+                                        Padding="4,2"
+                                        Background="{DynamicResource TertiaryBackgroundColor}"
+                                        BorderBrush="Gray"
+                                        BorderThickness="0.8"
+                                        FontSize="13"
+                                        Foreground="{DynamicResource PrimaryTextColor}"
+                                        Text="{Binding UpdatePublicKey, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        ToolTip="Base64 public key used by NetSparkle to verify update signatures" />
+                                </DockPanel>
+
+                                <!--  Check on startup  -->
+                                <DockPanel Grid.Row="3" Margin="0,0,0,8" LastChildFill="False">
+                                    <TextBlock
+                                        Width="170"
+                                        VerticalAlignment="Center"
+                                        FontSize="13"
+                                        FontWeight="SemiBold"
+                                        Foreground="{DynamicResource SecondaryTextColor}"
+                                        Text="Check on Startup:" />
+                                    <CheckBox
+                                        VerticalAlignment="Center"
+                                        IsChecked="{Binding CheckForUpdatesOnStartup, Mode=TwoWay}"
+                                        ToolTip="Automatically check for updates when the application starts" />
+                                </DockPanel>
+
+                                <!--  Manual check button  -->
+                                <StackPanel Grid.Row="4" Orientation="Horizontal">
+                                    <Button
+                                        Height="30"
+                                        MinWidth="140"
+                                        Command="{Binding CheckForUpdatesCommand}"
+                                        Content="Check for Updates Now"
+                                        IsEnabled="{Binding UpdateFeedUrl, Converter={StaticResource StringNotNullOrEmptyToBoolConverter}}"
+                                        Style="{StaticResource CustomButtonStyle}" />
+                                </StackPanel>
+                            </Grid>
+
                         </Grid>
+                        </ScrollViewer>
                     </Border>
                 </TabItem>
 
@@ -434,3 +529,4 @@
         </Grid>
     </Border>
 </Page>
+

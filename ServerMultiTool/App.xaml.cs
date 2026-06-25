@@ -6,6 +6,7 @@ using log4net.Config;
 using Microsoft.Extensions.DependencyInjection;
 using ServerMultiTool.DependencyInjection;
 using ServerMultiTool.Features;
+using ServerMultiTool.Model.Infrastructure.Interfaces;
 using ServerMultiTool.Views.Windows;
 
 namespace ServerMultiTool
@@ -25,6 +26,9 @@ namespace ServerMultiTool
             ConfigureServices(services);
 
             _serviceProvider = services.BuildServiceProvider();
+
+            // Force updater service creation so periodic checks can start at app launch.
+            _serviceProvider.GetRequiredService<IAutoUpdateService>();
 
             var mainWindow = _serviceProvider.GetRequiredService<MainWindowView>();
             mainWindow.Show();
