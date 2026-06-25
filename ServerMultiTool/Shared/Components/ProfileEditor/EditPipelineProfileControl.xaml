@@ -475,31 +475,32 @@
         <converters:OperationEditorTemplateSelector x:Key="OperationEditorTemplateSelector" DeliveryBinTemplate="{StaticResource DeliveryBinEditorTemplate}" DeliverySpecifiedFilesTemplate="{StaticResource DeliverySpecifiedFilesEditorTemplate}" GitPullTemplate="{StaticResource GitPullEditorTemplate}" HttpPingTemplate="{StaticResource HttpPingEditorTemplate}" MsBuildTemplate="{StaticResource MsBuildEditorTemplate}" ProcessExecutionTemplate="{StaticResource ProcessExecutionEditorTemplate}" SqlExecutionTemplate="{StaticResource SqlEditorTemplate}" WebBrowserTemplate="{StaticResource WebBrowserEditorTemplate}" />
     </UserControl.Resources>
     <Grid Background="{DynamicResource TertiaryBackgroundColor}">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="220" MinWidth="160" />
-            <ColumnDefinition Width="1" />
-            <ColumnDefinition Width="2*" MinWidth="200" />
-            <ColumnDefinition Width="1" />
-            <ColumnDefinition Width="3*" MinWidth="240" />
-        </Grid.ColumnDefinitions>
-        <!-- LEFT: Pipeline Steps -->
-        <Grid Grid.Column="0">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-            <Border Grid.Row="0" Padding="12,10" BorderBrush="LightGray" BorderThickness="0,0,0,1">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" VerticalAlignment="Center" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryTextColor}" Text="Pipeline Steps" />
-                    <Button Grid.Column="1" Command="{Binding AddStepCommand}" Content="+ Add Step" Style="{StaticResource SmallAddButtonStyle}" />
-                </Grid>
-            </Border>
-            <ListView x:Name="StepsListView" Grid.Row="1" AlternationCount="1000" AllowDrop="True" Background="Transparent" BorderThickness="0" DragOver="ListView_DragOver" Drop="ListView_Drop" ItemsSource="{Binding Profile.Steps}" PreviewMouseLeftButtonDown="ListView_PreviewMouseLeftButtonDown" PreviewMouseMove="ListView_PreviewMouseMove" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" SelectedItem="{Binding SelectedStep, Mode=TwoWay}">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1.15*" MinWidth="170" />
+                <ColumnDefinition Width="1" />
+                <ColumnDefinition Width="1.0*" MinWidth="180" />
+                <ColumnDefinition Width="1" />
+                <ColumnDefinition Width="1.85*" MinWidth="260" />
+            </Grid.ColumnDefinitions>
+            <!-- LEFT: Pipeline Steps -->
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Border Grid.Row="0" Padding="12,10" BorderBrush="LightGray" BorderThickness="0,0,0,1">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" VerticalAlignment="Center" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryTextColor}" Text="Pipeline Steps" />
+                        <Button Grid.Column="1" Command="{Binding AddStepCommand}" Content="+ Add Step" Style="{StaticResource SmallAddButtonStyle}" />
+                    </Grid>
+                </Border>
+                <ListView x:Name="StepsListView" Grid.Row="1" AlternationCount="1000" AllowDrop="True" Background="Transparent" BorderThickness="0" DragOver="ListView_DragOver" Drop="ListView_Drop" ItemsSource="{Binding Profile.Steps}" PreviewMouseLeftButtonDown="ListView_PreviewMouseLeftButtonDown" PreviewMouseMove="ListView_PreviewMouseMove" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" SelectedItem="{Binding SelectedStep, Mode=TwoWay}">
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem">
                         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
@@ -537,7 +538,7 @@
                             </Grid.ColumnDefinitions>
                             <TextBlock Grid.Column="0" Margin="0,0,4,0" VerticalAlignment="Center" FontSize="13" Foreground="{DynamicResource PrimaryGrayColor}" Text="&#x2837;&#x2837;" />
                             <Border Grid.Column="1" Width="22" Height="22" HorizontalAlignment="Center" VerticalAlignment="Center" Background="{DynamicResource PrimaryWhiteColor}" CornerRadius="11">
-                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryTextColor}" Text="{Binding Order, Converter={StaticResource IncrementConverter}}" />
+                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryTextColor}" Text="{Binding Path=(ItemsControl.AlternationIndex), RelativeSource={RelativeSource AncestorType=ListViewItem}, Converter={StaticResource IncrementConverter}}" />
                             </Border>
                             <TextBlock Grid.Column="2" Margin="6,0" VerticalAlignment="Center" FontSize="13" Foreground="{DynamicResource PrimaryTextColor}" Text="{Binding Name}" TextTrimming="CharacterEllipsis" />
                             <Button Grid.Column="3" Width="24" Height="24" Background="Transparent" BorderThickness="0" Command="{Binding DataContext.RemoveStepCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Content="" Cursor="Hand" Style="{StaticResource DeleteButtonStyle}" ToolTip="Remove step" />
@@ -554,61 +555,71 @@
                     </StackPanel>
                 </StackPanel>
             </Border>
-        </Grid>
-        <Border Grid.Column="1" Background="LightGray" />
-        <!-- MIDDLE: Step + Operations -->
-        <Grid Grid.Column="2">
-            <Grid.Style>
-                <Style TargetType="Grid">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding SelectedStep}" Value="{x:Null}">
-                            <Setter Property="Visibility" Value="Hidden" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Grid.Style>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-            <Border Grid.Row="0" Padding="12,10" BorderBrush="LightGray" BorderThickness="0,0,0,1">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-                        <TextBlock VerticalAlignment="Center" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryTextColor}" Text="Step: " />
-                        <TextBox MinWidth="60" VerticalAlignment="Center" Background="Transparent" BorderThickness="0" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource SecondaryBlueColor}" Text="{Binding SelectedStep.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                    </StackPanel>
-                    <StackPanel Grid.Column="1" Margin="0,0,2,0" VerticalAlignment="Center" Orientation="Horizontal">
-                        <TextBlock Margin="0,0,8,0" VerticalAlignment="Center" FontSize="12" Foreground="{DynamicResource PrimaryTextColor}" Text="Enabled" />
-                        <ToggleButton IsChecked="{Binding SelectedStep.Enabled, Mode=TwoWay}" Style="{StaticResource ToggleButtonStyle}" />
-                    </StackPanel>
-                </Grid>
-            </Border>
-            <TextBox Grid.Row="1" Margin="12,6,12,0" Background="Transparent" BorderThickness="0" FontSize="12" Foreground="{DynamicResource PrimaryGrayColor}" Text="{Binding SelectedStep.Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" />
-            <Grid Grid.Row="2">
+            </Grid>
+            <Border Grid.Column="1" Background="LightGray" />
+            <!-- MIDDLE: Step + Operations -->
+            <Grid Grid.Column="2">
+                <Grid.Style>
+                    <Style TargetType="Grid">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding SelectedStep}" Value="{x:Null}">
+                                <Setter Property="Visibility" Value="Hidden" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Style>
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                <Border Grid.Row="0" Padding="12,8" BorderBrush="LightGray" BorderThickness="0,1,0,1">
+                <Border Grid.Row="0" Padding="12,10" BorderBrush="LightGray" BorderThickness="0,0,0,1">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" VerticalAlignment="Center" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryTextColor}" Text="Operations" />
-                        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                            <ComboBox Width="130" Height="26" Margin="0,0,6,0" DisplayMemberPath="Name" FontSize="12" ItemsSource="{Binding AvailableOperationTypes}" SelectedItem="{Binding SelectedOperationType, Mode=TwoWay}" Style="{DynamicResource ComboBoxStyle}" />
-                            <Button Command="{Binding AddOperationCommand}" Content="+ Add Operation" Style="{StaticResource SmallAddButtonStyle}" />
+                        <StackPanel Grid.Column="0">
+                            <TextBlock VerticalAlignment="Center" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryTextColor}" Text="Step" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Margin="0,0,2,0" VerticalAlignment="Center" Orientation="Horizontal">
+                            <TextBlock Margin="0,0,8,0" VerticalAlignment="Center" FontSize="12" Foreground="{DynamicResource PrimaryTextColor}" Text="Enabled" />
+                            <ToggleButton IsChecked="{Binding SelectedStep.Enabled, Mode=TwoWay}" Style="{StaticResource ToggleButtonStyle}" />
                         </StackPanel>
                     </Grid>
                 </Border>
-                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-                    <ItemsControl Margin="12,8" AlternationCount="1000" ItemsSource="{Binding SelectedStep.Operations}">
+                <Expander Grid.Row="1" Margin="0,0,0,8" Header="General" Style="{StaticResource SectionExpanderStyle}">
+                    <StackPanel Margin="12,8,12,0">
+                        <StackPanel Margin="0,0,0,10">
+                            <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Name" />
+                            <TextBox Style="{StaticResource FieldTextBoxStyle}" Text="{Binding SelectedStep.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
+                        <StackPanel Margin="0,0,0,10">
+                            <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Description" />
+                            <TextBox Height="70" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding SelectedStep.Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
+                    </StackPanel>
+                </Expander>
+                <Grid Grid.Row="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Border Grid.Row="0" Padding="12,10" BorderBrush="LightGray" BorderThickness="0,1,0,1">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" VerticalAlignment="Center" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryTextColor}" Text="Operations" />
+                            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                <ComboBox Width="130" Height="26" Margin="0,0,6,0" DisplayMemberPath="Name" FontSize="12" ItemsSource="{Binding AvailableOperationTypes}" SelectedItem="{Binding SelectedOperationType, Mode=TwoWay}" Style="{DynamicResource ComboBoxStyle}" />
+                                <Button Command="{Binding AddOperationCommand}" Content="+ Add Operation" Style="{StaticResource SmallAddButtonStyle}" />
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                        <ItemsControl Margin="12,8" AlternationCount="1000" ItemsSource="{Binding SelectedStep.Operations}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Grid Margin="0,0,0,8">
@@ -652,16 +663,7 @@
                                                 <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="9" FontWeight="Bold" Foreground="{DynamicResource SecondaryBlueColor}" Text="{Binding Operation.OperationType, Converter={StaticResource OperationTypeToLabelConverter}}" />
                                             </Border>
                                             <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                                <TextBlock FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryTextColor}">
-                                                    <Run>
-                                                        <Run.Text>
-                                                            <MultiBinding Converter="{StaticResource ItemIndexConverter}" Mode="OneWay">
-                                                                <Binding />
-                                                                <Binding RelativeSource="{RelativeSource AncestorType=ItemsControl}" Path="ItemsSource" />
-                                                            </MultiBinding>
-                                                        </Run.Text>
-                                                    </Run><Run Text=" " /><Run Text="{Binding Name}" />
-                                                </TextBlock>
+                                                <TextBlock FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryTextColor}" Text="{Binding Name}" />
                                                 <StackPanel Margin="0,2,0,2" Orientation="Horizontal">
                                                     <Ellipse Width="7" Height="7" Margin="0,0,5,0" VerticalAlignment="Center" Fill="{DynamicResource PrimaryGreenColor}" />
                                                     <TextBlock VerticalAlignment="Center" FontSize="11" Foreground="{DynamicResource PrimaryGreenColor}" Text="Enabled" />
@@ -676,67 +678,64 @@
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                 </ScrollViewer>
+                </Grid>
             </Grid>
-        </Grid>
-        <TextBlock Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="13" Foreground="{DynamicResource PrimaryGrayColor}" Text="Select a step to view its operations">
-            <TextBlock.Style>
-                <Style TargetType="TextBlock">
-                    <Setter Property="Visibility" Value="Collapsed" />
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding SelectedStep}" Value="{x:Null}">
-                            <Setter Property="Visibility" Value="Visible" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </TextBlock.Style>
-        </TextBlock>
-        <Border Grid.Column="3" Background="LightGray" />
-        <!-- RIGHT: Operation editor -->
-        <Grid Grid.Column="4">
-            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="13" Foreground="{DynamicResource PrimaryGrayColor}" Text="Select an operation to edit">
+            <TextBlock Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="13" Foreground="{DynamicResource PrimaryGrayColor}" Text="Select a step to view its operations">
                 <TextBlock.Style>
                     <Style TargetType="TextBlock">
                         <Setter Property="Visibility" Value="Collapsed" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding SelectedOperation}" Value="{x:Null}">
+                            <DataTrigger Binding="{Binding SelectedStep}" Value="{x:Null}">
                                 <Setter Property="Visibility" Value="Visible" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
                 </TextBlock.Style>
             </TextBlock>
-            <Grid>
-                <Grid.Style>
-                    <Style TargetType="Grid">
-                        <Setter Property="Visibility" Value="Visible" />
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding SelectedOperation}" Value="{x:Null}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Grid.Style>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-                <Border Grid.Row="0" Padding="14,10" BorderBrush="LightGray" BorderThickness="0,0,0,1">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Margin="0,0,10,0" VerticalAlignment="Center" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryTextColor}" Text="Edit Operation" />
-                        <Border Grid.Column="1" Padding="8,4" Background="{DynamicResource SecondaryBackgroundColor}" BorderBrush="{DynamicResource PrimaryWhiteColor}" BorderThickness="1" CornerRadius="4">
-                            <TextBlock FontSize="12" Foreground="{DynamicResource PrimaryTextColor}" Text="{Binding SelectedOperation.Name}" />
-                        </Border>
-                        <Button Grid.Column="3" Width="24" Height="24" Background="Transparent" BorderThickness="0" Command="{Binding RemoveOperationCommand}" CommandParameter="{Binding SelectedOperation}" Content="" Cursor="Hand" Style="{StaticResource DeleteButtonStyle}" ToolTip="Remove operation" />
-                    </Grid>
-                </Border>
-                <ContentControl Grid.Row="1" Content="{Binding SelectedOperation}" ContentTemplateSelector="{StaticResource OperationEditorTemplateSelector}" />
+            <Border Grid.Column="3" Background="LightGray" />
+            <!-- RIGHT: Operation editor -->
+            <Grid Grid.Column="4">
+                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="13" Foreground="{DynamicResource PrimaryGrayColor}" Text="Select an operation to edit">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SelectedOperation}" Value="{x:Null}">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+                <Grid>
+                    <Grid.Style>
+                        <Style TargetType="Grid">
+                            <Setter Property="Visibility" Value="Visible" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SelectedOperation}" Value="{x:Null}">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Grid.Style>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Border Grid.Row="0" Padding="12,10" BorderBrush="LightGray" BorderThickness="0,0,0,1">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Margin="0,0,10,0" VerticalAlignment="Center" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryTextColor}" Text="Edit Operation" />
+                                <Button Grid.Column="1" Width="24" Height="24" Background="Transparent" BorderThickness="0" Command="{Binding RemoveOperationCommand}" CommandParameter="{Binding SelectedOperation}" Content="" Cursor="Hand" Style="{StaticResource DeleteButtonStyle}" ToolTip="Remove operation" />
+                        </Grid>
+                    </Border>
+                    <ContentControl Grid.Row="1" Content="{Binding SelectedOperation}" ContentTemplateSelector="{StaticResource OperationEditorTemplateSelector}" />
+                </Grid>
             </Grid>
         </Grid>
+        <!--  End Main Content Grid  -->
     </Grid>
 </UserControl>

@@ -6,7 +6,6 @@
     xmlns:profileEditor="clr-namespace:ServerMultiTool.Shared.Components.ProfileEditor"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:settings="clr-namespace:ServerMultiTool.Features.Settings.Presentation"
     xmlns:converters="clr-namespace:ServerMultiTool.ViewModels.Converters"
     Title="{Binding Title}"
     d:DesignHeight="750"
@@ -384,80 +383,77 @@
                 <!--  Pipeline Profiles Tab  -->
                 <TabItem Header="Pipeline Profiles" Tag="PipelineProfiles">
                     <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" MinHeight="130" MaxHeight="200" />
-                            <RowDefinition Height="*" />
-                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="240" MinWidth="160" />
+                            <ColumnDefinition Width="1" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
 
-                        <!--  Pipeline Profiles List (compact header)  -->
-                        <Border
-                            Grid.Row="0"
-                            Padding="10,8"
-                            BorderBrush="LightGray"
-                            BorderThickness="0,0,0,1">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="*" />
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
+                        <!--  LEFT: Pipeline Profiles List  -->
+                        <Grid Grid.Column="0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
 
+                            <Border Grid.Row="0" Padding="10,8" BorderBrush="LightGray" BorderThickness="0,0,0,1">
                                 <TextBlock
-                                    Grid.Row="0"
-                                    Margin="0,0,0,6"
                                     FontSize="13"
                                     FontWeight="SemiBold"
                                     Foreground="{DynamicResource PrimaryTextColor}"
                                     Text="Pipeline Profiles" />
+                            </Border>
 
-                                <ListBox
-                                    Grid.Row="1"
-                                    Padding="4"
-                                    Background="{DynamicResource TertiaryBackgroundColor}"
-                                    Foreground="{DynamicResource PrimaryTextColor}"
-                                    IsSynchronizedWithCurrentItem="True"
-                                    ItemsSource="{Binding PipelineProfiles}"
-                                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                    SelectedItem="{Binding SelectedPipelineProfile, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                                    <ListBox.ItemTemplate>
-                                        <DataTemplate>
-                                            <TextBox
-                                                Margin="0,4"
-                                                Background="Transparent"
-                                                BorderThickness="0"
-                                                FontSize="13"
+                            <ListBox
+                                Grid.Row="1"
+                                Padding="4"
+                                Background="{DynamicResource TertiaryBackgroundColor}"
+                                Foreground="{DynamicResource PrimaryTextColor}"
+                                IsSynchronizedWithCurrentItem="True"
+                                ItemsSource="{Binding PipelineProfiles}"
+                                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                SelectedItem="{Binding SelectedPipelineProfile, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Margin="0,4">
+                                            <TextBlock
+                                                FontSize="12"
                                                 FontWeight="Bold"
                                                 Foreground="{DynamicResource PrimaryTextColor}"
-                                                Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                                        </DataTemplate>
-                                    </ListBox.ItemTemplate>
-                                </ListBox>
+                                                Text="{Binding Name}"
+                                                TextWrapping="Wrap" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
 
-                                <StackPanel
-                                    Grid.Row="2"
-                                    Margin="0,6,0,0"
-                                    HorizontalAlignment="Left"
-                                    Orientation="Horizontal">
-                                    <Button
-                                        Height="28"
-                                        MinWidth="60"
-                                        Margin="0,0,5,0"
-                                        Command="{Binding AddPipelineProfileCommand}"
-                                        Content="Add"
-                                        Style="{StaticResource CustomButtonStyle}" />
-                                    <Button
-                                        Height="28"
-                                        MinWidth="60"
-                                        Command="{Binding RemovePipelineProfileCommand}"
-                                        CommandParameter="{Binding SelectedPipelineProfile}"
-                                        Content="Delete"
-                                        Style="{StaticResource CustomButtonStyle}" />
-                                </StackPanel>
-                            </Grid>
-                        </Border>
+                            <StackPanel
+                                Grid.Row="2"
+                                Margin="8"
+                                HorizontalAlignment="Stretch"
+                                Orientation="Vertical">
+                                <Button
+                                    Height="28"
+                                    MinWidth="100"
+                                    Margin="0,0,0,4"
+                                    Command="{Binding AddPipelineProfileCommand}"
+                                    Content="+ Add Profile"
+                                    Style="{StaticResource CustomButtonStyle}" />
+                                <Button
+                                    Height="28"
+                                    MinWidth="100"
+                                    Command="{Binding RemovePipelineProfileCommand}"
+                                    CommandParameter="{Binding SelectedPipelineProfile}"
+                                    Content="Delete"
+                                    Style="{StaticResource CustomButtonStyle}" />
+                            </StackPanel>
+                        </Grid>
 
-                        <!--  Profile Editor (3-panel layout)  -->
-                        <Grid Grid.Row="1">
+                        <Border Grid.Column="1" Background="LightGray" />
+
+                        <!--  RIGHT: Profile Editor  -->
+                        <Grid Grid.Column="2">
                             <TextBlock
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
