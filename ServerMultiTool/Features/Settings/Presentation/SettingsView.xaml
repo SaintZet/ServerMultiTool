@@ -37,10 +37,10 @@
         </Style>
         <Style x:Key="SettingsFooterButtonStyle" TargetType="Button">
             <Setter Property="Cursor" Value="Hand" />
-            <Setter Property="Height" Value="54" />
-            <Setter Property="MinWidth" Value="128" />
-            <Setter Property="Padding" Value="28,0" />
-            <Setter Property="FontSize" Value="16" />
+            <Setter Property="Height" Value="40" />
+            <Setter Property="MinWidth" Value="112" />
+            <Setter Property="Padding" Value="22,0" />
+            <Setter Property="FontSize" Value="14" />
             <Setter Property="FontWeight" Value="SemiBold" />
             <Setter Property="Foreground" Value="#25314A" />
             <Setter Property="Background" Value="#FFFFFF" />
@@ -80,8 +80,8 @@
             <Setter Property="Foreground" Value="#FFFFFF" />
             <Setter Property="Background" Value="#1778FF" />
             <Setter Property="BorderBrush" Value="#1778FF" />
-            <Setter Property="MinWidth" Value="168" />
-            <Setter Property="Padding" Value="30,0" />
+            <Setter Property="MinWidth" Value="152" />
+            <Setter Property="Padding" Value="24,0" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -915,11 +915,11 @@
             <!--  Save/Cancel buttons  -->
             <StackPanel
                 Grid.Row="2"
-                Margin="10"
+                Margin="10,10,10,8"
                 HorizontalAlignment="Right"
                 Orientation="Horizontal">
                 <Button
-                    Margin="0,0,18,0"
+                    Margin="0,0,14,0"
                     Command="{Binding CancelSettingsCommand}"
                     Content="Cancel"
                     IsEnabled="{Binding HasUnsavedChanges}"
