@@ -28,6 +28,12 @@ public partial class HttpPingOperationWrapper : PipelineOperationWrapper
         op.UpdateUrls([.. Urls]);
     }
 
+    partial void OnUrlsChanged(ObservableCollection<string> value)
+    {
+        value.CollectionChanged -= Urls_CollectionChanged;
+        value.CollectionChanged += Urls_CollectionChanged;
+    }
+
     partial void OnTimeoutInMinutesChanged(double value)
     {
         if (value > 0)

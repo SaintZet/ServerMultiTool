@@ -18,7 +18,7 @@
         <converters:StringNotNullOrEmptyToBoolConverter x:Key="StringNotNullOrEmptyToBoolConverter" />
         <Style x:Key="PanelHeaderBorderStyle" TargetType="Border">
             <Setter Property="Padding" Value="12,10" />
-            <Setter Property="Height" Value="48" />
+            <Setter Property="Height" Value="52" />
             <Setter Property="Background" Value="{DynamicResource SecondaryBackgroundColor}" />
             <Setter Property="BorderBrush" Value="LightGray" />
             <Setter Property="BorderThickness" Value="0,0,0,1" />
@@ -452,9 +452,9 @@
                 <TabItem Header="Pipeline Profiles" Tag="PipelineProfiles">
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="240" MinWidth="160" />
+                            <ColumnDefinition Width="*" MinWidth="160" />
                             <ColumnDefinition Width="1" />
-                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="3*" />
                         </Grid.ColumnDefinitions>
 
                         <!--  LEFT: Pipeline Profiles List  -->
@@ -485,7 +485,6 @@
                                 Padding="4"
                                 Background="{DynamicResource TertiaryBackgroundColor}"
                                 Foreground="{DynamicResource PrimaryTextColor}"
-                                IsSynchronizedWithCurrentItem="True"
                                 ItemsSource="{Binding PipelineProfiles}"
                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                                 SelectedItem="{Binding SelectedPipelineProfile, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">

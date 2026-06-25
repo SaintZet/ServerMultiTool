@@ -13,6 +13,7 @@
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
         <converters:BoolToEnabledDisabledTextConverter x:Key="BoolToEnabledDisabledTextConverter" />
         <converters:IncrementConverter x:Key="IncrementConverter" />
+        <converters:CollectionToStringConverter x:Key="CollectionToStringConverter" />
         <converters:OperationTypeToLabelConverter x:Key="OperationTypeToLabelConverter" />
         <converters:DeliveryDirectoryConverter x:Key="DeliveryDirectoryConverter" />
         <converters:ObjectEqualityConverter x:Key="ObjectEqualityConverter" />
@@ -108,7 +109,7 @@
         </Style>
         <Style x:Key="PanelHeaderBorderStyle" TargetType="Border">
             <Setter Property="Padding" Value="12,10" />
-            <Setter Property="Height" Value="48" />
+            <Setter Property="Height" Value="52" />
             <Setter Property="Background" Value="{DynamicResource SecondaryBackgroundColor}" />
             <Setter Property="BorderBrush" Value="LightGray" />
             <Setter Property="BorderThickness" Value="0,0,0,1" />
@@ -175,18 +176,10 @@
                             <TextBox Width="100" HorizontalAlignment="Left" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding RetryCount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </StackPanel>
                     </Expander>
-                    <Border Margin="0,6,0,0" Padding="8,6" Background="#FFF8E7" BorderBrush="#FFE082" BorderThickness="1" CornerRadius="4">
-                        <StackPanel Orientation="Horizontal">
-                            <Path Width="14" Height="14" Margin="0,0,6,0" VerticalAlignment="Center" Data="{StaticResource Information}" Fill="#F5A623" Stretch="Uniform" />
-                            <StackPanel>
-                                <TextBlock FontSize="11" FontWeight="SemiBold" Foreground="#8A6000" Text="Tip" />
-                                <TextBlock FontSize="11" Foreground="#8A6000" Text="Changes are saved automatically" />
-                            </StackPanel>
-                        </StackPanel>
-                    </Border>
                 </StackPanel>
             </ScrollViewer>
         </DataTemplate>
+
         <!-- DeliverySpecifiedFiles editor -->
         <DataTemplate x:Key="DeliverySpecifiedFilesEditorTemplate">
             <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
@@ -236,18 +229,10 @@
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
-                    <Border Margin="0,10,0,0" Padding="8,6" Background="#FFF8E7" BorderBrush="#FFE082" BorderThickness="1" CornerRadius="4">
-                        <StackPanel Orientation="Horizontal">
-                            <Path Width="14" Height="14" Margin="0,0,6,0" VerticalAlignment="Center" Data="{StaticResource Information}" Fill="#F5A623" Stretch="Uniform" />
-                            <StackPanel>
-                                <TextBlock FontSize="11" FontWeight="SemiBold" Foreground="#8A6000" Text="Tip" />
-                                <TextBlock FontSize="11" Foreground="#8A6000" Text="Changes are saved automatically" />
-                            </StackPanel>
-                        </StackPanel>
-                    </Border>
                 </StackPanel>
             </ScrollViewer>
         </DataTemplate>
+
         <!-- MsBuild editor -->
         <DataTemplate x:Key="MsBuildEditorTemplate">
             <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
@@ -274,22 +259,16 @@
                             <TextBox Margin="0,0,0,10" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Directory.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                             <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Relative Path" />
                             <TextBox Margin="0,0,0,10" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Directory.Path, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Parameters" />
+                            <TextBox Margin="0,0,0,10" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Parameters, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource CollectionToStringConverter}}" />
                             <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Retry Count" />
                             <TextBox Width="100" HorizontalAlignment="Left" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding RetryCount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </StackPanel>
                     </Expander>
-                    <Border Margin="0,6,0,0" Padding="8,6" Background="#FFF8E7" BorderBrush="#FFE082" BorderThickness="1" CornerRadius="4">
-                        <StackPanel Orientation="Horizontal">
-                            <Path Width="14" Height="14" Margin="0,0,6,0" VerticalAlignment="Center" Data="{StaticResource Information}" Fill="#F5A623" Stretch="Uniform" />
-                            <StackPanel>
-                                <TextBlock FontSize="11" FontWeight="SemiBold" Foreground="#8A6000" Text="Tip" />
-                                <TextBlock FontSize="11" Foreground="#8A6000" Text="Changes are saved automatically" />
-                            </StackPanel>
-                        </StackPanel>
-                    </Border>
                 </StackPanel>
             </ScrollViewer>
         </DataTemplate>
+
         <!-- DeliveryBin editor -->
         <DataTemplate x:Key="DeliveryBinEditorTemplate">
             <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
@@ -318,18 +297,10 @@
                             <TextBox Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Directory.Path, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </StackPanel>
                     </Expander>
-                    <Border Margin="0,6,0,0" Padding="8,6" Background="#FFF8E7" BorderBrush="#FFE082" BorderThickness="1" CornerRadius="4">
-                        <StackPanel Orientation="Horizontal">
-                            <Path Width="14" Height="14" Margin="0,0,6,0" VerticalAlignment="Center" Data="{StaticResource Information}" Fill="#F5A623" Stretch="Uniform" />
-                            <StackPanel>
-                                <TextBlock FontSize="11" FontWeight="SemiBold" Foreground="#8A6000" Text="Tip" />
-                                <TextBlock FontSize="11" Foreground="#8A6000" Text="Changes are saved automatically" />
-                            </StackPanel>
-                        </StackPanel>
-                    </Border>
                 </StackPanel>
             </ScrollViewer>
         </DataTemplate>
+
         <!-- HttpPing editor -->
         <DataTemplate x:Key="HttpPingEditorTemplate">
             <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
@@ -352,23 +323,17 @@
                     </Expander>
                     <Expander Header="Network" Style="{StaticResource SectionExpanderStyle}">
                         <StackPanel Margin="2,8,2,8">
+                            <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Urls" />
+                            <TextBox Margin="0,0,0,10" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Urls, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource CollectionToStringConverter}}" />
                             <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Timeout (minutes)" />
                             <TextBox Width="100" HorizontalAlignment="Left" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding TimeoutInMinutes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </StackPanel>
                     </Expander>
-                    <Border Margin="0,6,0,0" Padding="8,6" Background="#FFF8E7" BorderBrush="#FFE082" BorderThickness="1" CornerRadius="4">
-                        <StackPanel Orientation="Horizontal">
-                            <Path Width="14" Height="14" Margin="0,0,6,0" VerticalAlignment="Center" Data="{StaticResource Information}" Fill="#F5A623" Stretch="Uniform" />
-                            <StackPanel>
-                                <TextBlock FontSize="11" FontWeight="SemiBold" Foreground="#8A6000" Text="Tip" />
-                                <TextBlock FontSize="11" Foreground="#8A6000" Text="Changes are saved automatically" />
-                            </StackPanel>
-                        </StackPanel>
-                    </Border>
                 </StackPanel>
             </ScrollViewer>
         </DataTemplate>
-        <!-- SQL editor -->
+
+        <!-- SqlEditor -->
         <DataTemplate x:Key="SqlEditorTemplate">
             <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                 <StackPanel Margin="14,10">
@@ -396,18 +361,10 @@
                             <TextBox Style="{StaticResource FieldTextBoxStyle}" Text="{Binding ConnectionString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </StackPanel>
                     </Expander>
-                    <Border Margin="0,6,0,0" Padding="8,6" Background="#FFF8E7" BorderBrush="#FFE082" BorderThickness="1" CornerRadius="4">
-                        <StackPanel Orientation="Horizontal">
-                            <Path Width="14" Height="14" Margin="0,0,6,0" VerticalAlignment="Center" Data="{StaticResource Information}" Fill="#F5A623" Stretch="Uniform" />
-                            <StackPanel>
-                                <TextBlock FontSize="11" FontWeight="SemiBold" Foreground="#8A6000" Text="Tip" />
-                                <TextBlock FontSize="11" Foreground="#8A6000" Text="Changes are saved automatically" />
-                            </StackPanel>
-                        </StackPanel>
-                    </Border>
                 </StackPanel>
             </ScrollViewer>
         </DataTemplate>
+
         <!-- GitPull editor -->
         <DataTemplate x:Key="GitPullEditorTemplate">
             <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
@@ -429,15 +386,6 @@
                         </StackPanel>
                     </Expander>
                     <TextBlock Margin="2,8" FontSize="13" Foreground="{DynamicResource PrimaryGrayColor}" Text="No additional configuration required for Git Pull." />
-                    <Border Margin="0,6,0,0" Padding="8,6" Background="#FFF8E7" BorderBrush="#FFE082" BorderThickness="1" CornerRadius="4">
-                        <StackPanel Orientation="Horizontal">
-                            <Path Width="14" Height="14" Margin="0,0,6,0" VerticalAlignment="Center" Data="{StaticResource Information}" Fill="#F5A623" Stretch="Uniform" />
-                            <StackPanel>
-                                <TextBlock FontSize="11" FontWeight="SemiBold" Foreground="#8A6000" Text="Tip" />
-                                <TextBlock FontSize="11" Foreground="#8A6000" Text="Changes are saved automatically" />
-                            </StackPanel>
-                        </StackPanel>
-                    </Border>
                 </StackPanel>
             </ScrollViewer>
         </DataTemplate>
@@ -461,28 +409,27 @@
                             </Grid>
                         </StackPanel>
                     </Expander>
-                    <Border Margin="0,6,0,0" Padding="8,6" Background="#FFF8E7" BorderBrush="#FFE082" BorderThickness="1" CornerRadius="4">
-                        <StackPanel Orientation="Horizontal">
-                            <Path Width="14" Height="14" Margin="0,0,6,0" VerticalAlignment="Center" Data="{StaticResource Information}" Fill="#F5A623" Stretch="Uniform" />
-                            <StackPanel>
-                                <TextBlock FontSize="11" FontWeight="SemiBold" Foreground="#8A6000" Text="Tip" />
-                                <TextBlock FontSize="11" Foreground="#8A6000" Text="Changes are saved automatically" />
-                            </StackPanel>
+                    <Expander Header="Browser" Style="{StaticResource SectionExpanderStyle}">
+                        <StackPanel Margin="2,8,2,8">
+                            <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Urls" />
+                            <TextBox Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Urls, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource CollectionToStringConverter}}" />
                         </StackPanel>
-                    </Border>
+                    </Expander>
                 </StackPanel>
             </ScrollViewer>
         </DataTemplate>
+
         <converters:OperationEditorTemplateSelector x:Key="OperationEditorTemplateSelector" DeliveryBinTemplate="{StaticResource DeliveryBinEditorTemplate}" DeliverySpecifiedFilesTemplate="{StaticResource DeliverySpecifiedFilesEditorTemplate}" GitPullTemplate="{StaticResource GitPullEditorTemplate}" HttpPingTemplate="{StaticResource HttpPingEditorTemplate}" MsBuildTemplate="{StaticResource MsBuildEditorTemplate}" ProcessExecutionTemplate="{StaticResource ProcessExecutionEditorTemplate}" SqlExecutionTemplate="{StaticResource SqlEditorTemplate}" WebBrowserTemplate="{StaticResource WebBrowserEditorTemplate}" />
     </UserControl.Resources>
+
     <Grid Background="{DynamicResource TertiaryBackgroundColor}">
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1.15*" MinWidth="170" />
+                <ColumnDefinition Width="*" MinWidth="170" />
                 <ColumnDefinition Width="1" />
-                <ColumnDefinition Width="1.0*" MinWidth="180" />
+                <ColumnDefinition Width="*" MinWidth="180" />
                 <ColumnDefinition Width="1" />
-                <ColumnDefinition Width="1.85*" MinWidth="260" />
+                <ColumnDefinition Width="*" MinWidth="180" />
             </Grid.ColumnDefinitions>
             <!-- LEFT: Pipeline -->
             <Grid Grid.Column="0">
@@ -656,8 +603,8 @@
                             </Grid.ColumnDefinitions>
                             <TextBlock Grid.Column="0" VerticalAlignment="Center" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryTextColor}" Text="Operations" />
                             <StackPanel Grid.Column="1" Margin="0,0,0,1" Orientation="Horizontal" VerticalAlignment="Center">
-                                <ComboBox Width="150" Height="28" Margin="0,0,6,0" DisplayMemberPath="Name" FontSize="12" ItemsSource="{Binding AvailableOperationTypes}" SelectedItem="{Binding SelectedOperationType, Mode=TwoWay}" Style="{DynamicResource ComboBoxStyle}" />
-                                <Button Command="{Binding AddOperationCommand}" Content="Add Operation" Style="{StaticResource SmallAddButtonStyle}" />
+                                <ComboBox Width="110" Height="28" Margin="0,0,8,0" DisplayMemberPath="Name" FontSize="12" ItemsSource="{Binding AvailableOperationTypes}" SelectedItem="{Binding SelectedOperationType, Mode=TwoWay}" Style="{DynamicResource ComboBoxStyle}" />
+                                <Button MinWidth="104" Command="{Binding AddOperationCommand}" Content="Add Operation" Style="{StaticResource SmallAddButtonStyle}" />
                             </StackPanel>
                         </Grid>
                     </Border>

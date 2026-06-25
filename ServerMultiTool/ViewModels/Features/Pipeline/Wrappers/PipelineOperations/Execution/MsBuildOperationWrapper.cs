@@ -36,6 +36,12 @@ public partial class MsBuildOperationWrapper : PipelineOperationWrapper
         op.UpdateParameters([.. Parameters]);
     }
 
+    partial void OnParametersChanged(ObservableCollection<string> value)
+    {
+        value.CollectionChanged -= Parameters_CollectionChanged;
+        value.CollectionChanged += Parameters_CollectionChanged;
+    }
+
     partial void OnRetryCountChanged(int value)
     {
         if (value >= 0)

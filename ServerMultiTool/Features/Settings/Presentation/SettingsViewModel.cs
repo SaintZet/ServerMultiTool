@@ -126,8 +126,6 @@ public partial class SettingsViewModel : BaseViewModel, IPage, INavigationAware
 
         EditPipelineProfile.PropertyChanged += OnEditPipelineProfilePropertyChanged;
 
-        if (PipelineProfiles.Any())
-            SelectedPipelineProfile = PipelineProfiles.First();
 
         _isInitializing = false;
     }
@@ -173,11 +171,7 @@ public partial class SettingsViewModel : BaseViewModel, IPage, INavigationAware
     {
         if (!string.IsNullOrEmpty(selectedName))
         {
-            SelectedPipelineProfile = PipelineProfiles.FirstOrDefault(p => p.Name == selectedName) ?? PipelineProfiles.FirstOrDefault();
-        }
-        else if (PipelineProfiles.Any())
-        {
-            SelectedPipelineProfile = PipelineProfiles.First();
+            SelectedPipelineProfile = PipelineProfiles.FirstOrDefault(p => p.Name == selectedName);
         }
     }
 
@@ -321,7 +315,7 @@ public partial class SettingsViewModel : BaseViewModel, IPage, INavigationAware
         PipelineProfiles.Remove(profileToRemove);
 
         if (SelectedPipelineProfile == profileToRemove)
-            SelectedPipelineProfile = PipelineProfiles.Any() ? PipelineProfiles.First() : null;
+            SelectedPipelineProfile = null;
 
         HasUnsavedChanges = true;
     }

@@ -51,21 +51,11 @@ public partial class EditPipelineProfileViewModel : BaseViewModel, IEditPipeline
 
     partial void OnProfileChanged(PipelineProfileWrapper? value)
     {
-        if (value is null)
-            return;
-
         IsPipelineGeneralExpanded = _expandPipelineGeneralOnNextProfileChange;
         _expandPipelineGeneralOnNextProfileChange = false;
 
-        var previousStepOrder = SelectedStep?.Order;
-        var previousStepName = SelectedStep?.Name;
-        var previousIndex = _selectedStepIndex;
-
-        SelectedStep = previousIndex >= 0 && previousIndex < value.Steps.Count
-            ? value.Steps[previousIndex]
-            : value.Steps.FirstOrDefault(step => step.Order == previousStepOrder && step.Name == previousStepName)
-              ?? value.Steps.FirstOrDefault(step => step.Name == previousStepName)
-              ?? value.Steps.FirstOrDefault();
+        SelectedStep = null;
+        SelectedOperation = null;
     }
 
     partial void OnSelectedStepChanged(PipelineStepWrapper? value)
@@ -77,8 +67,7 @@ public partial class EditPipelineProfileViewModel : BaseViewModel, IEditPipeline
             ? -1
             : Profile.Steps.IndexOf(value);
 
-        // Auto-select first operation of the newly selected step
-        SelectedOperation = value?.Operations.FirstOrDefault();
+        SelectedOperation = null;
     }
 
     partial void OnSelectedOperationChanged(PipelineOperationWrapper? value)
@@ -139,7 +128,7 @@ public partial class EditPipelineProfileViewModel : BaseViewModel, IEditPipeline
 
         if (SelectedStep == step)
         {
-            SelectedStep = Profile.Steps.FirstOrDefault();
+            SelectedStep = null;
         }
 
         OnPropertyChanged();
@@ -191,7 +180,7 @@ public partial class EditPipelineProfileViewModel : BaseViewModel, IEditPipeline
         SelectedStep.RemoveOperation(operation);
 
         if (SelectedOperation == operation)
-            SelectedOperation = SelectedStep.Operations.FirstOrDefault();
+            SelectedOperation = null;
 
         OnPropertyChanged();
     }

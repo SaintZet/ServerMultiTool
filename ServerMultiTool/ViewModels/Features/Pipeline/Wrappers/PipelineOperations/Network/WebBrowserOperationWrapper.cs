@@ -27,6 +27,12 @@ public partial class WebBrowserOperationWrapper : PipelineOperationWrapper
         op.UpdateUrls(Urls.ToList());
     }
 
+    partial void OnUrlsChanged(ObservableCollection<string> value)
+    {
+        value.CollectionChanged -= Urls_CollectionChanged;
+        value.CollectionChanged += Urls_CollectionChanged;
+    }
+
     [RelayCommand]
     private void AddUrl(string? url)
     {
