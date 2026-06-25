@@ -555,7 +555,13 @@
 
                 <!--  Pipeline Profiles Tab  -->
                 <TabItem Header="Pipeline Profiles" Tag="PipelineProfiles">
-                    <Grid>
+                    <Border
+                        Padding="14"
+                        Background="#FFFFFF"
+                        BorderBrush="#DDE2EC"
+                        BorderThickness="1"
+                        CornerRadius="10">
+                        <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" MinWidth="160" />
                             <ColumnDefinition Width="1" />
@@ -710,7 +716,8 @@
                                 </profileEditor:EditPipelineProfileControl.Style>
                             </profileEditor:EditPipelineProfileControl>
                         </Grid>
-                    </Grid>
+                        </Grid>
+                    </Border>
                 </TabItem>
 
                 <!--  Auto Update Tab  -->
@@ -820,11 +827,21 @@
                                             <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="*" />
                                         </Grid.ColumnDefinitions>
-                                        <CheckBox
+                                        <StackPanel
                                             Grid.Column="0"
-                                            Margin="0,0,8,0"
+                                            Margin="0,0,12,0"
                                             VerticalAlignment="Center"
-                                            IsChecked="{Binding CheckForUpdatesOnStartup, Mode=TwoWay}" />
+                                            Orientation="Horizontal">
+                                            <CheckBox
+                                                Margin="0,0,8,0"
+                                                VerticalAlignment="Center"
+                                                IsChecked="{Binding CheckForUpdatesOnStartup, Mode=TwoWay}" />
+                                            <TextBlock
+                                                VerticalAlignment="Center"
+                                                FontSize="13"
+                                                Foreground="{DynamicResource PrimaryTextColor}"
+                                                Text="Check on Startup" />
+                                        </StackPanel>
                                         <Button
                                             Grid.Column="1"
                                             Height="32"
