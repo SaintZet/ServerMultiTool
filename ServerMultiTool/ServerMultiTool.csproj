@@ -21,6 +21,7 @@
       <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.8" />
       <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.8" />
       <PackageReference Include="Microsoft.Identity.Client" Version="4.61.3" />
+      <PackageReference Include="NetSparkleUpdater.UI.WPF" Version="3.1.0" />
     </ItemGroup>
 
     <ItemGroup>
