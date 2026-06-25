@@ -1,4 +1,4 @@
-﻿<UserControl
+<UserControl
     x:Class="ServerMultiTool.Shared.Components.ProfileEditor.EditPipelineProfileControl"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -142,40 +142,33 @@
         <!-- ProcessExecution editor -->
         <DataTemplate x:Key="ProcessExecutionEditorTemplate">
             <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                <StackPanel Margin="14,10">
-                    <Expander Header="General" IsExpanded="{Binding DataContext.IsOperationGeneralExpanded, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}" Style="{StaticResource SectionExpanderStyle}">
+                <StackPanel>
+                    <Expander Margin="14,10,14,8" Header="General" IsExpanded="{Binding DataContext.IsOperationGeneralExpanded, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}" Style="{StaticResource SectionExpanderStyle}">
                         <StackPanel Margin="2,8,2,8">
                             <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Name" />
                             <TextBox Margin="0,0,0,10" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                            <Grid Margin="0,0,0,10">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-                                <StackPanel Grid.Column="0">
-                                    <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Description" />
-                                    <TextBox Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                                </StackPanel>
-                            </Grid>
+                            <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Description" />
+                            <TextBox Margin="0,0,0,10" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </StackPanel>
                     </Expander>
-                    <Expander Header="Command" Style="{StaticResource SectionExpanderStyle}">
-                        <StackPanel Margin="2,8,2,8">
-                            <TextBlock Style="{StaticResource SectionLabelStyle}" Text="File Name" />
-                            <Grid Margin="0,0,0,10">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-                                <TextBox Grid.Column="0" Margin="0,0,4,0" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding FileName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                                <Button Grid.Column="1" Command="{Binding DataContext.BrowseOperationFileNameCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" Style="{StaticResource BrowseButtonStyle}" />
-                            </Grid>
-                            <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Arguments" />
-                            <TextBox Margin="0,0,0,10" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Arguments, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                            <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Retry Count" />
-                            <TextBox Width="100" HorizontalAlignment="Left" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding RetryCount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                        </StackPanel>
-                    </Expander>
+                    <Border Style="{StaticResource PanelHeaderBorderStyle}" BorderThickness="0,1,0,1">
+                        <TextBlock Style="{StaticResource PanelHeaderTitleStyle}" Text="Command" />
+                    </Border>
+                    <StackPanel Margin="14,10">
+                        <TextBlock Style="{StaticResource SectionLabelStyle}" Text="File Name" />
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBox Grid.Column="0" Margin="0,0,4,0" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding FileName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <Button Grid.Column="1" Command="{Binding DataContext.BrowseOperationFileNameCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" Style="{StaticResource BrowseButtonStyle}" />
+                        </Grid>
+                        <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Arguments" />
+                        <TextBox Margin="0,0,0,10" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Arguments, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Retry Count" />
+                        <TextBox Width="100" HorizontalAlignment="Left" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding RetryCount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    </StackPanel>
                 </StackPanel>
             </ScrollViewer>
         </DataTemplate>
@@ -183,28 +176,22 @@
         <!-- DeliverySpecifiedFiles editor -->
         <DataTemplate x:Key="DeliverySpecifiedFilesEditorTemplate">
             <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                <StackPanel Margin="14,10">
-                    <Expander Header="General" IsExpanded="{Binding DataContext.IsOperationGeneralExpanded, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}" Style="{StaticResource SectionExpanderStyle}">
+                <StackPanel>
+                    <Expander Margin="14,10,14,8" Header="General" IsExpanded="{Binding DataContext.IsOperationGeneralExpanded, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}" Style="{StaticResource SectionExpanderStyle}">
                         <StackPanel Margin="2,8,2,8">
                             <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Name" />
                             <TextBox Margin="0,0,0,10" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                            <Grid Margin="0,0,0,10">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-                                <StackPanel Grid.Column="0">
-                                    <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Description" />
-                                    <TextBox Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                                </StackPanel>
-                            </Grid>
+                            <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Description" />
+                            <TextBox Margin="0,0,0,10" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </StackPanel>
                     </Expander>
-                    <TextBlock Margin="0,0,0,6" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryTextColor}" Text="Delivery Directories" />
-                    <ItemsControl ItemsSource="{Binding Directories}">
+                    <Border Style="{StaticResource PanelHeaderBorderStyle}" BorderThickness="0,1,0,1">
+                        <TextBlock Style="{StaticResource PanelHeaderTitleStyle}" Text="Delivery Directories" />
+                    </Border>
+                    <ItemsControl Margin="14,10" ItemsSource="{Binding Directories}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Border Margin="0,4,0,0" Padding="10,8" Background="{DynamicResource SecondaryBackgroundColor}" BorderBrush="LightGray" BorderThickness="1" CornerRadius="4">
+                                <Border Margin="0,0,0,8" Padding="10,8" Background="{DynamicResource SecondaryBackgroundColor}" BorderBrush="LightGray" BorderThickness="1" CornerRadius="4">
                                     <StackPanel>
                                         <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Source" />
                                         <Grid Margin="0,0,0,8">
@@ -236,35 +223,28 @@
         <!-- MsBuild editor -->
         <DataTemplate x:Key="MsBuildEditorTemplate">
             <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                <StackPanel Margin="14,10">
-                    <Expander Header="General" IsExpanded="{Binding DataContext.IsOperationGeneralExpanded, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}" Style="{StaticResource SectionExpanderStyle}">
+                <StackPanel>
+                    <Expander Margin="14,10,14,8" Header="General" IsExpanded="{Binding DataContext.IsOperationGeneralExpanded, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}" Style="{StaticResource SectionExpanderStyle}">
                         <StackPanel Margin="2,8,2,8">
                             <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Name" />
                             <TextBox Margin="0,0,0,10" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                            <Grid Margin="0,0,0,10">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-                                <StackPanel Grid.Column="0">
-                                    <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Description" />
-                                    <TextBox Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                                </StackPanel>
-                            </Grid>
+                            <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Description" />
+                            <TextBox Margin="0,0,0,10" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </StackPanel>
                     </Expander>
-                    <Expander Header="Build" Style="{StaticResource SectionExpanderStyle}">
-                        <StackPanel Margin="2,8,2,8">
-                            <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Project Name" />
-                            <TextBox Margin="0,0,0,10" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Directory.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                            <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Relative Path" />
-                            <TextBox Margin="0,0,0,10" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Directory.Path, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                            <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Parameters" />
-                            <TextBox Margin="0,0,0,10" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Parameters, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource CollectionToStringConverter}}" />
-                            <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Retry Count" />
-                            <TextBox Width="100" HorizontalAlignment="Left" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding RetryCount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                        </StackPanel>
-                    </Expander>
+                    <Border Style="{StaticResource PanelHeaderBorderStyle}" BorderThickness="0,1,0,1">
+                        <TextBlock Style="{StaticResource PanelHeaderTitleStyle}" Text="Build" />
+                    </Border>
+                    <StackPanel Margin="14,10">
+                        <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Project Name" />
+                        <TextBox Margin="0,0,0,10" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Directory.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Relative Path" />
+                        <TextBox Margin="0,0,0,10" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Directory.Path, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Parameters" />
+                        <TextBox Margin="0,0,0,10" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Parameters, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource CollectionToStringConverter}}" />
+                        <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Retry Count" />
+                        <TextBox Width="100" HorizontalAlignment="Left" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding RetryCount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    </StackPanel>
                 </StackPanel>
             </ScrollViewer>
         </DataTemplate>
@@ -272,31 +252,24 @@
         <!-- DeliveryBin editor -->
         <DataTemplate x:Key="DeliveryBinEditorTemplate">
             <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                <StackPanel Margin="14,10">
-                    <Expander Header="General" IsExpanded="{Binding DataContext.IsOperationGeneralExpanded, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}" Style="{StaticResource SectionExpanderStyle}">
+                <StackPanel>
+                    <Expander Margin="14,10,14,8" Header="General" IsExpanded="{Binding DataContext.IsOperationGeneralExpanded, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}" Style="{StaticResource SectionExpanderStyle}">
                         <StackPanel Margin="2,8,2,8">
                             <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Name" />
                             <TextBox Margin="0,0,0,10" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                            <Grid Margin="0,0,0,10">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-                                <StackPanel Grid.Column="0">
-                                    <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Description" />
-                                    <TextBox Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                                </StackPanel>
-                            </Grid>
+                            <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Description" />
+                            <TextBox Margin="0,0,0,10" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </StackPanel>
                     </Expander>
-                    <Expander Header="Delivery" Style="{StaticResource SectionExpanderStyle}">
-                        <StackPanel Margin="2,8,2,8">
-                            <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Project Name" />
-                            <TextBox Margin="0,0,0,10" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Directory.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                            <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Relative Path" />
-                            <TextBox Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Directory.Path, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                        </StackPanel>
-                    </Expander>
+                    <Border Style="{StaticResource PanelHeaderBorderStyle}" BorderThickness="0,1,0,1">
+                        <TextBlock Style="{StaticResource PanelHeaderTitleStyle}" Text="Delivery" />
+                    </Border>
+                    <StackPanel Margin="14,10">
+                        <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Project Name" />
+                        <TextBox Margin="0,0,0,10" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Directory.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Relative Path" />
+                        <TextBox Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Directory.Path, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    </StackPanel>
                 </StackPanel>
             </ScrollViewer>
         </DataTemplate>
@@ -304,31 +277,24 @@
         <!-- HttpPing editor -->
         <DataTemplate x:Key="HttpPingEditorTemplate">
             <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                <StackPanel Margin="14,10">
-                    <Expander Header="General" IsExpanded="{Binding DataContext.IsOperationGeneralExpanded, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}" Style="{StaticResource SectionExpanderStyle}">
+                <StackPanel>
+                    <Expander Margin="14,10,14,8" Header="General" IsExpanded="{Binding DataContext.IsOperationGeneralExpanded, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}" Style="{StaticResource SectionExpanderStyle}">
                         <StackPanel Margin="2,8,2,8">
                             <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Name" />
                             <TextBox Margin="0,0,0,10" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                            <Grid Margin="0,0,0,10">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-                                <StackPanel Grid.Column="0">
-                                    <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Description" />
-                                    <TextBox Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                                </StackPanel>
-                            </Grid>
+                            <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Description" />
+                            <TextBox Margin="0,0,0,10" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </StackPanel>
                     </Expander>
-                    <Expander Header="Network" Style="{StaticResource SectionExpanderStyle}">
-                        <StackPanel Margin="2,8,2,8">
-                            <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Urls" />
-                            <TextBox Margin="0,0,0,10" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Urls, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource CollectionToStringConverter}}" />
-                            <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Timeout (minutes)" />
-                            <TextBox Width="100" HorizontalAlignment="Left" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding TimeoutInMinutes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                        </StackPanel>
-                    </Expander>
+                    <Border Style="{StaticResource PanelHeaderBorderStyle}" BorderThickness="0,1,0,1">
+                        <TextBlock Style="{StaticResource PanelHeaderTitleStyle}" Text="Network" />
+                    </Border>
+                    <StackPanel Margin="14,10">
+                        <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Urls" />
+                        <TextBox Margin="0,0,0,10" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Urls, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource CollectionToStringConverter}}" />
+                        <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Timeout (minutes)" />
+                        <TextBox Width="100" HorizontalAlignment="Left" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding TimeoutInMinutes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    </StackPanel>
                 </StackPanel>
             </ScrollViewer>
         </DataTemplate>
@@ -336,31 +302,24 @@
         <!-- SqlEditor -->
         <DataTemplate x:Key="SqlEditorTemplate">
             <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                <StackPanel Margin="14,10">
-                    <Expander Header="General" IsExpanded="{Binding DataContext.IsOperationGeneralExpanded, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}" Style="{StaticResource SectionExpanderStyle}">
+                <StackPanel>
+                    <Expander Margin="14,10,14,8" Header="General" IsExpanded="{Binding DataContext.IsOperationGeneralExpanded, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}" Style="{StaticResource SectionExpanderStyle}">
                         <StackPanel Margin="2,8,2,8">
                             <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Name" />
                             <TextBox Margin="0,0,0,10" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                            <Grid Margin="0,0,0,10">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-                                <StackPanel Grid.Column="0">
-                                    <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Description" />
-                                    <TextBox Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                                </StackPanel>
-                            </Grid>
+                            <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Description" />
+                            <TextBox Margin="0,0,0,10" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </StackPanel>
                     </Expander>
-                    <Expander Header="SQL" Style="{StaticResource SectionExpanderStyle}">
-                        <StackPanel Margin="2,8,2,8">
-                            <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Path to SQL Script" />
-                            <TextBox Margin="0,0,0,10" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding PathToSqlScript, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                            <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Connection String" />
-                            <TextBox Style="{StaticResource FieldTextBoxStyle}" Text="{Binding ConnectionString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                        </StackPanel>
-                    </Expander>
+                    <Border Style="{StaticResource PanelHeaderBorderStyle}" BorderThickness="0,1,0,1">
+                        <TextBlock Style="{StaticResource PanelHeaderTitleStyle}" Text="SQL" />
+                    </Border>
+                    <StackPanel Margin="14,10">
+                        <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Path to SQL Script" />
+                        <TextBox Margin="0,0,0,10" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding PathToSqlScript, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Connection String" />
+                        <TextBox Style="{StaticResource FieldTextBoxStyle}" Text="{Binding ConnectionString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    </StackPanel>
                 </StackPanel>
             </ScrollViewer>
         </DataTemplate>
@@ -368,53 +327,44 @@
         <!-- GitPull editor -->
         <DataTemplate x:Key="GitPullEditorTemplate">
             <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                <StackPanel Margin="14,10">
-                    <Expander Header="General" IsExpanded="{Binding DataContext.IsOperationGeneralExpanded, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}" Style="{StaticResource SectionExpanderStyle}">
+                <StackPanel>
+                    <Expander Margin="14,10,14,8" Header="General" IsExpanded="{Binding DataContext.IsOperationGeneralExpanded, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}" Style="{StaticResource SectionExpanderStyle}">
                         <StackPanel Margin="2,8,2,8">
                             <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Name" />
                             <TextBox Margin="0,0,0,10" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                            <Grid Margin="0,0,0,10">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-                                <StackPanel Grid.Column="0">
-                                    <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Description" />
-                                    <TextBox Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                                </StackPanel>
-                            </Grid>
+                            <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Description" />
+                            <TextBox Margin="0,0,0,10" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </StackPanel>
                     </Expander>
-                    <TextBlock Margin="2,8" FontSize="13" Foreground="{DynamicResource PrimaryGrayColor}" Text="No additional configuration required for Git Pull." />
+                    <Border Style="{StaticResource PanelHeaderBorderStyle}" BorderThickness="0,1,0,1">
+                        <TextBlock Style="{StaticResource PanelHeaderTitleStyle}" Text="Git Pull" />
+                    </Border>
+                    <StackPanel Margin="14,10">
+                        <TextBlock Style="{StaticResource SectionLabelStyle}" Text="No additional configuration required for Git Pull." />
+                    </StackPanel>
                 </StackPanel>
             </ScrollViewer>
         </DataTemplate>
+
         <!-- WebBrowser editor -->
         <DataTemplate x:Key="WebBrowserEditorTemplate">
             <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                <StackPanel Margin="14,10">
-                    <Expander Header="General" IsExpanded="{Binding DataContext.IsOperationGeneralExpanded, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}" Style="{StaticResource SectionExpanderStyle}">
+                <StackPanel>
+                    <Expander Margin="14,10,14,8" Header="General" IsExpanded="{Binding DataContext.IsOperationGeneralExpanded, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}" Style="{StaticResource SectionExpanderStyle}">
                         <StackPanel Margin="2,8,2,8">
                             <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Name" />
                             <TextBox Margin="0,0,0,10" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                            <Grid Margin="0,0,0,10">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-                                <StackPanel Grid.Column="0">
-                                    <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Description" />
-                                    <TextBox Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                                </StackPanel>
-                            </Grid>
+                            <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Description" />
+                            <TextBox Margin="0,0,0,10" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </StackPanel>
                     </Expander>
-                    <Expander Header="Browser" Style="{StaticResource SectionExpanderStyle}">
-                        <StackPanel Margin="2,8,2,8">
-                            <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Urls" />
-                            <TextBox Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Urls, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource CollectionToStringConverter}}" />
-                        </StackPanel>
-                    </Expander>
+                    <Border Style="{StaticResource PanelHeaderBorderStyle}" BorderThickness="0,1,0,1">
+                        <TextBlock Style="{StaticResource PanelHeaderTitleStyle}" Text="Browser" />
+                    </Border>
+                    <StackPanel Margin="14,10">
+                        <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Urls" />
+                        <TextBox Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Urls, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource CollectionToStringConverter}}" />
+                    </StackPanel>
                 </StackPanel>
             </ScrollViewer>
         </DataTemplate>
