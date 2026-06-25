@@ -11,11 +11,11 @@ using CommunityToolkit.Mvvm.Input;
 using ServerMultiTool.Features.Settings;
 using ServerMultiTool.Model.Common.Logs;
 using ServerMultiTool.Model.Infrastructure.Interfaces;
+using ServerMultiTool.Shared.Components.GeneralInfo;
 using ServerMultiTool.Shell.Navigation;
 using ServerMultiTool.ViewModels.Common;
 using ServerMultiTool.ViewModels.Common.BaseClasses;
 using ServerMultiTool.ViewModels.Common.Interfaces;
-using ServerMultiTool.Shared.Components.GeneralInfo;
 using ServerMultiTool.ViewModels.Features.Pipeline.Collections;
 using ServerMultiTool.ViewModels.Features.Pipeline.Management;
 using ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers;
@@ -275,5 +275,6 @@ public partial class PipelineViewModel : BaseViewModel, IPage
 
     #endregion
 }
+
 
 

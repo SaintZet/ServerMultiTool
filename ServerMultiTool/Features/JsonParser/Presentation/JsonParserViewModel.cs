@@ -1,9 +1,9 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using ServerMultiTool.Shared.Components.GeneralInfo;
 using ServerMultiTool.Shell.Navigation;
 using ServerMultiTool.ViewModels.Common;
 using ServerMultiTool.ViewModels.Common.BaseClasses;
 using ServerMultiTool.ViewModels.Common.Interfaces;
-using ServerMultiTool.Shared.Components.GeneralInfo;
 
 namespace ServerMultiTool.Features.JsonParser.Presentation;
 
@@ -43,6 +43,7 @@ public partial class JsonParserViewModel : BaseViewModel, IPage
     // Add methods for JSON parsing functionality here
     #endregion
 }
+
 
 
 

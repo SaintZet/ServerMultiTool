@@ -1,6 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
-using ServerMultiTool.ViewModels.Common.BaseClasses;
 using ServerMultiTool.Shared.Components.GeneralInfo;
+using ServerMultiTool.ViewModels.Common.BaseClasses;
 
 namespace ServerMultiTool.Features.InternalTools;
 

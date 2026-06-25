@@ -7,12 +7,12 @@ using CommunityToolkit.Mvvm.Input;
 using ServerMultiTool.Features.Settings;
 using ServerMultiTool.Model.Infrastructure.DefaultValues;
 using ServerMultiTool.Model.Infrastructure.Interfaces;
+using ServerMultiTool.Shared.Components.GeneralInfo;
+using ServerMultiTool.Shared.Components.ProfileEditor;
 using ServerMultiTool.Shell.Navigation;
 using ServerMultiTool.ViewModels.Common;
 using ServerMultiTool.ViewModels.Common.BaseClasses;
 using ServerMultiTool.ViewModels.Common.Interfaces;
-using ServerMultiTool.Shared.Components.GeneralInfo;
-using ServerMultiTool.Shared.Components.ProfileEditor;
 using ServerMultiTool.ViewModels.Features.Pipeline.Collections;
 using ServerMultiTool.ViewModels.Features.Settings.Extensions;
 using ServerMultiTool.ViewModels.Features.Settings.Wrappers;
@@ -326,5 +326,6 @@ public partial class SettingsViewModel : BaseViewModel, IPage, INavigationAware
 
     #endregion
 }
+
 
 

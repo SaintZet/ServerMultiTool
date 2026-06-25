@@ -1,6 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
-using ServerMultiTool.Shell.Navigation;
 using ServerMultiTool.Shared.Components.GeneralInfo;
+using ServerMultiTool.Shell.Navigation;
 using ServerMultiTool.ViewModels.Windows;
 using ServerMultiTool.Views.Windows;
 
