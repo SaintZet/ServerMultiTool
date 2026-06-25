@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.VisualBasic;
 using ServerMultiTool.Features.Settings;
 using ServerMultiTool.Model.Infrastructure.DefaultValues;
 using ServerMultiTool.Model.Infrastructure.Interfaces;
@@ -343,6 +344,21 @@ public partial class SettingsViewModel : BaseViewModel, IPage, INavigationAware
     }
 
     [RelayCommand]
+    private void RemoveSolutionDirectoryRow(DirectoryModelWrapper? directory)
+    {
+        if (directory is null)
+            return;
+
+        directory.PropertyChanged -= OnDirectoryPropertyChanged;
+        SolutionDirectories.Remove(directory);
+
+        if (SelectedSolutionDirectory == directory)
+            SelectedSolutionDirectory = null;
+
+        HasUnsavedChanges = true;
+    }
+
+    [RelayCommand]
     private void AddHttpDirectory()
     {
         var newDirectory = new DirectoryModelWrapper("New HTTP", "");
@@ -365,6 +381,21 @@ public partial class SettingsViewModel : BaseViewModel, IPage, INavigationAware
     }
 
     [RelayCommand]
+    private void RemoveHttpDirectoryRow(DirectoryModelWrapper? directory)
+    {
+        if (directory is null)
+            return;
+
+        directory.PropertyChanged -= OnDirectoryPropertyChanged;
+        HttpDirectories.Remove(directory);
+
+        if (SelectedHttpDirectory == directory)
+            SelectedHttpDirectory = null;
+
+        HasUnsavedChanges = true;
+    }
+
+    [RelayCommand]
     private void SelectDirectory(DirectoryModelWrapper directory)
     {
         using var dialog = new FolderBrowserDialog();
@@ -376,6 +407,27 @@ public partial class SettingsViewModel : BaseViewModel, IPage, INavigationAware
 
         directory.Path = dialog.SelectedPath;
 
+        HasUnsavedChanges = true;
+    }
+
+    [RelayCommand]
+    private void RenameDirectory(DirectoryModelWrapper? directory)
+    {
+        if (directory is null)
+            return;
+
+        var currentName = directory.Name;
+        var newName = Interaction.InputBox("Enter directory name:", "Rename Directory", currentName);
+
+        if (string.IsNullOrWhiteSpace(newName))
+            return;
+
+        var normalizedName = newName.Trim();
+
+        if (normalizedName == currentName)
+            return;
+
+        directory.Name = normalizedName;
         HasUnsavedChanges = true;
     }
 

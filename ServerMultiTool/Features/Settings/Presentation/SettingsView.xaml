@@ -84,6 +84,34 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <Style x:Key="PipelineIconButtonStyle" TargetType="Button">
+            <Setter Property="Width" Value="24" />
+            <Setter Property="Height" Value="24" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border
+                            x:Name="iconHost"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="4">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="iconHost" Property="Background" Value="#EEF3FF" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Page.Resources>
 
     <Border Background="{DynamicResource SecondaryBackgroundColor}" CornerRadius="8">
@@ -159,300 +187,487 @@
                 <!--  General Tab  -->
                 <TabItem Header="General" Tag="General">
                     <Border
-                        Padding="10"
-                        BorderBrush="Gainsboro"
-                        BorderThickness="0.8">
+                        Padding="14"
+                        Background="#FFFFFF"
+                        BorderBrush="#DDE2EC"
+                        BorderThickness="1"
+                        CornerRadius="10">
                         <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
+                            <StackPanel>
+                                <Border
+                                    Margin="0,0,0,14"
+                                    Background="#FFFFFF"
+                                    BorderBrush="#DDE2EC"
+                                    BorderThickness="1"
+                                    CornerRadius="10">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
 
-                            <!--  Solution Directories  -->
-                            <Grid Grid.Row="0" Margin="0,0,0,10">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="*" />
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
+                                        <Grid Grid.Row="0" Margin="16,14,16,10">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <Border
+                                                Grid.Column="0"
+                                                Width="34"
+                                                Height="34"
+                                                Margin="0,0,10,0"
+                                                Background="#EEF2FF"
+                                                CornerRadius="10">
+                                                <Path
+                                                    Width="18"
+                                                    Height="16"
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Center"
+                                                    Data="M3,4A2,2 0 0 1 5,2H10L12,4H19A2,2 0 0 1 21,6V18A2,2 0 0 1 19,20H5A2,2 0 0 1 3,18V4Z"
+                                                    Fill="#5A6CEA"
+                                                    Stretch="Fill" />
+                                            </Border>
+                                            <TextBlock
+                                                Grid.Column="1"
+                                                VerticalAlignment="Center"
+                                                Style="{StaticResource PanelHeaderTitleStyle}"
+                                                Text="Solution Directories" />
+                                            <Button
+                                                Grid.Column="2"
+                                                Height="30"
+                                                Margin="0,0,8,0"
+                                                Padding="18,0"
+                                                Command="{Binding AddSolutionDirectoryCommand}"
+                                                Content="+  Add Directory"
+                                                Style="{StaticResource SmallAddButtonStyle}" />
+                                            <Button
+                                                Grid.Column="3"
+                                                Width="34"
+                                                Height="34"
+                                                Background="Transparent"
+                                                BorderBrush="#D3D8EA"
+                                                BorderThickness="1"
+                                                Content="&#x22EE;"
+                                                Cursor="Hand"
+                                                FontSize="14"
+                                                Foreground="{DynamicResource SecondaryTextColor}" />
+                                        </Grid>
 
-                                <Label
-                                    Grid.Row="0"
-                                    Content="Solution Directories:"
-                                    FontSize="14"
-                                    FontWeight="SemiBold"
-                                    Foreground="{DynamicResource PrimaryTextColor}" />
+                                        <Border
+                                            Grid.Row="1"
+                                            Margin="12,0,12,12"
+                                            Background="#FFFFFF"
+                                            BorderBrush="#DDE2EC"
+                                            BorderThickness="1"
+                                            CornerRadius="8">
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto" />
+                                                    <RowDefinition Height="Auto" />
+                                                </Grid.RowDefinitions>
+                                                <Grid Grid.Row="0" Margin="16,12,16,8">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="2*" />
+                                                        <ColumnDefinition Width="5*" />
+                                                        <ColumnDefinition Width="Auto" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource SecondaryTextColor}" Text="Name" />
+                                                    <TextBlock Grid.Column="1" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource SecondaryTextColor}" Text="Path" />
+                                                    <TextBlock Grid.Column="2" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource SecondaryTextColor}" Text="Actions" />
+                                                </Grid>
 
-                                <ListBox
-                                    Grid.Row="1"
-                                    Padding="5"
-                                    VerticalAlignment="Stretch"
-                                    Background="{DynamicResource TertiaryBackgroundColor}"
-                                    Foreground="{DynamicResource PrimaryTextColor}"
-                                    ItemsSource="{Binding SolutionDirectories}"
-                                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                    SelectedItem="{Binding SelectedSolutionDirectory}">
-                                    <ListBox.ItemTemplate>
-                                        <DataTemplate>
-                                            <StackPanel Margin="0,5" Orientation="Vertical">
-                                                <DockPanel Margin="0,0,0,5" LastChildFill="True">
-                                                    <TextBlock
-                                                        Width="50"
-                                                        Margin="0,0,5,0"
-                                                        VerticalAlignment="Center"
-                                                        FontSize="13"
-                                                        FontWeight="SemiBold"
-                                                        Foreground="{DynamicResource SecondaryTextColor}"
-                                                        Text="Name:" />
-                                                    <TextBox
-                                                        Background="Transparent"
-                                                        BorderThickness="0"
-                                                        FontSize="13"
-                                                        FontWeight="Bold"
-                                                        Foreground="{DynamicResource PrimaryTextColor}"
-                                                        Text="{Binding Name}" />
-                                                </DockPanel>
-                                                <DockPanel LastChildFill="True">
-                                                    <TextBlock
-                                                        Width="50"
-                                                        Margin="0,0,5,0"
-                                                        VerticalAlignment="Center"
-                                                        FontSize="13"
-                                                        FontWeight="SemiBold"
-                                                        Foreground="{DynamicResource SecondaryTextColor}"
-                                                        Text="Path:" />
-                                                    <TextBlock
-                                                        VerticalAlignment="Center"
-                                                        FontSize="13"
-                                                        Foreground="{DynamicResource SecondaryTextColor}"
-                                                        Text="{Binding Path}"
-                                                        TextTrimming="CharacterEllipsis"
-                                                        TextWrapping="NoWrap" />
-                                                    <Button
-                                                        Width="30"
-                                                        Height="20"
-                                                        Margin="5,0,0,0"
-                                                        BorderBrush="Black"
-                                                        BorderThickness="0.5"
-                                                        Command="{Binding DataContext.SelectDirectoryCommand, RelativeSource={RelativeSource AncestorType=Page}}"
-                                                        CommandParameter="{Binding}"
-                                                        Content="..."
-                                                        Style="{StaticResource CustomButtonStyle}" />
-                                                </DockPanel>
-                                            </StackPanel>
-                                        </DataTemplate>
-                                    </ListBox.ItemTemplate>
-                                </ListBox>
+                                                <ListBox
+                                                    Grid.Row="1"
+                                                    Margin="0,0,0,4"
+                                                    Background="Transparent"
+                                                    BorderThickness="0"
+                                                    Foreground="{DynamicResource PrimaryTextColor}"
+                                                    ItemsSource="{Binding SolutionDirectories}"
+                                                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                                    SelectedItem="{Binding SelectedSolutionDirectory}">
+                                                    <ListBox.ItemContainerStyle>
+                                                        <Style TargetType="ListBoxItem">
+                                                            <Setter Property="Padding" Value="0" />
+                                                            <Setter Property="Margin" Value="0" />
+                                                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                                            <Setter Property="Background" Value="Transparent" />
+                                                            <Setter Property="BorderThickness" Value="0" />
+                                                        </Style>
+                                                    </ListBox.ItemContainerStyle>
+                                                    <ListBox.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <Border Margin="10,0,10,0" Padding="6,10" BorderBrush="#EEF1F7" BorderThickness="0,1,0,0">
+                                                                <Grid>
+                                                                    <Grid.ColumnDefinitions>
+                                                                        <ColumnDefinition Width="2*" />
+                                                                        <ColumnDefinition Width="5*" />
+                                                                        <ColumnDefinition Width="Auto" />
+                                                                    </Grid.ColumnDefinitions>
+                                                                    <TextBox
+                                                                        VerticalAlignment="Center"
+                                                                        Margin="0,0,12,0"
+                                                                        Height="30"
+                                                                        Padding="8,0"
+                                                                        Background="{DynamicResource TertiaryBackgroundColor}"
+                                                                        BorderBrush="#D3D8EA"
+                                                                        BorderThickness="1"
+                                                                        FontSize="13"
+                                                                        FontWeight="SemiBold"
+                                                                        Foreground="{DynamicResource PrimaryTextColor}"
+                                                                        ToolTip="You can edit this name"
+                                                                        VerticalContentAlignment="Center"
+                                                                        Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                                    <DockPanel Grid.Column="1" Margin="6,0,0,0" LastChildFill="False">
+                                                                        <TextBlock
+                                                                            VerticalAlignment="Center"
+                                                                            FontSize="13"
+                                                                            Foreground="{DynamicResource PrimaryTextColor}"
+                                                                            Text="{Binding Path}"
+                                                                            TextTrimming="CharacterEllipsis"
+                                                                            TextWrapping="NoWrap" />
+                                                                        <Button
+                                                                            Margin="10,0,0,0"
+                                                                            Command="{Binding DataContext.SelectDirectoryCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                                                            CommandParameter="{Binding}"
+                                                                            Style="{StaticResource PipelineIconButtonStyle}"
+                                                                            ToolTip="Browse folder">
+                                                                            <Path
+                                                                                Width="14"
+                                                                                Height="14"
+                                                                                Data="M3,4A2,2 0 0 1 5,2H10L12,4H19A2,2 0 0 1 21,6V18A2,2 0 0 1 19,20H5A2,2 0 0 1 3,18V4Z"
+                                                                                Fill="{DynamicResource SecondaryTextColor}"
+                                                                                Stretch="Fill" />
+                                                                        </Button>
+                                                                    </DockPanel>
+                                                                    <StackPanel Grid.Column="2" Margin="14,0,0,0" Orientation="Horizontal">
+                                                                        <Button
+                                                                            Margin="0,0,8,0"
+                                                                            Command="{Binding DataContext.RenameDirectoryCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                                                            CommandParameter="{Binding}"
+                                                                            Style="{StaticResource PipelineIconButtonStyle}"
+                                                                            ToolTip="Rename">
+                                                                            <Path
+                                                                                Width="16"
+                                                                                Height="16"
+                                                                                Data="M3,17.25V21H6.75L17.81,9.94L14.06,6.19L3,17.25M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.13,5.12L18.88,8.87L20.71,7.04Z"
+                                                                                Fill="{DynamicResource SecondaryTextColor}"
+                                                                                Stretch="Fill" />
+                                                                        </Button>
+                                                                        <Button
+                                                                            Command="{Binding DataContext.RemoveSolutionDirectoryRowCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                                                            CommandParameter="{Binding}"
+                                                                            Content=""
+                                                                            Style="{StaticResource DeleteButtonStyle}"
+                                                                            ToolTip="Delete row" />
+                                                                    </StackPanel>
+                                                                </Grid>
+                                                            </Border>
+                                                        </DataTemplate>
+                                                    </ListBox.ItemTemplate>
+                                                </ListBox>
+                                            </Grid>
+                                        </Border>
+                                    </Grid>
+                                </Border>
 
-                                <StackPanel
-                                    Grid.Row="2"
-                                    Margin="0,5,0,0"
-                                    HorizontalAlignment="Left"
-                                    Orientation="Horizontal">
-                                    <Button
-                                        Height="30"
-                                        MinWidth="60"
-                                        Margin="0,0,5,0"
-                                        Command="{Binding AddSolutionDirectoryCommand}"
-                                        Content="Add"
-                                        Style="{StaticResource CustomButtonStyle}" />
-                                    <Button
-                                        Height="30"
-                                        MinWidth="60"
-                                        Command="{Binding RemoveSolutionDirectoryCommand}"
-                                        CommandParameter="{Binding SelectedSolutionDirectory}"
-                                        Content="Delete"
-                                        Style="{StaticResource CustomButtonStyle}" />
-                                </StackPanel>
-                            </Grid>
+                                <Border
+                                    Margin="0,0,0,14"
+                                    Background="#FFFFFF"
+                                    BorderBrush="#DDE2EC"
+                                    BorderThickness="1"
+                                    CornerRadius="10">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
 
-                            <!--  Http Directories  -->
-                            <Grid Grid.Row="1">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="*" />
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
+                                        <Grid Grid.Row="0" Margin="16,14,16,10">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <Border
+                                                Grid.Column="0"
+                                                Width="34"
+                                                Height="34"
+                                                Margin="0,0,10,0"
+                                                Background="#E9F9EE"
+                                                CornerRadius="10">
+                                                <Path
+                                                    Width="17"
+                                                    Height="17"
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Center"
+                                                    Data="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M18.5,8.2H16.45C16.22,7.3 15.87,6.45 15.42,5.67C16.72,6.16 17.8,7.06 18.5,8.2M12,4.04C12.57,4.86 13.07,5.93 13.4,7.1H10.6C10.93,5.93 11.43,4.86 12,4.04M4.26,14C4.1,13.35 4,12.68 4,12C4,11.32 4.1,10.65 4.26,10H6.61C6.54,10.66 6.5,11.33 6.5,12C6.5,12.67 6.54,13.34 6.61,14H4.26M5.5,15.8H7.55C7.78,16.7 8.13,17.55 8.58,18.33C7.28,17.84 6.2,16.94 5.5,15.8M7.55,8.2H5.5C6.2,7.06 7.28,6.16 8.58,5.67C8.13,6.45 7.78,7.3 7.55,8.2M12,19.96C11.43,19.14 10.93,18.07 10.6,16.9H13.4C13.07,18.07 12.57,19.14 12,19.96M13.78,14H10.22C10.14,13.34 10.1,12.67 10.1,12C10.1,11.33 10.14,10.66 10.22,10H13.78C13.86,10.66 13.9,11.33 13.9,12C13.9,12.67 13.86,13.34 13.78,14M15.42,18.33C15.87,17.55 16.22,16.7 16.45,15.8H18.5C17.8,16.94 16.72,17.84 15.42,18.33M16.94,14C17.01,13.34 17.05,12.67 17.05,12C17.05,11.33 17.01,10.66 16.94,10H19.74C19.9,10.65 20,11.32 20,12C20,12.68 19.9,13.35 19.74,14H16.94Z"
+                                                    Fill="#2FA463"
+                                                    Stretch="Fill" />
+                                            </Border>
+                                            <TextBlock
+                                                Grid.Column="1"
+                                                VerticalAlignment="Center"
+                                                Style="{StaticResource PanelHeaderTitleStyle}"
+                                                Text="HTTP Directories" />
+                                            <Button
+                                                Grid.Column="2"
+                                                Height="30"
+                                                Margin="0,0,8,0"
+                                                Padding="18,0"
+                                                Command="{Binding AddHttpDirectoryCommand}"
+                                                Content="+  Add Directory"
+                                                Style="{StaticResource SmallAddButtonStyle}" />
+                                            <Button
+                                                Grid.Column="3"
+                                                Width="34"
+                                                Height="34"
+                                                Background="Transparent"
+                                                BorderBrush="#D3D8EA"
+                                                BorderThickness="1"
+                                                Content="&#x22EE;"
+                                                Cursor="Hand"
+                                                FontSize="14"
+                                                Foreground="{DynamicResource SecondaryTextColor}" />
+                                        </Grid>
 
-                                <Label
-                                    Grid.Row="0"
-                                    Content="Http Directories:"
-                                    FontSize="14"
-                                    FontWeight="SemiBold"
-                                    Foreground="{DynamicResource PrimaryTextColor}" />
+                                        <Border
+                                            Grid.Row="1"
+                                            Margin="12,0,12,12"
+                                            Background="#FFFFFF"
+                                            BorderBrush="#DDE2EC"
+                                            BorderThickness="1"
+                                            CornerRadius="8">
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto" />
+                                                    <RowDefinition Height="Auto" />
+                                                </Grid.RowDefinitions>
+                                                <Grid Grid.Row="0" Margin="16,12,16,8">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="2*" />
+                                                        <ColumnDefinition Width="5*" />
+                                                        <ColumnDefinition Width="Auto" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource SecondaryTextColor}" Text="Name" />
+                                                    <TextBlock Grid.Column="1" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource SecondaryTextColor}" Text="Path" />
+                                                    <TextBlock Grid.Column="2" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource SecondaryTextColor}" Text="Actions" />
+                                                </Grid>
 
-                                <ListBox
-                                    Grid.Row="1"
-                                    Padding="5"
-                                    VerticalAlignment="Stretch"
-                                    Background="{DynamicResource TertiaryBackgroundColor}"
-                                    Foreground="{DynamicResource PrimaryTextColor}"
-                                    ItemsSource="{Binding HttpDirectories}"
-                                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                    SelectedItem="{Binding SelectedHttpDirectory}">
-                                    <ListBox.ItemTemplate>
-                                        <DataTemplate>
-                                            <StackPanel Margin="0,5" Orientation="Vertical">
-                                                <DockPanel Margin="0,0,0,5" LastChildFill="True">
-                                                    <TextBlock
-                                                        Width="50"
-                                                        Margin="0,0,5,0"
-                                                        VerticalAlignment="Center"
-                                                        FontSize="13"
-                                                        FontWeight="SemiBold"
-                                                        Foreground="{DynamicResource SecondaryTextColor}"
-                                                        Text="Name:" />
-                                                    <TextBox
-                                                        Background="Transparent"
-                                                        BorderThickness="0"
-                                                        FontSize="13"
-                                                        FontWeight="Bold"
-                                                        Foreground="{DynamicResource PrimaryTextColor}"
-                                                        Text="{Binding Name}" />
-                                                </DockPanel>
-                                                <DockPanel LastChildFill="True">
-                                                    <TextBlock
-                                                        Width="50"
-                                                        Margin="0,0,5,0"
-                                                        VerticalAlignment="Center"
-                                                        FontSize="13"
-                                                        FontWeight="SemiBold"
-                                                        Foreground="{DynamicResource SecondaryTextColor}"
-                                                        Text="Path:" />
-                                                    <TextBlock
-                                                        VerticalAlignment="Center"
-                                                        FontSize="13"
-                                                        Foreground="{DynamicResource SecondaryTextColor}"
-                                                        Text="{Binding Path}"
-                                                        TextTrimming="CharacterEllipsis"
-                                                        TextWrapping="NoWrap" />
-                                                    <Button
-                                                        Width="30"
-                                                        Height="20"
-                                                        Margin="5,0,0,0"
-                                                        BorderBrush="Black"
-                                                        BorderThickness="0.5"
-                                                        Command="{Binding DataContext.SelectDirectoryCommand, RelativeSource={RelativeSource AncestorType=Page}}"
-                                                        CommandParameter="{Binding}"
-                                                        Content="..."
-                                                        Style="{StaticResource CustomButtonStyle}" />
-                                                </DockPanel>
-                                            </StackPanel>
-                                        </DataTemplate>
-                                    </ListBox.ItemTemplate>
-                                </ListBox>
+                                                <ListBox
+                                                    Grid.Row="1"
+                                                    Margin="0,0,0,4"
+                                                    Background="Transparent"
+                                                    BorderThickness="0"
+                                                    Foreground="{DynamicResource PrimaryTextColor}"
+                                                    ItemsSource="{Binding HttpDirectories}"
+                                                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                                    SelectedItem="{Binding SelectedHttpDirectory}">
+                                                    <ListBox.ItemContainerStyle>
+                                                        <Style TargetType="ListBoxItem">
+                                                            <Setter Property="Padding" Value="0" />
+                                                            <Setter Property="Margin" Value="0" />
+                                                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                                            <Setter Property="Background" Value="Transparent" />
+                                                            <Setter Property="BorderThickness" Value="0" />
+                                                        </Style>
+                                                    </ListBox.ItemContainerStyle>
+                                                    <ListBox.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <Border Margin="10,0,10,0" Padding="6,10" BorderBrush="#EEF1F7" BorderThickness="0,1,0,0">
+                                                                <Grid>
+                                                                    <Grid.ColumnDefinitions>
+                                                                        <ColumnDefinition Width="2*" />
+                                                                        <ColumnDefinition Width="5*" />
+                                                                        <ColumnDefinition Width="Auto" />
+                                                                    </Grid.ColumnDefinitions>
+                                                                    <TextBox
+                                                                        VerticalAlignment="Center"
+                                                                        Margin="0,0,12,0"
+                                                                        Height="30"
+                                                                        Padding="8,0"
+                                                                        Background="{DynamicResource TertiaryBackgroundColor}"
+                                                                        BorderBrush="#D3D8EA"
+                                                                        BorderThickness="1"
+                                                                        FontSize="13"
+                                                                        FontWeight="SemiBold"
+                                                                        Foreground="{DynamicResource PrimaryTextColor}"
+                                                                        ToolTip="You can edit this name"
+                                                                        VerticalContentAlignment="Center"
+                                                                        Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                                    <DockPanel Grid.Column="1" Margin="6,0,0,0" LastChildFill="False">
+                                                                        <TextBlock
+                                                                            VerticalAlignment="Center"
+                                                                            FontSize="13"
+                                                                            Foreground="{DynamicResource PrimaryTextColor}"
+                                                                            Text="{Binding Path}"
+                                                                            TextTrimming="CharacterEllipsis"
+                                                                            TextWrapping="NoWrap" />
+                                                                        <Button
+                                                                            Margin="10,0,0,0"
+                                                                            Command="{Binding DataContext.SelectDirectoryCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                                                            CommandParameter="{Binding}"
+                                                                            Style="{StaticResource PipelineIconButtonStyle}"
+                                                                            ToolTip="Browse folder">
+                                                                            <Path
+                                                                                Width="14"
+                                                                                Height="14"
+                                                                                Data="M3,4A2,2 0 0 1 5,2H10L12,4H19A2,2 0 0 1 21,6V18A2,2 0 0 1 19,20H5A2,2 0 0 1 3,18V4Z"
+                                                                                Fill="{DynamicResource SecondaryTextColor}"
+                                                                                Stretch="Fill" />
+                                                                        </Button>
+                                                                    </DockPanel>
+                                                                    <StackPanel Grid.Column="2" Margin="14,0,0,0" Orientation="Horizontal">
+                                                                        <Button
+                                                                            Margin="0,0,8,0"
+                                                                            Command="{Binding DataContext.RenameDirectoryCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                                                            CommandParameter="{Binding}"
+                                                                            Style="{StaticResource PipelineIconButtonStyle}"
+                                                                            ToolTip="Rename">
+                                                                            <Path
+                                                                                Width="16"
+                                                                                Height="16"
+                                                                                Data="M3,17.25V21H6.75L17.81,9.94L14.06,6.19L3,17.25M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.13,5.12L18.88,8.87L20.71,7.04Z"
+                                                                                Fill="{DynamicResource SecondaryTextColor}"
+                                                                                Stretch="Fill" />
+                                                                        </Button>
+                                                                        <Button
+                                                                            Command="{Binding DataContext.RemoveHttpDirectoryRowCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                                                            CommandParameter="{Binding}"
+                                                                            Content=""
+                                                                            Style="{StaticResource DeleteButtonStyle}"
+                                                                            ToolTip="Delete row" />
+                                                                    </StackPanel>
+                                                                </Grid>
+                                                            </Border>
+                                                        </DataTemplate>
+                                                    </ListBox.ItemTemplate>
+                                                </ListBox>
+                                            </Grid>
+                                        </Border>
+                                    </Grid>
+                                </Border>
 
-                                <StackPanel
-                                    Grid.Row="2"
-                                    Margin="0,5,0,0"
-                                    HorizontalAlignment="Left"
-                                    Orientation="Horizontal">
-                                    <Button
-                                        Height="30"
-                                        MinWidth="60"
-                                        Margin="0,0,5,0"
-                                        Command="{Binding AddHttpDirectoryCommand}"
-                                        Content="Add"
-                                        Style="{StaticResource CustomButtonStyle}" />
-                                    <Button
-                                        Height="30"
-                                        MinWidth="60"
-                                        Command="{Binding RemoveHttpDirectoryCommand}"
-                                        CommandParameter="{Binding SelectedHttpDirectory}"
-                                        Content="Delete"
-                                        Style="{StaticResource CustomButtonStyle}" />
-                                </StackPanel>
-                            </Grid>
+                                <Border
+                                    Background="#FFFFFF"
+                                    BorderBrush="#DDE2EC"
+                                    BorderThickness="1"
+                                    CornerRadius="10">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
 
-                            <!--  Auto-Update Settings  -->
-                            <Grid Grid.Row="2" Margin="0,10,0,0">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
+                                        <Grid Grid.Row="0" Margin="16,14,16,10">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <Border
+                                                Grid.Column="0"
+                                                Width="34"
+                                                Height="34"
+                                                Margin="0,0,10,0"
+                                                Background="#FFF2D9"
+                                                CornerRadius="10">
+                                                <Path
+                                                    Width="17"
+                                                    Height="17"
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Center"
+                                                    Data="M12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12.5,7H11V13L16.25,16.15L17,14.92L12.5,12.25V7Z"
+                                                    Fill="#C58A19"
+                                                    Stretch="Fill" />
+                                            </Border>
+                                            <TextBlock
+                                                Grid.Column="1"
+                                                VerticalAlignment="Center"
+                                                Style="{StaticResource PanelHeaderTitleStyle}"
+                                                Text="Auto Update" />
+                                        </Grid>
 
-                                <Label
-                                    Grid.Row="0"
-                                    Content="Auto Update:"
-                                    FontSize="14"
-                                    FontWeight="SemiBold"
-                                    Foreground="{DynamicResource PrimaryTextColor}" />
+                                        <Grid Grid.Row="1" Margin="16,0,16,14">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="190" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
 
-                                <!--  Feed URL  -->
-                                <DockPanel Grid.Row="1" Margin="0,4,0,8" LastChildFill="True">
-                                    <TextBlock
-                                        Width="170"
-                                        VerticalAlignment="Center"
-                                        FontSize="13"
-                                        FontWeight="SemiBold"
-                                        Foreground="{DynamicResource SecondaryTextColor}"
-                                        Text="Appcast URL:" />
-                                    <TextBox
-                                        Height="28"
-                                        Padding="4,2"
-                                        Background="{DynamicResource TertiaryBackgroundColor}"
-                                        BorderBrush="Gray"
-                                        BorderThickness="0.8"
-                                        FontSize="13"
-                                        Foreground="{DynamicResource PrimaryTextColor}"
-                                        Text="{Binding UpdateFeedUrl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                        ToolTip="URL to the appcast XML file (e.g. https://example.com/appcast.xml)" />
-                                </DockPanel>
+                                            <TextBlock
+                                                Grid.Row="0"
+                                                Grid.Column="0"
+                                                Margin="0,0,10,10"
+                                                VerticalAlignment="Center"
+                                                FontSize="13"
+                                                Foreground="{DynamicResource PrimaryTextColor}"
+                                                Text="Appcast URL" />
+                                            <TextBox
+                                                Grid.Row="0"
+                                                Grid.Column="1"
+                                                Height="32"
+                                                Margin="0,0,0,10"
+                                                Padding="10,0"
+                                                Background="{DynamicResource TertiaryBackgroundColor}"
+                                                BorderBrush="#D3D8EA"
+                                                BorderThickness="1"
+                                                FontSize="13"
+                                                Foreground="{DynamicResource PrimaryTextColor}"
+                                                VerticalContentAlignment="Center"
+                                                Text="{Binding UpdateFeedUrl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-                                <!--  Ed25519 public key  -->
-                                <DockPanel Grid.Row="2" Margin="0,0,0,8" LastChildFill="True">
-                                    <TextBlock
-                                        Width="170"
-                                        VerticalAlignment="Center"
-                                        FontSize="13"
-                                        FontWeight="SemiBold"
-                                        Foreground="{DynamicResource SecondaryTextColor}"
-                                        Text="Ed25519 Public Key:" />
-                                    <TextBox
-                                        Height="28"
-                                        Padding="4,2"
-                                        Background="{DynamicResource TertiaryBackgroundColor}"
-                                        BorderBrush="Gray"
-                                        BorderThickness="0.8"
-                                        FontSize="13"
-                                        Foreground="{DynamicResource PrimaryTextColor}"
-                                        Text="{Binding UpdatePublicKey, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                        ToolTip="Base64 public key used by NetSparkle to verify update signatures" />
-                                </DockPanel>
+                                            <TextBlock
+                                                Grid.Row="1"
+                                                Grid.Column="0"
+                                                Margin="0,0,10,10"
+                                                VerticalAlignment="Center"
+                                                FontSize="13"
+                                                Foreground="{DynamicResource PrimaryTextColor}"
+                                                Text="Ed25519 Public Key" />
+                                            <TextBox
+                                                Grid.Row="1"
+                                                Grid.Column="1"
+                                                Height="32"
+                                                Margin="0,0,0,10"
+                                                Padding="10,0"
+                                                Background="{DynamicResource TertiaryBackgroundColor}"
+                                                BorderBrush="#D3D8EA"
+                                                BorderThickness="1"
+                                                FontSize="13"
+                                                Foreground="{DynamicResource PrimaryTextColor}"
+                                                VerticalContentAlignment="Center"
+                                                Text="{Binding UpdatePublicKey, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-                                <!--  Check on startup  -->
-                                <DockPanel Grid.Row="3" Margin="0,0,0,8" LastChildFill="False">
-                                    <TextBlock
-                                        Width="170"
-                                        VerticalAlignment="Center"
-                                        FontSize="13"
-                                        FontWeight="SemiBold"
-                                        Foreground="{DynamicResource SecondaryTextColor}"
-                                        Text="Check on Startup:" />
-                                    <CheckBox
-                                        VerticalAlignment="Center"
-                                        IsChecked="{Binding CheckForUpdatesOnStartup, Mode=TwoWay}"
-                                        ToolTip="Automatically check for updates when the application starts" />
-                                </DockPanel>
-
-                                <!--  Manual check button  -->
-                                <StackPanel Grid.Row="4" Orientation="Horizontal">
-                                    <Button
-                                        Height="30"
-                                        MinWidth="140"
-                                        Command="{Binding CheckForUpdatesCommand}"
-                                        Content="Check for Updates Now"
-                                        IsEnabled="{Binding UpdateFeedUrl, Converter={StaticResource StringNotNullOrEmptyToBoolConverter}}"
-                                        Style="{StaticResource CustomButtonStyle}" />
-                                </StackPanel>
-                            </Grid>
-
-                        </Grid>
+                                            <Grid Grid.Row="2" Grid.ColumnSpan="2">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+                                                <CheckBox
+                                                    Grid.Column="0"
+                                                    Margin="0,0,8,0"
+                                                    VerticalAlignment="Center"
+                                                    IsChecked="{Binding CheckForUpdatesOnStartup, Mode=TwoWay}" />
+                                                <Button
+                                                    Grid.Column="1"
+                                                    Height="32"
+                                                    HorizontalAlignment="Left"
+                                                    Padding="14,0"
+                                                    Command="{Binding CheckForUpdatesCommand}"
+                                                    Content="Check for Updates Now"
+                                                    IsEnabled="{Binding UpdateFeedUrl, Converter={StaticResource StringNotNullOrEmptyToBoolConverter}}"
+                                                    Style="{StaticResource SmallAddButtonStyle}" />
+                                            </Grid>
+                                        </Grid>
+                                    </Grid>
+                                </Border>
+                            </StackPanel>
                         </ScrollViewer>
                     </Border>
                 </TabItem>
@@ -636,11 +851,12 @@
                     Height="35"
                     MinWidth="70"
                     Command="{Binding SaveSettingsCommand}"
-                    Content="Save"
+                    Content="Save Changes"
                     IsEnabled="{Binding HasUnsavedChanges}"
                     Style="{StaticResource CustomButtonStyle}" />
             </StackPanel>
         </Grid>
     </Border>
 </Page>
+
 
