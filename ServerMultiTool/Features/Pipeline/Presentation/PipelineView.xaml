@@ -273,12 +273,6 @@
                         Foreground="{DynamicResource PrimaryRedColor}"
                         IsChecked="{Binding IsErrorEnabled}"
                         Style="{DynamicResource LogFilterToggleButtonStyle}" />
-                    <ToggleButton
-                        Margin="5,0"
-                        Content="Exception"
-                        Foreground="{DynamicResource PrimaryRedColor}"
-                        IsChecked="{Binding IsExceptionEnabled}"
-                        Style="{DynamicResource LogFilterToggleButtonStyle}" />
                 </StackPanel>
 
                 <TabControl
@@ -350,5 +344,6 @@
         </Grid>
     </Border>
 </Page>
+
 
 

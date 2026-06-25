@@ -63,9 +63,6 @@ public partial class PipelineViewModel : BaseViewModel, IPage
     [ObservableProperty] private bool _isErrorEnabled = true;
     partial void OnIsErrorEnabledChanged(bool value) => RefreshLogs();
 
-    [ObservableProperty] private bool _isExceptionEnabled = true;
-    partial void OnIsExceptionEnabledChanged(bool value) => RefreshLogs();
-
     private void RefreshLogs()
     {
         _logManager.RefreshLogViews();
@@ -248,13 +245,13 @@ public partial class PipelineViewModel : BaseViewModel, IPage
             LogMessageType.Success => IsSuccessEnabled,
             LogMessageType.Warn => IsWarnEnabled,
             LogMessageType.Error => IsErrorEnabled,
-            LogMessageType.Exception => IsExceptionEnabled,
             _ => true
         };
     }
 
     #endregion
 }
+
 
 
 
