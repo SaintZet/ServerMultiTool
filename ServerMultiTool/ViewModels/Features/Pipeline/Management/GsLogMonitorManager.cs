@@ -11,6 +11,10 @@ public class GsLogMonitorManager
 {
     private readonly GsLogMonitoringService _masterLogService;
     private readonly GsLogMonitoringService _segmentLogService;
+    private bool _hasAppliedSettings;
+    private bool _lastEnable;
+    private string? _lastMasterPath;
+    private string? _lastSegmentPath;
 
     public ObservableCollection<LogEvent> AppLogMessages { get; } = [];
     public ObservableCollection<LogEvent> MasterLogMessages { get; } = [];
@@ -30,6 +34,21 @@ public class GsLogMonitorManager
     public void UpdateLogServices(PipelineProfileWrapper profile)
     {
         var settings = profile.ToOriginal().GsLogMonitoringSettings;
+        var masterPath = settings.MasterLogDirectory?.Path;
+        var segmentPath = settings.SegmentLogDirectory?.Path;
+
+        if (_hasAppliedSettings
+            && _lastEnable == settings.Enable
+            && string.Equals(_lastMasterPath, masterPath, System.StringComparison.OrdinalIgnoreCase)
+            && string.Equals(_lastSegmentPath, segmentPath, System.StringComparison.OrdinalIgnoreCase))
+        {
+            return;
+        }
+
+        _hasAppliedSettings = true;
+        _lastEnable = settings.Enable;
+        _lastMasterPath = masterPath;
+        _lastSegmentPath = segmentPath;
 
         _ = _masterLogService.UpdateSettings(settings.Enable, settings.MasterLogDirectory);
         _ = _segmentLogService.UpdateSettings(settings.Enable, settings.SegmentLogDirectory);

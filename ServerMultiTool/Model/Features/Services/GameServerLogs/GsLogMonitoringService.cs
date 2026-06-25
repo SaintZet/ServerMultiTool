@@ -23,6 +23,7 @@ public partial class GsLogMonitoringService : BaseEventAggregator
 
     private readonly Logger _logger;
     private readonly Timer _hourlyTimer;
+    private readonly SemaphoreSlim _settingsUpdateGate = new(1, 1);
 
     private CancellationTokenSource? _cancellationToken;
 
@@ -30,7 +31,7 @@ public partial class GsLogMonitoringService : BaseEventAggregator
     private string _cachedFileName = string.Empty;
 
     private bool _isEnabled;
-    private DirectoryModel _monitoredDirectory = null!;
+    private DirectoryModel? _monitoredDirectory;
 
     public GsLogMonitoringService()
     {
@@ -47,16 +48,29 @@ public partial class GsLogMonitoringService : BaseEventAggregator
 
     public async Task UpdateSettings(bool enable, DirectoryModel? logDirectory)
     {
-        if (_isEnabled)
-            await StopMonitoringAsync();
+        await _settingsUpdateGate.WaitAsync();
+        try
+        {
+            var sameDirectory = AreSameDirectory(_monitoredDirectory, logDirectory);
+            var sameSettings = _isEnabled == enable && (_isEnabled is false || sameDirectory);
+            if (sameSettings)
+                return;
 
-        _isEnabled = enable;
+            if (_isEnabled)
+                await StopMonitoringAsync();
 
-        if (_isEnabled && logDirectory is not null)
-            StartMonitoring(logDirectory);
+            _isEnabled = enable;
+
+            if (_isEnabled && logDirectory is not null)
+                StartMonitoring(logDirectory);
+        }
+        finally
+        {
+            _settingsUpdateGate.Release();
+        }
     }
 
-    private async Task OnTimerElapsed(object? sender, ElapsedEventArgs e)
+    private async Task OnTimerElapsed(object? _, ElapsedEventArgs __)
     {
         _hourlyTimer.Interval = GetIntervalToNextHour();
 
@@ -74,6 +88,17 @@ public partial class GsLogMonitoringService : BaseEventAggregator
         return (nextHour - now).TotalMilliseconds;
     }
 
+    private static bool AreSameDirectory(DirectoryModel? current, DirectoryModel? next)
+    {
+        if (current is null && next is null)
+            return true;
+
+        if (current is null || next is null)
+            return false;
+
+        return string.Equals(current.Path, next.Path, StringComparison.OrdinalIgnoreCase);
+    }
+
     private void StartMonitoring(DirectoryModel directory)
     {
         if (directory.Path.IsNullOrEmpty())
@@ -83,8 +108,6 @@ public partial class GsLogMonitoringService : BaseEventAggregator
             return;
 
         _cancellationToken = new CancellationTokenSource();
-        var token = _cancellationToken.Token;
-
         _monitoredDirectory = directory;
 
         _logger.LogInfo($"Start monitoring {directory.Name} logs at {directory.Path}");
@@ -102,7 +125,7 @@ public partial class GsLogMonitoringService : BaseEventAggregator
         _cancellationToken.Dispose();
         _cancellationToken = null;
 
-        _logger.LogInfo($"Stop monitoring {_monitoredDirectory.Name} logs at {_monitoredDirectory?.Path ?? "unknown directory"}");
+        _logger.LogInfo($"Stop monitoring {_monitoredDirectory?.Name ?? "Unknown"} logs at {_monitoredDirectory?.Path ?? "unknown directory"}");
     }
 
     private async Task MonitorLogDirectoryAsync(DirectoryModel directory, CancellationToken cancellationToken)

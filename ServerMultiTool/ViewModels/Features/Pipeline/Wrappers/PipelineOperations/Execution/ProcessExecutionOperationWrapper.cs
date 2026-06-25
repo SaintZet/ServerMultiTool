@@ -28,6 +28,8 @@ public partial class ProcessExecutionOperationWrapper : PipelineOperationWrapper
     public override PipelineOperationBase ToOriginal()
     {
         _operation.EnableOperation(Enabled);
+        _operation.UpdateFileName(FileName);
+        _operation.UpdateArguments(Arguments);
         _operation.UpdateRetryCount(RetryCount);
 
         return _operation;

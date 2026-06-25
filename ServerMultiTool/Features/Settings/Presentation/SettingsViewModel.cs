@@ -76,6 +76,7 @@ public partial class SettingsViewModel : BaseViewModel, IPage, INavigationAware
     #region Private Fields
 
     private bool _isInitializing;
+    private bool _isSaving;
 
     // Initial state for cancel
     private ObservableCollection<DirectoryModelWrapper> _initialSolutionDirectories = [];
@@ -117,7 +118,11 @@ public partial class SettingsViewModel : BaseViewModel, IPage, INavigationAware
 
         LoadSettings();
         LoadProfiles();
-        _pipelineProfilesService.ProfilesChanged += (_, _) => Application.Current.Dispatcher.Invoke(LoadProfiles);
+        _pipelineProfilesService.ProfilesChanged += (_, _) => Application.Current.Dispatcher.Invoke(() =>
+        {
+            if (_isSaving) return;
+            LoadProfiles();
+        });
 
         EditPipelineProfile.PropertyChanged += OnEditPipelineProfilePropertyChanged;
 
@@ -226,31 +231,39 @@ public partial class SettingsViewModel : BaseViewModel, IPage, INavigationAware
     [RelayCommand]
     private void SaveSettings()
     {
-        var appSettings = _appSettingsService.Get();
+        _isSaving = true;
+        try
+        {
+            var appSettings = _appSettingsService.Get();
 
-        appSettings.SolutionDirectories = SolutionDirectories.ToStructArray();
-        appSettings.HttpDirectories = HttpDirectories.ToStructArray();
-        appSettings.UpdateFeedUrl = UpdateFeedUrl;
-        appSettings.UpdatePublicKey = UpdatePublicKey;
-        appSettings.CheckForUpdatesOnStartup = CheckForUpdatesOnStartup;
+            appSettings.SolutionDirectories = SolutionDirectories.ToStructArray();
+            appSettings.HttpDirectories = HttpDirectories.ToStructArray();
+            appSettings.UpdateFeedUrl = UpdateFeedUrl;
+            appSettings.UpdatePublicKey = UpdatePublicKey;
+            appSettings.CheckForUpdatesOnStartup = CheckForUpdatesOnStartup;
 
-        _appSettingsService.Save(appSettings);
+            _appSettingsService.Save(appSettings);
 
-        _initialSolutionDirectories = SolutionDirectories.Clone();
-        _initialHttpDirectories = HttpDirectories.Clone();
+            _initialSolutionDirectories = SolutionDirectories.Clone();
+            _initialHttpDirectories = HttpDirectories.Clone();
 
-        _pipelineProfilesService.SaveAll(
-            [.. PipelineProfiles.Select(w => w.ToOriginal())]
-        );
+            _pipelineProfilesService.SaveAll(
+                [.. PipelineProfiles.Select(w => w.ToOriginal())]
+            );
 
-        _initialPipelineProfiles = PipelineProfiles.Clone();
+            _initialPipelineProfiles = PipelineProfiles.Clone();
 
-        // Re-configure the auto-updater with the new settings
-        _autoUpdateService.Configure(UpdateFeedUrl, UpdatePublicKey, CheckForUpdatesOnStartup);
+            // Re-configure the auto-updater with the new settings
+            _autoUpdateService.Configure(UpdateFeedUrl, UpdatePublicKey, CheckForUpdatesOnStartup);
 
-        GeneralInfo.UpdateData();
+            GeneralInfo.UpdateData();
 
-        HasUnsavedChanges = false;
+            HasUnsavedChanges = false;
+        }
+        finally
+        {
+            _isSaving = false;
+        }
     }
 
     [RelayCommand]
@@ -375,4 +388,7 @@ public partial class SettingsViewModel : BaseViewModel, IPage, INavigationAware
 
     #endregion
 }
+
+
+
 

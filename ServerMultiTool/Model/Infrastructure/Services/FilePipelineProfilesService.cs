@@ -18,6 +18,9 @@ namespace ServerMultiTool.Model.Infrastructure.Services
         private readonly Dictionary<Guid, PipelineProfile> _cache = new();
         private readonly Dictionary<Guid, string> _fileIndex = new(); // Id -> file path
         private FileSystemWatcher? _fsw;
+        private volatile int _suppressFswCount;
+        private System.Threading.Timer? _fswDebounceTimer;
+        private const int FswDebounceMs = 500;
 
         public event EventHandler? ProfilesChanged;
 
@@ -166,6 +169,10 @@ namespace ServerMultiTool.Model.Infrastructure.Services
         {
             if (profiles is null) throw new ArgumentNullException(nameof(profiles));
 
+            // Suppress FSW-triggered reloads while we write our own files.
+            // A Task.Delay clears the flag after FSW events have had time to fire.
+            System.Threading.Interlocked.Increment(ref _suppressFswCount);
+
             lock (_lock)
             {
                 // простая стратегия: переписать все переданные профили по их Id/Name
@@ -211,6 +218,10 @@ namespace ServerMultiTool.Model.Infrastructure.Services
 
                 RaiseChangedUnlocked();
             }
+
+            // Release suppression after debounce period + buffer — enough for FSW to finish firing
+            System.Threading.Tasks.Task.Delay(FswDebounceMs + 200)
+                .ContinueWith(_ => System.Threading.Interlocked.Decrement(ref _suppressFswCount));
         }
 
         // ===== helpers =====
@@ -245,9 +256,16 @@ namespace ServerMultiTool.Model.Infrastructure.Services
 
         private void ReloadOnFsEvent()
         {
-            // дебаунс можно добавить при желании
-            LoadAllIntoCache();
-            RaiseChanged();
+            if (_suppressFswCount > 0) return;
+
+            // Debounce: reset timer on every event, reload only when events stop for FswDebounceMs
+            _fswDebounceTimer?.Dispose();
+            _fswDebounceTimer = new System.Threading.Timer(_ =>
+            {
+                if (_suppressFswCount > 0) return;
+                LoadAllIntoCache();
+                RaiseChanged();
+            }, null, FswDebounceMs, System.Threading.Timeout.Infinite);
         }
 
         private void WriteToFile(string path, PipelineProfile profile)
@@ -358,6 +376,9 @@ namespace ServerMultiTool.Model.Infrastructure.Services
                 _fsw.Dispose();
                 _fsw = null;
             }
+
+            _fswDebounceTimer?.Dispose();
+            _fswDebounceTimer = null;
         }
     }
 }

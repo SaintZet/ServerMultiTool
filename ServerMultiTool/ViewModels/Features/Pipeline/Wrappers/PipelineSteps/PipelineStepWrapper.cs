@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -31,6 +32,9 @@ public partial class PipelineStepWrapper : ObservableObject
         Description = pipelineStep.Description;
         Order = pipelineStep.Order;
         Operations = new PipelineOperationsCollection(pipelineStep.Operations);
+
+        foreach (var operation in Operations)
+            operation.PropertyChanged += Operation_PropertyChanged;
     }
 
     public PipelineStep ToOriginal()
@@ -38,19 +42,29 @@ public partial class PipelineStepWrapper : ObservableObject
         _pipelineStep.UpdateOrder(Order);
         _pipelineStep.UpdateName(Name);
         _pipelineStep.UpdateDescription(Description);
+        _pipelineStep.Operations = [.. Operations.Select(operation => operation.ToOriginal())];
         return _pipelineStep;
     }
 
     public void AddOperation(PipelineOperationWrapper operation)
     {
+        operation.PropertyChanged += Operation_PropertyChanged;
         _pipelineStep.AddOperation(operation.ToOriginal());
         Operations.Add(operation);
     }
 
     public void RemoveOperation(PipelineOperationWrapper operation)
     {
+        operation.PropertyChanged -= Operation_PropertyChanged;
         _pipelineStep.RemoveOperation(operation.ToOriginal());
         Operations.Remove(operation);
+    }
+
+    public event EventHandler? OperationFieldChanged;
+
+    private void Operation_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        OperationFieldChanged?.Invoke(this, EventArgs.Empty);
     }
 
     public void UpdateSolutionDirectory(DirectoryModel directory) =>

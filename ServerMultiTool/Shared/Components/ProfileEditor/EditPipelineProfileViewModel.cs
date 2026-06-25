@@ -22,6 +22,7 @@ public partial class EditPipelineProfileViewModel : BaseViewModel, IEditPipeline
     [ObservableProperty] private PipelineStepWrapper? _selectedStep;
     [ObservableProperty] private ObservableCollection<OperationTypeViewModel> _availableOperationTypes;
     [ObservableProperty] private OperationTypeViewModel? _selectedOperationType;
+    private int _selectedStepIndex = -1;
 
     public EditPipelineProfileViewModel()
     {
@@ -45,7 +46,22 @@ public partial class EditPipelineProfileViewModel : BaseViewModel, IEditPipeline
         if (value is null)
             return;
 
-        SelectedStep = value.Steps.FirstOrDefault();
+        var previousStepOrder = SelectedStep?.Order;
+        var previousStepName = SelectedStep?.Name;
+        var previousIndex = _selectedStepIndex;
+
+        SelectedStep = previousIndex >= 0 && previousIndex < value.Steps.Count
+            ? value.Steps[previousIndex]
+            : value.Steps.FirstOrDefault(step => step.Order == previousStepOrder && step.Name == previousStepName)
+              ?? value.Steps.FirstOrDefault(step => step.Name == previousStepName)
+              ?? value.Steps.FirstOrDefault();
+    }
+
+    partial void OnSelectedStepChanged(PipelineStepWrapper? value)
+    {
+        _selectedStepIndex = value is null || Profile is null
+            ? -1
+            : Profile.Steps.IndexOf(value);
     }
 
     partial void OnSelectedStepChanging(PipelineStepWrapper? value)
@@ -53,15 +69,22 @@ public partial class EditPipelineProfileViewModel : BaseViewModel, IEditPipeline
         if (SelectedStep is not null)
         {
             SelectedStep.PropertyChanged -= SelectedStep_PropertyChanged;
+            SelectedStep.OperationFieldChanged -= SelectedStep_OperationFieldChanged;
         }
 
         if (value is not null)
         {
             value.PropertyChanged += SelectedStep_PropertyChanged;
+            value.OperationFieldChanged += SelectedStep_OperationFieldChanged;
         }
     }
 
     private void SelectedStep_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        OnPropertyChanged();
+    }
+
+    private void SelectedStep_OperationFieldChanged(object? sender, EventArgs e)
     {
         OnPropertyChanged();
     }
