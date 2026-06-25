@@ -12,6 +12,8 @@ on:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
 
 jobs:
   publish-and-update-appcast:
@@ -20,7 +22,6 @@ jobs:
     env:
       APP_NAME: ServerMultiTool
       RUNTIME_ID: win-x64
-      APPCAST_BRANCH: gh-pages
 
     steps:
       - name: Checkout
@@ -71,10 +72,23 @@ jobs:
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Path artifacts/appcast -Force | Out-Null
-          git fetch origin $env:APPCAST_BRANCH --depth 1 2>$null
-          if ($LASTEXITCODE -eq 0) {
-            git show origin/$env:APPCAST_BRANCH:appcast.xml > artifacts/appcast/appcast.xml 2>$null
-            git show origin/$env:APPCAST_BRANCH:appcast.xml.signature > artifacts/appcast/appcast.xml.signature 2>$null
+          $owner = "${{ github.repository_owner }}"
+          $repo = "${{ github.event.repository.name }}"
+          $appcastUrl = "https://$owner.github.io/$repo/appcast.xml"
+          $signatureUrl = "https://$owner.github.io/$repo/appcast.xml.signature"
+
+          try {
+            Invoke-WebRequest -Uri $appcastUrl -OutFile artifacts/appcast/appcast.xml -UseBasicParsing
+          }
+          catch {
+            Write-Host "appcast.xml not found yet (first release is expected)."
+          }
+
+          try {
+            Invoke-WebRequest -Uri $signatureUrl -OutFile artifacts/appcast/appcast.xml.signature -UseBasicParsing
+          }
+          catch {
+            Write-Host "appcast.xml.signature not found yet (first release is expected)."
           }
 
       - name: Generate appcast.xml
@@ -90,7 +104,7 @@ jobs:
             throw "GitHub secret NETSPARKLE_PUBLIC_KEY is not set"
           }
 
-          ./.tools/netsparkle-generate-appcast `
+          ./.tools/netsparkle-generate-appcast.exe `
             -a artifacts/appcast `
             -b artifacts `
             -e zip `
@@ -109,11 +123,17 @@ jobs:
           files: artifacts/${{ env.APP_NAME }}-${{ env.RUNTIME_ID }}.zip
           fail_on_unmatched_files: true
 
-      - name: Deploy appcast to gh-pages
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_branch: ${{ env.APPCAST_BRANCH }}
-          publish_dir: artifacts/appcast
-          keep_files: true
+          path: artifacts/appcast
+
+      - name: Deploy appcast to GitHub Pages
+        uses: actions/deploy-pages@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
 

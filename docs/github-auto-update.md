@@ -1,6 +1,6 @@
 # GitHub Auto-Update (NetSparkle) - full setup
 
-This setup publishes each new version to GitHub Releases and automatically updates `appcast.xml` on `gh-pages`.
+This setup publishes each new version to GitHub Releases and automatically updates `appcast.xml` via GitHub Pages (GitHub Actions deployment mode).
 
 After one-time setup, your release flow is:
 1. Create GitHub release tag (for example `v1.2.3`)
@@ -23,7 +23,7 @@ Run:
 
 ```powershell
 cd C:\Repositories\SaintZet\ServerMultiTool
-pwsh .\scripts\Generate-NetSparkleKeys.ps1 -OutputPath .\keys
+powershell -ExecutionPolicy Bypass -File .\scripts\Generate-NetSparkleKeys.ps1 -OutputPath .\keys
 ```
 
 You will get:
@@ -42,8 +42,7 @@ In GitHub repo settings -> **Secrets and variables** -> **Actions** add:
 ### 3) Enable GitHub Pages
 
 In GitHub repo settings -> **Pages**:
-- Source: `Deploy from a branch`
-- Branch: `gh-pages` (root)
+- Source: `GitHub Actions`
 
 Workflow will publish `appcast.xml` here:
 
@@ -66,7 +65,7 @@ This gives zero-manual setup for end users (they get defaults even with empty lo
 
 ```powershell
 cd C:\Repositories\SaintZet\ServerMultiTool
-pwsh .\scripts\Create-GitHubRelease.ps1 -Version 1.2.3 -TargetBranch main
+powershell -ExecutionPolicy Bypass -File .\scripts\Create-GitHubRelease.ps1 -Version 1.2.3 -TargetBranch main
 ```
 
 ### Option B - manually in GitHub UI
@@ -80,7 +79,7 @@ After release is published, workflow `.github/workflows/release-auto-update.yml`
 2. create ZIP artifact
 3. upload ZIP into release assets
 4. regenerate `appcast.xml` + signature
-5. deploy appcast to `gh-pages`
+5. deploy appcast to GitHub Pages
 
 ## Verify that everything works
 
@@ -124,7 +123,7 @@ If newer release exists, NetSparkle shows update UI.
   - Verify `NETSPARKLE_PRIVATE_KEY` and `NETSPARKLE_PUBLIC_KEY`
 
 - **No appcast on Pages**
-  - Check that GitHub Pages is enabled for `gh-pages`
+  - Check that GitHub Pages source is set to `GitHub Actions`
 
 - **Client does not detect update**
   - Ensure app version increases
@@ -133,4 +132,5 @@ If newer release exists, NetSparkle shows update UI.
 
 - **Manual check button disabled**
   - Fill `Appcast URL` in settings
+
 

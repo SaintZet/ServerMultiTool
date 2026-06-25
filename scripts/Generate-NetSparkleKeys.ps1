@@ -12,11 +12,16 @@ if (-not $keyPath) {
     $keyPath = Resolve-Path -LiteralPath $OutputPath
 }
 
-if (-not (Test-Path (Join-Path $toolPath "netsparkle-generate-appcast.exe"))) {
+if (-not (Test-Path (Join-Path $toolPath "netsparkle-generate-appcast.exe")) -and -not (Test-Path (Join-Path $toolPath "netsparkle-generate-appcast"))) {
     dotnet tool install --tool-path $toolPath NetSparkleUpdater.Tools.AppCastGenerator --version 2.9.0
 }
 
-& (Join-Path $toolPath "netsparkle-generate-appcast") --generate-keys --force --key-path $keyPath
+$tool = Join-Path $toolPath "netsparkle-generate-appcast.exe"
+if (-not (Test-Path $tool)) {
+    $tool = Join-Path $toolPath "netsparkle-generate-appcast"
+}
+
+& $tool --generate-keys --force --key-path $keyPath
 
 $publicKeyFile = Join-Path $keyPath "NetSparkle_Ed25519.pub"
 $privateKeyFile = Join-Path $keyPath "NetSparkle_Ed25519.priv"
@@ -33,4 +38,5 @@ Write-Host "  Private: $privateKeyFile"
 Write-Host ""
 Write-Host "Public key value (put into app settings/defaults):"
 Write-Host $publicKey
+
 
