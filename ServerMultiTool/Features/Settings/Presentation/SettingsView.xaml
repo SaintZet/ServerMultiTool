@@ -192,6 +192,19 @@
                         CornerRadius="10">
                         <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                             <StackPanel>
+                                <StackPanel Margin="2,4,0,16">
+                                    <TextBlock
+                                        FontSize="19"
+                                        FontWeight="SemiBold"
+                                        Foreground="{DynamicResource PrimaryTextColor}"
+                                        Text="Path Configuration" />
+                                    <TextBlock
+                                        Margin="0,4,0,0"
+                                        FontSize="12"
+                                        FontWeight="Normal"
+                                        Foreground="{DynamicResource SecondaryTextColor}"
+                                        Text="Manage directories and their paths for the selected solution." />
+                                </StackPanel>
                                 <Border
                                     Margin="0,0,0,14"
                                     Background="#FFFFFF"
@@ -208,7 +221,6 @@
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="Auto" />
                                                 <ColumnDefinition Width="*" />
-                                                <ColumnDefinition Width="Auto" />
                                                 <ColumnDefinition Width="Auto" />
                                             </Grid.ColumnDefinitions>
                                             <Border
@@ -240,17 +252,6 @@
                                                 Command="{Binding AddSolutionDirectoryCommand}"
                                                 Content="+  Add Directory"
                                                 Style="{StaticResource SmallAddButtonStyle}" />
-                                            <Button
-                                                Grid.Column="3"
-                                                Width="34"
-                                                Height="34"
-                                                Background="Transparent"
-                                                BorderBrush="#D3D8EA"
-                                                BorderThickness="1"
-                                                Content="&#x22EE;"
-                                                Cursor="Hand"
-                                                FontSize="14"
-                                                Foreground="{DynamicResource SecondaryTextColor}" />
                                         </Grid>
 
                                         <Border
@@ -339,27 +340,15 @@
                                                                                 Stretch="Fill" />
                                                                         </Button>
                                                                     </DockPanel>
-                                                                    <StackPanel Grid.Column="2" Margin="14,0,0,0" Orientation="Horizontal">
-                                                                        <Button
-                                                                            Margin="0,0,8,0"
-                                                                            Command="{Binding DataContext.RenameDirectoryCommand, RelativeSource={RelativeSource AncestorType=Page}}"
-                                                                            CommandParameter="{Binding}"
-                                                                            Style="{StaticResource PipelineIconButtonStyle}"
-                                                                            ToolTip="Rename">
-                                                                            <Path
-                                                                                Width="16"
-                                                                                Height="16"
-                                                                                Data="M3,17.25V21H6.75L17.81,9.94L14.06,6.19L3,17.25M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.13,5.12L18.88,8.87L20.71,7.04Z"
-                                                                                Fill="{DynamicResource SecondaryTextColor}"
-                                                                                Stretch="Fill" />
-                                                                        </Button>
-                                                                        <Button
-                                                                            Command="{Binding DataContext.RemoveSolutionDirectoryRowCommand, RelativeSource={RelativeSource AncestorType=Page}}"
-                                                                            CommandParameter="{Binding}"
-                                                                            Content=""
-                                                                            Style="{StaticResource DeleteButtonStyle}"
-                                                                            ToolTip="Delete row" />
-                                                                    </StackPanel>
+                                                                    <Button
+                                                                        Grid.Column="2"
+                                                                        Margin="14,0,0,0"
+                                                                        HorizontalAlignment="Right"
+                                                                        Command="{Binding DataContext.RemoveSolutionDirectoryRowCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                                                        CommandParameter="{Binding}"
+                                                                        Content=""
+                                                                        Style="{StaticResource DeleteButtonStyle}"
+                                                                        ToolTip="Delete row" />
                                                                 </Grid>
                                                             </Border>
                                                         </DataTemplate>
@@ -386,7 +375,6 @@
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="Auto" />
                                                 <ColumnDefinition Width="*" />
-                                                <ColumnDefinition Width="Auto" />
                                                 <ColumnDefinition Width="Auto" />
                                             </Grid.ColumnDefinitions>
                                             <Border
@@ -418,17 +406,6 @@
                                                 Command="{Binding AddHttpDirectoryCommand}"
                                                 Content="+  Add Directory"
                                                 Style="{StaticResource SmallAddButtonStyle}" />
-                                            <Button
-                                                Grid.Column="3"
-                                                Width="34"
-                                                Height="34"
-                                                Background="Transparent"
-                                                BorderBrush="#D3D8EA"
-                                                BorderThickness="1"
-                                                Content="&#x22EE;"
-                                                Cursor="Hand"
-                                                FontSize="14"
-                                                Foreground="{DynamicResource SecondaryTextColor}" />
                                         </Grid>
 
                                         <Border
@@ -517,27 +494,15 @@
                                                                                 Stretch="Fill" />
                                                                         </Button>
                                                                     </DockPanel>
-                                                                    <StackPanel Grid.Column="2" Margin="14,0,0,0" Orientation="Horizontal">
-                                                                        <Button
-                                                                            Margin="0,0,8,0"
-                                                                            Command="{Binding DataContext.RenameDirectoryCommand, RelativeSource={RelativeSource AncestorType=Page}}"
-                                                                            CommandParameter="{Binding}"
-                                                                            Style="{StaticResource PipelineIconButtonStyle}"
-                                                                            ToolTip="Rename">
-                                                                            <Path
-                                                                                Width="16"
-                                                                                Height="16"
-                                                                                Data="M3,17.25V21H6.75L17.81,9.94L14.06,6.19L3,17.25M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.13,5.12L18.88,8.87L20.71,7.04Z"
-                                                                                Fill="{DynamicResource SecondaryTextColor}"
-                                                                                Stretch="Fill" />
-                                                                        </Button>
-                                                                        <Button
-                                                                            Command="{Binding DataContext.RemoveHttpDirectoryRowCommand, RelativeSource={RelativeSource AncestorType=Page}}"
-                                                                            CommandParameter="{Binding}"
-                                                                            Content=""
-                                                                            Style="{StaticResource DeleteButtonStyle}"
-                                                                            ToolTip="Delete row" />
-                                                                    </StackPanel>
+                                                                    <Button
+                                                                        Grid.Column="2"
+                                                                        Margin="14,0,0,0"
+                                                                        HorizontalAlignment="Right"
+                                                                        Command="{Binding DataContext.RemoveHttpDirectoryRowCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                                                        CommandParameter="{Binding}"
+                                                                        Content=""
+                                                                        Style="{StaticResource DeleteButtonStyle}"
+                                                                        ToolTip="Delete row" />
                                                                 </Grid>
                                                             </Border>
                                                         </DataTemplate>
