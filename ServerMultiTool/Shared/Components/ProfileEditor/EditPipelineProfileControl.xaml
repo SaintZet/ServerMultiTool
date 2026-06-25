@@ -105,6 +105,19 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <Style x:Key="PanelHeaderBorderStyle" TargetType="Border">
+            <Setter Property="Padding" Value="12,10" />
+            <Setter Property="Height" Value="44" />
+            <Setter Property="Background" Value="{DynamicResource SecondaryBackgroundColor}" />
+            <Setter Property="BorderBrush" Value="LightGray" />
+            <Setter Property="BorderThickness" Value="0,0,0,1" />
+        </Style>
+        <Style x:Key="PanelHeaderTitleStyle" TargetType="TextBlock">
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="{DynamicResource PrimaryTextColor}" />
+        </Style>
         <!-- ProcessExecution editor -->
         <DataTemplate x:Key="ProcessExecutionEditorTemplate">
             <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
@@ -121,10 +134,6 @@
                                 <StackPanel Grid.Column="0">
                                     <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Description" />
                                     <TextBox Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                                </StackPanel>
-                                <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Bottom">
-                                    <TextBlock Margin="0,0,0,6" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryGrayColor}" Text="Enabled" />
-                                    <ToggleButton IsChecked="{Binding Enabled, Mode=TwoWay}" Style="{StaticResource ToggleButtonStyle}" />
                                 </StackPanel>
                             </Grid>
                         </StackPanel>
@@ -174,10 +183,6 @@
                                 <StackPanel Grid.Column="0">
                                     <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Description" />
                                     <TextBox Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                                </StackPanel>
-                                <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Bottom">
-                                    <TextBlock Margin="0,0,0,6" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryGrayColor}" Text="Enabled" />
-                                    <ToggleButton IsChecked="{Binding Enabled, Mode=TwoWay}" Style="{StaticResource ToggleButtonStyle}" />
                                 </StackPanel>
                             </Grid>
                         </StackPanel>
@@ -240,10 +245,6 @@
                                     <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Description" />
                                     <TextBox Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                                 </StackPanel>
-                                <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Bottom">
-                                    <TextBlock Margin="0,0,0,6" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryGrayColor}" Text="Enabled" />
-                                    <ToggleButton IsChecked="{Binding Enabled, Mode=TwoWay}" Style="{StaticResource ToggleButtonStyle}" />
-                                </StackPanel>
                             </Grid>
                         </StackPanel>
                     </Expander>
@@ -286,10 +287,6 @@
                                     <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Description" />
                                     <TextBox Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                                 </StackPanel>
-                                <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Bottom">
-                                    <TextBlock Margin="0,0,0,6" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryGrayColor}" Text="Enabled" />
-                                    <ToggleButton IsChecked="{Binding Enabled, Mode=TwoWay}" Style="{StaticResource ToggleButtonStyle}" />
-                                </StackPanel>
                             </Grid>
                         </StackPanel>
                     </Expander>
@@ -330,10 +327,6 @@
                                     <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Description" />
                                     <TextBox Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                                 </StackPanel>
-                                <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Bottom">
-                                    <TextBlock Margin="0,0,0,6" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryGrayColor}" Text="Enabled" />
-                                    <ToggleButton IsChecked="{Binding Enabled, Mode=TwoWay}" Style="{StaticResource ToggleButtonStyle}" />
-                                </StackPanel>
                             </Grid>
                         </StackPanel>
                     </Expander>
@@ -371,10 +364,6 @@
                                 <StackPanel Grid.Column="0">
                                     <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Description" />
                                     <TextBox Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                                </StackPanel>
-                                <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Bottom">
-                                    <TextBlock Margin="0,0,0,6" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryGrayColor}" Text="Enabled" />
-                                    <ToggleButton IsChecked="{Binding Enabled, Mode=TwoWay}" Style="{StaticResource ToggleButtonStyle}" />
                                 </StackPanel>
                             </Grid>
                         </StackPanel>
@@ -416,10 +405,6 @@
                                     <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Description" />
                                     <TextBox Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                                 </StackPanel>
-                                <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Bottom">
-                                    <TextBlock Margin="0,0,0,6" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryGrayColor}" Text="Enabled" />
-                                    <ToggleButton IsChecked="{Binding Enabled, Mode=TwoWay}" Style="{StaticResource ToggleButtonStyle}" />
-                                </StackPanel>
                             </Grid>
                         </StackPanel>
                     </Expander>
@@ -453,10 +438,6 @@
                                     <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Description" />
                                     <TextBox Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                                 </StackPanel>
-                                <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Bottom">
-                                    <TextBlock Margin="0,0,0,6" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryGrayColor}" Text="Enabled" />
-                                    <ToggleButton IsChecked="{Binding Enabled, Mode=TwoWay}" Style="{StaticResource ToggleButtonStyle}" />
-                                </StackPanel>
                             </Grid>
                         </StackPanel>
                     </Expander>
@@ -483,24 +464,37 @@
                 <ColumnDefinition Width="1" />
                 <ColumnDefinition Width="1.85*" MinWidth="260" />
             </Grid.ColumnDefinitions>
-            <!-- LEFT: Pipeline Steps -->
+            <!-- LEFT: Pipeline -->
             <Grid Grid.Column="0">
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-                <Border Grid.Row="0" Padding="12,10" BorderBrush="LightGray" BorderThickness="0,0,0,1">
+                <Border Grid.Row="0" Style="{StaticResource PanelHeaderBorderStyle}">
+                    <TextBlock Style="{StaticResource PanelHeaderTitleStyle}" Text="Pipeline" />
+                </Border>
+                <Expander Grid.Row="1" Margin="14,10,14,8" Header="General" Style="{StaticResource SectionExpanderStyle}">
+                    <StackPanel Margin="2,8,2,8">
+                        <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Name" />
+                        <TextBox Margin="0,0,0,10" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Profile.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Description" />
+                        <TextBox Margin="0,0,0,10" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Profile.Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    </StackPanel>
+                </Expander>
+                <Border Grid.Row="2" Style="{StaticResource PanelHeaderBorderStyle}" BorderThickness="0,1,0,1">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" VerticalAlignment="Center" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryTextColor}" Text="Pipeline Steps" />
-                        <Button Grid.Column="1" Command="{Binding AddStepCommand}" Content="+ Add Step" Style="{StaticResource SmallAddButtonStyle}" />
+                        <TextBlock Grid.Column="0" Style="{StaticResource PanelHeaderTitleStyle}" Text="Steps" />
+                        <Button Grid.Column="1" VerticalAlignment="Center" Command="{Binding AddStepCommand}" Content="+ Add Step" Style="{StaticResource SmallAddButtonStyle}" />
                     </Grid>
                 </Border>
-                <ListView x:Name="StepsListView" Grid.Row="1" AlternationCount="1000" AllowDrop="True" Background="Transparent" BorderThickness="0" DragOver="ListView_DragOver" Drop="ListView_Drop" ItemsSource="{Binding Profile.Steps}" PreviewMouseLeftButtonDown="ListView_PreviewMouseLeftButtonDown" PreviewMouseMove="ListView_PreviewMouseMove" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" SelectedItem="{Binding SelectedStep, Mode=TwoWay}">
+                <ListView x:Name="StepsListView" Grid.Row="3" AlternationCount="1000" AllowDrop="True" Background="Transparent" BorderThickness="0" DragOver="ListView_DragOver" Drop="ListView_Drop" ItemsSource="{Binding Profile.Steps}" PreviewMouseLeftButtonDown="ListView_PreviewMouseLeftButtonDown" PreviewMouseMove="ListView_PreviewMouseMove" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" SelectedItem="{Binding SelectedStep, Mode=TwoWay}">
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem">
                         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
@@ -546,7 +540,7 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <Border Grid.Row="2" Margin="8" Padding="8,6" Background="{DynamicResource SecondaryBackgroundColor}" BorderBrush="LightGray" BorderThickness="1" CornerRadius="4">
+            <Border Grid.Row="4" Margin="8" Padding="8,6" Background="{DynamicResource SecondaryBackgroundColor}" BorderBrush="LightGray" BorderThickness="1" CornerRadius="4">
                 <StackPanel Orientation="Horizontal">
                     <Path Width="12" Height="12" Margin="0,1,6,0" VerticalAlignment="Top" Data="{StaticResource Information}" Fill="{DynamicResource SecondaryBlueColor}" Stretch="Uniform" />
                     <StackPanel>
@@ -573,14 +567,14 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                <Border Grid.Row="0" Padding="12,10" BorderBrush="LightGray" BorderThickness="0,0,0,1">
+                <Border Grid.Row="0" Style="{StaticResource PanelHeaderBorderStyle}">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <StackPanel Grid.Column="0">
-                            <TextBlock VerticalAlignment="Center" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryTextColor}" Text="Step" />
+                            <TextBlock Style="{StaticResource PanelHeaderTitleStyle}" Text="Step" />
                         </StackPanel>
                         <StackPanel Grid.Column="1" Margin="0,0,2,0" VerticalAlignment="Center" Orientation="Horizontal">
                             <TextBlock Margin="0,0,8,0" VerticalAlignment="Center" FontSize="12" Foreground="{DynamicResource PrimaryTextColor}" Text="Enabled" />
@@ -588,16 +582,12 @@
                         </StackPanel>
                     </Grid>
                 </Border>
-                <Expander Grid.Row="1" Margin="0,0,0,8" Header="General" Style="{StaticResource SectionExpanderStyle}">
-                    <StackPanel Margin="12,8,12,0">
-                        <StackPanel Margin="0,0,0,10">
-                            <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Name" />
-                            <TextBox Style="{StaticResource FieldTextBoxStyle}" Text="{Binding SelectedStep.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                        </StackPanel>
-                        <StackPanel Margin="0,0,0,10">
-                            <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Description" />
-                            <TextBox Height="70" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding SelectedStep.Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                        </StackPanel>
+                <Expander Grid.Row="1" Margin="14,10,14,8" Header="General" Style="{StaticResource SectionExpanderStyle}">
+                    <StackPanel Margin="2,8,2,8">
+                        <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Name" />
+                        <TextBox Margin="0,0,0,10" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding SelectedStep.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Description" />
+                        <TextBox Margin="0,0,0,10" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding SelectedStep.Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                     </StackPanel>
                 </Expander>
                 <Grid Grid.Row="2">
@@ -605,7 +595,7 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
-                    <Border Grid.Row="0" Padding="12,10" BorderBrush="LightGray" BorderThickness="0,1,0,1">
+                    <Border Grid.Row="0" Style="{StaticResource PanelHeaderBorderStyle}" BorderThickness="0,1,0,1">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
@@ -722,14 +712,17 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
-                    <Border Grid.Row="0" Padding="12,10" BorderBrush="LightGray" BorderThickness="0,0,0,1">
+                    <Border Grid.Row="0" Style="{StaticResource PanelHeaderBorderStyle}">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" Margin="0,0,10,0" VerticalAlignment="Center" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryTextColor}" Text="Edit Operation" />
-                                <Button Grid.Column="1" Width="24" Height="24" Background="Transparent" BorderThickness="0" Command="{Binding RemoveOperationCommand}" CommandParameter="{Binding SelectedOperation}" Content="" Cursor="Hand" Style="{StaticResource DeleteButtonStyle}" ToolTip="Remove operation" />
+                                <TextBlock Grid.Column="0" Margin="0,0,10,0" Style="{StaticResource PanelHeaderTitleStyle}" Text="Operation" />
+                                <StackPanel Grid.Column="1" Margin="0,0,2,0" VerticalAlignment="Center" Orientation="Horizontal">
+                                    <TextBlock Margin="0,0,8,0" VerticalAlignment="Center" FontSize="12" Foreground="{DynamicResource PrimaryTextColor}" Text="Enabled" />
+                                    <ToggleButton IsChecked="{Binding SelectedOperation.Enabled, Mode=TwoWay}" Style="{StaticResource ToggleButtonStyle}" />
+                                </StackPanel>
                         </Grid>
                     </Border>
                     <ContentControl Grid.Row="1" Content="{Binding SelectedOperation}" ContentTemplateSelector="{StaticResource OperationEditorTemplateSelector}" />

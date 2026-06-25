@@ -16,6 +16,19 @@
 
     <Page.Resources>
         <converters:StringNotNullOrEmptyToBoolConverter x:Key="StringNotNullOrEmptyToBoolConverter" />
+        <Style x:Key="PanelHeaderBorderStyle" TargetType="Border">
+            <Setter Property="Padding" Value="12,10" />
+            <Setter Property="Height" Value="44" />
+            <Setter Property="Background" Value="{DynamicResource SecondaryBackgroundColor}" />
+            <Setter Property="BorderBrush" Value="LightGray" />
+            <Setter Property="BorderThickness" Value="0,0,0,1" />
+        </Style>
+        <Style x:Key="PanelHeaderTitleStyle" TargetType="TextBlock">
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="{DynamicResource PrimaryTextColor}" />
+        </Style>
     </Page.Resources>
 
     <Border Background="{DynamicResource SecondaryBackgroundColor}" CornerRadius="8">
@@ -397,12 +410,8 @@
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
 
-                            <Border Grid.Row="0" Padding="10,8" BorderBrush="LightGray" BorderThickness="0,0,0,1">
-                                <TextBlock
-                                    FontSize="13"
-                                    FontWeight="SemiBold"
-                                    Foreground="{DynamicResource PrimaryTextColor}"
-                                    Text="Pipeline Profiles" />
+                            <Border Grid.Row="0" Style="{StaticResource PanelHeaderBorderStyle}">
+                                <TextBlock Style="{StaticResource PanelHeaderTitleStyle}" Text="Pipeline Profiles" />
                             </Border>
 
                             <ListBox
