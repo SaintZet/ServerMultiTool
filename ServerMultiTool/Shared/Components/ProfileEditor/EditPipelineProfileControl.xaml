@@ -56,6 +56,25 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <Style x:Key="VerticalSplitLineStyle" TargetType="GridSplitter">
+            <Setter Property="Width" Value="8" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Cursor" Value="SizeWE" />
+            <Setter Property="ResizeBehavior" Value="PreviousAndNext" />
+            <Setter Property="ResizeDirection" Value="Columns" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="GridSplitter">
+                        <Grid Background="{TemplateBinding Background}">
+                            <Border
+                                Width="1"
+                                HorizontalAlignment="Center"
+                                Background="LightGray" />
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
         <Style x:Key="SectionExpanderStyle" TargetType="Expander">
             <Setter Property="Margin" Value="0,0,0,8" />
             <Setter Property="Foreground" Value="{DynamicResource PrimaryTextColor}" />
@@ -372,13 +391,13 @@
         <converters:OperationEditorTemplateSelector x:Key="OperationEditorTemplateSelector" DeliveryBinTemplate="{StaticResource DeliveryBinEditorTemplate}" DeliverySpecifiedFilesTemplate="{StaticResource DeliverySpecifiedFilesEditorTemplate}" GitPullTemplate="{StaticResource GitPullEditorTemplate}" HttpPingTemplate="{StaticResource HttpPingEditorTemplate}" MsBuildTemplate="{StaticResource MsBuildEditorTemplate}" ProcessExecutionTemplate="{StaticResource ProcessExecutionEditorTemplate}" SqlExecutionTemplate="{StaticResource SqlEditorTemplate}" WebBrowserTemplate="{StaticResource WebBrowserEditorTemplate}" />
     </UserControl.Resources>
 
-    <Grid Background="{DynamicResource TertiaryBackgroundColor}">
-        <Grid>
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+            <Grid Background="{DynamicResource TertiaryBackgroundColor}" MinHeight="520">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" MinWidth="170" />
-                <ColumnDefinition Width="1" />
+                <ColumnDefinition Width="8" MinWidth="8" />
                 <ColumnDefinition Width="*" MinWidth="180" />
-                <ColumnDefinition Width="1" />
+                <ColumnDefinition Width="8" MinWidth="8" />
                 <ColumnDefinition Width="*" MinWidth="180" />
             </Grid.ColumnDefinitions>
             <!-- LEFT: Pipeline -->
@@ -500,7 +519,7 @@
                 </StackPanel>
             </Border>
             </Grid>
-            <Border Grid.Column="1" Background="LightGray" />
+            <GridSplitter Grid.Column="1" Style="{StaticResource VerticalSplitLineStyle}" ShowsPreview="True" />
             <!-- MIDDLE: Step + Operations -->
             <Grid Grid.Column="2">
                 <Grid.Style>
@@ -636,7 +655,7 @@
                     </Style>
                 </TextBlock.Style>
             </TextBlock>
-            <Border Grid.Column="3" Background="LightGray" />
+            <GridSplitter Grid.Column="3" Style="{StaticResource VerticalSplitLineStyle}" ShowsPreview="True" />
             <!-- RIGHT: Operation editor -->
             <Grid Grid.Column="4">
                 <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="13" Foreground="{DynamicResource PrimaryGrayColor}" Text="Select an operation to edit">
@@ -684,5 +703,5 @@
             </Grid>
         </Grid>
         <!--  End Main Content Grid  -->
-    </Grid>
+    </ScrollViewer>
 </UserControl>
