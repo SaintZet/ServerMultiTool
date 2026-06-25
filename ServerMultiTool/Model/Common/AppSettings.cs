@@ -15,6 +15,11 @@ public class AppSettings
 
     public string CurrentPipelineProfileName { get; set; } = string.Empty;
 
+    public bool PipelineLogFilterInfoEnabled { get; set; } = true;
+    public bool PipelineLogFilterSuccessEnabled { get; set; } = true;
+    public bool PipelineLogFilterWarnEnabled { get; set; } = true;
+    public bool PipelineLogFilterErrorEnabled { get; set; } = true;
+
     public string Log4NetConfigPath { get; set; } = string.Empty;
 
     // Auto-update settings

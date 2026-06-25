@@ -52,16 +52,16 @@ public partial class PipelineViewModel : BaseViewModel, IPage
     }
 
     [ObservableProperty] private bool _isInfoEnabled = true;
-    partial void OnIsInfoEnabledChanged(bool value) => RefreshLogs();
+    partial void OnIsInfoEnabledChanged(bool value) => OnLogFilterChanged();
 
     [ObservableProperty] private bool _isSuccessEnabled = true;
-    partial void OnIsSuccessEnabledChanged(bool value) => RefreshLogs();
+    partial void OnIsSuccessEnabledChanged(bool value) => OnLogFilterChanged();
 
     [ObservableProperty] private bool _isWarnEnabled = true;
-    partial void OnIsWarnEnabledChanged(bool value) => RefreshLogs();
+    partial void OnIsWarnEnabledChanged(bool value) => OnLogFilterChanged();
 
     [ObservableProperty] private bool _isErrorEnabled = true;
-    partial void OnIsErrorEnabledChanged(bool value) => RefreshLogs();
+    partial void OnIsErrorEnabledChanged(bool value) => OnLogFilterChanged();
 
     private void RefreshLogs()
     {
@@ -74,6 +74,7 @@ public partial class PipelineViewModel : BaseViewModel, IPage
 
     private readonly PipelineExecuteManager _pipelineExecutor;
     private readonly GsLogMonitorManager _logManager;
+    private bool _isLoadingLogFilters;
 
     #endregion
 
@@ -107,6 +108,8 @@ public partial class PipelineViewModel : BaseViewModel, IPage
         _generalInfo = generalInfo;
 
         _logManager = new GsLogMonitorManager(appSettingsService);
+
+        LoadPersistedLogFilters();
         _logManager.SetFilter(LogFilter);
 
         _pipelineExecutor = new PipelineExecuteManager(_logManager);
@@ -115,6 +118,38 @@ public partial class PipelineViewModel : BaseViewModel, IPage
         LoadProfiles();
 
         _pipelineProfilesService.ProfilesChanged += (_, _) => Application.Current.Dispatcher.Invoke(LoadProfiles);
+    }
+
+    private void LoadPersistedLogFilters()
+    {
+        _isLoadingLogFilters = true;
+        try
+        {
+            var settings = _appSettingsService.Get();
+            IsInfoEnabled = settings.PipelineLogFilterInfoEnabled;
+            IsSuccessEnabled = settings.PipelineLogFilterSuccessEnabled;
+            IsWarnEnabled = settings.PipelineLogFilterWarnEnabled;
+            IsErrorEnabled = settings.PipelineLogFilterErrorEnabled;
+        }
+        finally
+        {
+            _isLoadingLogFilters = false;
+        }
+    }
+
+    private void OnLogFilterChanged()
+    {
+        RefreshLogs();
+
+        if (_isLoadingLogFilters)
+            return;
+
+        var settings = _appSettingsService.Get();
+        settings.PipelineLogFilterInfoEnabled = IsInfoEnabled;
+        settings.PipelineLogFilterSuccessEnabled = IsSuccessEnabled;
+        settings.PipelineLogFilterWarnEnabled = IsWarnEnabled;
+        settings.PipelineLogFilterErrorEnabled = IsErrorEnabled;
+        _appSettingsService.Save(settings);
     }
 
     private void LoadProfiles()
