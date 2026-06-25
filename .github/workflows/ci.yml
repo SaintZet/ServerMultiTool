@@ -1,0 +1,35 @@
+name: ci
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+
+jobs:
+  build-and-validate:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
+      - name: Restore
+        run: dotnet restore ServerMultiTool.sln
+
+      - name: Build
+        run: dotnet build ServerMultiTool.sln --configuration Release --no-restore
+
+      - name: Verify formatting
+        run: dotnet format ServerMultiTool.sln --verify-no-changes --no-restore
+
+      - name: Vulnerability report
+        shell: pwsh
+        run: dotnet list ServerMultiTool/ServerMultiTool.csproj package --vulnerable --include-transitive
+

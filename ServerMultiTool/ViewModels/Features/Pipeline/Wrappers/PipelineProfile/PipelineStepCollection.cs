@@ -1,6 +1,6 @@
-﻿using ServerMultiTool.ViewModels.Features.Pipeline.Collections;
-using ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.PipelineSteps;
 using System.Collections.Generic;
+using ServerMultiTool.ViewModels.Features.Pipeline.Collections;
+using ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.PipelineSteps;
 
 namespace ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers
 {

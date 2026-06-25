@@ -1,8 +1,8 @@
-﻿using ServerMultiTool.ViewModels.Windows;
 using System;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
+using ServerMultiTool.ViewModels.Windows;
 
 namespace ServerMultiTool.Views.Windows
 {

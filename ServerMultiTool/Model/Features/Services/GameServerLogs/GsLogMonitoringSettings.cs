@@ -1,6 +1,6 @@
-using ServerMultiTool.Model.Common;
 using System;
 using System.Text.Json.Serialization;
+using ServerMultiTool.Model.Common;
 
 namespace ServerMultiTool.Model.Features.Services.GameServerLogs;
 

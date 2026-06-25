@@ -1,11 +1,11 @@
-﻿using ServerMultiTool.Model.Features.Pipeline.Operations.Base;
+using System;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using ServerMultiTool.Model.Features.Pipeline.Operations.Base;
 using ServerMultiTool.Model.Features.Pipeline.Operations.Base.Enums;
 using ServerMultiTool.Model.Features.Pipeline.Operations.Execution;
 using ServerMultiTool.Model.Features.Pipeline.Operations.FileDelivery;
 using ServerMultiTool.Model.Features.Pipeline.Operations.Network;
-using System;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace ServerMultiTool.Model.Infrastructure.Json
 {

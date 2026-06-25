@@ -1,11 +1,12 @@
-﻿namespace ServerMultiTool.ViewModels.Common
+namespace ServerMultiTool.ViewModels.Common
 {
-    public static class PageNames
+
+    public static class IconKeys
     {
-        public const string PipelinePage = "Pipeline";
-        public const string JsonParserPage = "JsonParser";
-        public const string SettingsPage = "Settings";
-        public const string PipelineProfiles = "PipelineProfiles";
+        public const string Airplane = "Airplane";
+        public const string Json = "Json";
+        public const string Analytics = "Analytics";
+        public const string Settings = "Settings";
     }
 
     public static class SettingsPageTabKeys

@@ -1,8 +1,8 @@
-﻿using ServerMultiTool.Model.Features.Pipeline.Operations.Base.Enums;
-using ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Base;
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using ServerMultiTool.Model.Features.Pipeline.Operations.Base.Enums;
+using ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Base;
 
 namespace ServerMultiTool.ViewModels.Converters
 {

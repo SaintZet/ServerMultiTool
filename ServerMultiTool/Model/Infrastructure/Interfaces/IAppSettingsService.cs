@@ -1,6 +1,6 @@
-﻿using ServerMultiTool.Model.Common;
 using System;
 using System.Threading.Tasks;
+using ServerMultiTool.Model.Common;
 
 namespace ServerMultiTool.Model.Infrastructure.Interfaces
 {

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows;
 
 namespace ServerMultiTool.Views.Themes
@@ -7,7 +7,7 @@ namespace ServerMultiTool.Views.Themes
     {
         public enum ThemeTypes
         {
-            Light, 
+            Light,
             Dark,
         }
 
@@ -17,9 +17,9 @@ namespace ServerMultiTool.Views.Themes
         {
             if (CurrentTheme == type)
                 return;
-            
+
             CurrentTheme = type;
-            
+
             Application.Current.Resources.MergedDictionaries[0] = new ResourceDictionary
             {
                 Source = GetPathToResourceDictionary(type)

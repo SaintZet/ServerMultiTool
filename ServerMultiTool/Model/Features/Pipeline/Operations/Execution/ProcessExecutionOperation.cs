@@ -1,11 +1,11 @@
-﻿using ServerMultiTool.Model.Common.ProcessExecutor;
-using ServerMultiTool.Model.Features.Pipeline.Operations.Base;
-using ServerMultiTool.Model.Features.Pipeline.Operations.Base.Enums;
 using System;
 using System.Diagnostics;
 using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
+using ServerMultiTool.Model.Common.ProcessExecutor;
+using ServerMultiTool.Model.Features.Pipeline.Operations.Base;
+using ServerMultiTool.Model.Features.Pipeline.Operations.Base.Enums;
 
 namespace ServerMultiTool.Model.Features.Pipeline.Operations.Execution
 {

@@ -1,8 +1,8 @@
-﻿using ServerMultiTool.Model.Features.Pipeline.Operations.Base;
-using ServerMultiTool.Model.Features.Pipeline.Operations.Base.Enums;
-using ServerMultiTool.Model.Features.Services.Git;
 using System.Threading;
 using System.Threading.Tasks;
+using ServerMultiTool.Model.Features.Pipeline.Operations.Base;
+using ServerMultiTool.Model.Features.Pipeline.Operations.Base.Enums;
+using ServerMultiTool.Model.Features.Services.Git;
 
 namespace ServerMultiTool.Model.Features.Pipeline.Operations.Execution
 {

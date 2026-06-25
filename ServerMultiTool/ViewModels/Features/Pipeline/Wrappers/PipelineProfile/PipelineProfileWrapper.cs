@@ -1,11 +1,11 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using System;
+using System.Linq;
+using CommunityToolkit.Mvvm.ComponentModel;
 using ServerMultiTool.Features.Pipeline.Wrappers.Services.GameServerLogs;
 using ServerMultiTool.Model.Features.Pipeline.Profile;
 using ServerMultiTool.Model.Features.Pipeline.Step;
 using ServerMultiTool.ViewModels.Features.Pipeline.Collections;
 using ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.PipelineSteps;
-using System;
-using System.Linq;
 
 namespace ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers;
 
@@ -35,7 +35,7 @@ public partial class PipelineProfileWrapper : ObservableObject
         _profile.UpdateName(Name);
         _profile.UpdateDescription(Description);
         _profile.UpdateGsLogMonitoringSettings(GsLogMonitoringSettings.ToOriginal());
-        _profile.UpdateSteps([.. _steps.Select(step => step.ToOriginal())]);
+        _profile.UpdateSteps([.. Steps.Select(step => step.ToOriginal())]);
 
         return _profile;
     }

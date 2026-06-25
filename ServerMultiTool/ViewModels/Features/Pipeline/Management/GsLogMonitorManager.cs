@@ -1,9 +1,9 @@
+using System.Collections.ObjectModel;
+using System.Windows;
 using ServerMultiTool.Model.Common.EventAggregator;
 using ServerMultiTool.Model.Common.Logs;
 using ServerMultiTool.Model.Features.Services.GameServerLogs;
 using ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers;
-using System.Collections.ObjectModel;
-using System.Windows;
 
 namespace ServerMultiTool.ViewModels.Features.Pipeline.Management;
 

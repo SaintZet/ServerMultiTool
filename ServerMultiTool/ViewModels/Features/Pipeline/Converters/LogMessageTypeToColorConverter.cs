@@ -1,9 +1,9 @@
-using ServerMultiTool.Model.Common.Logs;
 using System;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
+using ServerMultiTool.Model.Common.Logs;
 
 namespace ServerMultiTool.ViewModels.Features.Pipeline.Converters
 {

@@ -1,12 +1,12 @@
-﻿using ServerMultiTool.Model.Common;
-using ServerMultiTool.Model.Features.Pipeline.Operations.Base.Enums;
-using ServerMultiTool.Model.Features.Pipeline.Operations.FileDelivery.Base;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
+using ServerMultiTool.Model.Common;
+using ServerMultiTool.Model.Features.Pipeline.Operations.Base.Enums;
+using ServerMultiTool.Model.Features.Pipeline.Operations.FileDelivery.Base;
 
 namespace ServerMultiTool.Model.Features.Pipeline.Operations.FileDelivery
 {

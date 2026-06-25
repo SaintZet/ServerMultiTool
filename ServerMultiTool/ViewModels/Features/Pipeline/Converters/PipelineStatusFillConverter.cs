@@ -1,9 +1,9 @@
-using ServerMultiTool.ViewModels.Features.Pipeline.Enums;
 using System;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
+using ServerMultiTool.ViewModels.Features.Pipeline.Enums;
 
 namespace ServerMultiTool.ViewModels.Features.Pipeline.Converters
 {

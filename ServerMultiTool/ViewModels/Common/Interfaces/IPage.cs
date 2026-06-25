@@ -1,4 +1,4 @@
-﻿namespace ServerMultiTool.ViewModels.Common.Interfaces
+namespace ServerMultiTool.ViewModels.Common.Interfaces
 {
     interface IPage
     {
