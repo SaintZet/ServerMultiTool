@@ -40,7 +40,9 @@ jobs:
           if ([string]::IsNullOrWhiteSpace($tag)) {
             throw "Unable to resolve release tag"
           }
+          $version = $tag.TrimStart('v', 'V')
           "tag=$tag" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          "version=$version" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
           "base_url=https://github.com/${{ github.repository }}/releases/download/$tag" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
 
       - name: Setup .NET SDK
@@ -60,7 +62,7 @@ jobs:
       - name: Pack release zip
         shell: pwsh
         run: |
-          $zipPath = "artifacts/$($env:APP_NAME)-$($env:RUNTIME_ID).zip"
+          $zipPath = "artifacts/$($env:APP_NAME)-${{ steps.meta.outputs.version }}-$($env:RUNTIME_ID).zip"
           if (Test-Path $zipPath) { Remove-Item $zipPath -Force }
           Compress-Archive -Path "artifacts/publish/*" -DestinationPath $zipPath
 
@@ -108,6 +110,7 @@ jobs:
             -a artifacts/appcast `
             -b artifacts `
             -e zip `
+            --file-version "${{ steps.meta.outputs.version }}" `
             -n $env:APP_NAME `
             -o windows `
             -u "${{ steps.meta.outputs.base_url }}" `
@@ -120,7 +123,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.meta.outputs.tag }}
-          files: artifacts/${{ env.APP_NAME }}-${{ env.RUNTIME_ID }}.zip
+          files: artifacts/${{ env.APP_NAME }}-${{ steps.meta.outputs.version }}-${{ env.RUNTIME_ID }}.zip
           fail_on_unmatched_files: true
 
       - name: Configure GitHub Pages
@@ -135,5 +138,6 @@ jobs:
         uses: actions/deploy-pages@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+
 
 
