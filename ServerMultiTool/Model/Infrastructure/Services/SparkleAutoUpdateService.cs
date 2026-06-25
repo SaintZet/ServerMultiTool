@@ -12,10 +12,17 @@ public class SparkleAutoUpdateService : IAutoUpdateService
 {
     private SparkleUpdater? _sparkle;
     private bool _checkOnStartup;
+    private bool _isStarted;
 
     public SparkleAutoUpdateService(string? feedUrl, string? publicKey, bool checkOnStartup)
     {
         Configure(feedUrl ?? string.Empty, publicKey ?? string.Empty, checkOnStartup);
+    }
+
+    public void Start()
+    {
+        _isStarted = true;
+        RestartLoopIfNeeded();
     }
 
     public Task CheckForUpdatesAsync()
@@ -23,7 +30,7 @@ public class SparkleAutoUpdateService : IAutoUpdateService
         if (_sparkle is null)
             return Task.CompletedTask;
 
-        _sparkle.CheckForUpdatesAtUserRequest(ignoreSkippedVersions: false);
+        _sparkle.CheckForUpdatesAtUserRequest(ignoreSkippedVersions: true);
         return Task.CompletedTask;
     }
 
@@ -41,9 +48,13 @@ public class SparkleAutoUpdateService : IAutoUpdateService
         _checkOnStartup = checkOnStartup;
 
         if (!string.IsNullOrWhiteSpace(feedUrl) && !string.IsNullOrWhiteSpace(publicKey))
+        {
             InitSparkle(feedUrl, publicKey);
+            RestartLoopIfNeeded();
+        }
         else
         {
+            _sparkle?.StopLoop();
             _sparkle?.Dispose();
             _sparkle = null;
         }
@@ -51,6 +62,7 @@ public class SparkleAutoUpdateService : IAutoUpdateService
 
     private void InitSparkle(string feedUrl, string publicKey)
     {
+        _sparkle?.StopLoop();
         _sparkle?.Dispose();
 
         var signatureVerifier = new Ed25519Checker(
@@ -66,6 +78,16 @@ public class SparkleAutoUpdateService : IAutoUpdateService
             RelaunchAfterUpdate = true
         };
 
-        _sparkle.StartLoop(_checkOnStartup, TimeSpan.FromHours(24));
+    }
+
+    private void RestartLoopIfNeeded()
+    {
+        if (!_isStarted || _sparkle is null)
+            return;
+
+        _sparkle.StopLoop();
+        _sparkle.StartLoop(_checkOnStartup, forceInitialCheck: true, TimeSpan.FromHours(24));
     }
 }
+
+

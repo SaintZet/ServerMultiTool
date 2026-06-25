@@ -27,11 +27,11 @@ namespace ServerMultiTool
 
             _serviceProvider = services.BuildServiceProvider();
 
-            // Force updater service creation so periodic checks can start at app launch.
-            _serviceProvider.GetRequiredService<IAutoUpdateService>();
-
             var mainWindow = _serviceProvider.GetRequiredService<MainWindowView>();
             mainWindow.Show();
+
+            // Start updater loop after main window is visible.
+            _serviceProvider.GetRequiredService<IAutoUpdateService>().Start();
         }
 
         private static void ConfigureServices(IServiceCollection services)
