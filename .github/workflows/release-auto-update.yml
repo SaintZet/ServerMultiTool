@@ -7,8 +7,13 @@ on:
     inputs:
       tag:
         description: "Release tag (example: v1.2.3)"
-        required: true
+        required: false
         type: string
+      clear_appcast:
+        description: "Publish an empty appcast.xml (clear all update items)"
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: write
@@ -33,6 +38,16 @@ jobs:
         id: meta
         shell: pwsh
         run: |
+          $clearAppcast = "${{ inputs.clear_appcast }}"
+          if ([string]::Equals($clearAppcast, "true", [System.StringComparison]::OrdinalIgnoreCase)) {
+            "is_clear=true" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+            "tag=" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+            "version=" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+            "base_url=" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+            return
+          }
+
+          "is_clear=false" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
           $tag = "${{ github.event.release.tag_name }}"
           if ([string]::IsNullOrWhiteSpace($tag)) {
             $tag = "${{ inputs.tag }}"
@@ -46,20 +61,24 @@ jobs:
           "base_url=https://github.com/${{ github.repository }}/releases/download/$tag" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
 
       - name: Setup .NET SDK
+        if: steps.meta.outputs.is_clear != 'true'
         uses: actions/setup-dotnet@v4
         with:
           global-json-file: global.json
 
       - name: Restore
+        if: steps.meta.outputs.is_clear != 'true'
         run: dotnet restore ServerMultiTool.sln
 
       - name: Publish app
+        if: steps.meta.outputs.is_clear != 'true'
         shell: pwsh
         run: |
           $publishDir = "artifacts/publish"
           dotnet publish ServerMultiTool/ServerMultiTool.csproj -c Release -r $env:RUNTIME_ID --self-contained false -o $publishDir
 
       - name: Pack release zip
+        if: steps.meta.outputs.is_clear != 'true'
         shell: pwsh
         run: |
           $zipPath = "artifacts/$($env:APP_NAME)-${{ steps.meta.outputs.version }}-$($env:RUNTIME_ID).zip"
@@ -67,10 +86,12 @@ jobs:
           Compress-Archive -Path "artifacts/publish/*" -DestinationPath $zipPath
 
       - name: Install NetSparkle appcast tool
+        if: steps.meta.outputs.is_clear != 'true'
         shell: pwsh
         run: dotnet tool install --tool-path ./.tools NetSparkleUpdater.Tools.AppCastGenerator --version 2.9.0
 
       - name: Download existing appcast (if exists)
+        if: steps.meta.outputs.is_clear != 'true'
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Path artifacts/appcast -Force | Out-Null
@@ -94,6 +115,7 @@ jobs:
           }
 
       - name: Generate appcast.xml
+        if: steps.meta.outputs.is_clear != 'true'
         shell: pwsh
         env:
           NETSPARKLE_PRIVATE_KEY: ${{ secrets.NETSPARKLE_PRIVATE_KEY }}
@@ -120,11 +142,31 @@ jobs:
             --human-readable
 
       - name: Upload release zip asset
+        if: steps.meta.outputs.is_clear != 'true'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.meta.outputs.tag }}
           files: artifacts/${{ env.APP_NAME }}-${{ steps.meta.outputs.version }}-${{ env.RUNTIME_ID }}.zip
           fail_on_unmatched_files: true
+
+      - name: Build empty appcast.xml
+        if: steps.meta.outputs.is_clear == 'true'
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Path artifacts/appcast -Force | Out-Null
+          @"
+          <rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" version="2.0">
+            <channel>
+              <title>$env:APP_NAME</title>
+              <description>Most recent changes with links to updates</description>
+              <language>en</language>
+            </channel>
+          </rss>
+          "@ | Out-File -FilePath artifacts/appcast/appcast.xml -Encoding utf8
+
+          if (Test-Path artifacts/appcast/appcast.xml.signature) {
+            Remove-Item artifacts/appcast/appcast.xml.signature -Force
+          }
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5

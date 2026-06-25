@@ -72,6 +72,14 @@ powershell -ExecutionPolicy Bypass -File .\scripts\Create-GitHubRelease.ps1 -Ver
 
 Create a new release with tag like `v1.2.3`.
 
+### Option C - clear appcast (remove all update items)
+
+Use GitHub Actions -> `release-auto-update` -> `Run workflow` and set:
+- `clear_appcast = true`
+- `tag` can be empty
+
+This publishes an empty `appcast.xml` to GitHub Pages and removes all offered updates.
+
 ---
 
 After release is published, workflow `.github/workflows/release-auto-update.yml` does:
@@ -108,7 +116,7 @@ If newer release exists, NetSparkle shows update UI.
 ## Rollback / hotfix strategy
 
 - If release is bad: delete GitHub release + tag and publish fixed `vX.Y.Z+1`
-- If appcast entry is wrong: rerun workflow with `workflow_dispatch`
+- If appcast entry is wrong: rerun workflow with `workflow_dispatch` (or run `clear_appcast = true` for full reset)
 - Do not rotate key pair unless required; key rotation requires shipping new public key to clients
 
 ## Security notes
@@ -129,8 +137,10 @@ If newer release exists, NetSparkle shows update UI.
   - Ensure app version increases
   - Ensure release tag version > installed version
   - Ensure appcast URL and public key match same key pair
+  - Manual `Check for Updates Now` ignores skipped versions by design
 
 - **Manual check button disabled**
   - Fill `Appcast URL` in settings
+
 
 
