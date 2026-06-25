@@ -24,7 +24,13 @@ public partial class EditPipelineProfileViewModel : BaseViewModel, IEditPipeline
     [ObservableProperty] private PipelineOperationWrapper? _selectedOperation;
     [ObservableProperty] private ObservableCollection<OperationTypeViewModel> _availableOperationTypes;
     [ObservableProperty] private OperationTypeViewModel? _selectedOperationType;
+    [ObservableProperty] private bool _isPipelineGeneralExpanded;
+    [ObservableProperty] private bool _isStepGeneralExpanded;
+    [ObservableProperty] private bool _isOperationGeneralExpanded;
     private int _selectedStepIndex = -1;
+    private bool _expandPipelineGeneralOnNextProfileChange;
+    private bool _expandStepGeneralOnNextSelection;
+    private bool _expandOperationGeneralOnNextSelection;
 
     public EditPipelineProfileViewModel()
     {
@@ -48,6 +54,9 @@ public partial class EditPipelineProfileViewModel : BaseViewModel, IEditPipeline
         if (value is null)
             return;
 
+        IsPipelineGeneralExpanded = _expandPipelineGeneralOnNextProfileChange;
+        _expandPipelineGeneralOnNextProfileChange = false;
+
         var previousStepOrder = SelectedStep?.Order;
         var previousStepName = SelectedStep?.Name;
         var previousIndex = _selectedStepIndex;
@@ -61,12 +70,21 @@ public partial class EditPipelineProfileViewModel : BaseViewModel, IEditPipeline
 
     partial void OnSelectedStepChanged(PipelineStepWrapper? value)
     {
+        IsStepGeneralExpanded = _expandStepGeneralOnNextSelection;
+        _expandStepGeneralOnNextSelection = false;
+
         _selectedStepIndex = value is null || Profile is null
             ? -1
             : Profile.Steps.IndexOf(value);
 
         // Auto-select first operation of the newly selected step
         SelectedOperation = value?.Operations.FirstOrDefault();
+    }
+
+    partial void OnSelectedOperationChanged(PipelineOperationWrapper? value)
+    {
+        IsOperationGeneralExpanded = value is not null && _expandOperationGeneralOnNextSelection;
+        _expandOperationGeneralOnNextSelection = false;
     }
 
     partial void OnSelectedStepChanging(PipelineStepWrapper? value)
@@ -104,6 +122,8 @@ public partial class EditPipelineProfileViewModel : BaseViewModel, IEditPipeline
         var newStepWrapper = new PipelineStepWrapper(newStep);
         Profile.AddStep(newStep);
         Profile.Steps.Add(newStepWrapper);
+        _expandStepGeneralOnNextSelection = true;
+        SelectedStep = newStepWrapper;
 
         OnPropertyChanged();
     }
@@ -145,6 +165,7 @@ public partial class EditPipelineProfileViewModel : BaseViewModel, IEditPipeline
 
             // Add the operation to the selected step
             SelectedStep.AddOperation(wrapper);
+            _expandOperationGeneralOnNextSelection = true;
             SelectedOperation = wrapper;
 
             OnPropertyChanged();
@@ -230,6 +251,11 @@ public partial class EditPipelineProfileViewModel : BaseViewModel, IEditPipeline
         SelectedStep = draggedItem;
 
         OnPropertyChanged();
+    }
+
+    public void ExpandPipelineGeneralForNewProfile()
+    {
+        _expandPipelineGeneralOnNextProfileChange = true;
     }
 }
 

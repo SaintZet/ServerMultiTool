@@ -11,6 +11,7 @@
     mc:Ignorable="d">
     <UserControl.Resources>
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <converters:BoolToEnabledDisabledTextConverter x:Key="BoolToEnabledDisabledTextConverter" />
         <converters:IncrementConverter x:Key="IncrementConverter" />
         <converters:OperationTypeToLabelConverter x:Key="OperationTypeToLabelConverter" />
         <converters:DeliveryDirectoryConverter x:Key="DeliveryDirectoryConverter" />
@@ -107,7 +108,7 @@
         </Style>
         <Style x:Key="PanelHeaderBorderStyle" TargetType="Border">
             <Setter Property="Padding" Value="12,10" />
-            <Setter Property="Height" Value="44" />
+            <Setter Property="Height" Value="48" />
             <Setter Property="Background" Value="{DynamicResource SecondaryBackgroundColor}" />
             <Setter Property="BorderBrush" Value="LightGray" />
             <Setter Property="BorderThickness" Value="0,0,0,1" />
@@ -118,11 +119,30 @@
             <Setter Property="FontWeight" Value="SemiBold" />
             <Setter Property="Foreground" Value="{DynamicResource PrimaryTextColor}" />
         </Style>
+        <Style x:Key="EnabledStateTextStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="Foreground" Value="{DynamicResource PrimaryGreenColor}" />
+            <Setter Property="Text" Value="Enabled" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Enabled}" Value="False">
+                    <Setter Property="Foreground" Value="{DynamicResource DisabledTextColor}" />
+                    <Setter Property="Text" Value="Disable" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="EnabledStateDotStyle" TargetType="Ellipse">
+            <Setter Property="Fill" Value="{DynamicResource PrimaryGreenColor}" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Enabled}" Value="False">
+                    <Setter Property="Fill" Value="{DynamicResource DisabledBorderColor}" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
         <!-- ProcessExecution editor -->
         <DataTemplate x:Key="ProcessExecutionEditorTemplate">
             <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                 <StackPanel Margin="14,10">
-                    <Expander Header="General" Style="{StaticResource SectionExpanderStyle}">
+                    <Expander Header="General" IsExpanded="{Binding DataContext.IsOperationGeneralExpanded, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}" Style="{StaticResource SectionExpanderStyle}">
                         <StackPanel Margin="2,8,2,8">
                             <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Name" />
                             <TextBox Margin="0,0,0,10" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
@@ -171,7 +191,7 @@
         <DataTemplate x:Key="DeliverySpecifiedFilesEditorTemplate">
             <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                 <StackPanel Margin="14,10">
-                    <Expander Header="General" Style="{StaticResource SectionExpanderStyle}">
+                    <Expander Header="General" IsExpanded="{Binding DataContext.IsOperationGeneralExpanded, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}" Style="{StaticResource SectionExpanderStyle}">
                         <StackPanel Margin="2,8,2,8">
                             <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Name" />
                             <TextBox Margin="0,0,0,10" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
@@ -232,7 +252,7 @@
         <DataTemplate x:Key="MsBuildEditorTemplate">
             <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                 <StackPanel Margin="14,10">
-                    <Expander Header="General" Style="{StaticResource SectionExpanderStyle}">
+                    <Expander Header="General" IsExpanded="{Binding DataContext.IsOperationGeneralExpanded, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}" Style="{StaticResource SectionExpanderStyle}">
                         <StackPanel Margin="2,8,2,8">
                             <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Name" />
                             <TextBox Margin="0,0,0,10" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
@@ -274,7 +294,7 @@
         <DataTemplate x:Key="DeliveryBinEditorTemplate">
             <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                 <StackPanel Margin="14,10">
-                    <Expander Header="General" Style="{StaticResource SectionExpanderStyle}">
+                    <Expander Header="General" IsExpanded="{Binding DataContext.IsOperationGeneralExpanded, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}" Style="{StaticResource SectionExpanderStyle}">
                         <StackPanel Margin="2,8,2,8">
                             <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Name" />
                             <TextBox Margin="0,0,0,10" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
@@ -314,7 +334,7 @@
         <DataTemplate x:Key="HttpPingEditorTemplate">
             <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                 <StackPanel Margin="14,10">
-                    <Expander Header="General" Style="{StaticResource SectionExpanderStyle}">
+                    <Expander Header="General" IsExpanded="{Binding DataContext.IsOperationGeneralExpanded, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}" Style="{StaticResource SectionExpanderStyle}">
                         <StackPanel Margin="2,8,2,8">
                             <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Name" />
                             <TextBox Margin="0,0,0,10" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
@@ -352,7 +372,7 @@
         <DataTemplate x:Key="SqlEditorTemplate">
             <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                 <StackPanel Margin="14,10">
-                    <Expander Header="General" Style="{StaticResource SectionExpanderStyle}">
+                    <Expander Header="General" IsExpanded="{Binding DataContext.IsOperationGeneralExpanded, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}" Style="{StaticResource SectionExpanderStyle}">
                         <StackPanel Margin="2,8,2,8">
                             <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Name" />
                             <TextBox Margin="0,0,0,10" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
@@ -392,7 +412,7 @@
         <DataTemplate x:Key="GitPullEditorTemplate">
             <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                 <StackPanel Margin="14,10">
-                    <Expander Header="General" Style="{StaticResource SectionExpanderStyle}">
+                    <Expander Header="General" IsExpanded="{Binding DataContext.IsOperationGeneralExpanded, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}" Style="{StaticResource SectionExpanderStyle}">
                         <StackPanel Margin="2,8,2,8">
                             <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Name" />
                             <TextBox Margin="0,0,0,10" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
@@ -425,7 +445,7 @@
         <DataTemplate x:Key="WebBrowserEditorTemplate">
             <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                 <StackPanel Margin="14,10">
-                    <Expander Header="General" Style="{StaticResource SectionExpanderStyle}">
+                    <Expander Header="General" IsExpanded="{Binding DataContext.IsOperationGeneralExpanded, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}" Style="{StaticResource SectionExpanderStyle}">
                         <StackPanel Margin="2,8,2,8">
                             <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Name" />
                             <TextBox Margin="0,0,0,10" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
@@ -476,7 +496,7 @@
                 <Border Grid.Row="0" Style="{StaticResource PanelHeaderBorderStyle}">
                     <TextBlock Style="{StaticResource PanelHeaderTitleStyle}" Text="Pipeline" />
                 </Border>
-                <Expander Grid.Row="1" Margin="14,10,14,8" Header="General" Style="{StaticResource SectionExpanderStyle}">
+                <Expander Grid.Row="1" Margin="14,10,14,8" Header="General" IsExpanded="{Binding IsPipelineGeneralExpanded, Mode=TwoWay}" Style="{StaticResource SectionExpanderStyle}">
                     <StackPanel Margin="2,8,2,8">
                         <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Name" />
                         <TextBox Margin="0,0,0,10" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Profile.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
@@ -491,7 +511,7 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <TextBlock Grid.Column="0" Style="{StaticResource PanelHeaderTitleStyle}" Text="Steps" />
-                        <Button Grid.Column="1" VerticalAlignment="Center" Command="{Binding AddStepCommand}" Content="+ Add Step" Style="{StaticResource SmallAddButtonStyle}" />
+                        <Button Grid.Column="1" VerticalAlignment="Center" Command="{Binding AddStepCommand}" Content="Add Step" Style="{StaticResource SmallAddButtonStyle}" />
                     </Grid>
                 </Border>
                 <ListView x:Name="StepsListView" Grid.Row="3" AlternationCount="1000" AllowDrop="True" Background="Transparent" BorderThickness="0" DragOver="ListView_DragOver" Drop="ListView_Drop" ItemsSource="{Binding Profile.Steps}" PreviewMouseLeftButtonDown="ListView_PreviewMouseLeftButtonDown" PreviewMouseMove="ListView_PreviewMouseMove" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" SelectedItem="{Binding SelectedStep, Mode=TwoWay}">
@@ -523,19 +543,52 @@
                 </ListView.ItemContainerStyle>
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <Grid Margin="6,5">
+                        <Grid Margin="0,0,0,8">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="26" />
+                                <ColumnDefinition Width="20" />
                                 <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Margin="0,0,4,0" VerticalAlignment="Center" FontSize="13" Foreground="{DynamicResource PrimaryGrayColor}" Text="&#x2837;&#x2837;" />
-                            <Border Grid.Column="1" Width="22" Height="22" HorizontalAlignment="Center" VerticalAlignment="Center" Background="{DynamicResource PrimaryWhiteColor}" CornerRadius="11">
-                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryTextColor}" Text="{Binding Path=(ItemsControl.AlternationIndex), RelativeSource={RelativeSource AncestorType=ListViewItem}, Converter={StaticResource IncrementConverter}}" />
+                            <Grid Grid.Column="0">
+                                <Rectangle Width="2" HorizontalAlignment="Center" Fill="LightGray" />
+                                <Ellipse Width="12" Height="12" HorizontalAlignment="Center" VerticalAlignment="Center" Fill="{DynamicResource TertiaryBackgroundColor}" Stroke="{DynamicResource SecondaryBlueColor}" StrokeThickness="2" />
+                            </Grid>
+                            <Border Grid.Column="1" Margin="8,0,0,0" Padding="10,8" BorderThickness="1.5" CornerRadius="6">
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="Background" Value="{DynamicResource TertiaryBackgroundColor}" />
+                                        <Setter Property="BorderBrush" Value="LightGray" />
+                                        <Setter Property="Opacity" Value="1" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="True">
+                                                <Setter Property="BorderBrush" Value="{DynamicResource SecondaryBlueColor}" />
+                                                <Setter Property="Background" Value="#EFF4FF" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Enabled}" Value="False">
+                                                <Setter Property="Opacity" Value="0.65" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <Border Grid.Column="0" Width="36" Height="36" Margin="0,0,10,0" Background="{DynamicResource SecondaryBackgroundColor}" CornerRadius="18">
+                                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12" FontWeight="Bold" Foreground="{DynamicResource SecondaryBlueColor}" Text="{Binding Path=(ItemsControl.AlternationIndex), RelativeSource={RelativeSource AncestorType=ListViewItem}, Converter={StaticResource IncrementConverter}}" />
+                                    </Border>
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                        <TextBlock FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryTextColor}" Text="{Binding Name}" />
+                                        <StackPanel Margin="0,2,0,2" Orientation="Horizontal">
+                                            <Ellipse Width="7" Height="7" Margin="0,0,5,0" VerticalAlignment="Center" Style="{StaticResource EnabledStateDotStyle}" />
+                                            <TextBlock VerticalAlignment="Center" Style="{StaticResource EnabledStateTextStyle}" />
+                                        </StackPanel>
+                                        <TextBlock FontSize="11" Foreground="{DynamicResource PrimaryGrayColor}" Text="{Binding Description}" TextTrimming="CharacterEllipsis" />
+                                    </StackPanel>
+                                    <Button Grid.Column="2" Width="24" Height="24" VerticalAlignment="Top" Background="Transparent" BorderThickness="0" Command="{Binding DataContext.RemoveStepCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Content="" Cursor="Hand" Style="{StaticResource DeleteButtonStyle}" ToolTip="Remove step" />
+                                </Grid>
                             </Border>
-                            <TextBlock Grid.Column="2" Margin="6,0" VerticalAlignment="Center" FontSize="13" Foreground="{DynamicResource PrimaryTextColor}" Text="{Binding Name}" TextTrimming="CharacterEllipsis" />
-                            <Button Grid.Column="3" Width="24" Height="24" Background="Transparent" BorderThickness="0" Command="{Binding DataContext.RemoveStepCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Content="" Cursor="Hand" Style="{StaticResource DeleteButtonStyle}" ToolTip="Remove step" />
                         </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>
@@ -577,12 +630,12 @@
                             <TextBlock Style="{StaticResource PanelHeaderTitleStyle}" Text="Step" />
                         </StackPanel>
                         <StackPanel Grid.Column="1" Margin="0,0,2,0" VerticalAlignment="Center" Orientation="Horizontal">
-                            <TextBlock Margin="0,0,8,0" VerticalAlignment="Center" FontSize="12" Foreground="{DynamicResource PrimaryTextColor}" Text="Enabled" />
+                            <TextBlock Margin="0,0,8,0" VerticalAlignment="Center" FontSize="12" Foreground="{DynamicResource PrimaryTextColor}" Text="{Binding SelectedStep.Enabled, Converter={StaticResource BoolToEnabledDisabledTextConverter}}" />
                             <ToggleButton IsChecked="{Binding SelectedStep.Enabled, Mode=TwoWay}" Style="{StaticResource ToggleButtonStyle}" />
                         </StackPanel>
                     </Grid>
                 </Border>
-                <Expander Grid.Row="1" Margin="14,10,14,8" Header="General" Style="{StaticResource SectionExpanderStyle}">
+                <Expander Grid.Row="1" Margin="14,10,14,8" Header="General" IsExpanded="{Binding IsStepGeneralExpanded, Mode=TwoWay}" Style="{StaticResource SectionExpanderStyle}">
                     <StackPanel Margin="2,8,2,8">
                         <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Name" />
                         <TextBox Margin="0,0,0,10" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding SelectedStep.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
@@ -602,9 +655,9 @@
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
                             <TextBlock Grid.Column="0" VerticalAlignment="Center" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryTextColor}" Text="Operations" />
-                            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                                <ComboBox Width="130" Height="26" Margin="0,0,6,0" DisplayMemberPath="Name" FontSize="12" ItemsSource="{Binding AvailableOperationTypes}" SelectedItem="{Binding SelectedOperationType, Mode=TwoWay}" Style="{DynamicResource ComboBoxStyle}" />
-                                <Button Command="{Binding AddOperationCommand}" Content="+ Add Operation" Style="{StaticResource SmallAddButtonStyle}" />
+                            <StackPanel Grid.Column="1" Margin="0,0,0,1" Orientation="Horizontal" VerticalAlignment="Center">
+                                <ComboBox Width="150" Height="28" Margin="0,0,6,0" DisplayMemberPath="Name" FontSize="12" ItemsSource="{Binding AvailableOperationTypes}" SelectedItem="{Binding SelectedOperationType, Mode=TwoWay}" Style="{DynamicResource ComboBoxStyle}" />
+                                <Button Command="{Binding AddOperationCommand}" Content="Add Operation" Style="{StaticResource SmallAddButtonStyle}" />
                             </StackPanel>
                         </Grid>
                     </Border>
@@ -629,6 +682,7 @@
                                              <Style TargetType="Border">
                                                  <Setter Property="Background" Value="{DynamicResource TertiaryBackgroundColor}" />
                                                  <Setter Property="BorderBrush" Value="LightGray" />
+                                                 <Setter Property="Opacity" Value="1" />
                                                  <Style.Triggers>
                                                      <DataTrigger Value="True">
                                                          <DataTrigger.Binding>
@@ -639,6 +693,9 @@
                                                          </DataTrigger.Binding>
                                                          <Setter Property="BorderBrush" Value="{DynamicResource SecondaryBlueColor}" />
                                                          <Setter Property="Background" Value="#EFF4FF" />
+                                                     </DataTrigger>
+                                                     <DataTrigger Binding="{Binding Enabled}" Value="False">
+                                                         <Setter Property="Opacity" Value="0.65" />
                                                      </DataTrigger>
                                                  </Style.Triggers>
                                              </Style>
@@ -655,8 +712,8 @@
                                             <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                                 <TextBlock FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryTextColor}" Text="{Binding Name}" />
                                                 <StackPanel Margin="0,2,0,2" Orientation="Horizontal">
-                                                    <Ellipse Width="7" Height="7" Margin="0,0,5,0" VerticalAlignment="Center" Fill="{DynamicResource PrimaryGreenColor}" />
-                                                    <TextBlock VerticalAlignment="Center" FontSize="11" Foreground="{DynamicResource PrimaryGreenColor}" Text="Enabled" />
+                                                    <Ellipse Width="7" Height="7" Margin="0,0,5,0" VerticalAlignment="Center" Style="{StaticResource EnabledStateDotStyle}" />
+                                                    <TextBlock VerticalAlignment="Center" Style="{StaticResource EnabledStateTextStyle}" />
                                                 </StackPanel>
                                                 <TextBlock FontSize="11" Foreground="{DynamicResource PrimaryGrayColor}" Text="{Binding Description}" TextTrimming="CharacterEllipsis" />
                                             </StackPanel>
@@ -720,7 +777,7 @@
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Grid.Column="0" Margin="0,0,10,0" Style="{StaticResource PanelHeaderTitleStyle}" Text="Operation" />
                                 <StackPanel Grid.Column="1" Margin="0,0,2,0" VerticalAlignment="Center" Orientation="Horizontal">
-                                    <TextBlock Margin="0,0,8,0" VerticalAlignment="Center" FontSize="12" Foreground="{DynamicResource PrimaryTextColor}" Text="Enabled" />
+                                    <TextBlock Margin="0,0,8,0" VerticalAlignment="Center" FontSize="12" Foreground="{DynamicResource PrimaryTextColor}" Text="{Binding SelectedOperation.Enabled, Converter={StaticResource BoolToEnabledDisabledTextConverter}}" />
                                     <ToggleButton IsChecked="{Binding SelectedOperation.Enabled, Mode=TwoWay}" Style="{StaticResource ToggleButtonStyle}" />
                                 </StackPanel>
                         </Grid>

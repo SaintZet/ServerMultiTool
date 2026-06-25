@@ -303,20 +303,25 @@ public partial class SettingsViewModel : BaseViewModel, IPage, INavigationAware
         wrapper.PropertyChanged += OnProfilePropertyChanged;
 
         PipelineProfiles.Add(wrapper);
+        EditPipelineProfile.ExpandPipelineGeneralForNewProfile();
         SelectedPipelineProfile = wrapper;
 
         HasUnsavedChanges = true;
     }
 
     [RelayCommand]
-    private void RemovePipelineProfile()
+    private void RemovePipelineProfile(PipelineProfileWrapper? profile = null)
     {
-        if (SelectedPipelineProfile is null)
+        var profileToRemove = profile ?? SelectedPipelineProfile;
+
+        if (profileToRemove is null)
             return;
 
-        SelectedPipelineProfile.PropertyChanged -= OnProfilePropertyChanged;
-        PipelineProfiles.Remove(SelectedPipelineProfile);
-        SelectedPipelineProfile = PipelineProfiles.Any() ? PipelineProfiles.First() : null;
+        profileToRemove.PropertyChanged -= OnProfilePropertyChanged;
+        PipelineProfiles.Remove(profileToRemove);
+
+        if (SelectedPipelineProfile == profileToRemove)
+            SelectedPipelineProfile = PipelineProfiles.Any() ? PipelineProfiles.First() : null;
 
         HasUnsavedChanges = true;
     }
@@ -388,6 +393,8 @@ public partial class SettingsViewModel : BaseViewModel, IPage, INavigationAware
 
     #endregion
 }
+
+
 
 
 
