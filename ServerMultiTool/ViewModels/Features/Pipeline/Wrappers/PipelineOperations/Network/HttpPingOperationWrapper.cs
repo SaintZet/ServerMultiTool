@@ -1,10 +1,10 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ServerMultiTool.Model.Features.Pipeline.Operations.Base;
 using ServerMultiTool.Model.Features.Pipeline.Operations.Network;
 using ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Base;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 
 namespace ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Operations.Integrations;
 

@@ -1,7 +1,7 @@
-using log4net;
-using ServerMultiTool.Model.Common.EventAggregator;
 using System;
 using System.Reflection;
+using log4net;
+using ServerMultiTool.Model.Common.EventAggregator;
 
 namespace ServerMultiTool.Model.Common.Logs;
 

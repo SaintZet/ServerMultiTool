@@ -1,9 +1,9 @@
-﻿using ServerMultiTool.Model.Features.Pipeline.Profile;
-using ServerMultiTool.Model.Features.Pipeline.Step;
-using ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using ServerMultiTool.Model.Features.Pipeline.Profile;
+using ServerMultiTool.Model.Features.Pipeline.Step;
+using ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers;
 
 namespace ServerMultiTool.ViewModels.Features.Pipeline.Collections
 {

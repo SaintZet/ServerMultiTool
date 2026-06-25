@@ -1,11 +1,11 @@
-﻿using ServerMultiTool.Model.Features.Pipeline.Operations.Base;
-using ServerMultiTool.Model.Features.Pipeline.Operations.Base.Enums;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
+using ServerMultiTool.Model.Features.Pipeline.Operations.Base;
+using ServerMultiTool.Model.Features.Pipeline.Operations.Base.Enums;
 
 namespace ServerMultiTool.Model.Features.Pipeline.Operations.Network
 {

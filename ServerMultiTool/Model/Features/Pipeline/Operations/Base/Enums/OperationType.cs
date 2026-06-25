@@ -1,4 +1,4 @@
-﻿namespace ServerMultiTool.Model.Features.Pipeline.Operations.Base.Enums
+namespace ServerMultiTool.Model.Features.Pipeline.Operations.Base.Enums
 {
     public enum OperationType
     {

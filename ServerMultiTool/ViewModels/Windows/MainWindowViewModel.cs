@@ -1,11 +1,15 @@
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using ServerMultiTool.ViewModels.Common;
-using ServerMultiTool.ViewModels.Common.BaseClasses;
-using ServerMultiTool.Views.Pages;
-using ServerMultiTool.Views.Themes;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using ServerMultiTool.Shell.Navigation;
+using ServerMultiTool.ViewModels.Common.BaseClasses;
+using ServerMultiTool.Views.Themes;
 
 namespace ServerMultiTool.ViewModels.Windows
 {
@@ -14,30 +18,51 @@ namespace ServerMultiTool.ViewModels.Windows
         #region Observable Properties
 
         [ObservableProperty]
-        private Page _currentPage;
+        private Page? _currentPage;
 
         [ObservableProperty]
-        private string _selectedMenu = PageNames.PipelinePage;
+        private string _selectedMenu = string.Empty;
+
+        public ObservableCollection<NavigationMenuItemViewModel> MenuItems { get; }
 
         #endregion
 
         #region Private Fields
 
-        private readonly Page _pipelinePage;
-        private readonly Page _jsonParserPage;
-        private readonly Page _settingsPage;
+        private readonly INavigationService _navigationService;
 
         #endregion
 
         #region Constructors
 
-        public MainWindowViewModel(SettingsView settingsView, PipelineView pipelineView, JsonParserView jsonView)
+        public MainWindowViewModel(
+            IEnumerable<IPageDescriptor> pageDescriptors,
+            INavigationService navigationService,
+            ShellOptions shellOptions)
         {
-            _settingsPage = settingsView;
-            _pipelinePage = pipelineView;
-            _jsonParserPage = jsonView;
+            _navigationService = navigationService;
+            _navigationService.PropertyChanged += OnNavigationServicePropertyChanged;
 
-            _currentPage = _pipelinePage;
+            MenuItems = new ObservableCollection<NavigationMenuItemViewModel>(
+                pageDescriptors
+                    .Where(descriptor => descriptor.ShowInMenu)
+                    .OrderBy(descriptor => descriptor.Order)
+                    .ThenBy(descriptor => descriptor.Title, StringComparer.OrdinalIgnoreCase)
+                    .Select(descriptor => new NavigationMenuItemViewModel(
+                        descriptor.Key,
+                        descriptor.Title,
+                        Application.Current?.TryFindResource(descriptor.IconResourceKey),
+                        descriptor.Menu.Group,
+                        descriptor.Menu.Badge,
+                        descriptor.Menu.FeatureFlag)));
+
+            SynchronizeWithNavigationService();
+
+            if (string.IsNullOrWhiteSpace(_navigationService.CurrentPageKey))
+            {
+                if (_navigationService.TryNavigateTo(shellOptions.StartupRoute) is false)
+                    _navigationService.NavigateTo(shellOptions.StartupPageKey);
+            }
         }
 
         #endregion
@@ -47,15 +72,7 @@ namespace ServerMultiTool.ViewModels.Windows
         [RelayCommand]
         private void Navigate(string pageName)
         {
-            CurrentPage = pageName switch
-            {
-                PageNames.PipelinePage => _pipelinePage,
-                PageNames.JsonParserPage => _jsonParserPage,
-                PageNames.SettingsPage => _settingsPage,
-                _ => CurrentPage
-            };
-
-            SelectedMenu = pageName;
+            _navigationService.NavigateTo(pageName);
         }
 
         [RelayCommand]
@@ -96,5 +113,20 @@ namespace ServerMultiTool.ViewModels.Windows
         }
 
         #endregion
+
+        private void OnNavigationServicePropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName is nameof(INavigationService.CurrentPage) or nameof(INavigationService.CurrentPageKey))
+                SynchronizeWithNavigationService();
+        }
+
+        private void SynchronizeWithNavigationService()
+        {
+            CurrentPage = _navigationService.CurrentPage;
+            SelectedMenu = _navigationService.CurrentPageKey ?? string.Empty;
+
+            foreach (var menuItem in MenuItems)
+                menuItem.IsSelected = string.Equals(menuItem.Key, SelectedMenu, StringComparison.OrdinalIgnoreCase);
+        }
     }
 }

@@ -1,12 +1,12 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using ServerMultiTool.Model.Features.Pipeline.Operations.Base;
-using ServerMultiTool.Model.Features.Pipeline.Operations.FileDelivery;
-using ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Base;
 using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using ServerMultiTool.Model.Features.Pipeline.Operations.Base;
+using ServerMultiTool.Model.Features.Pipeline.Operations.FileDelivery;
+using ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Base;
 
 namespace ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Operations.Delivery;
 

@@ -1,12 +1,12 @@
-﻿using ServerMultiTool.Model.Common;
-using ServerMultiTool.Model.Features.Pipeline.Operations.Base;
-using ServerMultiTool.Model.Features.Pipeline.Operations.Base.Enums;
-using ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Base;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using ServerMultiTool.Model.Common;
+using ServerMultiTool.Model.Features.Pipeline.Operations.Base;
+using ServerMultiTool.Model.Features.Pipeline.Operations.Base.Enums;
+using ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Base;
 
 namespace ServerMultiTool.ViewModels.Features.Pipeline.Collections
 {
@@ -28,7 +28,7 @@ namespace ServerMultiTool.ViewModels.Features.Pipeline.Collections
                     continue;
 
                 var result = await operation.ExecuteAsync(cancellationToken);
-                
+
                 if (result == PipelineOperationResult.Failure || result == PipelineOperationResult.Cancelled)
                     return result;
 

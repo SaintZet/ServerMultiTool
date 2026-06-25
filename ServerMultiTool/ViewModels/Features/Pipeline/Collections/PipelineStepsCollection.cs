@@ -1,9 +1,9 @@
-using ServerMultiTool.Model.Common;
-using ServerMultiTool.ViewModels.Features.Pipeline.Enums;
-using ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.PipelineSteps;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using ServerMultiTool.Model.Common;
+using ServerMultiTool.ViewModels.Features.Pipeline.Enums;
+using ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.PipelineSteps;
 
 namespace ServerMultiTool.ViewModels.Features.Pipeline.Collections;
 

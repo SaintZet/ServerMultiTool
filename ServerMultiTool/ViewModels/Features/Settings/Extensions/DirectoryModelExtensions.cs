@@ -1,9 +1,9 @@
-using ServerMultiTool.Model.Common;
-using ServerMultiTool.ViewModels.Features.Settings.Wrappers;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using ServerMultiTool.Model.Common;
+using ServerMultiTool.ViewModels.Features.Settings.Wrappers;
 
 namespace ServerMultiTool.ViewModels.Features.Settings.Extensions;
 

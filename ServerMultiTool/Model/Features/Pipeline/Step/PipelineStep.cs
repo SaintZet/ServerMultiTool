@@ -1,6 +1,6 @@
-﻿using ServerMultiTool.Model.Features.Pipeline.Operations.Base;
 using System;
 using System.Collections.Generic;
+using ServerMultiTool.Model.Features.Pipeline.Operations.Base;
 
 namespace ServerMultiTool.Model.Features.Pipeline.Step
 {

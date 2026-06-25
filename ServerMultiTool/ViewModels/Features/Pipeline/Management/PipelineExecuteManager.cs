@@ -1,12 +1,12 @@
-using ServerMultiTool.Model.Common.Logs;
-using ServerMultiTool.Model.Features.Pipeline.Operations.Base.Enums;
-using ServerMultiTool.ViewModels.Components.GeneralInfo;
-using ServerMultiTool.ViewModels.Features.Pipeline.Collections;
-using ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.PipelineSteps;
-using ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using ServerMultiTool.Model.Common.Logs;
+using ServerMultiTool.Model.Features.Pipeline.Operations.Base.Enums;
+using ServerMultiTool.Shared.Components.GeneralInfo;
+using ServerMultiTool.ViewModels.Features.Pipeline.Collections;
+using ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.PipelineSteps;
+using ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers;
 
 namespace ServerMultiTool.ViewModels.Features.Pipeline.Management;
 

@@ -1,7 +1,3 @@
-using Microsoft.IdentityModel.Tokens;
-using ServerMultiTool.Model.Common;
-using ServerMultiTool.Model.Common.EventAggregator;
-using ServerMultiTool.Model.Common.Logs;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -10,6 +6,10 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
+using Microsoft.IdentityModel.Tokens;
+using ServerMultiTool.Model.Common;
+using ServerMultiTool.Model.Common.EventAggregator;
+using ServerMultiTool.Model.Common.Logs;
 using Timer = System.Timers.Timer;
 
 namespace ServerMultiTool.Model.Features.Services.GameServerLogs;

@@ -1,8 +1,8 @@
-﻿using ServerMultiTool.Model.Common;
-using ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Operations.Delivery;
 using System;
 using System.Globalization;
 using System.Windows.Data;
+using ServerMultiTool.Model.Common;
+using ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Operations.Delivery;
 
 namespace ServerMultiTool.ViewModels.Converters
 {

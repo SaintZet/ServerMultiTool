@@ -1,7 +1,7 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using System;
+using CommunityToolkit.Mvvm.ComponentModel;
 using ServerMultiTool.Model.Features.Services.GameServerLogs;
 using ServerMultiTool.ViewModels.Features.Settings.Wrappers;
-using System;
 
 namespace ServerMultiTool.Features.Pipeline.Wrappers.Services.GameServerLogs;
 

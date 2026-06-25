@@ -1,9 +1,9 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using System.Threading;
+using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.ComponentModel;
 using ServerMultiTool.Model.Common;
 using ServerMultiTool.Model.Features.Pipeline.Operations.Base;
 using ServerMultiTool.Model.Features.Pipeline.Operations.Base.Enums;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Base
 {

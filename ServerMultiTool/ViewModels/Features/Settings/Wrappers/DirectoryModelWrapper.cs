@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using ServerMultiTool.Model.Common;
 
 namespace ServerMultiTool.ViewModels.Features.Settings.Wrappers;

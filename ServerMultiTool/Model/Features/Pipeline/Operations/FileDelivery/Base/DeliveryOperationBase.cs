@@ -1,9 +1,9 @@
-﻿using ServerMultiTool.Model.Features.Pipeline.Operations.Base;
-using ServerMultiTool.Model.Features.Pipeline.Operations.Base.Enums;
 using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using ServerMultiTool.Model.Features.Pipeline.Operations.Base;
+using ServerMultiTool.Model.Features.Pipeline.Operations.Base.Enums;
 
 namespace ServerMultiTool.Model.Features.Pipeline.Operations.FileDelivery.Base
 {
