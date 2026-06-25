@@ -29,6 +29,17 @@
             <Setter Property="FontWeight" Value="SemiBold" />
             <Setter Property="Foreground" Value="{DynamicResource PrimaryTextColor}" />
         </Style>
+        <Style x:Key="SettingsTabHeadingStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="19" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="{DynamicResource PrimaryTextColor}" />
+        </Style>
+        <Style x:Key="SettingsTabDescriptionStyle" TargetType="TextBlock">
+            <Setter Property="Margin" Value="0,4,0,0" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="FontWeight" Value="Normal" />
+            <Setter Property="Foreground" Value="{DynamicResource SecondaryTextColor}" />
+        </Style>
         <Style x:Key="SmallAddButtonStyle" TargetType="Button">
             <Setter Property="Height" Value="26" />
             <Setter Property="Padding" Value="10,0" />
@@ -194,16 +205,11 @@
                             <StackPanel>
                                 <StackPanel Margin="2,4,0,16">
                                     <TextBlock
-                                        FontSize="19"
-                                        FontWeight="SemiBold"
-                                        Foreground="{DynamicResource PrimaryTextColor}"
+                                        Style="{StaticResource SettingsTabHeadingStyle}"
                                         Text="Path Configuration" />
                                     <TextBlock
-                                        Margin="0,4,0,0"
-                                        FontSize="12"
-                                        FontWeight="Normal"
-                                        Foreground="{DynamicResource SecondaryTextColor}"
-                                        Text="Manage directories and their paths for the selected solution." />
+                                        Style="{StaticResource SettingsTabDescriptionStyle}"
+                                        Text="Manage directories and their paths." />
                                 </StackPanel>
                                 <Border
                                     Margin="0,0,0,14"
@@ -526,6 +532,15 @@
                         BorderBrush="#DDE2EC"
                         BorderThickness="1"
                         CornerRadius="10">
+                        <StackPanel>
+                        <StackPanel Margin="2,4,0,16">
+                            <TextBlock
+                                Style="{StaticResource SettingsTabHeadingStyle}"
+                                Text="Pipeline Profiles" />
+                            <TextBlock
+                                Style="{StaticResource SettingsTabDescriptionStyle}"
+                                Text="Manage and configure pipeline profiles." />
+                        </StackPanel>
                         <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" MinWidth="160" />
@@ -682,6 +697,7 @@
                             </profileEditor:EditPipelineProfileControl>
                         </Grid>
                         </Grid>
+                        </StackPanel>
                     </Border>
                 </TabItem>
 
@@ -693,133 +709,100 @@
                         BorderBrush="#DDE2EC"
                         BorderThickness="1"
                         CornerRadius="10">
-                        <Border
-                            Background="#FFFFFF"
-                            BorderBrush="#DDE2EC"
-                            BorderThickness="1"
-                            CornerRadius="10">
-                            <Grid>
+                        <StackPanel>
+                            <StackPanel Margin="2,4,0,16">
+                            <TextBlock
+                                Style="{StaticResource SettingsTabHeadingStyle}"
+                                Text="Auto Update" />
+                            <TextBlock
+                                Style="{StaticResource SettingsTabDescriptionStyle}"
+                                Text="Configure automatic update settings for the application." />
+                            </StackPanel>
+
+                            <Grid Margin="2,0,2,0">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="175" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
 
-                                <Grid Grid.Row="0" Margin="16,14,16,10">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
-                                    <Border
-                                        Grid.Column="0"
-                                        Width="34"
-                                        Height="34"
-                                        Margin="0,0,10,0"
-                                        Background="#FFF2D9"
-                                        CornerRadius="10">
-                                        <Path
-                                            Width="17"
-                                            Height="17"
-                                            HorizontalAlignment="Center"
-                                            VerticalAlignment="Center"
-                                            Data="M12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12.5,7H11V13L16.25,16.15L17,14.92L12.5,12.25V7Z"
-                                            Fill="#C58A19"
-                                            Stretch="Fill" />
-                                    </Border>
-                                    <TextBlock
-                                        Grid.Column="1"
+                                <TextBlock
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    Margin="0,0,8,10"
+                                    VerticalAlignment="Center"
+                                    FontSize="13"
+                                    Foreground="{DynamicResource PrimaryTextColor}"
+                                    Text="Appcast URL" />
+                                <TextBox
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                    Height="32"
+                                    Margin="0,0,0,10"
+                                    Padding="10,0"
+                                    Background="{DynamicResource TertiaryBackgroundColor}"
+                                    BorderBrush="#D3D8EA"
+                                    BorderThickness="1"
+                                    FontSize="13"
+                                    Foreground="{DynamicResource PrimaryTextColor}"
+                                    VerticalContentAlignment="Center"
+                                    Text="{Binding UpdateFeedUrl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                                <TextBlock
+                                    Grid.Row="1"
+                                    Grid.Column="0"
+                                    Margin="0,0,8,10"
+                                    VerticalAlignment="Center"
+                                    FontSize="13"
+                                    Foreground="{DynamicResource PrimaryTextColor}"
+                                    Text="Ed25519 Public Key" />
+                                <TextBox
+                                    Grid.Row="1"
+                                    Grid.Column="1"
+                                    Height="32"
+                                    Margin="0,0,0,10"
+                                    Padding="10,0"
+                                    Background="{DynamicResource TertiaryBackgroundColor}"
+                                    BorderBrush="#D3D8EA"
+                                    BorderThickness="1"
+                                    FontSize="13"
+                                    Foreground="{DynamicResource PrimaryTextColor}"
+                                    VerticalContentAlignment="Center"
+                                    Text="{Binding UpdatePublicKey, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                                <StackPanel
+                                    Grid.Row="2"
+                                    Grid.Column="0"
+                                    Margin="0,6,12,0"
+                                    Orientation="Horizontal"
+                                    VerticalAlignment="Center">
+                                    <CheckBox
+                                        Margin="0,0,8,0"
                                         VerticalAlignment="Center"
-                                        Style="{StaticResource PanelHeaderTitleStyle}"
-                                        Text="Auto Update" />
-                                </Grid>
-
-                                <Grid Grid.Row="1" Margin="16,0,16,14">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                    </Grid.RowDefinitions>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="190" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
-
+                                        IsChecked="{Binding CheckForUpdatesOnStartup, Mode=TwoWay}" />
                                     <TextBlock
-                                        Grid.Row="0"
-                                        Grid.Column="0"
-                                        Margin="0,0,10,10"
-                                        VerticalAlignment="Center"
-                                        FontSize="13"
-                                        Foreground="{DynamicResource PrimaryTextColor}"
-                                        Text="Appcast URL" />
-                                    <TextBox
-                                        Grid.Row="0"
-                                        Grid.Column="1"
-                                        Height="32"
-                                        Margin="0,0,0,10"
-                                        Padding="10,0"
-                                        Background="{DynamicResource TertiaryBackgroundColor}"
-                                        BorderBrush="#D3D8EA"
-                                        BorderThickness="1"
-                                        FontSize="13"
-                                        Foreground="{DynamicResource PrimaryTextColor}"
-                                        VerticalContentAlignment="Center"
-                                        Text="{Binding UpdateFeedUrl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-
-                                    <TextBlock
-                                        Grid.Row="1"
-                                        Grid.Column="0"
-                                        Margin="0,0,10,10"
                                         VerticalAlignment="Center"
                                         FontSize="13"
                                         Foreground="{DynamicResource PrimaryTextColor}"
-                                        Text="Ed25519 Public Key" />
-                                    <TextBox
-                                        Grid.Row="1"
-                                        Grid.Column="1"
-                                        Height="32"
-                                        Margin="0,0,0,10"
-                                        Padding="10,0"
-                                        Background="{DynamicResource TertiaryBackgroundColor}"
-                                        BorderBrush="#D3D8EA"
-                                        BorderThickness="1"
-                                        FontSize="13"
-                                        Foreground="{DynamicResource PrimaryTextColor}"
-                                        VerticalContentAlignment="Center"
-                                        Text="{Binding UpdatePublicKey, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-
-                                    <Grid Grid.Row="2" Grid.ColumnSpan="2">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition Width="*" />
-                                        </Grid.ColumnDefinitions>
-                                        <StackPanel
-                                            Grid.Column="0"
-                                            Margin="0,0,12,0"
-                                            VerticalAlignment="Center"
-                                            Orientation="Horizontal">
-                                            <CheckBox
-                                                Margin="0,0,8,0"
-                                                VerticalAlignment="Center"
-                                                IsChecked="{Binding CheckForUpdatesOnStartup, Mode=TwoWay}" />
-                                            <TextBlock
-                                                VerticalAlignment="Center"
-                                                FontSize="13"
-                                                Foreground="{DynamicResource PrimaryTextColor}"
-                                                Text="Check on Startup" />
-                                        </StackPanel>
-                                        <Button
-                                            Grid.Column="1"
-                                            Height="32"
-                                            HorizontalAlignment="Left"
-                                            Padding="14,0"
-                                            Command="{Binding CheckForUpdatesCommand}"
-                                            Content="Check for Updates Now"
-                                            IsEnabled="{Binding UpdateFeedUrl, Converter={StaticResource StringNotNullOrEmptyToBoolConverter}}"
-                                            Style="{StaticResource SmallAddButtonStyle}" />
-                                    </Grid>
-                                </Grid>
+                                        Text="Check on Startup" />
+                                </StackPanel>
+                                <Button
+                                    Grid.Row="2"
+                                    Grid.Column="1"
+                                    Margin="0,6,0,0"
+                                    HorizontalAlignment="Left"
+                                    Height="32"
+                                    Padding="14,0"
+                                    Command="{Binding CheckForUpdatesCommand}"
+                                    Content="Check for Updates Now"
+                                    IsEnabled="{Binding UpdateFeedUrl, Converter={StaticResource StringNotNullOrEmptyToBoolConverter}}"
+                                    Style="{StaticResource SmallAddButtonStyle}" />
                             </Grid>
-                        </Border>
+                        </StackPanel>
                     </Border>
                 </TabItem>
             </TabControl>
