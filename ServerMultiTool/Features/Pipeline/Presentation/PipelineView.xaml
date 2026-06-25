@@ -7,7 +7,6 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:globalConverters="clr-namespace:ServerMultiTool.ViewModels.Converters"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:pipeline="clr-namespace:ServerMultiTool.Features.Pipeline.Presentation"
     xmlns:pipelineConverters="clr-namespace:ServerMultiTool.ViewModels.Features.Pipeline.Converters"
     Title="{Binding Title}"
     d:DesignHeight="600"
@@ -288,7 +287,8 @@
                     VerticalAlignment="Stretch"
                     Background="Transparent"
                     BorderBrush="Transparent"
-                    BorderThickness="0">
+                    BorderThickness="0"
+                    ItemsSource="{Binding LogTabs}">
                 <TabControl.Resources>
                     <Style BasedOn="{StaticResource {x:Type TabItem}}" TargetType="TabItem">
                         <Setter Property="Template">
@@ -325,46 +325,30 @@
                     </Style>
                 </TabControl.Resources>
 
-                <!--  App Log Tab  -->
-                <TabItem Header="App Log">
-                    <behaviours:ScrollingListBox
-                        Padding="10"
-                        AutoScrollToEnd="True"
-                        Background="{DynamicResource TertiaryBackgroundColor}"
-                        Foreground="{DynamicResource PrimaryTextColor}"
-                        ItemTemplate="{StaticResource LogMessageTemplate}"
-                        ItemsSource="{Binding AppLogView}"
-                        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                        SelectionMode="Extended" />
-                </TabItem>
+                <TabControl.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Header}" />
+                    </DataTemplate>
+                </TabControl.ItemTemplate>
 
-                <!--  Master Logs Tab  -->
-                <TabItem Header="Master Logs">
-                    <behaviours:ScrollingListBox
-                        Padding="10"
-                        AutoScrollToEnd="True"
-                        Background="{DynamicResource TertiaryBackgroundColor}"
-                        Foreground="{DynamicResource PrimaryTextColor}"
-                        ItemTemplate="{StaticResource LogMessageTemplate}"
-                        ItemsSource="{Binding MasterLogView}"
-                        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                        SelectionMode="Extended" />
-                </TabItem>
+                <TabControl.ContentTemplate>
+                    <DataTemplate>
+                        <behaviours:ScrollingListBox
+                            Padding="10"
+                            AutoScrollToEnd="True"
+                            Background="{DynamicResource TertiaryBackgroundColor}"
+                            Foreground="{DynamicResource PrimaryTextColor}"
+                            ItemTemplate="{StaticResource LogMessageTemplate}"
+                            ItemsSource="{Binding LogView}"
+                            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                            SelectionMode="Extended" />
+                    </DataTemplate>
+                </TabControl.ContentTemplate>
 
-                <!--  Segment Logs Tab  -->
-                <TabItem Header="Segment Logs">
-                    <behaviours:ScrollingListBox
-                        Padding="10"
-                        AutoScrollToEnd="True"
-                        Background="{DynamicResource TertiaryBackgroundColor}"
-                        Foreground="{DynamicResource PrimaryTextColor}"
-                        ItemTemplate="{StaticResource LogMessageTemplate}"
-                        ItemsSource="{Binding SegmentLogView}"
-                        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                        SelectionMode="Extended" />
-                </TabItem>
             </TabControl>
             </Grid>
         </Grid>
     </Border>
 </Page>
+
+

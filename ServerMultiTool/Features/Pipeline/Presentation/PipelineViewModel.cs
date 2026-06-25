@@ -5,7 +5,6 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Data;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ServerMultiTool.Features.Settings;
@@ -43,8 +42,6 @@ public partial class PipelineViewModel : BaseViewModel, IPage
 
         _pipelineExecutor.UpdateOperations(value);
         OnPropertyChanged(nameof(PipelineSteps));
-
-        _logManager.UpdateLogServices(value);
     }
 
     [ObservableProperty] private bool _isPipelineRunning;
@@ -71,9 +68,7 @@ public partial class PipelineViewModel : BaseViewModel, IPage
 
     private void RefreshLogs()
     {
-        AppLogView.Refresh();
-        MasterLogView.Refresh();
-        SegmentLogView.Refresh();
+        _logManager.RefreshLogViews();
     }
 
     #endregion
@@ -97,14 +92,7 @@ public partial class PipelineViewModel : BaseViewModel, IPage
 
     [ObservableProperty] ObservableCollection<PipelineProfileWrapper> _pipelineProfiles = [];
     public PipelineStepsCollection PipelineSteps => _pipelineExecutor.PipelineSteps;
-
-    public ICollectionView AppLogView { get; }
-    public ICollectionView MasterLogView { get; }
-    public ICollectionView SegmentLogView { get; }
-
-    public ObservableCollection<LogEvent> AppLogMessages => _logManager.AppLogMessages;
-    public ObservableCollection<LogEvent> MasterLogMessages => _logManager.MasterLogMessages;
-    public ObservableCollection<LogEvent> SegmentLogMessages => _logManager.SegmentLogMessages;
+    public ObservableCollection<PipelineLogTabViewModel> LogTabs => _logManager.LogTabs;
 
     #endregion
 
@@ -121,19 +109,11 @@ public partial class PipelineViewModel : BaseViewModel, IPage
         _navigationService = navigationService;
         _generalInfo = generalInfo;
 
-        _logManager = new GsLogMonitorManager();
+        _logManager = new GsLogMonitorManager(appSettingsService);
+        _logManager.SetFilter(LogFilter);
 
         _pipelineExecutor = new PipelineExecuteManager(_logManager);
         _pipelineExecutor.PipelineStateChanged += (sender, isRunning) => { IsPipelineRunning = isRunning; };
-
-        AppLogView = CollectionViewSource.GetDefaultView(AppLogMessages);
-        AppLogView.Filter = LogFilter;
-
-        MasterLogView = CollectionViewSource.GetDefaultView(MasterLogMessages);
-        MasterLogView.Filter = LogFilter;
-
-        SegmentLogView = CollectionViewSource.GetDefaultView(SegmentLogMessages);
-        SegmentLogView.Filter = LogFilter;
 
         LoadProfiles();
 
@@ -275,6 +255,7 @@ public partial class PipelineViewModel : BaseViewModel, IPage
 
     #endregion
 }
+
 
 
 

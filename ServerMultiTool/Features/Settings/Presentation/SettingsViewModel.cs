@@ -35,6 +35,7 @@ public partial class SettingsViewModel : BaseViewModel, IPage, INavigationAware
 
     [ObservableProperty] private DirectoryModelWrapper? _selectedSolutionDirectory;
     [ObservableProperty] private DirectoryModelWrapper? _selectedHttpDirectory;
+    [ObservableProperty] private DirectoryModelWrapper? _selectedLogDirectory;
 
     [ObservableProperty] private GeneralInfoViewModel _generalInfo;
 
@@ -82,6 +83,7 @@ public partial class SettingsViewModel : BaseViewModel, IPage, INavigationAware
     // Initial state for cancel
     private ObservableCollection<DirectoryModelWrapper> _initialSolutionDirectories = [];
     private ObservableCollection<DirectoryModelWrapper> _initialHttpDirectories = [];
+    private ObservableCollection<DirectoryModelWrapper> _initialLogDirectories = [];
     private PipelineProfilesCollection _initialPipelineProfiles = [];
 
     #endregion
@@ -90,6 +92,7 @@ public partial class SettingsViewModel : BaseViewModel, IPage, INavigationAware
 
     [ObservableProperty] private ObservableCollection<DirectoryModelWrapper> _solutionDirectories = [];
     [ObservableProperty] private ObservableCollection<DirectoryModelWrapper> _httpDirectories = [];
+    [ObservableProperty] private ObservableCollection<DirectoryModelWrapper> _logDirectories = [];
     [ObservableProperty] private PipelineProfilesCollection _pipelineProfiles = [];
 
     #endregion
@@ -144,6 +147,13 @@ public partial class SettingsViewModel : BaseViewModel, IPage, INavigationAware
 
         _initialHttpDirectories = appSettings.HttpDirectories.ToWrapperCollection();
         HttpDirectories = _initialHttpDirectories.CloneWithPropertyChanged(OnDirectoryPropertyChanged);
+
+        var logDirectories = appSettings.LogDirectories.Length > 0
+            ? appSettings.LogDirectories
+            : DefaultAppSettings.GetDefaultAppSettings().LogDirectories;
+
+        _initialLogDirectories = logDirectories.ToWrapperCollection();
+        LogDirectories = _initialLogDirectories.CloneWithPropertyChanged(OnDirectoryPropertyChanged);
 
         UpdateFeedUrl = appSettings.UpdateFeedUrl ?? string.Empty;
         UpdatePublicKey = appSettings.UpdatePublicKey ?? string.Empty;
@@ -233,6 +243,7 @@ public partial class SettingsViewModel : BaseViewModel, IPage, INavigationAware
 
             appSettings.SolutionDirectories = SolutionDirectories.ToStructArray();
             appSettings.HttpDirectories = HttpDirectories.ToStructArray();
+            appSettings.LogDirectories = LogDirectories.ToStructArray();
             appSettings.UpdateFeedUrl = UpdateFeedUrl;
             appSettings.UpdatePublicKey = UpdatePublicKey;
             appSettings.CheckForUpdatesOnStartup = CheckForUpdatesOnStartup;
@@ -241,6 +252,7 @@ public partial class SettingsViewModel : BaseViewModel, IPage, INavigationAware
 
             _initialSolutionDirectories = SolutionDirectories.Clone();
             _initialHttpDirectories = HttpDirectories.Clone();
+            _initialLogDirectories = LogDirectories.Clone();
 
             _pipelineProfilesService.SaveAll(
                 [.. PipelineProfiles.Select(w => w.ToOriginal())]
@@ -268,6 +280,7 @@ public partial class SettingsViewModel : BaseViewModel, IPage, INavigationAware
 
         SolutionDirectories = _initialSolutionDirectories.CloneWithPropertyChanged(OnDirectoryPropertyChanged);
         HttpDirectories = _initialHttpDirectories.CloneWithPropertyChanged(OnDirectoryPropertyChanged);
+        LogDirectories = _initialLogDirectories.CloneWithPropertyChanged(OnDirectoryPropertyChanged);
 
         // Reload update settings from last saved state
         var appSettings = _appSettingsService.Get();
@@ -368,6 +381,16 @@ public partial class SettingsViewModel : BaseViewModel, IPage, INavigationAware
         HasUnsavedChanges = true;
     }
 
+    [RelayCommand]
+    private void AddLogDirectory()
+    {
+        var newDirectory = new DirectoryModelWrapper("New Logs", "");
+        newDirectory.PropertyChanged += OnDirectoryPropertyChanged;
+        LogDirectories.Add(newDirectory);
+
+        HasUnsavedChanges = true;
+    }
+
     private bool CanRemoveHttpDirectory() =>
         SelectedHttpDirectory != null;
 
@@ -391,6 +414,21 @@ public partial class SettingsViewModel : BaseViewModel, IPage, INavigationAware
 
         if (SelectedHttpDirectory == directory)
             SelectedHttpDirectory = null;
+
+        HasUnsavedChanges = true;
+    }
+
+    [RelayCommand]
+    private void RemoveLogDirectoryRow(DirectoryModelWrapper? directory)
+    {
+        if (directory is null)
+            return;
+
+        directory.PropertyChanged -= OnDirectoryPropertyChanged;
+        LogDirectories.Remove(directory);
+
+        if (SelectedLogDirectory == directory)
+            SelectedLogDirectory = null;
 
         HasUnsavedChanges = true;
     }

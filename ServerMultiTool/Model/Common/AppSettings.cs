@@ -11,6 +11,8 @@ public class AppSettings
     public string CurrentHttpDirectoryName { get; set; } = string.Empty;
     public DirectoryModel[] HttpDirectories { get; set; } = [];
 
+    public DirectoryModel[] LogDirectories { get; set; } = [];
+
     public string CurrentPipelineProfileName { get; set; } = string.Empty;
 
     public string Log4NetConfigPath { get; set; } = string.Empty;

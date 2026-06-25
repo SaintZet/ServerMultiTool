@@ -110,7 +110,7 @@ public partial class GsLogMonitoringService : BaseEventAggregator
         _cancellationToken = new CancellationTokenSource();
         _monitoredDirectory = directory;
 
-        _logger.LogInfo($"Start monitoring {directory.Name} logs at {directory.Path}");
+        _logger.LogInfo($"Start monitoring {directory.Name} at {directory.Path}");
 
         _ = Task.Run(async () => await MonitorLogDirectoryAsync(directory, _cancellationToken.Token), _cancellationToken.Token);
     }
@@ -125,7 +125,7 @@ public partial class GsLogMonitoringService : BaseEventAggregator
         _cancellationToken.Dispose();
         _cancellationToken = null;
 
-        _logger.LogInfo($"Stop monitoring {_monitoredDirectory?.Name ?? "Unknown"} logs at {_monitoredDirectory?.Path ?? "unknown directory"}");
+        _logger.LogInfo($"Stop monitoring {_monitoredDirectory?.Name ?? "Unknown"} at {_monitoredDirectory?.Path ?? "unknown directory"}");
     }
 
     private async Task MonitorLogDirectoryAsync(DirectoryModel directory, CancellationToken cancellationToken)
