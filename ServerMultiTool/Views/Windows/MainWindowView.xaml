@@ -6,7 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:windows="clr-namespace:ServerMultiTool.ViewModels.Windows"
-    Width="1200"
+    Width="1400"
     Height="800"
     MinWidth="900"
     MinHeight="600"
