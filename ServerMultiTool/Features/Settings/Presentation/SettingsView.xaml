@@ -383,124 +383,113 @@
 
                 <!--  Pipeline Profiles Tab  -->
                 <TabItem Header="Pipeline Profiles" Tag="PipelineProfiles">
-                    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" MinHeight="130" MaxHeight="200" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <!--  Pipeline Profiles List (compact header)  -->
                         <Border
-                            Padding="10"
-                            BorderBrush="Gainsboro"
-                            BorderThickness="0.8">
+                            Grid.Row="0"
+                            Padding="10,8"
+                            BorderBrush="LightGray"
+                            BorderThickness="0,0,0,1">
                             <Grid>
                                 <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" MinHeight="200" />
+                                    <RowDefinition Height="Auto" />
                                     <RowDefinition Height="*" />
+                                    <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
 
-                                <!--  Pipeline Profiles List  -->
-                                <DockPanel Grid.Row="0" Margin="0,0,0,20">
+                                <TextBlock
+                                    Grid.Row="0"
+                                    Margin="0,0,0,6"
+                                    FontSize="13"
+                                    FontWeight="SemiBold"
+                                    Foreground="{DynamicResource PrimaryTextColor}"
+                                    Text="Pipeline Profiles" />
 
-                                    <StackPanel
-                                        Margin="0,5,0,0"
-                                        HorizontalAlignment="Left"
-                                        DockPanel.Dock="Bottom"
-                                        Orientation="Horizontal">
-                                        <Button
-                                            Height="30"
-                                            MinWidth="60"
-                                            Margin="0,0,5,0"
-                                            Command="{Binding AddPipelineProfileCommand}"
-                                            Content="Add"
-                                            Style="{StaticResource CustomButtonStyle}" />
-                                        <Button
-                                            Height="30"
-                                            MinWidth="60"
-                                            Command="{Binding RemovePipelineProfileCommand}"
-                                            CommandParameter="{Binding SelectedPipelineProfile}"
-                                            Content="Delete"
-                                            Style="{StaticResource CustomButtonStyle}" />
-                                    </StackPanel>
+                                <ListBox
+                                    Grid.Row="1"
+                                    Padding="4"
+                                    Background="{DynamicResource TertiaryBackgroundColor}"
+                                    Foreground="{DynamicResource PrimaryTextColor}"
+                                    IsSynchronizedWithCurrentItem="True"
+                                    ItemsSource="{Binding PipelineProfiles}"
+                                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                    SelectedItem="{Binding SelectedPipelineProfile, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBox
+                                                Margin="0,4"
+                                                Background="Transparent"
+                                                BorderThickness="0"
+                                                FontSize="13"
+                                                FontWeight="Bold"
+                                                Foreground="{DynamicResource PrimaryTextColor}"
+                                                Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
 
-                                    <ListBox
-                                        MinHeight="150"
-                                        MaxHeight="250"
-                                        Padding="5"
-                                        Background="{DynamicResource TertiaryBackgroundColor}"
-                                        Foreground="{DynamicResource PrimaryTextColor}"
-                                        IsSynchronizedWithCurrentItem="True"
-                                        ItemsSource="{Binding PipelineProfiles}"
-                                        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                        SelectedItem="{Binding SelectedPipelineProfile, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                                        <ListBox.ItemTemplate>
-                                            <DataTemplate>
-                                                <TextBox
-                                                    Margin="0,10,0,10"
-                                                    Background="Transparent"
-                                                    BorderThickness="0"
-                                                    FontSize="13"
-                                                    FontWeight="Bold"
-                                                    Foreground="{DynamicResource PrimaryTextColor}"
-                                                    Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                                            </DataTemplate>
-                                        </ListBox.ItemTemplate>
-                                    </ListBox>
-
-                                </DockPanel>
-
-                                <!--  Profile Editor  -->
-                                <DockPanel Grid.Row="1">
-                                    <Label
-                                        Margin="0,0,0,5"
-                                        Content="Edit Pipeline Profile"
-                                        DockPanel.Dock="Top"
-                                        FontSize="14"
-                                        FontWeight="SemiBold"
-                                        Foreground="{DynamicResource PrimaryTextColor}" />
-
-
-                                    <Border
-                                        Padding="5"
-                                        Background="{DynamicResource TertiaryBackgroundColor}"
-                                        BorderBrush="LightGray"
-                                        BorderThickness="1"
-                                        CornerRadius="5">
-
-                                        <Grid>
-                                            <!--  Message when profile is not selected  -->
-                                            <TextBlock
-                                                HorizontalAlignment="Center"
-                                                VerticalAlignment="Center"
-                                                Foreground="{DynamicResource SecondaryTextColor}"
-                                                Text="Select a profile to edit its settings"
-                                                TextAlignment="Center">
-                                                <TextBlock.Style>
-                                                    <Style TargetType="TextBlock">
-                                                        <Setter Property="Visibility" Value="Collapsed" />
-                                                        <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding SelectedPipelineProfile}" Value="{x:Null}">
-                                                                <Setter Property="Visibility" Value="Visible" />
-                                                            </DataTrigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </TextBlock.Style>
-                                            </TextBlock>
-
-                                            <!--  Profile Edit Settings  -->
-                                            <profileEditor:EditPipelineProfileControl DataContext="{Binding EditPipelineProfile}">
-                                                <profileEditor:EditPipelineProfileControl.Style>
-                                                    <Style TargetType="profileEditor:EditPipelineProfileControl">
-                                                        <Setter Property="Visibility" Value="Visible" />
-                                                        <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding DataContext.SelectedPipelineProfile, RelativeSource={RelativeSource AncestorType=Grid}}" Value="{x:Null}">
-                                                                <Setter Property="Visibility" Value="Collapsed" />
-                                                            </DataTrigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </profileEditor:EditPipelineProfileControl.Style>
-                                            </profileEditor:EditPipelineProfileControl>
-                                        </Grid>
-                                    </Border>
-                                </DockPanel>
+                                <StackPanel
+                                    Grid.Row="2"
+                                    Margin="0,6,0,0"
+                                    HorizontalAlignment="Left"
+                                    Orientation="Horizontal">
+                                    <Button
+                                        Height="28"
+                                        MinWidth="60"
+                                        Margin="0,0,5,0"
+                                        Command="{Binding AddPipelineProfileCommand}"
+                                        Content="Add"
+                                        Style="{StaticResource CustomButtonStyle}" />
+                                    <Button
+                                        Height="28"
+                                        MinWidth="60"
+                                        Command="{Binding RemovePipelineProfileCommand}"
+                                        CommandParameter="{Binding SelectedPipelineProfile}"
+                                        Content="Delete"
+                                        Style="{StaticResource CustomButtonStyle}" />
+                                </StackPanel>
                             </Grid>
                         </Border>
-                    </ScrollViewer>
+
+                        <!--  Profile Editor (3-panel layout)  -->
+                        <Grid Grid.Row="1">
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Foreground="{DynamicResource SecondaryTextColor}"
+                                Text="Select a profile to edit its settings"
+                                TextAlignment="Center">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding SelectedPipelineProfile}" Value="{x:Null}">
+                                                <Setter Property="Visibility" Value="Visible" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+
+                            <profileEditor:EditPipelineProfileControl DataContext="{Binding EditPipelineProfile}">
+                                <profileEditor:EditPipelineProfileControl.Style>
+                                    <Style TargetType="profileEditor:EditPipelineProfileControl">
+                                        <Setter Property="Visibility" Value="Visible" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding DataContext.SelectedPipelineProfile, RelativeSource={RelativeSource AncestorType=Grid}}" Value="{x:Null}">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </profileEditor:EditPipelineProfileControl.Style>
+                            </profileEditor:EditPipelineProfileControl>
+                        </Grid>
+                    </Grid>
                 </TabItem>
             </TabControl>
 
@@ -529,4 +518,5 @@
         </Grid>
     </Border>
 </Page>
+
 

@@ -15,6 +15,7 @@ public abstract class PipelineOperationBase
     [JsonInclude] public Guid Guid { get; } = Guid.NewGuid();
     [JsonInclude] public bool Enabled { get; private set; } = true;
     [JsonInclude] public string Name { get; private set; }
+    [JsonInclude] public string Description { get; private set; } = string.Empty;
 
     [JsonIgnore] public string SolutionDirectory { get; private set; } = null!;
     [JsonIgnore] public string HttpDirectory { get; private set; } = null!;
@@ -59,5 +60,10 @@ public abstract class PipelineOperationBase
     public virtual void EnableOperation(bool enable)
     {
         Enabled = enable;
+    }
+
+    public void UpdateDescription(string description)
+    {
+        Description = description ?? string.Empty;
     }
 }

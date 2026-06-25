@@ -11,6 +11,7 @@ namespace ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Base
     {
         [ObservableProperty] bool _enabled;
         [ObservableProperty] string _name;
+        [ObservableProperty] string _description;
 
         public PipelineOperationBase Operation { get; }
 
@@ -19,11 +20,17 @@ namespace ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Base
             Operation = operation;
             Enabled = operation.Enabled;
             Name = operation.Name ?? DefaultName;
+            Description = operation.Description ?? string.Empty;
         }
 
         partial void OnEnabledChanged(bool value)
         {
             Operation.EnableOperation(value);
+        }
+
+        partial void OnDescriptionChanged(string value)
+        {
+            Operation.UpdateDescription(value);
         }
 
         public abstract string DefaultName { get; }

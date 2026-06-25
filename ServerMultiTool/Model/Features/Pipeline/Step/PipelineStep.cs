@@ -14,6 +14,8 @@ namespace ServerMultiTool.Model.Features.Pipeline.Step
 
         public int Order { get; private set; } = order;
 
+        public bool Enabled { get; private set; } = true;
+
         public List<PipelineOperationBase> Operations { get; set; } = [];
 
         public PipelineStep AddOperation(PipelineOperationBase operation)
@@ -54,10 +56,13 @@ namespace ServerMultiTool.Model.Features.Pipeline.Step
 
         public PipelineStep UpdateDescription(string description)
         {
-            if (string.IsNullOrWhiteSpace(description))
-                throw new ArgumentException("Description cannot be null or empty.", nameof(description));
+            Description = description ?? string.Empty;
+            return this;
+        }
 
-            Description = description;
+        public PipelineStep EnableStep(bool enabled)
+        {
+            Enabled = enabled;
             return this;
         }
     }

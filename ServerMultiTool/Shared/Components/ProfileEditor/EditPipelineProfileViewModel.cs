@@ -2,6 +2,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Windows.Forms;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ServerMultiTool.Model.Features.Pipeline.Operations.Base;
@@ -20,6 +21,7 @@ public partial class EditPipelineProfileViewModel : BaseViewModel, IEditPipeline
 {
     [ObservableProperty] private PipelineProfileWrapper? _profile;
     [ObservableProperty] private PipelineStepWrapper? _selectedStep;
+    [ObservableProperty] private PipelineOperationWrapper? _selectedOperation;
     [ObservableProperty] private ObservableCollection<OperationTypeViewModel> _availableOperationTypes;
     [ObservableProperty] private OperationTypeViewModel? _selectedOperationType;
     private int _selectedStepIndex = -1;
@@ -62,6 +64,9 @@ public partial class EditPipelineProfileViewModel : BaseViewModel, IEditPipeline
         _selectedStepIndex = value is null || Profile is null
             ? -1
             : Profile.Steps.IndexOf(value);
+
+        // Auto-select first operation of the newly selected step
+        SelectedOperation = value?.Operations.FirstOrDefault();
     }
 
     partial void OnSelectedStepChanging(PipelineStepWrapper? value)
@@ -140,6 +145,7 @@ public partial class EditPipelineProfileViewModel : BaseViewModel, IEditPipeline
 
             // Add the operation to the selected step
             SelectedStep.AddOperation(wrapper);
+            SelectedOperation = wrapper;
 
             OnPropertyChanged();
         }
@@ -150,6 +156,12 @@ public partial class EditPipelineProfileViewModel : BaseViewModel, IEditPipeline
     }
 
     [RelayCommand]
+    private void SelectOperation(PipelineOperationWrapper? operation)
+    {
+        SelectedOperation = operation;
+    }
+
+    [RelayCommand]
     private void RemoveOperation(PipelineOperationWrapper operation)
     {
         if (Profile is null || SelectedStep is null || operation is null)
@@ -157,7 +169,38 @@ public partial class EditPipelineProfileViewModel : BaseViewModel, IEditPipeline
 
         SelectedStep.RemoveOperation(operation);
 
+        if (SelectedOperation == operation)
+            SelectedOperation = SelectedStep.Operations.FirstOrDefault();
+
         OnPropertyChanged();
+    }
+
+    [RelayCommand]
+    private void BrowseOperationFileName()
+    {
+        if (SelectedOperation is not ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Operations.Integrations.ProcessExecutionOperationWrapper processExec)
+            return;
+        using var dialog = new OpenFileDialog { Title = "Select executable file", Filter = "All Files|*.*|Executables|*.exe" };
+        if (dialog.ShowDialog() == DialogResult.OK)
+            processExec.FileName = dialog.FileName;
+    }
+
+    [RelayCommand]
+    private void BrowseDeliverySource(ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Operations.Delivery.DeliveryDirectoryWrapper dir)
+    {
+        if (dir is null) return;
+        using var dialog = new FolderBrowserDialog { Description = "Select source directory", ShowNewFolderButton = true };
+        if (dialog.ShowDialog() == DialogResult.OK)
+            dir.Source = dialog.SelectedPath;
+    }
+
+    [RelayCommand]
+    private void BrowseDeliveryDestination(ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Operations.Delivery.DeliveryDirectoryWrapper dir)
+    {
+        if (dir is null) return;
+        using var dialog = new FolderBrowserDialog { Description = "Select destination directory", ShowNewFolderButton = true };
+        if (dialog.ShowDialog() == DialogResult.OK)
+            dir.Destination = dialog.SelectedPath;
     }
 
     [RelayCommand]

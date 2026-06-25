@@ -19,6 +19,7 @@ public partial class PipelineStepWrapper : ObservableObject
     [ObservableProperty] public string _name;
     [ObservableProperty] public string _description;
     [ObservableProperty] int _order;
+    [ObservableProperty] bool _enabled = true;
 
     [ObservableProperty] PipelineStepStatus _pipelineStepStatus = PipelineStepStatus.Wait;
 
@@ -31,6 +32,7 @@ public partial class PipelineStepWrapper : ObservableObject
         Name = pipelineStep.Name;
         Description = pipelineStep.Description;
         Order = pipelineStep.Order;
+        Enabled = pipelineStep.Enabled;
         Operations = new PipelineOperationsCollection(pipelineStep.Operations);
 
         foreach (var operation in Operations)
@@ -42,6 +44,7 @@ public partial class PipelineStepWrapper : ObservableObject
         _pipelineStep.UpdateOrder(Order);
         _pipelineStep.UpdateName(Name);
         _pipelineStep.UpdateDescription(Description);
+        _pipelineStep.EnableStep(Enabled);
         _pipelineStep.Operations = [.. Operations.Select(operation => operation.ToOriginal())];
         return _pipelineStep;
     }

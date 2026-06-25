@@ -1,4 +1,4 @@
-<UserControl
+﻿<UserControl
     x:Class="ServerMultiTool.Shared.Components.ProfileEditor.EditPipelineProfileControl"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -6,1306 +6,737 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:editPipelineProfile="clr-namespace:ServerMultiTool.Shared.Components.ProfileEditor"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    d:DataContext="{d:DesignInstance Type=editPipelineProfile:EditPipelineProfileViewModel,
-                                     IsDesignTimeCreatable=True}"
+    MinHeight="520"
+    d:DataContext="{d:DesignInstance Type=editPipelineProfile:EditPipelineProfileViewModel, IsDesignTimeCreatable=True}"
     mc:Ignorable="d">
-
     <UserControl.Resources>
-        <!--  Styles to match PipelineView.xaml  -->
-        <Style TargetType="Expander">
-            <Setter Property="Margin" Value="0,0,0,6" />
-            <Setter Property="Foreground" Value="{DynamicResource PrimaryTextColor}" />
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <converters:IncrementConverter x:Key="IncrementConverter" />
+        <converters:OperationTypeToLabelConverter x:Key="OperationTypeToLabelConverter" />
+        <converters:DeliveryDirectoryConverter x:Key="DeliveryDirectoryConverter" />
+        <converters:ObjectEqualityConverter x:Key="ObjectEqualityConverter" />
+        <converters:ItemIndexConverter x:Key="ItemIndexConverter" />
+        <Style x:Key="SectionLabelStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="{DynamicResource PrimaryGrayColor}" />
+            <Setter Property="Margin" Value="0,0,0,4" />
+        </Style>
+        <Style x:Key="FieldTextBoxStyle" TargetType="TextBox">
+            <Setter Property="Height" Value="30" />
+            <Setter Property="Padding" Value="8,0" />
             <Setter Property="FontSize" Value="13" />
-        </Style>
-        <Style x:Key="StretchStyle" TargetType="ListViewItem">
-            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-        </Style>
-        <Style TargetType="TextBox">
+            <Setter Property="Foreground" Value="{DynamicResource PrimaryTextColor}" />
             <Setter Property="Background" Value="{DynamicResource TertiaryBackgroundColor}" />
-            <Setter Property="Margin" Value="0,0,0,8" />
-            <Setter Property="Height" Value="28" />
-            <Setter Property="Padding" Value="6,0" />
-            <Setter Property="FontSize" Value="13" />
-            <Setter Property="Foreground" Value="{DynamicResource PrimaryTextColor}" />
-            <Setter Property="BorderBrush" Value="{DynamicResource ControlBorderBrush}" />
+            <Setter Property="BorderBrush" Value="LightGray" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
         </Style>
-        <Style TargetType="CheckBox">
-            <Setter Property="Foreground" Value="{DynamicResource PrimaryTextColor}" />
+        <Style x:Key="BrowseButtonStyle" TargetType="Button">
+            <Setter Property="Width" Value="30" />
+            <Setter Property="Height" Value="30" />
+            <Setter Property="Background" Value="{DynamicResource TertiaryBackgroundColor}" />
+            <Setter Property="BorderBrush" Value="LightGray" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4">
+                            <Path Width="14" Height="14" HorizontalAlignment="Center" VerticalAlignment="Center" Data="M10,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V8C22,6.89 21.1,6 20,6H12L10,4Z" Fill="{DynamicResource PrimaryGrayColor}" Stretch="Uniform" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="{DynamicResource PrimaryWhiteColor}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="SectionExpanderStyle" TargetType="Expander">
             <Setter Property="Margin" Value="0,0,0,8" />
-            <Setter Property="FontSize" Value="13" />
-        </Style>
-        <Style TargetType="TextBlock">
-            <Setter Property="FontSize" Value="13" />
             <Setter Property="Foreground" Value="{DynamicResource PrimaryTextColor}" />
-            <Setter Property="Margin" Value="0,8,0,2" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="IsExpanded" Value="True" />
         </Style>
-        <converters:DeliveryDirectoryConverter x:Key="DeliveryDirectoryConverter" />
-        <converters:BoolToEnableDisableTextConverter x:Key="BoolToEnableDisableTextConverter" />
-        <converters:OperationTemplateSelector x:Key="OperationTemplateSelector">
-            <converters:OperationTemplateSelector.DeliveryBinOperationTemplate>
-                <DataTemplate>
-                    <Expander Margin="0,5,0,0">
-
-                        <!--  Fixed HeaderTemplate  -->
-                        <Expander.Header>
-                            <Grid>
+        <Style x:Key="SmallAddButtonStyle" TargetType="Button">
+            <Setter Property="Height" Value="26" />
+            <Setter Property="Padding" Value="10,0" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Background" Value="{DynamicResource TertiaryBackgroundColor}" />
+            <Setter Property="Foreground" Value="{DynamicResource SecondaryBlueColor}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource SecondaryBlueColor}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Padding="{TemplateBinding Padding}" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4">
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="{TemplateBinding FontSize}" Foreground="{TemplateBinding Foreground}" Text="{TemplateBinding Content}" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="{DynamicResource PrimaryWhiteColor}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="DeleteButtonStyle" TargetType="Button">
+            <Setter Property="Height" Value="26" />
+            <Setter Property="Padding" Value="10,0" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="{DynamicResource PrimaryRedColor}" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <StackPanel Orientation="Horizontal">
+                            <Path Width="14" Height="14" Margin="0,0,4,0" VerticalAlignment="Center" Data="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M7,6H17V19H7V6M9,8V17H11V8H9M13,8V17H15V8H13Z" Fill="{DynamicResource PrimaryRedColor}" Stretch="Uniform" />
+                            <TextBlock VerticalAlignment="Center" FontSize="{TemplateBinding FontSize}" Foreground="{DynamicResource PrimaryRedColor}" Text="{TemplateBinding Content}" />
+                        </StackPanel>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <!-- ProcessExecution editor -->
+        <DataTemplate x:Key="ProcessExecutionEditorTemplate">
+            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="14,10">
+                    <Expander Header="General" Style="{StaticResource SectionExpanderStyle}">
+                        <StackPanel Margin="2,8,2,8">
+                            <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Name" />
+                            <TextBox Margin="0,0,0,10" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <Grid Margin="0,0,0,10">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="200" />
-                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-
-                                <TextBox
-                                    Grid.Column="0"
-                                    Height="25"
-                                    Margin="0,1,0,0"
-                                    VerticalAlignment="Stretch"
-                                    BorderBrush="Black"
-                                    BorderThickness="0.5"
-                                    IsEnabled="{Binding Enabled}"
-                                    Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-
-                                <Button
-                                    Grid.Column="1"
-                                    Width="70"
-                                    Height="25"
-                                    Margin="10,0,0,0"
-                                    BorderBrush="Black"
-                                    BorderThickness="0.5"
-                                    Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.ToggleOperationEnabledCommand}"
-                                    CommandParameter="{Binding}"
-                                    Content="{Binding Enabled, Converter={StaticResource BoolToEnableDisableTextConverter}}"
-                                    Style="{StaticResource CustomButtonStyle}" />
-
-                                <Button
-                                    Grid.Column="2"
-                                    Width="70"
-                                    Height="25"
-                                    Margin="10,0,0,0"
-                                    BorderBrush="Black"
-                                    BorderThickness="0.5"
-                                    Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.RemoveOperationCommand}"
-                                    CommandParameter="{Binding}"
-                                    Content="Remove"
-                                    Style="{StaticResource CustomButtonStyle}" />
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Description" />
+                                    <TextBox Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Bottom">
+                                    <TextBlock Margin="0,0,0,6" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryGrayColor}" Text="Enabled" />
+                                    <ToggleButton IsChecked="{Binding Enabled, Mode=TwoWay}" Style="{StaticResource ToggleButtonStyle}" />
+                                </StackPanel>
                             </Grid>
-                        </Expander.Header>
-
-                        <!--  Content section  -->
-                        <Grid Margin="10,10,0,0" IsEnabled="{Binding Enabled}">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-
-                            <TextBlock
-                                Grid.Row="0"
-                                Grid.Column="0"
-                                Margin="0,0,10,0"
-                                VerticalAlignment="Center"
-                                Text="Name:" />
-                            <TextBox
-                                Grid.Row="0"
-                                Grid.Column="1"
-                                Margin="2"
-                                BorderBrush="Black"
-                                BorderThickness="0.5"
-                                Text="{Binding Directory.Name, UpdateSourceTrigger=PropertyChanged}" />
-
-                            <TextBlock
-                                Grid.Row="1"
-                                Grid.Column="0"
-                                Margin="0,0,10,0"
-                                VerticalAlignment="Center"
-                                Text="Releative Path:" />
-                            <TextBox
-                                Grid.Row="1"
-                                Grid.Column="1"
-                                Margin="2"
-                                BorderBrush="Black"
-                                BorderThickness="0.5"
-                                Text="{Binding Directory.Path, UpdateSourceTrigger=PropertyChanged}" />
-                        </Grid>
+                        </StackPanel>
                     </Expander>
-                </DataTemplate>
-            </converters:OperationTemplateSelector.DeliveryBinOperationTemplate>
-
-            <converters:OperationTemplateSelector.DeliverySpecifiedFilesOperationTemplate>
-                <DataTemplate>
-                    <Expander Margin="0,5,0,0">
-
-                        <!--  Fixed HeaderTemplate  -->
-                        <Expander.Header>
-                            <Grid>
+                    <Expander Header="Command" Style="{StaticResource SectionExpanderStyle}">
+                        <StackPanel Margin="2,8,2,8">
+                            <TextBlock Style="{StaticResource SectionLabelStyle}" Text="File Name" />
+                            <Grid Margin="0,0,0,10">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="200" />
-                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-
-                                <TextBox
-                                    Grid.Column="0"
-                                    Height="25"
-                                    Margin="0,1,0,0"
-                                    VerticalAlignment="Stretch"
-                                    BorderBrush="Black"
-                                    BorderThickness="0.5"
-                                    IsEnabled="{Binding Enabled}"
-                                    Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-
-                                <Button
-                                    Grid.Column="1"
-                                    Width="70"
-                                    Height="25"
-                                    Margin="10,0,0,0"
-                                    BorderBrush="Black"
-                                    BorderThickness="0.5"
-                                    Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.ToggleOperationEnabledCommand}"
-                                    CommandParameter="{Binding}"
-                                    Content="{Binding Enabled, Converter={StaticResource BoolToEnableDisableTextConverter}}"
-                                    Style="{StaticResource CustomButtonStyle}" />
-
-                                <Button
-                                    Grid.Column="2"
-                                    Width="70"
-                                    Height="25"
-                                    Margin="10,0,0,0"
-                                    BorderBrush="Black"
-                                    BorderThickness="0.5"
-                                    Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.RemoveOperationCommand}"
-                                    CommandParameter="{Binding}"
-                                    Content="Remove"
-                                    Style="{StaticResource CustomButtonStyle}" />
+                                <TextBox Grid.Column="0" Margin="0,0,4,0" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding FileName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                <Button Grid.Column="1" Command="{Binding DataContext.BrowseOperationFileNameCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" Style="{StaticResource BrowseButtonStyle}" />
                             </Grid>
-                        </Expander.Header>
-
-                        <!--  Content section  -->
-                        <Grid Margin="10,10,0,0" IsEnabled="{Binding Enabled}">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-
-                            <GroupBox
-                                Grid.Row="0"
-                                Grid.Column="0"
-                                Grid.ColumnSpan="2"
-                                Margin="0,10,0,0"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Center"
-                                Header="Delivery Dirictories">
-                                <!--  Delivery Directories Collection Management  -->
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="*" />
-                                    </Grid.RowDefinitions>
-
-                                    <!--  Add Directory input  -->
-                                    <Grid Grid.Row="0" Margin="2,0,0,0">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition Width="*" />
-                                            <ColumnDefinition Width="Auto" />
-                                        </Grid.ColumnDefinitions>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="Auto" />
-                                        </Grid.RowDefinitions>
-
-                                        <TextBlock
-                                            Grid.Row="0"
-                                            Grid.Column="0"
-                                            Margin="0,5,0,0"
-                                            VerticalAlignment="Center"
-                                            Text="Source:" />
-                                        <TextBox
-                                            x:Name="SourceTextBox"
-                                            Grid.Row="0"
-                                            Grid.Column="1"
-                                            Height="25"
-                                            MinWidth="200"
-                                            Margin="10,5,0,0"
-                                            VerticalContentAlignment="Center" />
-
-                                        <TextBlock
-                                            Grid.Row="1"
-                                            Grid.Column="0"
-                                            Margin="0,5,0,0"
-                                            VerticalAlignment="Center"
-                                            Text="Destination:" />
-                                        <TextBox
-                                            x:Name="DestinationTextBox"
-                                            Grid.Row="1"
-                                            Grid.Column="1"
-                                            Height="25"
-                                            MinWidth="200"
-                                            Margin="10,5,0,0"
-                                            VerticalContentAlignment="Center" />
-
-                                        <Button
-                                            Grid.Row="0"
-                                            Grid.RowSpan="2"
-                                            Grid.Column="2"
-                                            Height="25"
-                                            MinWidth="70"
-                                            Margin="10,5,0,0"
-                                            VerticalAlignment="Center"
-                                            Command="{Binding AddDeliveryDirectoryCommand}"
-                                            Content="Add"
-                                            Style="{StaticResource CustomButtonStyle}">
-                                            <Button.CommandParameter>
-                                                <MultiBinding Converter="{StaticResource DeliveryDirectoryConverter}">
-                                                    <Binding ElementName="SourceTextBox" Path="Text" />
-                                                    <Binding ElementName="DestinationTextBox" Path="Text" />
-                                                </MultiBinding>
-                                            </Button.CommandParameter>
-                                        </Button>
-                                    </Grid>
-
-                                    <!--  Directories List  -->
-                                    <ListView
-                                        Grid.Row="1"
-                                        Height="120"
-                                        Margin="2,5,2,2"
-                                        BorderBrush="Black"
-                                        BorderThickness="0.5"
-                                        ItemsSource="{Binding Directories}">
-                                        <ListView.ItemTemplate>
-                                            <DataTemplate>
-                                                <Grid Margin="0,2">
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="Auto" />
-                                                        <ColumnDefinition Width="Auto" />
-                                                        <ColumnDefinition Width="Auto" />
-                                                    </Grid.ColumnDefinitions>
-
-                                                    <TextBlock
-                                                        Grid.Column="0"
-                                                        VerticalAlignment="Center"
-                                                        Text="{Binding Source}" />
-
-                                                    <TextBlock
-                                                        Grid.Column="1"
-                                                        VerticalAlignment="Center"
-                                                        Text="{Binding Destination}" />
-
-                                                    <Button
-                                                        Grid.Column="2"
-                                                        Width="60"
-                                                        Height="22"
-                                                        Margin="5,0,0,0"
-                                                        Command="{Binding DataContext.RemoveDirectoryCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
-                                                        CommandParameter="{Binding}"
-                                                        Content="Remove"
-                                                        Style="{StaticResource CustomButtonStyle}" />
-                                                </Grid>
-                                            </DataTemplate>
-                                        </ListView.ItemTemplate>
-                                    </ListView>
-                                </Grid>
-                            </GroupBox>
-                        </Grid>
+                            <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Arguments" />
+                            <TextBox Margin="0,0,0,10" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Arguments, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Retry Count" />
+                            <TextBox Width="100" HorizontalAlignment="Left" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding RetryCount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
                     </Expander>
-                </DataTemplate>
-            </converters:OperationTemplateSelector.DeliverySpecifiedFilesOperationTemplate>
-
-            <converters:OperationTemplateSelector.HttpPingOperationTemplate>
-                <DataTemplate>
-                    <Expander Margin="0,5,0,0">
-
-                        <!--  Fixed HeaderTemplate  -->
-                        <Expander.Header>
-                            <Grid>
+                    <Border Margin="0,6,0,0" Padding="8,6" Background="#FFF8E7" BorderBrush="#FFE082" BorderThickness="1" CornerRadius="4">
+                        <StackPanel Orientation="Horizontal">
+                            <Path Width="14" Height="14" Margin="0,0,6,0" VerticalAlignment="Center" Data="{StaticResource Information}" Fill="#F5A623" Stretch="Uniform" />
+                            <StackPanel>
+                                <TextBlock FontSize="11" FontWeight="SemiBold" Foreground="#8A6000" Text="Tip" />
+                                <TextBlock FontSize="11" Foreground="#8A6000" Text="Changes are saved automatically" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+        </DataTemplate>
+        <!-- DeliverySpecifiedFiles editor -->
+        <DataTemplate x:Key="DeliverySpecifiedFilesEditorTemplate">
+            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="14,10">
+                    <Expander Header="General" Style="{StaticResource SectionExpanderStyle}">
+                        <StackPanel Margin="2,8,2,8">
+                            <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Name" />
+                            <TextBox Margin="0,0,0,10" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <Grid Margin="0,0,0,10">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="200" />
-                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-
-                                <TextBox
-                                    Grid.Column="0"
-                                    Height="25"
-                                    Margin="0,1,0,0"
-                                    VerticalAlignment="Stretch"
-                                    BorderBrush="Black"
-                                    BorderThickness="0.5"
-                                    IsEnabled="{Binding Enabled}"
-                                    Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-
-                                <Button
-                                    Grid.Column="1"
-                                    Width="70"
-                                    Height="25"
-                                    Margin="10,0,0,0"
-                                    BorderBrush="Black"
-                                    BorderThickness="0.5"
-                                    Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.ToggleOperationEnabledCommand}"
-                                    CommandParameter="{Binding}"
-                                    Content="{Binding Enabled, Converter={StaticResource BoolToEnableDisableTextConverter}}"
-                                    Style="{StaticResource CustomButtonStyle}" />
-
-                                <Button
-                                    Grid.Column="2"
-                                    Width="70"
-                                    Height="25"
-                                    Margin="10,0,0,0"
-                                    BorderBrush="Black"
-                                    BorderThickness="0.5"
-                                    Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.RemoveOperationCommand}"
-                                    CommandParameter="{Binding}"
-                                    Content="Remove"
-                                    Style="{StaticResource CustomButtonStyle}" />
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Description" />
+                                    <TextBox Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Bottom">
+                                    <TextBlock Margin="0,0,0,6" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryGrayColor}" Text="Enabled" />
+                                    <ToggleButton IsChecked="{Binding Enabled, Mode=TwoWay}" Style="{StaticResource ToggleButtonStyle}" />
+                                </StackPanel>
                             </Grid>
-                        </Expander.Header>
-
-                        <!--  Content section  -->
-                        <Grid Margin="10,10,0,0" IsEnabled="{Binding Enabled}">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-
-                            <TextBlock
-                                Grid.Row="0"
-                                Grid.Column="0"
-                                Margin="0,0,10,0"
-                                VerticalAlignment="Center"
-                                Text="Timeout:" />
-                            <TextBox
-                                Grid.Row="0"
-                                Grid.Column="1"
-                                Margin="2"
-                                BorderBrush="Black"
-                                BorderThickness="0.5"
-                                Text="{Binding TimeoutInMinutes, UpdateSourceTrigger=PropertyChanged}"
-                                ToolTip="In minutes (double)" />
-
-                            <TextBlock
-                                Grid.Row="2"
-                                Grid.Column="0"
-                                Margin="0,0,10,0"
-                                VerticalAlignment="Center"
-                                Text="URLs:" />
-
-                            <!--  URL Collection Management  -->
-                            <Grid Grid.Row="2" Grid.Column="1">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="*" />
-                                </Grid.RowDefinitions>
-
-                                <!--  Add URL input  -->
-                                <Grid Grid.Row="0">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="Auto" />
-                                    </Grid.ColumnDefinitions>
-
-                                    <TextBox
-                                        x:Name="NewUrlTextBox"
-                                        Grid.Column="0"
-                                        Margin="2,2,5,2"
-                                        BorderBrush="Black"
-                                        BorderThickness="0.5" />
-
-                                    <Button
-                                        Grid.Column="1"
-                                        Width="60"
-                                        Height="25"
-                                        Command="{Binding AddUrlCommand}"
-                                        CommandParameter="{Binding ElementName=NewUrlTextBox, Path=Text}"
-                                        Content="Add"
-                                        Style="{StaticResource CustomButtonStyle}" />
-                                </Grid>
-
-                                <!--  URL List  -->
-                                <ListView
-                                    Grid.Row="1"
-                                    Height="120"
-                                    Margin="2,5,2,2"
-                                    BorderBrush="Black"
-                                    BorderThickness="0.5"
-                                    ItemsSource="{Binding Urls}">
-                                    <ListView.ItemTemplate>
-                                        <DataTemplate>
-                                            <Grid Margin="0,2">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="*" />
-                                                    <ColumnDefinition Width="Auto" />
-                                                </Grid.ColumnDefinitions>
-
-                                                <TextBlock
-                                                    Grid.Column="0"
-                                                    VerticalAlignment="Center"
-                                                    Text="{Binding}" />
-
-                                                <Button
-                                                    Grid.Column="1"
-                                                    Width="60"
-                                                    Height="22"
-                                                    Margin="5,0,0,0"
-                                                    Command="{Binding DataContext.RemoveUrlCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
-                                                    CommandParameter="{Binding}"
-                                                    Content="Remove"
-                                                    Style="{StaticResource CustomButtonStyle}" />
-                                            </Grid>
-                                        </DataTemplate>
-                                    </ListView.ItemTemplate>
-                                </ListView>
-                            </Grid>
-                        </Grid>
+                        </StackPanel>
                     </Expander>
-                </DataTemplate>
-            </converters:OperationTemplateSelector.HttpPingOperationTemplate>
-
-            <converters:OperationTemplateSelector.ProcessExecutionOperationTemplate>
-                <DataTemplate>
-                    <Expander Margin="0,5,0,0">
-
-                        <!--  Fixed HeaderTemplate  -->
-                        <Expander.Header>
-                            <Grid>
+                    <TextBlock Margin="0,0,0,6" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryTextColor}" Text="Delivery Directories" />
+                    <ItemsControl ItemsSource="{Binding Directories}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Margin="0,4,0,0" Padding="10,8" Background="{DynamicResource SecondaryBackgroundColor}" BorderBrush="LightGray" BorderThickness="1" CornerRadius="4">
+                                    <StackPanel>
+                                        <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Source" />
+                                        <Grid Margin="0,0,0,8">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBox Grid.Column="0" Margin="0,0,4,0" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Source, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                            <Button Grid.Column="1" Command="{Binding DataContext.BrowseDeliverySourceCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Style="{StaticResource BrowseButtonStyle}" />
+                                        </Grid>
+                                        <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Destination" />
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBox Grid.Column="0" Margin="0,0,4,0" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Destination, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                            <Button Grid.Column="1" Command="{Binding DataContext.BrowseDeliveryDestinationCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Style="{StaticResource BrowseButtonStyle}" />
+                                        </Grid>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <Border Margin="0,10,0,0" Padding="8,6" Background="#FFF8E7" BorderBrush="#FFE082" BorderThickness="1" CornerRadius="4">
+                        <StackPanel Orientation="Horizontal">
+                            <Path Width="14" Height="14" Margin="0,0,6,0" VerticalAlignment="Center" Data="{StaticResource Information}" Fill="#F5A623" Stretch="Uniform" />
+                            <StackPanel>
+                                <TextBlock FontSize="11" FontWeight="SemiBold" Foreground="#8A6000" Text="Tip" />
+                                <TextBlock FontSize="11" Foreground="#8A6000" Text="Changes are saved automatically" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+        </DataTemplate>
+        <!-- MsBuild editor -->
+        <DataTemplate x:Key="MsBuildEditorTemplate">
+            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="14,10">
+                    <Expander Header="General" Style="{StaticResource SectionExpanderStyle}">
+                        <StackPanel Margin="2,8,2,8">
+                            <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Name" />
+                            <TextBox Margin="0,0,0,10" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <Grid Margin="0,0,0,10">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="200" />
-                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-
-                                <TextBox
-                                    Grid.Column="0"
-                                    Height="25"
-                                    Margin="0,1,0,0"
-                                    VerticalAlignment="Stretch"
-                                    BorderBrush="Black"
-                                    BorderThickness="0.5"
-                                    IsEnabled="{Binding Enabled}"
-                                    Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-
-                                <Button
-                                    Grid.Column="1"
-                                    Width="70"
-                                    Height="25"
-                                    Margin="10,0,0,0"
-                                    BorderBrush="Black"
-                                    BorderThickness="0.5"
-                                    Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.ToggleOperationEnabledCommand}"
-                                    CommandParameter="{Binding}"
-                                    Content="{Binding Enabled, Converter={StaticResource BoolToEnableDisableTextConverter}}"
-                                    Style="{StaticResource CustomButtonStyle}" />
-
-                                <Button
-                                    Grid.Column="2"
-                                    Width="70"
-                                    Height="25"
-                                    Margin="10,0,0,0"
-                                    BorderBrush="Black"
-                                    BorderThickness="0.5"
-                                    Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.RemoveOperationCommand}"
-                                    CommandParameter="{Binding}"
-                                    Content="Remove"
-                                    Style="{StaticResource CustomButtonStyle}" />
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Description" />
+                                    <TextBox Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Bottom">
+                                    <TextBlock Margin="0,0,0,6" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryGrayColor}" Text="Enabled" />
+                                    <ToggleButton IsChecked="{Binding Enabled, Mode=TwoWay}" Style="{StaticResource ToggleButtonStyle}" />
+                                </StackPanel>
                             </Grid>
-                        </Expander.Header>
-
-                        <!--  Content section  -->
-                        <Grid Margin="10,10,0,0" IsEnabled="{Binding Enabled}">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-
-                            <TextBlock
-                                Grid.Row="0"
-                                Grid.Column="0"
-                                Margin="0,0,10,0"
-                                VerticalAlignment="Center"
-                                Text="File Name:" />
-                            <TextBox
-                                Grid.Row="0"
-                                Grid.Column="1"
-                                Margin="2"
-                                BorderBrush="Black"
-                                BorderThickness="0.5"
-                                Text="{Binding FileName, UpdateSourceTrigger=PropertyChanged}" />
-
-                            <TextBlock
-                                Grid.Row="1"
-                                Grid.Column="0"
-                                Margin="0,0,10,0"
-                                VerticalAlignment="Center"
-                                Text="Arguments:" />
-                            <TextBox
-                                Grid.Row="1"
-                                Grid.Column="1"
-                                Margin="2"
-                                BorderBrush="Black"
-                                BorderThickness="0.5"
-                                Text="{Binding Arguments, UpdateSourceTrigger=PropertyChanged}" />
-
-                            <TextBlock
-                                Grid.Row="2"
-                                Grid.Column="0"
-                                Margin="0,0,10,0"
-                                VerticalAlignment="Center"
-                                Text="Retry Count:" />
-                            <TextBox
-                                Grid.Row="2"
-                                Grid.Column="1"
-                                Margin="2"
-                                BorderBrush="Black"
-                                BorderThickness="0.5"
-                                Text="{Binding RetryCount, UpdateSourceTrigger=PropertyChanged}" />
-                        </Grid>
+                        </StackPanel>
                     </Expander>
-                </DataTemplate>
-            </converters:OperationTemplateSelector.ProcessExecutionOperationTemplate>
-
-            <converters:OperationTemplateSelector.SqlExecutionOperationTemplate>
-                <DataTemplate>
-                    <Expander Margin="0,5,0,0">
-
-                        <!--  Fixed HeaderTemplate  -->
-                        <Expander.Header>
-                            <Grid>
+                    <Expander Header="Build" Style="{StaticResource SectionExpanderStyle}">
+                        <StackPanel Margin="2,8,2,8">
+                            <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Project Name" />
+                            <TextBox Margin="0,0,0,10" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Directory.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Relative Path" />
+                            <TextBox Margin="0,0,0,10" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Directory.Path, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Retry Count" />
+                            <TextBox Width="100" HorizontalAlignment="Left" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding RetryCount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
+                    </Expander>
+                    <Border Margin="0,6,0,0" Padding="8,6" Background="#FFF8E7" BorderBrush="#FFE082" BorderThickness="1" CornerRadius="4">
+                        <StackPanel Orientation="Horizontal">
+                            <Path Width="14" Height="14" Margin="0,0,6,0" VerticalAlignment="Center" Data="{StaticResource Information}" Fill="#F5A623" Stretch="Uniform" />
+                            <StackPanel>
+                                <TextBlock FontSize="11" FontWeight="SemiBold" Foreground="#8A6000" Text="Tip" />
+                                <TextBlock FontSize="11" Foreground="#8A6000" Text="Changes are saved automatically" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+        </DataTemplate>
+        <!-- DeliveryBin editor -->
+        <DataTemplate x:Key="DeliveryBinEditorTemplate">
+            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="14,10">
+                    <Expander Header="General" Style="{StaticResource SectionExpanderStyle}">
+                        <StackPanel Margin="2,8,2,8">
+                            <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Name" />
+                            <TextBox Margin="0,0,0,10" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <Grid Margin="0,0,0,10">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="200" />
-                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-
-                                <TextBox
-                                    Grid.Column="0"
-                                    Height="25"
-                                    Margin="0,1,0,0"
-                                    VerticalAlignment="Stretch"
-                                    BorderBrush="Black"
-                                    BorderThickness="0.5"
-                                    IsEnabled="{Binding Enabled}"
-                                    Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-
-                                <Button
-                                    Grid.Column="1"
-                                    Width="70"
-                                    Height="25"
-                                    Margin="10,0,0,0"
-                                    BorderBrush="Black"
-                                    BorderThickness="0.5"
-                                    Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.ToggleOperationEnabledCommand}"
-                                    CommandParameter="{Binding}"
-                                    Content="{Binding Enabled, Converter={StaticResource BoolToEnableDisableTextConverter}}"
-                                    Style="{StaticResource CustomButtonStyle}" />
-
-                                <Button
-                                    Grid.Column="2"
-                                    Width="70"
-                                    Height="25"
-                                    Margin="10,0,0,0"
-                                    BorderBrush="Black"
-                                    BorderThickness="0.5"
-                                    Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.RemoveOperationCommand}"
-                                    CommandParameter="{Binding}"
-                                    Content="Remove"
-                                    Style="{StaticResource CustomButtonStyle}" />
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Description" />
+                                    <TextBox Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Bottom">
+                                    <TextBlock Margin="0,0,0,6" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryGrayColor}" Text="Enabled" />
+                                    <ToggleButton IsChecked="{Binding Enabled, Mode=TwoWay}" Style="{StaticResource ToggleButtonStyle}" />
+                                </StackPanel>
                             </Grid>
-                        </Expander.Header>
-
-                        <!--  Content section  -->
-                        <Grid Margin="10,10,0,0" IsEnabled="{Binding Enabled}">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-
-                            <TextBlock
-                                Grid.Row="0"
-                                Grid.Column="0"
-                                Margin="0,0,10,0"
-                                VerticalAlignment="Center"
-                                Text="Path to SQL script:" />
-                            <TextBox
-                                Grid.Row="0"
-                                Grid.Column="1"
-                                Margin="2"
-                                BorderBrush="Black"
-                                BorderThickness="0.5"
-                                Text="{Binding PathToSqlScript, UpdateSourceTrigger=PropertyChanged}" />
-
-                            <TextBlock
-                                Grid.Row="2"
-                                Grid.Column="0"
-                                Margin="0,0,10,0"
-                                VerticalAlignment="Center"
-                                Text="Connection String:" />
-                            <TextBox
-                                Grid.Row="2"
-                                Grid.Column="1"
-                                Margin="2"
-                                BorderBrush="Black"
-                                BorderThickness="0.5"
-                                Text="{Binding ConnectionString, UpdateSourceTrigger=PropertyChanged}" />
-                        </Grid>
+                        </StackPanel>
                     </Expander>
-                </DataTemplate>
-            </converters:OperationTemplateSelector.SqlExecutionOperationTemplate>
-
-            <converters:OperationTemplateSelector.WebBrowserOperationTemplate>
-                <DataTemplate>
-                    <Expander Margin="0,5,0,0">
-
-                        <!--  Fixed HeaderTemplate  -->
-                        <Expander.Header>
-                            <Grid>
+                    <Expander Header="Delivery" Style="{StaticResource SectionExpanderStyle}">
+                        <StackPanel Margin="2,8,2,8">
+                            <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Project Name" />
+                            <TextBox Margin="0,0,0,10" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Directory.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Relative Path" />
+                            <TextBox Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Directory.Path, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
+                    </Expander>
+                    <Border Margin="0,6,0,0" Padding="8,6" Background="#FFF8E7" BorderBrush="#FFE082" BorderThickness="1" CornerRadius="4">
+                        <StackPanel Orientation="Horizontal">
+                            <Path Width="14" Height="14" Margin="0,0,6,0" VerticalAlignment="Center" Data="{StaticResource Information}" Fill="#F5A623" Stretch="Uniform" />
+                            <StackPanel>
+                                <TextBlock FontSize="11" FontWeight="SemiBold" Foreground="#8A6000" Text="Tip" />
+                                <TextBlock FontSize="11" Foreground="#8A6000" Text="Changes are saved automatically" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+        </DataTemplate>
+        <!-- HttpPing editor -->
+        <DataTemplate x:Key="HttpPingEditorTemplate">
+            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="14,10">
+                    <Expander Header="General" Style="{StaticResource SectionExpanderStyle}">
+                        <StackPanel Margin="2,8,2,8">
+                            <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Name" />
+                            <TextBox Margin="0,0,0,10" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <Grid Margin="0,0,0,10">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="200" />
-                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-
-                                <TextBox
-                                    Grid.Column="0"
-                                    Height="25"
-                                    Margin="0,1,0,0"
-                                    VerticalAlignment="Stretch"
-                                    BorderBrush="Black"
-                                    BorderThickness="0.5"
-                                    IsEnabled="{Binding Enabled}"
-                                    Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-
-                                <Button
-                                    Grid.Column="1"
-                                    Width="70"
-                                    Height="25"
-                                    Margin="10,0,0,0"
-                                    BorderBrush="Black"
-                                    BorderThickness="0.5"
-                                    Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.ToggleOperationEnabledCommand}"
-                                    CommandParameter="{Binding}"
-                                    Content="{Binding Enabled, Converter={StaticResource BoolToEnableDisableTextConverter}}"
-                                    Style="{StaticResource CustomButtonStyle}" />
-
-                                <Button
-                                    Grid.Column="2"
-                                    Width="70"
-                                    Height="25"
-                                    Margin="10,0,0,0"
-                                    BorderBrush="Black"
-                                    BorderThickness="0.5"
-                                    Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.RemoveOperationCommand}"
-                                    CommandParameter="{Binding}"
-                                    Content="Remove"
-                                    Style="{StaticResource CustomButtonStyle}" />
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Description" />
+                                    <TextBox Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Bottom">
+                                    <TextBlock Margin="0,0,0,6" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryGrayColor}" Text="Enabled" />
+                                    <ToggleButton IsChecked="{Binding Enabled, Mode=TwoWay}" Style="{StaticResource ToggleButtonStyle}" />
+                                </StackPanel>
                             </Grid>
-                        </Expander.Header>
-
-                        <!--  Content section  -->
-                        <Grid Margin="10,10,0,0" IsEnabled="{Binding Enabled}">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-
-                            <TextBlock
-                                Grid.Row="0"
-                                Grid.Column="0"
-                                Margin="0,0,10,0"
-                                VerticalAlignment="Center"
-                                Text="URLs:" />
-
-                            <!--  URL Collection Management  -->
-                            <Grid Grid.Row="0" Grid.Column="1">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="*" />
-                                </Grid.RowDefinitions>
-
-                                <!--  Add URL input  -->
-                                <Grid Grid.Row="0">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="Auto" />
-                                    </Grid.ColumnDefinitions>
-
-                                    <TextBox
-                                        x:Name="NewUrlTextBox"
-                                        Grid.Column="0"
-                                        Margin="2,2,5,2"
-                                        BorderBrush="Black"
-                                        BorderThickness="0.5" />
-
-                                    <Button
-                                        Grid.Column="1"
-                                        Width="60"
-                                        Height="25"
-                                        Command="{Binding AddUrlCommand}"
-                                        CommandParameter="{Binding ElementName=NewUrlTextBox, Path=Text}"
-                                        Content="Add"
-                                        Style="{StaticResource CustomButtonStyle}" />
-                                </Grid>
-
-                                <!--  URL List  -->
-                                <ListView
-                                    Grid.Row="1"
-                                    Height="120"
-                                    Margin="2,5,2,2"
-                                    BorderBrush="Black"
-                                    BorderThickness="0.5"
-                                    ItemsSource="{Binding Urls}">
-                                    <ListView.ItemTemplate>
-                                        <DataTemplate>
-                                            <Grid Margin="0,2">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="*" />
-                                                    <ColumnDefinition Width="Auto" />
-                                                </Grid.ColumnDefinitions>
-
-                                                <TextBlock
-                                                    Grid.Column="0"
-                                                    VerticalAlignment="Center"
-                                                    Text="{Binding}" />
-
-                                                <Button
-                                                    Grid.Column="1"
-                                                    Width="60"
-                                                    Height="22"
-                                                    Margin="5,0,0,0"
-                                                    Command="{Binding DataContext.RemoveUrlCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
-                                                    CommandParameter="{Binding}"
-                                                    Content="Remove"
-                                                    Style="{StaticResource CustomButtonStyle}" />
-                                            </Grid>
-                                        </DataTemplate>
-                                    </ListView.ItemTemplate>
-                                </ListView>
-                            </Grid>
-                        </Grid>
+                        </StackPanel>
                     </Expander>
-                </DataTemplate>
-            </converters:OperationTemplateSelector.WebBrowserOperationTemplate>
-
-            <converters:OperationTemplateSelector.MsBuildOperationTemplate>
-                <DataTemplate>
-                    <Expander Margin="0,5,0,0">
-
-                        <!--  Fixed HeaderTemplate  -->
-                        <Expander.Header>
-                            <Grid>
+                    <Expander Header="Network" Style="{StaticResource SectionExpanderStyle}">
+                        <StackPanel Margin="2,8,2,8">
+                            <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Timeout (minutes)" />
+                            <TextBox Width="100" HorizontalAlignment="Left" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding TimeoutInMinutes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
+                    </Expander>
+                    <Border Margin="0,6,0,0" Padding="8,6" Background="#FFF8E7" BorderBrush="#FFE082" BorderThickness="1" CornerRadius="4">
+                        <StackPanel Orientation="Horizontal">
+                            <Path Width="14" Height="14" Margin="0,0,6,0" VerticalAlignment="Center" Data="{StaticResource Information}" Fill="#F5A623" Stretch="Uniform" />
+                            <StackPanel>
+                                <TextBlock FontSize="11" FontWeight="SemiBold" Foreground="#8A6000" Text="Tip" />
+                                <TextBlock FontSize="11" Foreground="#8A6000" Text="Changes are saved automatically" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+        </DataTemplate>
+        <!-- SQL editor -->
+        <DataTemplate x:Key="SqlEditorTemplate">
+            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="14,10">
+                    <Expander Header="General" Style="{StaticResource SectionExpanderStyle}">
+                        <StackPanel Margin="2,8,2,8">
+                            <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Name" />
+                            <TextBox Margin="0,0,0,10" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <Grid Margin="0,0,0,10">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="200" />
-                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-
-                                <TextBox
-                                    Grid.Column="0"
-                                    Height="25"
-                                    Margin="0,1,0,0"
-                                    VerticalAlignment="Stretch"
-                                    BorderBrush="Black"
-                                    BorderThickness="0.5"
-                                    IsEnabled="{Binding Enabled}"
-                                    Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-
-                                <Button
-                                    Grid.Column="1"
-                                    Width="70"
-                                    Height="25"
-                                    Margin="10,0,0,0"
-                                    BorderBrush="Black"
-                                    BorderThickness="0.5"
-                                    Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.ToggleOperationEnabledCommand}"
-                                    CommandParameter="{Binding}"
-                                    Content="{Binding Enabled, Converter={StaticResource BoolToEnableDisableTextConverter}}"
-                                    Style="{StaticResource CustomButtonStyle}" />
-
-                                <Button
-                                    Grid.Column="2"
-                                    Width="70"
-                                    Height="25"
-                                    Margin="10,0,0,0"
-                                    BorderBrush="Black"
-                                    BorderThickness="0.5"
-                                    Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.RemoveOperationCommand}"
-                                    CommandParameter="{Binding}"
-                                    Content="Remove"
-                                    Style="{StaticResource CustomButtonStyle}" />
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Description" />
+                                    <TextBox Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Bottom">
+                                    <TextBlock Margin="0,0,0,6" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryGrayColor}" Text="Enabled" />
+                                    <ToggleButton IsChecked="{Binding Enabled, Mode=TwoWay}" Style="{StaticResource ToggleButtonStyle}" />
+                                </StackPanel>
                             </Grid>
-                        </Expander.Header>
-
-                        <!--  Content section  -->
-                        <Grid
-                            Margin="10,10,0,0"
-                            Grid.IsSharedSizeScope="True"
-                            IsEnabled="{Binding Enabled}">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" SharedSizeGroup="Labels" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-
-                            <TextBlock
-                                Grid.Row="0"
-                                Grid.Column="0"
-                                Margin="0,0,10,0"
-                                VerticalAlignment="Center"
-                                Text="Name:" />
-                            <TextBox
-                                Grid.Row="0"
-                                Grid.Column="1"
-                                Margin="2"
-                                BorderBrush="Black"
-                                BorderThickness="0.5"
-                                Text="{Binding Directory.Name, UpdateSourceTrigger=PropertyChanged}" />
-
-                            <TextBlock
-                                Grid.Row="1"
-                                Grid.Column="0"
-                                Margin="0,0,10,0"
-                                VerticalAlignment="Center"
-                                Text="Releative Path:" />
-                            <TextBox
-                                Grid.Row="1"
-                                Grid.Column="1"
-                                Margin="2"
-                                BorderBrush="Black"
-                                BorderThickness="0.5"
-                                Text="{Binding Directory.Path, UpdateSourceTrigger=PropertyChanged}" />
-
-                            <TextBlock
-                                Grid.Row="2"
-                                Grid.Column="0"
-                                Margin="0,0,10,0"
-                                VerticalAlignment="Center"
-                                Text="Retry Count:" />
-                            <TextBox
-                                Grid.Row="2"
-                                Grid.Column="1"
-                                Margin="2"
-                                BorderBrush="Black"
-                                BorderThickness="0.5"
-                                Text="{Binding RetryCount, UpdateSourceTrigger=PropertyChanged}" />
-
-                            <!--  Parameters Collection Management  -->
-                            <Grid
-                                Grid.Row="3"
-                                Grid.Column="0"
-                                Grid.ColumnSpan="2">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="*" />
-                                </Grid.RowDefinitions>
-
-                                <!--  Add Parameter input  -->
-                                <Grid Grid.Row="0">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto" SharedSizeGroup="Labels" />
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="Auto" />
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock
-                                        Grid.Column="0"
-                                        Margin="0,0,10,0"
-                                        VerticalAlignment="Center"
-                                        Text="Parameter:" />
-
-                                    <TextBox
-                                        x:Name="NewParameterTextBox"
-                                        Grid.Column="1"
-                                        Margin="2,2,5,2"
-                                        BorderBrush="Black"
-                                        BorderThickness="0.5" />
-
-                                    <Button
-                                        Grid.Column="2"
-                                        Width="60"
-                                        Height="25"
-                                        Command="{Binding AddParameterCommand}"
-                                        CommandParameter="{Binding ElementName=NewParameterTextBox, Path=Text}"
-                                        Content="Add"
-                                        Style="{StaticResource CustomButtonStyle}" />
-                                </Grid>
-
-                                <!--  Parametes List  -->
-                                <ListView
-                                    Grid.Row="1"
-                                    Height="120"
-                                    Margin="2,5,2,2"
-                                    BorderBrush="Black"
-                                    BorderThickness="0.5"
-                                    ItemsSource="{Binding Parameters}">
-                                    <ListView.ItemTemplate>
-                                        <DataTemplate>
-                                            <Grid Margin="0,2">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="*" />
-                                                    <ColumnDefinition Width="Auto" />
-                                                </Grid.ColumnDefinitions>
-
-                                                <TextBlock
-                                                    Grid.Column="0"
-                                                    VerticalAlignment="Center"
-                                                    Text="{Binding}" />
-
-                                                <Button
-                                                    Grid.Column="1"
-                                                    Width="60"
-                                                    Height="22"
-                                                    Margin="5,0,0,0"
-                                                    Command="{Binding DataContext.RemoveParameterCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
-                                                    CommandParameter="{Binding}"
-                                                    Content="Remove"
-                                                    Style="{StaticResource CustomButtonStyle}" />
-                                            </Grid>
-                                        </DataTemplate>
-                                    </ListView.ItemTemplate>
-                                </ListView>
-                            </Grid>
-                        </Grid>
+                        </StackPanel>
                     </Expander>
-                </DataTemplate>
-            </converters:OperationTemplateSelector.MsBuildOperationTemplate>
-
-            <converters:OperationTemplateSelector.GitPullOperationTemplate>
-                <DataTemplate>
-                    <Expander Margin="0,5,0,0">
-
-                        <!--  Fixed HeaderTemplate  -->
-                        <Expander.Header>
-                            <Grid>
+                    <Expander Header="SQL" Style="{StaticResource SectionExpanderStyle}">
+                        <StackPanel Margin="2,8,2,8">
+                            <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Path to SQL Script" />
+                            <TextBox Margin="0,0,0,10" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding PathToSqlScript, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Connection String" />
+                            <TextBox Style="{StaticResource FieldTextBoxStyle}" Text="{Binding ConnectionString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
+                    </Expander>
+                    <Border Margin="0,6,0,0" Padding="8,6" Background="#FFF8E7" BorderBrush="#FFE082" BorderThickness="1" CornerRadius="4">
+                        <StackPanel Orientation="Horizontal">
+                            <Path Width="14" Height="14" Margin="0,0,6,0" VerticalAlignment="Center" Data="{StaticResource Information}" Fill="#F5A623" Stretch="Uniform" />
+                            <StackPanel>
+                                <TextBlock FontSize="11" FontWeight="SemiBold" Foreground="#8A6000" Text="Tip" />
+                                <TextBlock FontSize="11" Foreground="#8A6000" Text="Changes are saved automatically" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+        </DataTemplate>
+        <!-- GitPull editor -->
+        <DataTemplate x:Key="GitPullEditorTemplate">
+            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="14,10">
+                    <Expander Header="General" Style="{StaticResource SectionExpanderStyle}">
+                        <StackPanel Margin="2,8,2,8">
+                            <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Name" />
+                            <TextBox Margin="0,0,0,10" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <Grid Margin="0,0,0,10">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="200" />
-                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-
-                                <TextBox
-                                    Grid.Column="0"
-                                    Height="25"
-                                    Margin="0,1,0,0"
-                                    VerticalAlignment="Stretch"
-                                    BorderBrush="Black"
-                                    BorderThickness="0.5"
-                                    IsEnabled="{Binding Enabled}"
-                                    Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-
-                                <Button
-                                    Grid.Column="1"
-                                    Width="70"
-                                    Height="25"
-                                    Margin="10,0,0,0"
-                                    BorderBrush="Black"
-                                    BorderThickness="0.5"
-                                    Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.ToggleOperationEnabledCommand}"
-                                    CommandParameter="{Binding}"
-                                    Content="{Binding Enabled, Converter={StaticResource BoolToEnableDisableTextConverter}}"
-                                    Style="{StaticResource CustomButtonStyle}" />
-
-                                <Button
-                                    Grid.Column="2"
-                                    Width="70"
-                                    Height="25"
-                                    Margin="10,0,0,0"
-                                    BorderBrush="Black"
-                                    BorderThickness="0.5"
-                                    Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.RemoveOperationCommand}"
-                                    CommandParameter="{Binding}"
-                                    Content="Remove"
-                                    Style="{StaticResource CustomButtonStyle}" />
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Description" />
+                                    <TextBox Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Bottom">
+                                    <TextBlock Margin="0,0,0,6" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryGrayColor}" Text="Enabled" />
+                                    <ToggleButton IsChecked="{Binding Enabled, Mode=TwoWay}" Style="{StaticResource ToggleButtonStyle}" />
+                                </StackPanel>
                             </Grid>
-                        </Expander.Header>
-
-                        <!--  Content section  -->
-                        <Grid Margin="10,10,0,0" IsEnabled="{Binding Enabled}">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-
-                            <TextBlock
-                                Margin="0,0,10,0"
-                                VerticalAlignment="Center"
-                                Text="No option yet." />
-                        </Grid>
+                        </StackPanel>
                     </Expander>
-                </DataTemplate>
-            </converters:OperationTemplateSelector.GitPullOperationTemplate>
-        </converters:OperationTemplateSelector>
+                    <TextBlock Margin="2,8" FontSize="13" Foreground="{DynamicResource PrimaryGrayColor}" Text="No additional configuration required for Git Pull." />
+                    <Border Margin="0,6,0,0" Padding="8,6" Background="#FFF8E7" BorderBrush="#FFE082" BorderThickness="1" CornerRadius="4">
+                        <StackPanel Orientation="Horizontal">
+                            <Path Width="14" Height="14" Margin="0,0,6,0" VerticalAlignment="Center" Data="{StaticResource Information}" Fill="#F5A623" Stretch="Uniform" />
+                            <StackPanel>
+                                <TextBlock FontSize="11" FontWeight="SemiBold" Foreground="#8A6000" Text="Tip" />
+                                <TextBlock FontSize="11" Foreground="#8A6000" Text="Changes are saved automatically" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+        </DataTemplate>
+        <!-- WebBrowser editor -->
+        <DataTemplate x:Key="WebBrowserEditorTemplate">
+            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="14,10">
+                    <Expander Header="General" Style="{StaticResource SectionExpanderStyle}">
+                        <StackPanel Margin="2,8,2,8">
+                            <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Name" />
+                            <TextBox Margin="0,0,0,10" Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <Grid Margin="0,0,0,10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Style="{StaticResource SectionLabelStyle}" Text="Description" />
+                                    <TextBox Style="{StaticResource FieldTextBoxStyle}" Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Bottom">
+                                    <TextBlock Margin="0,0,0,6" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryGrayColor}" Text="Enabled" />
+                                    <ToggleButton IsChecked="{Binding Enabled, Mode=TwoWay}" Style="{StaticResource ToggleButtonStyle}" />
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                    </Expander>
+                    <Border Margin="0,6,0,0" Padding="8,6" Background="#FFF8E7" BorderBrush="#FFE082" BorderThickness="1" CornerRadius="4">
+                        <StackPanel Orientation="Horizontal">
+                            <Path Width="14" Height="14" Margin="0,0,6,0" VerticalAlignment="Center" Data="{StaticResource Information}" Fill="#F5A623" Stretch="Uniform" />
+                            <StackPanel>
+                                <TextBlock FontSize="11" FontWeight="SemiBold" Foreground="#8A6000" Text="Tip" />
+                                <TextBlock FontSize="11" Foreground="#8A6000" Text="Changes are saved automatically" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+        </DataTemplate>
+        <converters:OperationEditorTemplateSelector x:Key="OperationEditorTemplateSelector" DeliveryBinTemplate="{StaticResource DeliveryBinEditorTemplate}" DeliverySpecifiedFilesTemplate="{StaticResource DeliverySpecifiedFilesEditorTemplate}" GitPullTemplate="{StaticResource GitPullEditorTemplate}" HttpPingTemplate="{StaticResource HttpPingEditorTemplate}" MsBuildTemplate="{StaticResource MsBuildEditorTemplate}" ProcessExecutionTemplate="{StaticResource ProcessExecutionEditorTemplate}" SqlExecutionTemplate="{StaticResource SqlEditorTemplate}" WebBrowserTemplate="{StaticResource WebBrowserEditorTemplate}" />
     </UserControl.Resources>
-
-    <Border Background="{DynamicResource SecondaryBackgroundColor}" CornerRadius="8">
-        <StackPanel>
-            <Grid Margin="5">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
+    <Grid Background="{DynamicResource TertiaryBackgroundColor}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="220" MinWidth="160" />
+            <ColumnDefinition Width="1" />
+            <ColumnDefinition Width="2*" MinWidth="200" />
+            <ColumnDefinition Width="1" />
+            <ColumnDefinition Width="3*" MinWidth="240" />
+        </Grid.ColumnDefinitions>
+        <!-- LEFT: Pipeline Steps -->
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Border Grid.Row="0" Padding="12,10" BorderBrush="LightGray" BorderThickness="0,0,0,1">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" VerticalAlignment="Center" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryTextColor}" Text="Pipeline Steps" />
+                    <Button Grid.Column="1" Command="{Binding AddStepCommand}" Content="+ Add Step" Style="{StaticResource SmallAddButtonStyle}" />
+                </Grid>
+            </Border>
+            <ListView x:Name="StepsListView" Grid.Row="1" AlternationCount="1000" AllowDrop="True" Background="Transparent" BorderThickness="0" DragOver="ListView_DragOver" Drop="ListView_Drop" ItemsSource="{Binding Profile.Steps}" PreviewMouseLeftButtonDown="ListView_PreviewMouseLeftButtonDown" PreviewMouseMove="ListView_PreviewMouseMove" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" SelectedItem="{Binding SelectedStep, Mode=TwoWay}">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        <Setter Property="Padding" Value="0" />
+                        <Setter Property="Margin" Value="4,2" />
+                        <Setter Property="BorderThickness" Value="0" />
+                        <Setter Property="Background" Value="Transparent" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListViewItem">
+                                    <Border x:Name="itemBorder" Padding="0" Background="{TemplateBinding Background}" CornerRadius="4">
+                                        <ContentPresenter />
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter TargetName="itemBorder" Property="Background" Value="#DCE6FF" />
+                                        </Trigger>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="itemBorder" Property="Background" Value="#EEF3FF" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="6,5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="26" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Margin="0,0,4,0" VerticalAlignment="Center" FontSize="13" Foreground="{DynamicResource PrimaryGrayColor}" Text="&#x2837;&#x2837;" />
+                            <Border Grid.Column="1" Width="22" Height="22" HorizontalAlignment="Center" VerticalAlignment="Center" Background="{DynamicResource PrimaryWhiteColor}" CornerRadius="11">
+                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryTextColor}" Text="{Binding Order, Converter={StaticResource IncrementConverter}}" />
+                            </Border>
+                            <TextBlock Grid.Column="2" Margin="6,0" VerticalAlignment="Center" FontSize="13" Foreground="{DynamicResource PrimaryTextColor}" Text="{Binding Name}" TextTrimming="CharacterEllipsis" />
+                            <Button Grid.Column="3" Width="24" Height="24" Background="Transparent" BorderThickness="0" Command="{Binding DataContext.RemoveStepCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Content="" Cursor="Hand" Style="{StaticResource DeleteButtonStyle}" ToolTip="Remove step" />
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <Border Grid.Row="2" Margin="8" Padding="8,6" Background="{DynamicResource SecondaryBackgroundColor}" BorderBrush="LightGray" BorderThickness="1" CornerRadius="4">
+                <StackPanel Orientation="Horizontal">
+                    <Path Width="12" Height="12" Margin="0,1,6,0" VerticalAlignment="Top" Data="{StaticResource Information}" Fill="{DynamicResource SecondaryBlueColor}" Stretch="Uniform" />
+                    <StackPanel>
+                        <TextBlock FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryTextColor}" Text="Drag and drop steps to reorder" />
+                        <TextBlock FontSize="10" Foreground="{DynamicResource PrimaryGrayColor}" Text="The pipeline will be executed from top to bottom." />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Grid>
+        <Border Grid.Column="1" Background="LightGray" />
+        <!-- MIDDLE: Step + Operations -->
+        <Grid Grid.Column="2">
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding SelectedStep}" Value="{x:Null}">
+                            <Setter Property="Visibility" Value="Hidden" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Border Grid.Row="0" Padding="12,10" BorderBrush="LightGray" BorderThickness="0,0,0,1">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock VerticalAlignment="Center" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryTextColor}" Text="Step: " />
+                        <TextBox MinWidth="60" VerticalAlignment="Center" Background="Transparent" BorderThickness="0" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource SecondaryBlueColor}" Text="{Binding SelectedStep.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Margin="0,0,2,0" VerticalAlignment="Center" Orientation="Horizontal">
+                        <TextBlock Margin="0,0,8,0" VerticalAlignment="Center" FontSize="12" Foreground="{DynamicResource PrimaryTextColor}" Text="Enabled" />
+                        <ToggleButton IsChecked="{Binding SelectedStep.Enabled, Mode=TwoWay}" Style="{StaticResource ToggleButtonStyle}" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+            <TextBox Grid.Row="1" Margin="12,6,12,0" Background="Transparent" BorderThickness="0" FontSize="12" Foreground="{DynamicResource PrimaryGrayColor}" Text="{Binding SelectedStep.Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" />
+            <Grid Grid.Row="2">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-
-                <TextBlock
-                    Grid.Row="0"
-                    Grid.Column="0"
-                    Margin="0,0,10,0"
-                    VerticalAlignment="Center"
-                    Text="Name:" />
-                <TextBox
-                    Grid.Row="0"
-                    Grid.Column="1"
-                    Margin="0,0,0,0"
-                    VerticalAlignment="Center"
-                    Text="{Binding Profile.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-
-                <TextBlock
-                    Grid.Row="1"
-                    Grid.Column="0"
-                    Margin="0,10,10,0"
-                    VerticalAlignment="Center"
-                    Text="Description:" />
-                <TextBox
-                    Grid.Row="1"
-                    Grid.Column="1"
-                    Margin="0,10,0,0"
-                    VerticalAlignment="Center"
-                    Text="{Binding Profile.Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-            </Grid>
-
-            <!--  Pipeline Steps Section  -->
-            <Expander
-                Margin="10"
-                FontSize="14"
-                Header="Pipeline Steps">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="250" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-
-                    <!--  Steps List with Add/Remove buttons  -->
-                    <Grid
-                        Grid.Row="0"
-                        Grid.Column="0"
-                        Margin="0,0,10,0">
+                <Border Grid.Row="0" Padding="12,8" BorderBrush="LightGray" BorderThickness="0,1,0,1">
+                    <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-
-                        <Button
-                            Grid.Column="1"
-                            Width="70"
-                            Height="25"
-                            Margin="0,0,5,0"
-                            Command="{Binding AddStepCommand}"
-                            Content="Add Step"
-                            FontSize="13"
-                            Style="{StaticResource CustomButtonStyle}" />
+                        <TextBlock Grid.Column="0" VerticalAlignment="Center" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryTextColor}" Text="Operations" />
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                            <ComboBox Width="130" Height="26" Margin="0,0,6,0" DisplayMemberPath="Name" FontSize="12" ItemsSource="{Binding AvailableOperationTypes}" SelectedItem="{Binding SelectedOperationType, Mode=TwoWay}" Style="{DynamicResource ComboBoxStyle}" />
+                            <Button Command="{Binding AddOperationCommand}" Content="+ Add Operation" Style="{StaticResource SmallAddButtonStyle}" />
+                        </StackPanel>
                     </Grid>
-
-                    <!--  Steps List  -->
-                    <Border
-                        Grid.Row="1"
-                        Grid.Column="0"
-                        Margin="0,5,10,0"
-                        Background="{DynamicResource TertiaryBackgroundColor}"
-                        BorderBrush="{DynamicResource ControlBorderBrush}"
-                        BorderThickness="1">
-                        <ListView
-                            AllowDrop="True"
-                            Background="Transparent"
-                            BorderThickness="0"
-                            DragOver="ListView_DragOver"
-                            Drop="ListView_Drop"
-                            ItemContainerStyle="{StaticResource StretchStyle}"
-                            ItemsSource="{Binding Profile.Steps}"
-                            PreviewMouseLeftButtonDown="ListView_PreviewMouseLeftButtonDown"
-                            PreviewMouseMove="ListView_PreviewMouseMove"
-                            SelectedItem="{Binding SelectedStep}">
-                            <ListView.ItemTemplate>
-                                <DataTemplate>
-                                    <DataTemplate.Resources>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="FontSize" Value="13" />
-                                            <Setter Property="Foreground" Value="{DynamicResource PrimaryTextColor}" />
-                                            <Setter Property="Margin" Value="10" />
-                                            <Setter Property="VerticalAlignment" Value="Center" />
-                                        </Style>
-                                    </DataTemplate.Resources>
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*" />
-                                            <ColumnDefinition Width="Auto" />
-                                        </Grid.ColumnDefinitions>
-
-                                        <TextBlock
-                                            Grid.Column="0"
-                                            Margin="10"
-                                            Padding="0"
-                                            HorizontalAlignment="Left"
-                                            VerticalAlignment="Center"
-                                            Text="{Binding Name}" />
-
-                                        <Button
-                                            Grid.Column="1"
-                                            Width="70"
-                                            Height="25"
-                                            VerticalAlignment="Center"
-                                            BorderBrush="Black"
-                                            BorderThickness="0.3"
-                                            Command="{Binding DataContext.RemoveStepCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                            CommandParameter="{Binding}"
-                                            Content="Remove"
-                                            FontSize="13"
-                                            Style="{StaticResource CustomButtonStyle}" />
+                </Border>
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                    <ItemsControl Margin="12,8" AlternationCount="1000" ItemsSource="{Binding SelectedStep.Operations}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="0,0,0,8">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="20" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid Grid.Column="0">
+                                        <Rectangle Width="2" HorizontalAlignment="Center" Fill="LightGray" />
+                                        <Ellipse Width="12" Height="12" HorizontalAlignment="Center" VerticalAlignment="Center" Fill="{DynamicResource TertiaryBackgroundColor}" Stroke="{DynamicResource SecondaryBlueColor}" StrokeThickness="2" />
                                     </Grid>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
-                        </ListView>
-                    </Border>
-
-                    <!--  Operations for Selected Step  -->
-                    <Grid
-                        Grid.Row="0"
-                        Grid.RowSpan="2"
-                        Grid.Column="1"
-                        Margin="0,0,0,0">
-                        <!--  Visibility="{Binding SelectedStep, Converter={StaticResource BoolToVisibilityConverter}}">  -->
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="*" />
-                        </Grid.RowDefinitions>
-
-                        <!--  Step Details  -->
-                        <GroupBox
-                            Grid.Row="0"
-                            Margin="0,0,0,0"
-                            Padding="10"
-                            Header="Step Details">
-                            <Grid Margin="5">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
-
-                                <TextBlock
-                                    Grid.Row="0"
-                                    Grid.Column="0"
-                                    Margin="0,0,10,0"
-                                    VerticalAlignment="Center"
-                                    Text="Name:" />
-                                <TextBox
-                                    Grid.Row="0"
-                                    Grid.Column="1"
-                                    Margin="0,0,0,0"
-                                    VerticalAlignment="Center"
-                                    Text="{Binding SelectedStep.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-
-                                <TextBlock
-                                    Grid.Row="1"
-                                    Grid.Column="0"
-                                    Margin="0,10,10,0"
-                                    VerticalAlignment="Center"
-                                    Text="Description:" />
-                                <TextBox
-                                    Grid.Row="1"
-                                    Grid.Column="1"
-                                    Margin="0,10,0,0"
-                                    VerticalAlignment="Center"
-                                    Text="{Binding SelectedStep.Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                            </Grid>
-                        </GroupBox>
-
-                        <!--  Operations  -->
-                        <GroupBox
-                            Grid.Row="1"
-                            Grid.RowSpan="2"
-                            Header="Operations">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="*" />
-                                </Grid.RowDefinitions>
-
-                                <StackPanel
-                                    Grid.Row="0"
-                                    Margin="10"
-                                    HorizontalAlignment="Left"
-                                    Orientation="Horizontal">
-
-                                    <ComboBox
-                                        Width="150"
-                                        Height="25"
-                                        Margin="0,0,0,0"
-                                        DisplayMemberPath="Name"
-                                        ItemsSource="{Binding AvailableOperationTypes}"
-                                        SelectedItem="{Binding SelectedOperationType, Mode=TwoWay}"
-                                        Style="{DynamicResource ComboBoxStyle}" />
-
-                                    <Button
-                                        Width="100"
-                                        Height="25"
-                                        Margin="10,0,0,0"
-                                        Command="{Binding AddOperationCommand}"
-                                        Content="Add"
-                                        Style="{StaticResource CustomButtonStyle}" />
-                                </StackPanel>
-
-                                <!--  Operations List  -->
-                                <ListView
-                                    Grid.Row="1"
-                                    VerticalAlignment="Stretch"
-                                    VerticalContentAlignment="Stretch"
-                                    Background="{DynamicResource TertiaryBackgroundColor}"
-                                    BorderBrush="{DynamicResource ControlBorderBrush}"
-                                    BorderThickness="1"
-                                    ItemTemplateSelector="{StaticResource OperationTemplateSelector}"
-                                    ItemsSource="{Binding SelectedStep.Operations}"
-                                    ScrollViewer.VerticalScrollBarVisibility="Auto" />
-                            </Grid>
-                        </GroupBox>
+                                    <Border Grid.Column="1" Margin="8,0,0,0" Padding="10,8" BorderThickness="1.5" CornerRadius="6" Cursor="Hand">
+                                        <Border.InputBindings>
+                                            <MouseBinding Command="{Binding DataContext.SelectOperationCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" MouseAction="LeftClick" />
+                                        </Border.InputBindings>
+                                         <Border.Style>
+                                             <Style TargetType="Border">
+                                                 <Setter Property="Background" Value="{DynamicResource TertiaryBackgroundColor}" />
+                                                 <Setter Property="BorderBrush" Value="LightGray" />
+                                                 <Style.Triggers>
+                                                     <DataTrigger Value="True">
+                                                         <DataTrigger.Binding>
+                                                             <MultiBinding Converter="{StaticResource ObjectEqualityConverter}">
+                                                                 <Binding Path="DataContext.SelectedOperation" RelativeSource="{RelativeSource AncestorType=UserControl}" />
+                                                                 <Binding />
+                                                             </MultiBinding>
+                                                         </DataTrigger.Binding>
+                                                         <Setter Property="BorderBrush" Value="{DynamicResource SecondaryBlueColor}" />
+                                                         <Setter Property="Background" Value="#EFF4FF" />
+                                                     </DataTrigger>
+                                                 </Style.Triggers>
+                                             </Style>
+                                         </Border.Style>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <Border Grid.Column="0" Width="36" Height="36" Margin="0,0,10,0" Background="{DynamicResource SecondaryBackgroundColor}" CornerRadius="6">
+                                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="9" FontWeight="Bold" Foreground="{DynamicResource SecondaryBlueColor}" Text="{Binding Operation.OperationType, Converter={StaticResource OperationTypeToLabelConverter}}" />
+                                            </Border>
+                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                <TextBlock FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryTextColor}">
+                                                    <Run>
+                                                        <Run.Text>
+                                                            <MultiBinding Converter="{StaticResource ItemIndexConverter}" Mode="OneWay">
+                                                                <Binding />
+                                                                <Binding RelativeSource="{RelativeSource AncestorType=ItemsControl}" Path="ItemsSource" />
+                                                            </MultiBinding>
+                                                        </Run.Text>
+                                                    </Run><Run Text=" " /><Run Text="{Binding Name}" />
+                                                </TextBlock>
+                                                <StackPanel Margin="0,2,0,2" Orientation="Horizontal">
+                                                    <Ellipse Width="7" Height="7" Margin="0,0,5,0" VerticalAlignment="Center" Fill="{DynamicResource PrimaryGreenColor}" />
+                                                    <TextBlock VerticalAlignment="Center" FontSize="11" Foreground="{DynamicResource PrimaryGreenColor}" Text="Enabled" />
+                                                </StackPanel>
+                                                <TextBlock FontSize="11" Foreground="{DynamicResource PrimaryGrayColor}" Text="{Binding Description}" TextTrimming="CharacterEllipsis" />
+                                            </StackPanel>
+                                            <Button Grid.Column="2" Width="24" Height="24" VerticalAlignment="Top" Background="Transparent" BorderThickness="0" Command="{Binding DataContext.RemoveOperationCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Content="" Cursor="Hand" Style="{StaticResource DeleteButtonStyle}" ToolTip="Remove operation" />
+                                        </Grid>
+                                    </Border>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </Grid>
+        </Grid>
+        <TextBlock Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="13" Foreground="{DynamicResource PrimaryGrayColor}" Text="Select a step to view its operations">
+            <TextBlock.Style>
+                <Style TargetType="TextBlock">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding SelectedStep}" Value="{x:Null}">
+                            <Setter Property="Visibility" Value="Visible" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBlock.Style>
+        </TextBlock>
+        <Border Grid.Column="3" Background="LightGray" />
+        <!-- RIGHT: Operation editor -->
+        <Grid Grid.Column="4">
+            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="13" Foreground="{DynamicResource PrimaryGrayColor}" Text="Select an operation to edit">
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding SelectedOperation}" Value="{x:Null}">
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+            <Grid>
+                <Grid.Style>
+                    <Style TargetType="Grid">
+                        <Setter Property="Visibility" Value="Visible" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding SelectedOperation}" Value="{x:Null}">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Style>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Border Grid.Row="0" Padding="14,10" BorderBrush="LightGray" BorderThickness="0,0,0,1">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Margin="0,0,10,0" VerticalAlignment="Center" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryTextColor}" Text="Edit Operation" />
+                        <Border Grid.Column="1" Padding="8,4" Background="{DynamicResource SecondaryBackgroundColor}" BorderBrush="{DynamicResource PrimaryWhiteColor}" BorderThickness="1" CornerRadius="4">
+                            <TextBlock FontSize="12" Foreground="{DynamicResource PrimaryTextColor}" Text="{Binding SelectedOperation.Name}" />
+                        </Border>
+                        <Button Grid.Column="3" Width="24" Height="24" Background="Transparent" BorderThickness="0" Command="{Binding RemoveOperationCommand}" CommandParameter="{Binding SelectedOperation}" Content="" Cursor="Hand" Style="{StaticResource DeleteButtonStyle}" ToolTip="Remove operation" />
                     </Grid>
-                </Grid>
-            </Expander>
-
-        </StackPanel>
-    </Border>
+                </Border>
+                <ContentControl Grid.Row="1" Content="{Binding SelectedOperation}" ContentTemplateSelector="{StaticResource OperationEditorTemplateSelector}" />
+            </Grid>
+        </Grid>
+    </Grid>
 </UserControl>
