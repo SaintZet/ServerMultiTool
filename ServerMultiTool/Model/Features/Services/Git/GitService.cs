@@ -23,7 +23,8 @@ public class GitService
         const string arguments = "rev-parse --abbrev-ref HEAD";
 
         var info = new ProcessStartInfo(fileName, arguments) { WorkingDirectory = workingDirectory };
-        var response = await _processExecutor.StartProcessOnceAsync(info, cancellationToken);
+        // Branch detection is a background helper call; keep it out of the App Log tab.
+        var response = await _processExecutor.StartProcessOnceAsync(info, cancellationToken, publishLogs: false);
 
         return response.Output;
     }

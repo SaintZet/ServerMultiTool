@@ -10,10 +10,10 @@ namespace ServerMultiTool.Model.Common.ProcessExecutor;
 
 public class ProcessExecutor(Logger logger)
 {
-    public async Task<ProcessOutput> StartProcessOnceAsync(ProcessStartInfo startInfo, CancellationToken cancellationToken = default) =>
-        await StartProcessWithRetriesAsync(startInfo, 1, cancellationToken);
+    public async Task<ProcessOutput> StartProcessOnceAsync(ProcessStartInfo startInfo, CancellationToken cancellationToken = default, bool publishLogs = true) =>
+        await StartProcessWithRetriesAsync(startInfo, 1, cancellationToken, publishLogs);
 
-    public async Task<ProcessOutput> StartProcessWithRetriesAsync(ProcessStartInfo startInfo, int retryCount, CancellationToken cancellationToken = default)
+    public async Task<ProcessOutput> StartProcessWithRetriesAsync(ProcessStartInfo startInfo, int retryCount, CancellationToken cancellationToken = default, bool publishLogs = true)
     {
         var response = new ProcessOutput();
 
@@ -34,7 +34,7 @@ public class ProcessExecutor(Logger logger)
 
         var messageDetails = string.Empty;
 
-        logger.LogInfoWithPublish(startMessage);
+        LogInfo(startMessage, publishLogs);
 
         for (var retryNumber = 1; retryNumber <= retryCount; retryNumber++)
         {
@@ -42,7 +42,7 @@ public class ProcessExecutor(Logger logger)
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
-                    logger.LogInfoWithPublish(cancelMessage);
+                    LogInfo(cancelMessage, publishLogs);
                     throw new OperationCanceledException(cancellationToken);
                 }
 
@@ -50,7 +50,7 @@ public class ProcessExecutor(Logger logger)
 
                 if (cancellationToken.IsCancellationRequested)
                 {
-                    logger.LogInfoWithPublish(cancelMessage);
+                    LogInfo(cancelMessage, publishLogs);
                     throw new OperationCanceledException(cancellationToken);
                 }
 
@@ -58,26 +58,58 @@ public class ProcessExecutor(Logger logger)
 
                 if (response.Success is not true)
                 {
-                    logger.LogWarnWithPublish(errorMessage + $"Retry {retryNumber} of {retryCount}.", messageDetails);
+                    LogWarn(errorMessage + $"Retry {retryNumber} of {retryCount}.", messageDetails, publishLogs);
                     continue;
                 }
 
-                logger.LogSuccessWithPublish(successMessage, messageDetails);
+                LogSuccess(successMessage, messageDetails, publishLogs);
                 return response;
             }
             catch (OperationCanceledException)
             {
-                logger.LogInfoWithPublish(cancelMessage);
+                LogInfo(cancelMessage, publishLogs);
                 throw;
             }
         }
 
         if (!cancellationToken.IsCancellationRequested)
         {
-            logger.LogErrorWithPublish(errorMessage, messageDetails);
+            LogError(errorMessage, messageDetails, publishLogs);
         }
 
         return response;
+    }
+
+    private void LogInfo(string message, bool publishLogs)
+    {
+        if (publishLogs)
+            logger.LogInfoWithPublish(message);
+        else
+            logger.LogInfo(message);
+    }
+
+    private void LogWarn(string message, string? details, bool publishLogs)
+    {
+        if (publishLogs)
+            logger.LogWarnWithPublish(message, details);
+        else
+            logger.LogWarn(message, details);
+    }
+
+    private void LogSuccess(string message, string? details, bool publishLogs)
+    {
+        if (publishLogs)
+            logger.LogSuccessWithPublish(message, details);
+        else
+            logger.LogSuccess(message, details);
+    }
+
+    private void LogError(string message, string? details, bool publishLogs)
+    {
+        if (publishLogs)
+            logger.LogErrorWithPublish(message, details);
+        else
+            logger.LogError(message, details);
     }
 
     private static void TryToSetWorkingDirectory(ProcessStartInfo startInfo)
