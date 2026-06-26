@@ -1,3 +1,4 @@
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -5,7 +6,6 @@ using System.Windows.Forms;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.VisualBasic;
-using ServerMultiTool.Features.Settings;
 using ServerMultiTool.Model.Infrastructure.DefaultValues;
 using ServerMultiTool.Model.Infrastructure.Interfaces;
 using ServerMultiTool.Shared.Components.GeneralInfo;
@@ -236,6 +236,9 @@ public partial class SettingsViewModel : BaseViewModel, IPage, INavigationAware
     [RelayCommand]
     private void SaveSettings()
     {
+        if (TryValidateUniqueLogDirectoryPaths() is false)
+            return;
+
         _isSaving = true;
         try
         {
@@ -443,10 +446,59 @@ public partial class SettingsViewModel : BaseViewModel, IPage, INavigationAware
         if (dialog.ShowDialog() is not DialogResult.OK)
             return;
 
+        if (LogDirectories.Contains(directory) && IsDuplicateLogDirectoryPath(dialog.SelectedPath, directory))
+        {
+            System.Windows.MessageBox.Show(
+                "This log directory path is already added. Please choose a different folder.",
+                "Duplicate log directory",
+                System.Windows.MessageBoxButton.OK,
+                System.Windows.MessageBoxImage.Warning);
+            return;
+        }
+
         directory.Path = dialog.SelectedPath;
 
         HasUnsavedChanges = true;
     }
+
+    private bool TryValidateUniqueLogDirectoryPaths()
+    {
+        var duplicatePaths = LogDirectories
+            .Where(directory => string.IsNullOrWhiteSpace(directory.Path) is false)
+            .GroupBy(directory => NormalizePath(directory.Path), StringComparer.OrdinalIgnoreCase)
+            .Where(group => group.Count() > 1)
+            .Select(group => group.Key)
+            .ToArray();
+
+        if (duplicatePaths.Length == 0)
+            return true;
+
+        var duplicatePathsText = string.Join(System.Environment.NewLine, duplicatePaths.Select(path => $"- {path}"));
+
+        System.Windows.MessageBox.Show(
+            $"Each log directory must have a unique path.{System.Environment.NewLine}{System.Environment.NewLine}Duplicate paths:{System.Environment.NewLine}{duplicatePathsText}",
+            "Duplicate log directories",
+            System.Windows.MessageBoxButton.OK,
+            System.Windows.MessageBoxImage.Warning);
+
+        return false;
+    }
+
+    private bool IsDuplicateLogDirectoryPath(string candidatePath, DirectoryModelWrapper currentDirectory)
+    {
+        if (string.IsNullOrWhiteSpace(candidatePath))
+            return false;
+
+        var normalizedCandidatePath = NormalizePath(candidatePath);
+
+        return LogDirectories.Any(directory =>
+            ReferenceEquals(directory, currentDirectory) is false
+            && string.IsNullOrWhiteSpace(directory.Path) is false
+            && string.Equals(NormalizePath(directory.Path), normalizedCandidatePath, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static string NormalizePath(string path) =>
+        path.Trim().TrimEnd('\\', '/');
 
     [RelayCommand]
     private void RenameDirectory(DirectoryModelWrapper? directory)
