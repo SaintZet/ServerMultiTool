@@ -12,6 +12,7 @@ namespace ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Base
         [ObservableProperty] bool _enabled;
         [ObservableProperty] string _name;
         [ObservableProperty] string _description;
+        [ObservableProperty] bool _failStepOnFailure;
 
         public PipelineOperationBase Operation { get; }
 
@@ -21,11 +22,17 @@ namespace ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Base
             Enabled = operation.Enabled;
             Name = operation.Name ?? DefaultName;
             Description = operation.Description ?? string.Empty;
+            FailStepOnFailure = operation.FailStepOnFailure;
         }
 
         partial void OnEnabledChanged(bool value)
         {
             Operation.EnableOperation(value);
+        }
+
+        partial void OnFailStepOnFailureChanged(bool value)
+        {
+            Operation.SetFailStepOnFailure(value);
         }
 
         partial void OnDescriptionChanged(string value)
@@ -53,6 +60,7 @@ namespace ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Base
         public virtual PipelineOperationBase ToOriginal()
         {
             Operation.EnableOperation(Enabled);
+            Operation.SetFailStepOnFailure(FailStepOnFailure);
             return Operation;
         }
     }

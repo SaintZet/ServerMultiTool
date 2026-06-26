@@ -118,6 +118,13 @@ public class PipelineExecuteManager
                 return false;
             }
 
+            if (result == PipelineOperationResult.Failure && step.FailPipelineOnFailure)
+            {
+                PipelineSteps.CancelWaiting();
+                return false;
+            }
+
+
             return true;
         }
         catch (OperationCanceledException)

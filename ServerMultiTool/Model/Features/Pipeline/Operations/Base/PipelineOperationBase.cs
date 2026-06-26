@@ -17,6 +17,11 @@ public abstract class PipelineOperationBase
     [JsonInclude] public string Name { get; private set; }
     [JsonInclude] public string Description { get; private set; } = string.Empty;
 
+    /// <summary>
+    /// Если true — при провале этой операции весь шаг считается проваленным.
+    /// </summary>
+    [JsonInclude] public bool FailStepOnFailure { get; private set; } = true;
+
     [JsonIgnore] public string SolutionDirectory { get; private set; } = null!;
     [JsonIgnore] public string HttpDirectory { get; private set; } = null!;
 
@@ -60,6 +65,11 @@ public abstract class PipelineOperationBase
     public virtual void EnableOperation(bool enable)
     {
         Enabled = enable;
+    }
+
+    public void SetFailStepOnFailure(bool value)
+    {
+        FailStepOnFailure = value;
     }
 
     public void UpdateDescription(string description)

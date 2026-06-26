@@ -29,8 +29,17 @@ namespace ServerMultiTool.ViewModels.Features.Pipeline.Collections
 
                 var result = await operation.ExecuteAsync(cancellationToken);
 
-                if (result == PipelineOperationResult.Failure || result == PipelineOperationResult.Cancelled)
+                if (result == PipelineOperationResult.Cancelled)
                     return result;
+
+                if (result == PipelineOperationResult.Failure)
+                {
+                    // дальнейшие операции не запускаем в любом случае
+                    // но степ фейлим только если настроено
+                    return operation.FailStepOnFailure
+                        ? PipelineOperationResult.Failure
+                        : PipelineOperationResult.PartialSuccess;
+                }
 
                 if (result == PipelineOperationResult.PartialSuccess)
                     finalResult = PipelineOperationResult.PartialSuccess;

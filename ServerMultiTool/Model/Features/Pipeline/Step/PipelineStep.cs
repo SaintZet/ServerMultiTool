@@ -16,6 +16,11 @@ namespace ServerMultiTool.Model.Features.Pipeline.Step
 
         public bool Enabled { get; private set; } = true;
 
+        /// <summary>
+        /// Если true — при провале этого шага весь пайплайн останавливается.
+        /// </summary>
+        public bool FailPipelineOnFailure { get; set; } = false;
+
         public List<PipelineOperationBase> Operations { get; set; } = [];
 
         public PipelineStep AddOperation(PipelineOperationBase operation)
@@ -63,6 +68,12 @@ namespace ServerMultiTool.Model.Features.Pipeline.Step
         public PipelineStep EnableStep(bool enabled)
         {
             Enabled = enabled;
+            return this;
+        }
+
+        public PipelineStep SetFailPipelineOnFailure(bool value)
+        {
+            FailPipelineOnFailure = value;
             return this;
         }
     }
