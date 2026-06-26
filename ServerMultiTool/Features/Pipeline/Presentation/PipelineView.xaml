@@ -21,6 +21,39 @@
         <globalConverters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
         <globalConverters:NumericValueConverter x:Key="NumericValueConverter" />
 
+        <Style x:Key="ClearLogButtonStyle" TargetType="Button">
+            <Setter Property="Height" Value="25" />
+            <Setter Property="Padding" Value="10,2" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="{DynamicResource PrimaryWhiteColor}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Foreground" Value="{DynamicResource PrimaryTextColor}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border
+                            x:Name="border"
+                            Padding="{TemplateBinding Padding}"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="4">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="{DynamicResource TertiaryBackgroundColor}" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Opacity" Value="0.8" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <Storyboard x:Key="GreenFlashingAnimation">
             <ColorAnimation
                 AutoReverse="True"
@@ -273,6 +306,19 @@
                         Foreground="{DynamicResource PrimaryRedColor}"
                         IsChecked="{Binding IsErrorEnabled}"
                         Style="{DynamicResource LogFilterToggleButtonStyle}" />
+                    <Button
+                        Margin="10,0,0,0"
+                        Command="{Binding ClearSelectedLogTabCommand}"
+                        Style="{StaticResource ClearLogButtonStyle}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock
+                                Margin="0,0,6,0"
+                                FontFamily="Segoe UI Emoji"
+                                FontSize="13"
+                                Text="🧹" />
+                            <TextBlock Text="Clear" />
+                        </StackPanel>
+                    </Button>
                 </StackPanel>
 
                 <TabControl
@@ -282,7 +328,8 @@
                     Background="Transparent"
                     BorderBrush="Transparent"
                     BorderThickness="0"
-                    ItemsSource="{Binding LogTabs}">
+                    ItemsSource="{Binding LogTabs}"
+                    SelectedItem="{Binding SelectedLogTab, Mode=TwoWay}">
                 <TabControl.Resources>
                     <Style BasedOn="{StaticResource {x:Type TabItem}}" TargetType="TabItem">
                         <Setter Property="Template">

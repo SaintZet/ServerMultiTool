@@ -63,6 +63,8 @@ public partial class PipelineViewModel : BaseViewModel, IPage
     [ObservableProperty] private bool _isErrorEnabled = true;
     partial void OnIsErrorEnabledChanged(bool value) => OnLogFilterChanged();
 
+    [ObservableProperty] private PipelineLogTabViewModel? _selectedLogTab;
+
     private void RefreshLogs()
     {
         _logManager.RefreshLogViews();
@@ -108,6 +110,7 @@ public partial class PipelineViewModel : BaseViewModel, IPage
         _generalInfo = generalInfo;
 
         _logManager = new GsLogMonitorManager(appSettingsService);
+        SelectedLogTab = _logManager.LogTabs.FirstOrDefault();
 
         LoadPersistedLogFilters();
         _logManager.SetFilter(LogFilter);
@@ -236,6 +239,16 @@ public partial class PipelineViewModel : BaseViewModel, IPage
         }
 
         SafeSetClipboardText(sb.ToString());
+    }
+
+    [RelayCommand]
+    private void ClearSelectedLogTab()
+    {
+        if (SelectedLogTab is null)
+            return;
+
+        SelectedLogTab.Messages.Clear();
+        SelectedLogTab.LogView.Refresh();
     }
 
     private static void SafeSetClipboardText(string text)
