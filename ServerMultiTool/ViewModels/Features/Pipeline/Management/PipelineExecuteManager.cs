@@ -124,7 +124,6 @@ public class PipelineExecuteManager
                 return false;
             }
 
-
             return true;
         }
         catch (OperationCanceledException)
