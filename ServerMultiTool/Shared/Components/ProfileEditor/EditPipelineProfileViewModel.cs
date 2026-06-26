@@ -12,8 +12,10 @@ using ServerMultiTool.Model.Features.Pipeline.Operations.Network;
 using ServerMultiTool.Model.Features.Pipeline.Step;
 using ServerMultiTool.ViewModels.Common.BaseClasses;
 using ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Base;
+using ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.PipelineOperations.Execution;
+using ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.PipelineOperations.FileDelivery;
 using ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.PipelineSteps;
-using ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers;
+using ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.PipelineProfile;
 
 namespace ServerMultiTool.Shared.Components.ProfileEditor;
 
@@ -188,7 +190,7 @@ public partial class EditPipelineProfileViewModel : BaseViewModel, IEditPipeline
     [RelayCommand]
     private void BrowseOperationFileName()
     {
-        if (SelectedOperation is not ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Operations.Integrations.ProcessExecutionOperationWrapper processExec)
+        if (SelectedOperation is not ProcessExecutionOperationWrapper processExec)
             return;
         using var dialog = new OpenFileDialog { Title = "Select executable file", Filter = "All Files|*.*|Executables|*.exe" };
         if (dialog.ShowDialog() == DialogResult.OK)
@@ -196,7 +198,7 @@ public partial class EditPipelineProfileViewModel : BaseViewModel, IEditPipeline
     }
 
     [RelayCommand]
-    private void BrowseDeliverySource(ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Operations.Delivery.DeliveryDirectoryWrapper dir)
+    private void BrowseDeliverySource(DeliveryDirectoryWrapper dir)
     {
         if (dir is null) return;
         using var dialog = new FolderBrowserDialog { Description = "Select source directory", ShowNewFolderButton = true };
@@ -205,7 +207,7 @@ public partial class EditPipelineProfileViewModel : BaseViewModel, IEditPipeline
     }
 
     [RelayCommand]
-    private void BrowseDeliveryDestination(ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Operations.Delivery.DeliveryDirectoryWrapper dir)
+    private void BrowseDeliveryDestination(DeliveryDirectoryWrapper dir)
     {
         if (dir is null) return;
         using var dialog = new FolderBrowserDialog { Description = "Select destination directory", ShowNewFolderButton = true };

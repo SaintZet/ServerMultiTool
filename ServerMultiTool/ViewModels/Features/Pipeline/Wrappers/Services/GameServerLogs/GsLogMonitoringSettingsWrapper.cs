@@ -3,7 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using ServerMultiTool.Model.Features.Services.GameServerLogs;
 using ServerMultiTool.ViewModels.Features.Settings.Wrappers;
 
-namespace ServerMultiTool.Features.Pipeline.Wrappers.Services.GameServerLogs;
+namespace ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Services.GameServerLogs;
 
 public partial class GsLogMonitoringSettingsWrapper : ObservableObject
 {

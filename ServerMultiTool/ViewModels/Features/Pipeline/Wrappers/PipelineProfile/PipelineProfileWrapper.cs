@@ -1,13 +1,13 @@
 using System;
 using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
-using ServerMultiTool.Features.Pipeline.Wrappers.Services.GameServerLogs;
-using ServerMultiTool.Model.Features.Pipeline.Profile;
+using ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Services.GameServerLogs;
 using ServerMultiTool.Model.Features.Pipeline.Step;
 using ServerMultiTool.ViewModels.Features.Pipeline.Collections;
 using ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.PipelineSteps;
+using PipelineProfileModel = ServerMultiTool.Model.Features.Pipeline.Profile.PipelineProfile;
 
-namespace ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers;
+namespace ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.PipelineProfile;
 
 public partial class PipelineProfileWrapper : ObservableObject
 {
@@ -16,9 +16,9 @@ public partial class PipelineProfileWrapper : ObservableObject
     [ObservableProperty] public PipelineStepsCollection _steps;
     [ObservableProperty] public GsLogMonitoringSettingsWrapper _gsLogMonitoringSettings;
 
-    readonly PipelineProfile _profile;
+    readonly PipelineProfileModel _profile;
 
-    public PipelineProfileWrapper(PipelineProfile profile)
+    public PipelineProfileWrapper(PipelineProfileModel profile)
     {
         _profile = profile ?? throw new ArgumentNullException(nameof(profile), "Pipeline profile cannot be null.");
 
@@ -30,7 +30,7 @@ public partial class PipelineProfileWrapper : ObservableObject
         Steps = new PipelineStepCollection(profile.Steps.Select(step => new PipelineStepWrapper(step)));
     }
 
-    public PipelineProfile ToOriginal()
+    public PipelineProfileModel ToOriginal()
     {
         _profile.UpdateName(Name);
         _profile.UpdateDescription(Description);

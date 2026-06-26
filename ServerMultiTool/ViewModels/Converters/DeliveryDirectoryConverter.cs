@@ -2,7 +2,7 @@ using System;
 using System.Globalization;
 using System.Windows.Data;
 using ServerMultiTool.Model.Common;
-using ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Operations.Delivery;
+using ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.PipelineOperations.FileDelivery;
 
 namespace ServerMultiTool.ViewModels.Converters
 {

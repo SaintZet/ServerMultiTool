@@ -4,7 +4,7 @@ using ServerMultiTool.Model.Features.Pipeline.Operations.FileDelivery;
 using ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Base;
 using ServerMultiTool.ViewModels.Features.Settings.Wrappers;
 
-namespace ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Operations.Delivery;
+namespace ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.PipelineOperations.FileDelivery;
 
 public partial class DeliveryBinOperationWrapper : PipelineOperationWrapper
 {

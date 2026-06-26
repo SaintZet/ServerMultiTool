@@ -3,10 +3,9 @@ using ServerMultiTool.Model.Features.Pipeline.Operations.Base;
 using ServerMultiTool.Model.Features.Pipeline.Operations.Execution;
 using ServerMultiTool.Model.Features.Pipeline.Operations.FileDelivery;
 using ServerMultiTool.Model.Features.Pipeline.Operations.Network;
-using ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Operations.Delivery;
-using ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Operations.Git;
-using ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Operations.Integrations;
-using ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Operations.MsBuild;
+using ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.PipelineOperations.Execution;
+using ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.PipelineOperations.FileDelivery;
+using ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.PipelineOperations.Network;
 
 namespace ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Base
 {

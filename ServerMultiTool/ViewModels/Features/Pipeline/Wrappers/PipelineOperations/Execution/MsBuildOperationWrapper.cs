@@ -7,7 +7,7 @@ using ServerMultiTool.Model.Features.Pipeline.Operations.Execution;
 using ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Base;
 using ServerMultiTool.ViewModels.Features.Settings.Wrappers;
 
-namespace ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Operations.MsBuild;
+namespace ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.PipelineOperations.Execution;
 
 public partial class MsBuildOperationWrapper : PipelineOperationWrapper
 {

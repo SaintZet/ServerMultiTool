@@ -17,7 +17,7 @@ using ServerMultiTool.ViewModels.Common.BaseClasses;
 using ServerMultiTool.ViewModels.Common.Interfaces;
 using ServerMultiTool.ViewModels.Features.Pipeline.Collections;
 using ServerMultiTool.ViewModels.Features.Pipeline.Management;
-using ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers;
+using ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.PipelineProfile;
 
 namespace ServerMultiTool.Features.Pipeline.Presentation;
 

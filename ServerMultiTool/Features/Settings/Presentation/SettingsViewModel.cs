@@ -17,7 +17,7 @@ using ServerMultiTool.ViewModels.Common.Interfaces;
 using ServerMultiTool.ViewModels.Features.Pipeline.Collections;
 using ServerMultiTool.ViewModels.Features.Settings.Extensions;
 using ServerMultiTool.ViewModels.Features.Settings.Wrappers;
-using ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers;
+using ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.PipelineProfile;
 using Application = System.Windows.Application;
 using System.Threading.Tasks;
 

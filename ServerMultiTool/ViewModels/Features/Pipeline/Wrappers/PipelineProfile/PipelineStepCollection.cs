@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using ServerMultiTool.ViewModels.Features.Pipeline.Collections;
 using ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.PipelineSteps;
 
-namespace ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers
+namespace ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.PipelineProfile
 {
     internal class PipelineStepCollection : PipelineStepsCollection
     {

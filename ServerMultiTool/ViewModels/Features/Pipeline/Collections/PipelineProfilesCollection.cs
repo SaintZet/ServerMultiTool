@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using ServerMultiTool.Model.Features.Pipeline.Profile;
 using ServerMultiTool.Model.Features.Pipeline.Step;
-using ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers;
+using ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.PipelineProfile;
 
 namespace ServerMultiTool.ViewModels.Features.Pipeline.Collections
 {

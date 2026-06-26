@@ -3,7 +3,7 @@ using ServerMultiTool.Model.Features.Pipeline.Operations.Base;
 using ServerMultiTool.Model.Features.Pipeline.Operations.Execution;
 using ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Base;
 
-namespace ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Operations.Integrations;
+namespace ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.PipelineOperations.Execution;
 
 public partial class ProcessExecutionOperationWrapper : PipelineOperationWrapper
 {

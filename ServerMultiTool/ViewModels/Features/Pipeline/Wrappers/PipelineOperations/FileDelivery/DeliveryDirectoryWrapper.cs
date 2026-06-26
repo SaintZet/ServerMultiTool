@@ -1,7 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using ServerMultiTool.Model.Common;
 
-namespace ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Operations.Delivery;
+namespace ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.PipelineOperations.FileDelivery;
 
 public partial class DeliveryDirectoryWrapper : ObservableObject
 {

@@ -6,7 +6,7 @@ using ServerMultiTool.Model.Features.Pipeline.Operations.Base.Enums;
 using ServerMultiTool.Shared.Components.GeneralInfo;
 using ServerMultiTool.ViewModels.Features.Pipeline.Collections;
 using ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.PipelineSteps;
-using ServerMultiTool.ViewModels.Wrappers.PipelineProfileWrappers;
+using ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.PipelineProfile;
 
 namespace ServerMultiTool.ViewModels.Features.Pipeline.Management;
 

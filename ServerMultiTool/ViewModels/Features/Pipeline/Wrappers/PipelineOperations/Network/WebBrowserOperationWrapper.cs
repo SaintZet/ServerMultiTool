@@ -7,7 +7,7 @@ using ServerMultiTool.Model.Features.Pipeline.Operations.Base;
 using ServerMultiTool.Model.Features.Pipeline.Operations.Network;
 using ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Base;
 
-namespace ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.Operations.Integrations;
+namespace ServerMultiTool.ViewModels.Features.Pipeline.Wrappers.PipelineOperations.Network;
 
 public partial class WebBrowserOperationWrapper : PipelineOperationWrapper
 {
