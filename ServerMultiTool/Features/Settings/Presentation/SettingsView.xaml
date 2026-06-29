@@ -275,7 +275,7 @@
                         <Setter Property="MinWidth" Value="170" />
                         <Setter Property="FontSize" Value="13" />
                         <Setter Property="FontWeight" Value="SemiBold" />
-                        <Setter Property="Foreground" Value="{DynamicResource PrimaryGrayColor}" />
+                        <Setter Property="Foreground" Value="Black" />
                         <Setter Property="Background" Value="Transparent" />
                         <Setter Property="Margin" Value="0,0,0,4" />
                         <Setter Property="Padding" Value="0" />
@@ -299,11 +299,11 @@
                                     </Border>
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsSelected" Value="True">
-                                            <Setter Property="Foreground" Value="{DynamicResource SecondaryBlueColor}" />
+                                            <Setter Property="Foreground" Value="Black" />
                                             <Setter TargetName="TabBorder" Property="Background" Value="#EEF3FF" />
                                         </Trigger>
                                         <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter Property="Foreground" Value="{DynamicResource SecondaryBlueColor}" />
+                                            <Setter Property="Foreground" Value="Black" />
                                             <Setter TargetName="TabBorder" Property="Background" Value="#F5F8FF" />
                                         </Trigger>
                                     </ControlTemplate.Triggers>
