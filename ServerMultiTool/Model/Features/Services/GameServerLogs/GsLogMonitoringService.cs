@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
@@ -19,8 +17,6 @@ public partial class GsLogMonitoringService : BaseEventAggregator
     private const string LogFileNameFormat = @"yyyy-MM-dd\\all.HH-00";
     private const string LogFileExtension = ".log";
 
-    private static readonly Regex TimeStampRegex = GetTimeStampRegex();
-
     private readonly Logger _logger;
     private readonly Timer _hourlyTimer;
     private readonly SemaphoreSlim _settingsUpdateGate = new(1, 1);
@@ -29,6 +25,8 @@ public partial class GsLogMonitoringService : BaseEventAggregator
 
     private DateTime _lastHour = DateTime.MinValue;
     private string _cachedFileName = string.Empty;
+    private string _lastProcessedPath = string.Empty;
+    private long _lastReadPosition;
 
     private bool _isEnabled;
     private DirectoryModel? _monitoredDirectory;
@@ -109,6 +107,8 @@ public partial class GsLogMonitoringService : BaseEventAggregator
 
         _cancellationToken = new CancellationTokenSource();
         _monitoredDirectory = directory;
+        _lastProcessedPath = string.Empty;
+        _lastReadPosition = 0;
 
         _logger.LogInfo($"Start monitoring {directory.Name} at {directory.Path}");
 
@@ -130,20 +130,19 @@ public partial class GsLogMonitoringService : BaseEventAggregator
 
     private async Task MonitorLogDirectoryAsync(DirectoryModel directory, CancellationToken cancellationToken)
     {
-        var startTime = DateTime.Now;
-
         while (!cancellationToken.IsCancellationRequested)
         {
-            await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken);
-
             var path = GetActualLogFileName(directory);
 
             if (File.Exists(path) is false)
+            {
+                await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken);
                 continue;
+            }
 
             try
             {
-                await ProcessLogFileAsync(path, startTime, cancellationToken);
+                await ProcessLogFileAsync(path, cancellationToken);
             }
             catch (OperationCanceledException)
             {
@@ -154,17 +153,33 @@ public partial class GsLogMonitoringService : BaseEventAggregator
                 _logger.LogExceptionWithPublish(ex);
                 return;
             }
+
+            await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken);
         }
     }
 
-    private async Task ProcessLogFileAsync(string path, DateTime startTime, CancellationToken cancellationToken)
+    private async Task ProcessLogFileAsync(string path, CancellationToken cancellationToken)
     {
         await using var fileStream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+
+        if (!string.Equals(_lastProcessedPath, path, StringComparison.OrdinalIgnoreCase))
+        {
+            _lastProcessedPath = path;
+            _lastReadPosition = 0;
+        }
+
+        if (_lastReadPosition > fileStream.Length)
+            _lastReadPosition = 0;
+
+        fileStream.Seek(_lastReadPosition, SeekOrigin.Begin);
         using var reader = new StreamReader(fileStream);
 
-        await SkipToStartTimeAsync(reader, startTime, cancellationToken);
-
         var lines = await ReadRemainingLinesAsync(reader, cancellationToken);
+        _lastReadPosition = fileStream.Position;
+
+        if (lines.Count == 0)
+            return;
+
         var filteredLines = FilterAndShortenLines(lines);
 
         foreach (var logEvent in GsLogMonitoringUtils.ParseLogLines(filteredLines))
@@ -182,33 +197,6 @@ public partial class GsLogMonitoringService : BaseEventAggregator
         }
 
         return Path.Combine(directory.Path, _cachedFileName);
-    }
-
-    private static async Task SkipToStartTimeAsync(StreamReader reader, DateTime startTime, CancellationToken cancellationToken)
-    {
-        while (!reader.EndOfStream)
-        {
-            var line = await reader.ReadLineAsync(cancellationToken);
-            if (line is null)
-                break;
-
-            var timestamp = ExtractTimeStamp(line);
-            if (timestamp >= startTime)
-                break;
-        }
-    }
-
-    private static DateTime? ExtractTimeStamp(string line)
-    {
-        var match = TimeStampRegex.Match(line);
-
-        if (match.Success is false)
-            return null;
-
-        if (DateTime.TryParseExact(match.Value, "HH:mm:ss.fff", CultureInfo.InvariantCulture, DateTimeStyles.None, out var timestamp))
-            return timestamp;
-
-        return null;
     }
 
     private static async Task<List<string>> ReadRemainingLinesAsync(StreamReader reader, CancellationToken cancellationToken)
@@ -238,7 +226,4 @@ public partial class GsLogMonitoringService : BaseEventAggregator
             yield return line.Length > maxLength ? line[..maxLength] + "..." : line;
         }
     }
-
-    [GeneratedRegex(@"\b\d{2}:\d{2}:\d{2}\.\d{3}\b")]
-    private static partial Regex GetTimeStampRegex();
 }
