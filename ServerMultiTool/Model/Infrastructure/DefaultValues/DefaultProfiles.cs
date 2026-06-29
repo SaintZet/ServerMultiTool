@@ -5,7 +5,6 @@ using ServerMultiTool.Model.Features.Pipeline.Operations.FileDelivery;
 using ServerMultiTool.Model.Features.Pipeline.Operations.Network;
 using ServerMultiTool.Model.Features.Pipeline.Profile;
 using ServerMultiTool.Model.Features.Pipeline.Step;
-using ServerMultiTool.Model.Features.Services.GameServerLogs;
 
 namespace ServerMultiTool.Model.Infrastructure.DefaultValues;
 
@@ -14,7 +13,6 @@ public static class DefaultProfiles
     public static PipelineProfile GetIisResetProfile()
     {
         var pipelineProfile = new PipelineProfile("IIS Restart", "Profile for fast IIS reset with ping and open web page")
-            .UpdateGsLogMonitoringSettings(GetDefaultGsLogMonitoringSettings())
             .AddStep(new PipelineStep("IIS Stop", "This step resets the IIS server to apply changes.")
                 .AddOperation(new ProcessExecutionOperation("IIS Stop")
                     .UpdateFileName("iisreset.exe")
@@ -51,7 +49,6 @@ public static class DefaultProfiles
     public static PipelineProfile GetStandardProfile()
     {
         var pipelineProfile = new PipelineProfile("Standart Profile", "Standard deployment profile for regular working days")
-            .UpdateGsLogMonitoringSettings(GetDefaultGsLogMonitoringSettings())
 
             .AddStep(new PipelineStep("Git", "This step execute operations releated to Git.")
                 .AddOperation(new GitPullOperation("Git Pull"))
@@ -120,7 +117,6 @@ public static class DefaultProfiles
     public static PipelineProfile GetExtendedProfile(DirectoryModel solutionDirectory, DirectoryModel httpDirectory)
     {
         return new PipelineProfile("Extended Profile", "Advanced deployment profile with additional StaticData processing using DataBlender")
-            .UpdateGsLogMonitoringSettings(GetDefaultGsLogMonitoringSettings())
 
             .AddStep(new PipelineStep("Git", "This step execute operations releated to Git.")
                 .AddOperation(new GitPullOperation("Git Pull"))
@@ -230,21 +226,4 @@ public static class DefaultProfiles
         };
     }
 
-    private static GsLogMonitoringSettings GetDefaultGsLogMonitoringSettings()
-    {
-        return new GsLogMonitoringSettings
-        {
-            Enable = true,
-            MasterLogDirectory = new DirectoryModel
-            {
-                Name = "Master",
-                Path = @"C:\HTTP\Raid\Master\log"
-            },
-            SegmentLogDirectory = new DirectoryModel
-            {
-                Name = "Segment",
-                Path = @"C:\HTTP\Raid\Segment00\log"
-            }
-        };
-    }
 }

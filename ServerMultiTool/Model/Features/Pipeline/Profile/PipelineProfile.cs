@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using ServerMultiTool.Model.Features.Pipeline.Step;
-using ServerMultiTool.Model.Features.Services.GameServerLogs;
 
 namespace ServerMultiTool.Model.Features.Pipeline.Profile;
 
@@ -15,8 +14,6 @@ public class PipelineProfile
 
     public string Description { get; private set; }
 
-    public GsLogMonitoringSettings GsLogMonitoringSettings { get; private set; } = new GsLogMonitoringSettings();
-
     public List<PipelineStep> Steps { get; private set; }
 
     public PipelineProfile(string name, string description)
@@ -27,12 +24,11 @@ public class PipelineProfile
     }
 
     [JsonConstructor]
-    public PipelineProfile(Guid id, string name, string description, GsLogMonitoringSettings gsLogMonitoringSettings, List<PipelineStep> steps)
+    public PipelineProfile(Guid id, string name, string description, List<PipelineStep> steps)
     {
         Id = id;
         Name = name;
         Description = description;
-        GsLogMonitoringSettings = gsLogMonitoringSettings ?? new GsLogMonitoringSettings();
         Steps = steps ?? [];
     }
 
@@ -63,12 +59,6 @@ public class PipelineProfile
     public PipelineProfile UpdateDescription(string description)
     {
         Description = description;
-        return this;
-    }
-
-    public PipelineProfile UpdateGsLogMonitoringSettings(GsLogMonitoringSettings settings)
-    {
-        GsLogMonitoringSettings = settings;
         return this;
     }
 }

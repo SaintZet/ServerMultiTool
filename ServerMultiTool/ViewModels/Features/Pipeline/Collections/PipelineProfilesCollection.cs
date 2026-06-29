@@ -39,22 +39,8 @@ namespace ServerMultiTool.ViewModels.Features.Pipeline.Collections
                     originalProfile.Id,
                     originalProfile.Name,
                     originalProfile.Description,
-                    originalProfile.GsLogMonitoringSettings,
                     clonedSteps);
 
-                //if (originalProfile.GsLogMonitoringSettings != null)
-                //{
-                //    var originalSettings = originalProfile.GsLogMonitoringSettings;
-                //    var clonedSettings = new GsLogMonitoringSettings
-                //    {
-                //        Enable = originalSettings.Enable,
-                //        MasterLogDirectory = originalSettings.MasterLogDirectory != null ?
-                //            new DirectoryModel(originalSettings.MasterLogDirectory.Path) : null,
-                //        SegmentLogDirectory = originalSettings.SegmentLogDirectory != null ?
-                //            new DirectoryModel(originalSettings.SegmentLogDirectory.Path) : null
-                //    };
-                //    clonedProfile.UpdateGsLogMonitoringSettings(clonedSettings);
-                //}
 
                 var clonedWrapper = new PipelineProfileWrapper(clonedProfile);
                 clonedCollection.Add(clonedWrapper);
