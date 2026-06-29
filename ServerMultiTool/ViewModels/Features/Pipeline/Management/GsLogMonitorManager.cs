@@ -80,7 +80,6 @@ public class GsLogMonitorManager
             orderedTabs.Add(entry.Tab);
 
             _ = entry.Service.UpdateSettings(true, directory);
-            entry.Tab.Messages.Clear();
         }
 
         foreach (var removedKey in _entries.Keys.Where(key => desiredPaths.Contains(key) is false).ToList())

@@ -34,7 +34,6 @@ public class PipelineExecuteManager
 
     public void StopPipeline()
     {
-        _logManager.ClearAppLogs();
         _pipelineCancellationTokenSource?.Cancel();
     }
 
@@ -63,7 +62,6 @@ public class PipelineExecuteManager
         PipelineStateChanged?.Invoke(this, true);
         generalInfo.CanChangeStates = false;
 
-        _logManager.ClearAppLogs();
         PipelineSteps.ClearStatuses();
 
         _pipelineCancellationTokenSource = new CancellationTokenSource();
